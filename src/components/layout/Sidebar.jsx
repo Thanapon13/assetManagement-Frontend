@@ -59,7 +59,7 @@ export const Sidebar = ({ children }) => {
           isOpen
             ? ` w-2/12 sm:min-w-max h-screen `
             : `w-min h-[70px] sm:h-screen`
-        } bg-slate-200 transition-all ease-in-out duration-500`}
+        } bg-slate-200 `}
       >
         {/* top section */}
         <div className="flex justify-center p-[30px]">
@@ -73,15 +73,11 @@ export const Sidebar = ({ children }) => {
           <div className={`${isOpen ? `block` : `-ml-5`} text-2xl ml-auto`}>
             <FaBars
               onClick={toggle}
-              className={`${
-                isOpen ? `block` : `hidden`
-              } transition-all ease-in-out duration-500 hover:bg-slate-500`}
+              className={`${isOpen ? `block` : `hidden`}  hover:bg-slate-500`}
             />
             <FiChevronsRight
               onClick={toggle}
-              className={`${
-                isOpen ? `hidden` : `block`
-              } transition-all ease-in-out duration-500 hover:bg-slate-500`}
+              className={`${isOpen ? `hidden` : `block`} hover:bg-slate-500`}
             />
           </div>
         </div>
@@ -93,7 +89,7 @@ export const Sidebar = ({ children }) => {
               key={index}
               className={({ isActive }) =>
                 [
-                  'flex p-[15px] items-center gap-2 rounded-lg transition-all ease-in-out duration-500 hover:bg-sidebar-green',
+                  'flex p-[15px] items-center gap-2 rounded-lg hover:bg-sidebar-green',
                   isActive ? 'bg-sidebar-green' : null,
                 ]
                   .filter(Boolean)
@@ -108,7 +104,7 @@ export const Sidebar = ({ children }) => {
           ))}
         </div>
       </div>
-      <main className="">{children}</main>
+      {/* <main className="">{children}</main> */}
     </div>
   )
 }
