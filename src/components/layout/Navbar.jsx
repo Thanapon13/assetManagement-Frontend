@@ -54,14 +54,13 @@ export const Navbars = () => {
                   .join(' ')
               }
             >
-              <div className="text-3xl">{item.icon}</div>
-              <div className="">{item.name}</div>
-              {/* <div className="">
-                {item.submenu.map((v, idx) => {
-                  console.log(v)
-                })}
-              </div> */}
-              {item.submenu ? <SubMenu menu={item.submenu} /> : ''}
+              <div className="flex flex-col w-full">
+                <div className="flex flex-row">
+                  <div className="text-3xl">{item.icon}</div>
+                  <div className="">{item.name}</div>
+                </div>
+                {item.submenu ? <SubMenu key={index} item={item} /> : ''}
+              </div>
             </NavLink>
           ))}
         </ul>

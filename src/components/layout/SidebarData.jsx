@@ -27,7 +27,17 @@ export const menuItem = [
     submenu: [
       {
         path: '/',
-        name: 'asdasdasd',
+        name: 'รายการเบิกจ่าย',
+        icom: '',
+      },
+      {
+        path: '/1',
+        name: 'บันทึกเบิกจ่าย',
+        icom: '',
+      },
+      {
+        path: '/2',
+        name: 'อนุมัติเบิกจ่าย',
         icom: '',
       },
     ],
