@@ -5,7 +5,10 @@ module.exports = {
     extend: {
       colors: {
         'sidebar-green': '#F3FFEF',
-        green: '#38821D',
+        "text-green": '#38821D',
+        "text-gray":"#6C757D",
+        "background-page":"#F8FAFB",
+        "border-gray-table":"#E0E0E0"
       },
     },
   },
