@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { MdSpaceDashboard, MdHomeRepairService } from 'react-icons/md'
 import { GoFileDirectory, GoFileSubmodule } from 'react-icons/go'
 import { TfiPackage, TfiExchangeVertical } from 'react-icons/tfi'
@@ -22,8 +22,15 @@ export const menuItem = [
   },
   {
     path: '/assetWithdraw',
-    name: 'เบิกครุภัณฑ์',
+    name: 'เบิก-จ่าย ครุภัณฑ์',
     icon: <TfiPackage />,
+    submenu: [
+      {
+        path: '/',
+        name: 'asdasdasd',
+        icom: '',
+      },
+    ],
   },
   {
     path: '/borrowList',

@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Sidebar, Navbars } from '../components'
+import { Navbars } from '../components'
 import {
   Dashboard,
   BorrowList,
