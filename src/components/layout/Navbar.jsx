@@ -16,7 +16,7 @@ export const Navbars = ({ children }) => {
 
   return (
     <IconContext.Provider value={{ color: 'undefined' }}>
-      <div className="flex items-center bg-text-green h-[80px] justify-around">
+      <div className="flex items-center bg-text-green h-[80px] justify-between">
         <Link to="#" className="ml-8 text-3xl bg-transparent">
           <FaIcons.FaBars onClick={showSidebar} />
         </Link>
