@@ -16,7 +16,7 @@ export const Navbars = () => {
 
   return (
     <IconContext.Provider value={{ color: 'undefined' }}>
-      <div className="flex items-center bg-green h-[80px] justify-around">
+      <div className="flex items-center bg-text-green h-[80px] justify-around">
         <Link to="#" className="ml-8 text-3xl bg-transparent">
           <FaIcons.FaBars onClick={showSidebar} />
         </Link>
@@ -47,8 +47,8 @@ export const Navbars = () => {
               key={index}
               className={({ isActive }) =>
                 [
-                  'flex p-[15px] items-center gap-2 rounded-lg hover:bg-sidebar-green',
-                  isActive ? 'bg-sidebar-green' : null,
+                  'flex p-[15px] items-center gap-2 rounded-lg hover:bg-sidebar-text-green',
+                  isActive ? 'bg-sidebar-text-green' : null,
                 ]
                   .filter(Boolean)
                   .join(' ')

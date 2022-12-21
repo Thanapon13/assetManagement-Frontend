@@ -31,7 +31,7 @@ export const DropdownProfile = () => {
           className="inline-flex items-center justify-center h-full px-1  hover:text-gray-700"
           // border-l border-gray-100 rounded-r-md
         >
-          <RiIcons.RiArrowDropDownFill className="w-6 h-6 rounded-full text-white hover:text-black hover:bg-sidebar-green" />
+          <RiIcons.RiArrowDropDownFill className="w-6 h-6 rounded-full text-white hover:text-black hover:bg-sidebar-text-green" />
         </button>
         {/* dropdown profile menu */}
         <div

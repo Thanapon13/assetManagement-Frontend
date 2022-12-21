@@ -19,8 +19,8 @@ export const SubMenu = ({ item }) => {
             key={idx}
             className={({ isActive }) =>
               [
-                'flex items-center gap-2 rounded-lg hover:bg-sidebar-green',
-                isActive ? 'bg-sidebar-green' : null,
+                'flex items-center gap-2 rounded-lg hover:bg-sidebar-text-green',
+                isActive ? 'bg-sidebar-text-green' : null,
               ]
                 .filter(Boolean)
                 .join(' ')
