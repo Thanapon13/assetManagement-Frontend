@@ -7,8 +7,8 @@ import { menuItem } from './SidebarData'
 import { DropdownProfile } from './DropdownProfile'
 import { SubMenu } from './SubMenu'
 
-export const Navbars = () => {
-  const [isOpen, setIsOpen] = useState(false)
+export const Navbars = ({ children }) => {
+  const [isOpen, setIsOpen] = useState(true)
 
   const showSidebar = () => {
     setIsOpen(!isOpen)
@@ -16,7 +16,7 @@ export const Navbars = () => {
 
   return (
     <IconContext.Provider value={{ color: 'undefined' }}>
-      <div className="flex items-center bg-green h-[80px] justify-around">
+      <div className="flex items-center bg-green h-[80px] justify-between">
         <Link to="#" className="ml-8 text-3xl bg-transparent">
           <FaIcons.FaBars onClick={showSidebar} />
         </Link>
@@ -26,7 +26,7 @@ export const Navbars = () => {
         className={
           isOpen
             ? 'flex justify-center fixed left-0 top-0 duration-500 bg-white w-[250px] h-screen'
-            : '-left-full  duration-700'
+            : '-left-full duration-700'
         }
       >
         <ul
@@ -65,6 +65,7 @@ export const Navbars = () => {
           ))}
         </ul>
       </nav>
+      <main className="">{children}</main>
     </IconContext.Provider>
   )
 }
