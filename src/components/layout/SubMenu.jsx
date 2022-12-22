@@ -1,44 +1,80 @@
 import React, { useState } from 'react'
-import * as RiIcons from 'react-icons/ri'
-import { NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+// import styled from 'styled-components'
 
-export const SubMenu = ({ item, show }, props) => {
-  const [isOpen, setIsOpen] = useState(true)
+// const SidebarLink = styled(Link)`
+//   display: flex;
+//   color: #e1e9fc;
+//   justify-content: space-between;
+//   align-items: center;
+//   padding: 20px;
+//   list-style: none;
+//   height: 60px;
+//   text-decoration: none;
+//   font-size: 18px;
 
-  // const handleClick = () => {
-  //   setIsOpen(show(!isOpen))
-  // }
+//   &:hover {
+//     background: #252831;
+//     border-left: 4px solid #632ce4;
+//     cursor: pointer;
+//   }
+// `
 
-  // setIsOpen(show)
-  // const handle = () => {
-  //   props.callback(isOpen)
-  // }
+// const SidebarLabel = styled.span`
+//   margin-left: 16px;
+// `
+
+// const DropdownLink = styled(Link)`
+//   background: #414757;
+//   height: 60px;
+//   padding-left: 3rem;
+//   display: flex;
+//   align-items: center;
+//   text-decoration: none;
+//   color: #f5f5f5;
+//   font-size: 18px;
+
+//   &:hover {
+//     background: #632ce4;
+//     cursor: pointer;
+//   }
+// `
+
+const SubMenu = ({ item }) => {
+  const [subnav, setSubnav] = useState(false)
+
+  const showSubnav = () => setSubnav(!subnav)
 
   return (
-    <div className="flex ">
-      <RiIcons.RiArrowDropDownFill
-        className={isOpen ? 'rotate-180 text-2xl' : ' rotate-0 text-2xl'}
-        onClick={() => setIsOpen(!isOpen)}
-      />
-      <div className={isOpen ? 'w-full p-4 flex-col' : 'hidden  '}>
-        {item.submenu.map((val, idx) => (
-          <NavLink
-            to={val.path}
-            key={idx}
-            className={({ isActive }) =>
-              [
-                'flex items-center gap-2 py-3 rounded-lg hover:bg-yellow-100',
-                isActive ? 'bg-sidebar-green' : null,
-              ]
-                .filter(Boolean)
-                .join(' ')
-            }
-          >
-            <div className="text-xl">{val.icon}</div>
-            <div className="">{val.name}</div>
-          </NavLink>
-        ))}
-      </div>
-    </div>
+    <>
+      <Link
+        to={item.path}
+        onClick={item.subNav && showSubnav}
+        className="flex justify-between items-center p-[20px] bg-sky-600"
+      >
+        <div>
+          {item.icon}
+          <div>{item.title}</div>
+        </div>
+        <div>
+          {item.subNav && subnav
+            ? item.iconOpened
+            : item.subNav
+            ? item.iconClosed
+            : null}
+        </div>
+      </Link>
+      {subnav &&
+        item.subNav.map((item, index) => {
+          return (
+            <Link to={item.path} key={index}>
+              {item.icon}
+              <div>{item.title}</div>
+            </Link>
+          )
+        })}
+    </>
   )
 }
+
+export default SubMenu
