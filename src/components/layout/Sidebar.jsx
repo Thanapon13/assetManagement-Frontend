@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
 import { SidebarData } from './SidebarData'
-import SubMenu from './SubMenu'
 import { IconContext } from 'react-icons/lib'
+import SubMenu from './SubMenu'
 
 export const Sidebar = ({ children }) => {
   const [sidebar, setSidebar] = useState(false)
@@ -15,11 +15,9 @@ export const Sidebar = ({ children }) => {
     <>
       <IconContext.Provider value={{ color: 'undefined' }}>
         {/* navbar */}
-        <div className="h-[56px] bg-text-green flex items-center">
-          <Link to="#" className="ml-8 text-2xl">
-            <FaIcons.FaBars onClick={showSidebar} />
-          </Link>
-        </div>
+        <Link to="#" className="ml-8 text-2xl">
+          <FaIcons.FaBars onClick={showSidebar} />
+        </Link>
         {/* menu */}
         <nav
           className={`${
@@ -37,7 +35,7 @@ export const Sidebar = ({ children }) => {
             })}
           </ul>
         </nav>
-        <main className="">{children}</main>
+        {/* <main className="">{children}</main> */}
       </IconContext.Provider>
     </>
   )
