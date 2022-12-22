@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
+import * as RiIcons from 'react-icons/ri'
 import { Link, NavLink } from 'react-router-dom'
 import { IconContext } from 'react-icons'
 import { menuItem } from './SidebarData'
@@ -9,15 +10,20 @@ import { SubMenu } from './SubMenu'
 
 export const Navbars = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true)
+  const [isSubMenuOpen, setIsSubMenuOpen] = useState(false)
 
   const showSidebar = () => {
     setIsOpen(!isOpen)
   }
 
+  const showSubMenu = () => {
+    setIsSubMenuOpen(!isSubMenuOpen)
+  }
+
   return (
     <IconContext.Provider value={{ color: 'undefined' }}>
-      <div className="flex items-center bg-text-green h-[80px] justify-between">
-        <Link to="#" className="ml-8 text-3xl bg-transparent">
+      <div className="flex items-center bg-text-green h-[56px] justify-between">
+        <Link to="#" className="ml-8 text-2xl bg-transparent">
           <FaIcons.FaBars onClick={showSidebar} />
         </Link>
         <DropdownProfile />
@@ -25,7 +31,7 @@ export const Navbars = ({ children }) => {
       <nav
         className={
           isOpen
-            ? 'flex justify-center fixed left-0 top-0 duration-500 bg-white w-[250px] h-screen'
+            ? 'flex justify-center fixed left-0 top-0 duration-500 bg-white w-[250px] h-screen overflow-auto'
             : '-left-full duration-700'
         }
       >
@@ -34,10 +40,10 @@ export const Navbars = ({ children }) => {
           // onClick={showSidebar}
         >
           <li
-            className="bg-white w-full h-[80px] flex justify-start items-center"
+            className="bg-white w-full h-[56px] flex justify-start items-center"
             onClick={showSidebar}
           >
-            <Link to="#" className="ml-8 text-3xl">
+            <Link to="#" className="ml-8 text-2xl">
               <AiIcons.AiOutlineClose />
             </Link>
           </li>
@@ -47,19 +53,37 @@ export const Navbars = ({ children }) => {
               key={index}
               className={({ isActive }) =>
                 [
-                  'flex p-[15px] items-center gap-2 rounded-lg hover:bg-sidebar-green',
-                  isActive ? 'bg-sidebar-green text-green' : null,
+                  'flex p-[15px] items-center gap-2 rounded-lg ',
+                  isActive ? 'bg-sidebar-green ' : null,
                 ]
                   .filter(Boolean)
                   .join(' ')
               }
             >
               <div className="flex flex-col w-full">
-                <div className="flex flex-row">
-                  <div className="text-3xl">{item.icon}</div>
-                  <div className="">{item.name}</div>
+                <div className="flex flex-row items-center gap-x-3 hover:bg-sidebar-green">
+                  <div className="text-2xl">{item.icon}</div>
+                  <div className="" onClick={showSubMenu}>
+                    {item.name}
+                  </div>
+                  {item.submenu ? (
+                    <RiIcons.RiArrowDropDownFill
+                      onClick={showSubMenu}
+                      className={
+                        isSubMenuOpen
+                          ? 'rotate-180 text-2xl'
+                          : 'rotate-0 text-2xl'
+                      }
+                    />
+                  ) : (
+                    ''
+                  )}
                 </div>
-                {item.submenu ? <SubMenu key={index} item={item} /> : ''}
+                {item.submenu ? (
+                  <SubMenu key={index} item={item} isOpen={isSubMenuOpen} />
+                ) : (
+                  ''
+                )}
               </div>
             </NavLink>
           ))}
