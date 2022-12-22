@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
 import { SidebarData } from './SidebarData'
@@ -14,25 +14,27 @@ export const Sidebar = ({ children }) => {
   return (
     <>
       <IconContext.Provider value={{ color: 'undefined' }}>
-        <div className="h-[56px] flex bg-text-green items-center">
+        {/* navbar */}
+        <div className="h-[56px] bg-text-green flex items-center">
           <Link to="#" className="ml-8 text-2xl">
             <FaIcons.FaBars onClick={showSidebar} />
           </Link>
         </div>
+        {/* menu */}
         <nav
           className={`${
             sidebar ? 'left-0 ' : '-left-full '
-          } w-[250px] z-10 bg-white h-screen flex justify-center fixed top-0 duration-300`}
+          } w-[250px] z-10 bg-white h-screen fixed top-0 duration-300 overflow-auto`}
         >
           <ul>
-            <li className="w-full h-[56px] bg-white">
-              <Link to="#" className="text-2xl ml-8">
+            <li className="w-full h-[56px] bg-white flex items-center ml-8">
+              <Link to="#" className="text-2xl">
                 <AiIcons.AiOutlineClose onClick={showSidebar} />
               </Link>
-              {SidebarData.map((item, index) => {
-                return <SubMenu item={item} key={index} />
-              })}
             </li>
+            {SidebarData.map((item, index) => {
+              return <SubMenu item={item} key={index} />
+            })}
           </ul>
         </nav>
         <main className="">{children}</main>

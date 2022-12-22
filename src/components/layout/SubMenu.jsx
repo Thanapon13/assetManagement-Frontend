@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 const SubMenu = ({ item }) => {
   const [subnav, setSubnav] = useState(false)
@@ -10,10 +10,10 @@ const SubMenu = ({ item }) => {
 
   return (
     <>
+      {/* main menu */}
       <NavLink
         to={item.path}
         onClick={item.subNav && showSubnav}
-        // className="flex justify-between items-center p-4 h-[60px]"
         className={({ isActive }) =>
           [
             'flex items-center p-4 h-[60px] rounded-lg hover:bg-sidebar-green',
@@ -23,7 +23,7 @@ const SubMenu = ({ item }) => {
             .join(' ')
         }
       >
-        <div className="flex">
+        <div className="flex w-full">
           <div>{item.icon}</div>
           <div className="ml-3">{item.title}</div>
         </div>
@@ -35,6 +35,7 @@ const SubMenu = ({ item }) => {
             : null}
         </div>
       </NavLink>
+      {/* sub menu */}
       {subnav &&
         item.subNav.map((item, index) => {
           return (
@@ -49,7 +50,6 @@ const SubMenu = ({ item }) => {
                   .filter(Boolean)
                   .join(' ')
               }
-              // className="flex  items-center px-6 p-3"
             >
               <div className="">{item.icon}</div>
               <div className=" ml-3">{item.title}</div>
