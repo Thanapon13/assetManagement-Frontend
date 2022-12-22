@@ -10,16 +10,15 @@ import { SubMenu } from './SubMenu'
 
 export const Navbars = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true)
-  const [isSubMenuOpen, setIsSubMenuOpen] = useState(false)
+  const [showSubMenu, setShowSubMenu] = useState(true)
 
   const showSidebar = () => {
     setIsOpen(!isOpen)
   }
 
-  const showSubMenu = () => {
-    setIsSubMenuOpen(!isSubMenuOpen)
+  const receiveDataFromChild = (dataFromChild) => {
+    setShowSubMenu(dataFromChild)
   }
-
   return (
     <IconContext.Provider value={{ color: 'undefined' }}>
       <div className="flex items-center bg-text-green h-[56px] justify-between">
@@ -60,27 +59,35 @@ export const Navbars = ({ children }) => {
                   .join(' ')
               }
             >
-              <div className="flex flex-col w-full">
-                <div className="flex flex-row items-center gap-x-3 hover:bg-sidebar-green">
+              <div className="w-full">
+                <div className="flex items-center gap-x-3 hover:bg-sidebar-green">
                   <div className="text-2xl">{item.icon}</div>
-                  <div className="" onClick={showSubMenu}>
+                  <div
+                    className=""
+                    onClick={() => setShowSubMenu(!showSubMenu)}
+                  >
                     {item.name}
                   </div>
-                  {item.submenu ? (
+                  {/* {item.submenu ? (
                     <RiIcons.RiArrowDropDownFill
-                      onClick={showSubMenu}
                       className={
-                        isSubMenuOpen
+                        showSubMenu
                           ? 'rotate-180 text-2xl'
-                          : 'rotate-0 text-2xl'
+                          : ' rotate-0 text-2xl'
                       }
+                      onClick={() => setShowSubMenu(!showSubMenu)}
                     />
                   ) : (
                     ''
-                  )}
+                  )} */}
                 </div>
                 {item.submenu ? (
-                  <SubMenu key={index} item={item} isOpen={isSubMenuOpen} />
+                  <SubMenu
+                    key={index}
+                    item={item}
+                    show={showSubMenu}
+                    callback={receiveDataFromChild}
+                  />
                 ) : (
                   ''
                 )}
