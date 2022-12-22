@@ -16,7 +16,7 @@ const SubMenu = ({ item }) => {
         // className="flex justify-between items-center p-4 h-[60px]"
         className={({ isActive }) =>
           [
-            'flex items-center gap-2 p-4 h-[60px] rounded-lg hover:bg-sidebar-green',
+            'flex items-center p-4 h-[60px] rounded-lg hover:bg-sidebar-green',
             isActive ? 'bg-sidebar-green' : null,
           ]
             .filter(Boolean)

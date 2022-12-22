@@ -6,7 +6,7 @@ import { SidebarData } from './SidebarData'
 import SubMenu from './SubMenu'
 import { IconContext } from 'react-icons/lib'
 
-export const Sidebar = () => {
+export const Sidebar = ({ children }) => {
   const [sidebar, setSidebar] = useState(false)
 
   const showSidebar = () => setSidebar(!sidebar)
@@ -14,25 +14,28 @@ export const Sidebar = () => {
   return (
     <>
       <IconContext.Provider value={{ color: 'undefined' }}>
-        <div className="h-[56px] flex  items-center">
-          <Link to="#" className="flex  items-center text-black">
+        <div className="h-[56px] flex bg-text-green items-center">
+          <Link to="#" className="ml-8 text-2xl">
             <FaIcons.FaBars onClick={showSidebar} />
           </Link>
         </div>
-        <div
+        <nav
           className={`${
-            sidebar ? 'left-0' : '-left-full '
-          } w-[250px] text-gray-500 bg-green-100 h-screen flex justify-center fixed top-0 duration-300 z-10`}
+            sidebar ? 'left-0 ' : '-left-full '
+          } w-[250px] z-10 bg-white h-screen flex justify-center fixed top-0 duration-300`}
         >
-          <div className="w-full">
-            <Link to="#" className="h-[56px]">
-              <AiIcons.AiOutlineClose onClick={showSidebar} />
-            </Link>
-            {SidebarData.map((item, index) => {
-              return <SubMenu item={item} key={index} />
-            })}
-          </div>
-        </div>
+          <ul>
+            <li className="w-full h-[56px] bg-white">
+              <Link to="#" className="text-2xl ml-8">
+                <AiIcons.AiOutlineClose onClick={showSidebar} />
+              </Link>
+              {SidebarData.map((item, index) => {
+                return <SubMenu item={item} key={index} />
+              })}
+            </li>
+          </ul>
+        </nav>
+        <main className="">{children}</main>
       </IconContext.Provider>
     </>
   )
