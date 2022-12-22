@@ -13,9 +13,17 @@ const SubMenu = ({ item }) => {
       <NavLink
         to={item.path}
         onClick={item.subNav && showSubnav}
-        className="flex justify-between items-center p-4 h-[60px]"
+        // className="flex justify-between items-center p-4 h-[60px]"
+        className={({ isActive }) =>
+          [
+            'flex items-center gap-2 p-4 h-[60px] rounded-lg hover:bg-sidebar-green',
+            isActive ? 'bg-sidebar-green' : null,
+          ]
+            .filter(Boolean)
+            .join(' ')
+        }
       >
-        <div className="flex hover:bg-sidebar-green">
+        <div className="flex">
           <div>{item.icon}</div>
           <div className="ml-3">{item.title}</div>
         </div>
@@ -33,7 +41,15 @@ const SubMenu = ({ item }) => {
             <NavLink
               to={item.path}
               key={index}
-              className="flex  items-center px-6 p-3"
+              className={({ isActive }) =>
+                [
+                  'flex items-center gap-2 p-3 px-6 rounded-lg hover:bg-sidebar-green',
+                  isActive ? 'bg-sidebar-green' : null,
+                ]
+                  .filter(Boolean)
+                  .join(' ')
+              }
+              // className="flex  items-center px-6 p-3"
             >
               <div className="">{item.icon}</div>
               <div className=" ml-3">{item.title}</div>
