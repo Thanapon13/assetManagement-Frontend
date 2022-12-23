@@ -18,7 +18,7 @@ export const DropdownProfile = () => {
       >
         <img
           src={profile}
-          width={50}
+          width={35}
           height={30}
           className=" border-spacing-0 rounded-full"
         />
@@ -28,7 +28,7 @@ export const DropdownProfile = () => {
         <button
           type="button"
           onClick={handleOnClick}
-          className="inline-flex items-center justify-center h-full px-1  hover:text-gray-700"
+          className="mr-5 inline-flex items-center justify-center h-full px-1  hover:text-gray-700"
           // border-l border-gray-100 rounded-r-md
         >
           <RiIcons.RiArrowDropDownFill className="w-6 h-6 rounded-full text-white hover:text-black hover:bg-sidebar-text-green" />
