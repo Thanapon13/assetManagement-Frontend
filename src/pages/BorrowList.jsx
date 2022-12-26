@@ -8,6 +8,7 @@ import { AiOutlineSearch } from 'react-icons/ai'
 export const BorrowList = () => {
   // useState
   const [perPage, setPerPage] = useState(10)
+  const [totalRow, setTotalRow] = useState(25)
 
   // data
   let tableData = [
@@ -163,7 +164,7 @@ export const BorrowList = () => {
         {/* right button เพิ่มใบเบิก */}
         <button
           type="button"
-          className="bg-text-green text-white px-4 py-2 rounded hover:bg-green-600"
+          className="bg-text-green text-white px-4 py-2 rounded hover:bg-green-800"
         >
           + เพิ่มใบครุภัณฑ์
         </button>
@@ -201,7 +202,7 @@ export const BorrowList = () => {
 
       {/* table */}
       <div className="text-text-black-table text-xs font-semibold bg-white rounded-t-lg border-b-[1px] border-border-gray-table p-2">
-        <div>ผลการค้นหา 25 รายการ</div>
+        <div>ผลการค้นหา {totalRow} รายการ</div>
         {/* top bar */}
         <div className="grid grid-cols-16 gap-2 h-12 items-center text-center">
           <div className="col-span-1">ขอยืม</div>

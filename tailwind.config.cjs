@@ -14,6 +14,7 @@ module.exports = {
         'background-light-blue': '#E8E9FF',
         'icon-dark-gray': 'rgba(0, 0, 0, 0.54)',
         'focus-blue': '#0466BF',
+        'text-sidebar': '#999999',
       },
       gridTemplateColumns: {
         // 14: 'repeat(14, minmax(0, 1fr))',
