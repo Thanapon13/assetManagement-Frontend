@@ -4,6 +4,8 @@ import { Layout } from '../components'
 import {
   Dashboard,
   BorrowList,
+  BorrowRecord,
+  BorrowApprove,
   PackageAssetInformation,
   AssetInformation,
   AssetWithdraw,
@@ -25,6 +27,8 @@ const Router = () => {
           />
           <Route path="/assetWithdraw" element={<AssetWithdraw />} />
           <Route path="/borrowList" element={<BorrowList />} />
+          <Route path="/BorrowRecord" element={<BorrowRecord />} />
+          <Route path="/BorrowApprove" element={<BorrowApprove />} />
           <Route path="/transferAsset" element={<TransferAsset />} />
           <Route path="/repairDashboard" element={<RepairDashboard />} />
         </Routes>

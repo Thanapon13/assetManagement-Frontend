@@ -19,7 +19,7 @@ export const LeftBar = ({ children }) => {
           <div
             className={`${
               showMenu ? 'left-0 ' : '-left-full '
-            } w-[250px] bg-white h-screen duration-300 overflow-auto`}
+            } w-[250px] bg-white h-screen duration-300 `}
           >
             <div>
               {SidebarData.map((item, index) => {

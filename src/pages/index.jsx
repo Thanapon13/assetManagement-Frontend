@@ -1,6 +1,7 @@
 export * from './Dashboard'
 export * from './BorrowList'
 export * from './BorrowRecord'
+export * from './BorrowApprove'
 export * from './PackageAssetInformation'
 export * from './AssetInformation'
 export * from './AssetWithdraw'
