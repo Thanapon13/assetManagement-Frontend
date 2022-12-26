@@ -4,7 +4,7 @@ import { Navbar } from '../components'
 import {
   Dashboard,
   BorrowList,
-  AssetGroup,
+  PackageAssetInformation,
   AssetInformation,
   AssetWithdraw,
   TransferAsset,
@@ -19,7 +19,7 @@ const Router = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/assetInformation" element={<AssetInformation />} />
-          <Route path="/assetGroup" element={<AssetGroup />} />
+          <Route path="/packageAssetInformation" element={<PackageAssetInformation />} />
           <Route path="/assetWithdraw" element={<AssetWithdraw />} />
           <Route path="/borrowList" element={<BorrowList />} />
           <Route path="/transferAsset" element={<TransferAsset />} />

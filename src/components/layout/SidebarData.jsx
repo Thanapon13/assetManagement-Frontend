@@ -22,7 +22,7 @@ export const SidebarData = [
   },
   {
     title: 'ข้อมูลครุภัณฑ์',
-    path: '/reports',
+    path: '/assetInformation',
     icon: (
       <svg
         width="20"
@@ -40,7 +40,7 @@ export const SidebarData = [
   },
   {
     title: 'ข้อมูลครุภัณฑ์เป็นชุด',
-    path: '/products',
+    path: '/packageAssetInformation',
     icon: (
       <svg
         width="18"

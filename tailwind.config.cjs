@@ -11,11 +11,14 @@ module.exports = {
         "border-gray-table":"#E0E0E0",
         "text-black-table":"rgba(0, 0, 0, 0.87)",
         "text-blue":"#1572FE",
-        "background-light-blue":"#E8E9FF"
+        "background-light-blue":"#E8E9FF",
+        "icon-dark-gray":"rgba(0, 0, 0, 0.54)",
+        "focus-blue": '#0466BF',
       },
       gridTemplateColumns: {
         // 14: 'repeat(14, minmax(0, 1fr))',
-        17: 'repeat(17, minmax(0, 1fr))',
+        13: 'repeat(13, minmax(0, 1fr))',
+        16: 'repeat(16, minmax(0, 1fr))',
         // 21: 'repeat(21, minmax(0, 1fr))',
         // 22: 'repeat(22, minmax(0, 1fr))',
         // 23: 'repeat(23, minmax(0, 1fr))',

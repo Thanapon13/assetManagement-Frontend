@@ -8,7 +8,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
 
-export const AssetInformation = () => {
+export const PackageAssetInformation = () => {
   const todayThaiDate = ChangeDateToBuddhist(
     new Date().toLocaleString("th-TH")
   );
@@ -24,27 +24,17 @@ export const AssetInformation = () => {
     {
       ID: "84745",
       inventoryNumber: "4140-001-004/545353435",
-      serialNumber: "ertert234346546",
       name: "พัดลมโคจรติดเพดาน 16 นิ้ว",
-      // invoice: "BB00CC2342342342",
       department: "ไม่ระบุฝ่าย",
       sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
       agency: "D043-หกดหกดหกดหกด",
       building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
       status: "ใช้งานได้",
-      price: "1550",
-      PM: "",
-      CB: "",
     },
     {
       ID: "84745",
       inventoryNumber: "4140-001-004/545353435",
-      serialNumber: "ertert234346546",
-      processingOrder: "64545",
       name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      // invoice: "BB00CC2342342342",
       department: "ไม่ระบุฝ่าย",
       sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
       agency: "D043-หกดหกดหกดหกด",
@@ -52,17 +42,11 @@ export const AssetInformation = () => {
       floor: "6",
       room: "2",
       status: "ใช้งานได้",
-      price: "1550",
-      PM: "",
-      CB: "",
     },
     {
       ID: "84745",
       inventoryNumber: "4140-001-004/545353435",
-      serialNumber: "ertert234346546",
-      processingOrder: "64545",
       name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      // invoice: "BB00CC2342342342",
       department: "ไม่ระบุฝ่าย",
       sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
       agency: "D043-หกดหกดหกดหกด",
@@ -70,17 +54,11 @@ export const AssetInformation = () => {
       floor: "6",
       room: "2",
       status: "ใช้งานได้",
-      price: "1550",
-      PM: "",
-      CB: "",
     },
     {
       ID: "84745",
       inventoryNumber: "4140-001-004/545353435",
-      serialNumber: "ertert234346546",
-      processingOrder: "64545",
       name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      // invoice: "BB00CC2342342342",
       department: "ไม่ระบุฝ่าย",
       sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
       agency: "D043-หกดหกดหกดหกด",
@@ -88,17 +66,11 @@ export const AssetInformation = () => {
       floor: "6",
       room: "2",
       status: "ใช้งานได้",
-      price: "1550",
-      PM: "",
-      CB: "",
     },
     {
       ID: "84745",
       inventoryNumber: "4140-001-004/545353435",
-      serialNumber: "ertert234346546",
-      processingOrder: "64545",
       name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      // invoice: "BB00CC2342342342",
       department: "ไม่ระบุฝ่าย",
       sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
       agency: "D043-หกดหกดหกดหกด",
@@ -106,16 +78,13 @@ export const AssetInformation = () => {
       floor: "6",
       room: "2",
       status: "ใช้งานได้",
-      price: "1550",
-      PM: "",
-      CB: "",
     },
   ];
 
   return (
     <div className="bg-background-page px-5 pt-20 pb-36">
       {/* Header */}
-      <div className="text-xl text-text-green ">ข้อมูลครุภัณฑ์</div>
+      <div className="text-xl text-text-green ">ข้อมูลครุภัณฑ์เป็นชุด</div>
       <div className="flex justify-between items-center">
         {/* left home */}
         <div className="flex text-xs">
@@ -127,7 +96,7 @@ export const AssetInformation = () => {
           </Link>
 
           <div className="text-text-gray">/</div>
-          <div className="text-text-gray ml-2">ข้อมูลครุภัณฑ์</div>
+          <div className="text-text-gray ml-2">ข้อมูลครุภัณฑ์เป็นชุด</div>
         </div>
 
         {/* right button เพิ่มใบเบิก */}
@@ -207,12 +176,7 @@ export const AssetInformation = () => {
             sector={el.sector}
             agency={el.agency}
             building={el.building}
-            floor={el.floor}
-            room={el.room}
             status={el.status}
-            price={el.price}
-            PM={el.PM}
-            CB={el.CB}
           />
         );
       })}
@@ -265,4 +229,4 @@ export const AssetInformation = () => {
   );
 };
 
-export default AssetInformation;
+export default PackageAssetInformation;

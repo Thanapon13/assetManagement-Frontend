@@ -44,7 +44,7 @@ const Selector = ({ placeholder, fetchDataDropdown }) => {
       <div
         onClick={() => setOpen(!open)}
         className={` border border-gray-300 bg-white ${
-          location.pathname === "/dashboard" ? "text-md" : "text-xs"
+          location.pathname === "/dashboard" ? "text-md" : "text-sm"
         } rounded-lg focus:ring-blue-500 focus:border-blue-500  w-full  dark:focus:ring-blue-500 dark:focus:border-blue-500  p-2 flex items-center justify-between ${
           selected ? "text-gray-700" : "text-gray-500"
         }`}
