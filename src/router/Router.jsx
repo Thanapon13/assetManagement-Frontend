@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Navbar } from '../components'
+import { Layout } from '../components'
 import {
   Dashboard,
   BorrowList,
@@ -14,18 +14,21 @@ import {
 const Router = () => {
   return (
     <BrowserRouter>
-      <Navbar>
+      <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/assetInformation" element={<AssetInformation />} />
-          <Route path="/packageAssetInformation" element={<PackageAssetInformation />} />
+          <Route
+            path="/packageAssetInformation"
+            element={<PackageAssetInformation />}
+          />
           <Route path="/assetWithdraw" element={<AssetWithdraw />} />
           <Route path="/borrowList" element={<BorrowList />} />
           <Route path="/transferAsset" element={<TransferAsset />} />
           <Route path="/repairDashboard" element={<RepairDashboard />} />
         </Routes>
-      </Navbar>
+      </Layout>
     </BrowserRouter>
   )
 }
