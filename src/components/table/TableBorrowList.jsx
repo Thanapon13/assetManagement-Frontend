@@ -40,7 +40,7 @@ export const TableBorrowList = ({
           onClick={handleClick}
           className={`${
             isClick
-              ? 'bg-sidebar-green text-text-green rounded-xl'
+              ? 'bg-sidebar-green text-text-green rounded-xl hover:text-white'
               : ' text-white'
           } bg-text-green hover:bg-green-800 border border-spacing-5  rounded-md p-2`}
         >
