@@ -15,6 +15,8 @@ module.exports = {
         'icon-dark-gray': 'rgba(0, 0, 0, 0.54)',
         'focus-blue': '#0466BF',
         'text-sidebar': '#999999',
+        'table-gray': '#F5F5F5',
+        'table-data': '#F0F0F0',
       },
       gridTemplateColumns: {
         // 14: 'repeat(14, minmax(0, 1fr))',
