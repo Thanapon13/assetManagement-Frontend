@@ -48,15 +48,7 @@ export const BorrowRecord = () => {
         </div>
         {/* ข้อมูลการยืมครุภัณฑ์ */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
-          <div className="flex justify-between">
-            <div className="text-md font-semibold">ข้อมูลการยืมครุภัณฑ์</div>
-            <button
-              type="button"
-              className="border border-text-green text-text-green px-4 py-2 rounded hover:bg-green-800 hover:text-white"
-            >
-              เลือกรายการครุภัณฑ์
-            </button>
-          </div>
+          <div className="text-md font-semibold">ข้อมูลการยืมครุภัณฑ์</div>
           {/* Row 1 เลขที่เอกสารการยืม */}
           <div className="grid grid-cols-5 pt-4 gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
@@ -101,7 +93,15 @@ export const BorrowRecord = () => {
         </div>
         {/* ข้อมูลครุภัณฑ์ที่เลือก */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
-          <div className="text-md font-semibold">ข้อมูลครุภัณฑ์ที่เลือก</div>
+          <div className="flex justify-between">
+            <div className="text-md font-semibold">ข้อมูลครุภัณฑ์ที่เลือก</div>
+            <button
+              type="button"
+              className="border border-text-green text-text-green px-4 py-2 rounded hover:bg-green-800 hover:text-white"
+            >
+              เลือกรายการครุภัณฑ์
+            </button>
+          </div>
           {/* table */}
           <div className="overflow-x-auto relative text-xs font-semibold p-2 mt-3">
             {/* header table */}
