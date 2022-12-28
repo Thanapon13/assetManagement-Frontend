@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FaTrash } from 'react-icons/fa'
 
-const TableBorrowRecord = ({
+const TableBorrowSaving = ({
   index,
   ID,
   assetId,
@@ -17,7 +17,7 @@ const TableBorrowRecord = ({
 
   return (
     <div
-      className={`grid grid-cols-10 gap-2 h-12 pt-2 p-2 text-xs text-center items-center bg-white`}
+      className={`grid grid-cols-9 gap-2 h-12 pt-2 p-2 text-xs text-center items-center bg-white`}
     >
       <div className="col-span-1 bg-table-data ml-11 min-[1600px]:ml-14 flex justify-center items-center h-[25px] w-[25px] border-[2px] rounded-full">
         {ID}
@@ -34,21 +34,8 @@ const TableBorrowRecord = ({
       <div className="col-span-1  h-[30px] border-[2px] flex justify-center items-center rounded-md">
         {quantity}
       </div>
-      <div className="col-span-1">
-        <button
-          type="button"
-          onClick={handleClick}
-          className={`${
-            isClick
-              ? 'bg-sidebar-green  rounded-xl hover:text-white'
-              : ' text-white'
-          } bg-red-500 hover:bg-red-600 border border-spacing-5  rounded-md p-2`}
-        >
-          <FaTrash />
-        </button>
-      </div>
     </div>
   )
 }
 
-export default TableBorrowRecord
+export default TableBorrowSaving
