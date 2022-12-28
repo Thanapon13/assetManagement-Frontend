@@ -26,6 +26,10 @@ const BorrowApprove = () => {
       quantity: '3',
     },
   ]
+
+  const boxStyle = {
+    boxStatus: `p-2 rounded-md flex flex-col items-center border-[2px] shadow-md`,
+  }
   return (
     <>
       {/* body */}
@@ -47,10 +51,10 @@ const BorrowApprove = () => {
         </div>
         {/* รายการเสนออนุมัติประจำวัน */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
-          <div className="text-md font-semibold">รายการเสนออนุมัติประจำวัน</div>
-          {/* Row 1 วันที่ */}
+          <div className="text-lg ">รายการเสนออนุมัติประจำวัน</div>
+          {/* วันที่ */}
           <div className="grid grid-cols-3 pt-4 gap-10">
-            <div className="flex flex-col gap-y-2 ">
+            <div className="flex flex-col gap-y-2">
               <label className=" text-text-gray flex">วันที่</label>
               <input
                 type="date"
@@ -77,6 +81,58 @@ const BorrowApprove = () => {
                 <option>all</option>
                 <option>all</option>
               </select>
+            </div>
+          </div>
+          {/* status */}
+          <div className="grid grid-cols-4 pt-5 gap-20 p-2">
+            <div className={`${boxStyle.boxStatus} border-blue-500`}>
+              <h1>ทั้งหมด (รายการ)</h1>
+              <div className="text-2xl font-semibold pt-3 text-blue-500">
+                10
+              </div>
+            </div>
+            <div className={`${boxStyle.boxStatus} border-yellow-300`}>
+              <h1>รออนุมัติ (รายการ)</h1>
+              <div className="text-2xl font-semibold pt-3 text-yellow-700">
+                4
+              </div>
+            </div>
+            <div className={`${boxStyle.boxStatus} border-green-500`}>
+              <h1>อนุมัติ (รายการ)</h1>
+              <div className="text-2xl font-semibold pt-3 text-green-600">
+                5
+              </div>
+            </div>
+            <div className={`${boxStyle.boxStatus} border-red-500`}>
+              <h1>ไม่อนุมัติ (รายการ)</h1>
+              <div className="text-2xl font-semibold pt-3 text-red-500">1</div>
+            </div>
+          </div>
+          {/* approve list */}
+          <div className="flex justify-between mt-5 pt-5 border-t-2">
+            <div className="flex items-center space-x-5">
+              <div className="flex">
+                <input
+                  type="checkbox"
+                  className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
+                />
+                <h1 className="ml-2">เลือกทั้งหมด</h1>
+              </div>
+              <h1 className="">เลือกแล้ว {3} รายการ</h1>
+            </div>
+            <div className="space-x-10">
+              <button
+                type="button"
+                className=" p-2 border-[2px] text-red-500 border-red-400 rounded-sm hover:bg-red-200"
+              >
+                ไม่อนุมัติทั้งหมด
+              </button>
+              <button
+                type="button"
+                className=" p-2 border-[2px] bg-text-green border-text-green text-white rounded-sm hover:bg-green-800"
+              >
+                อนุมัติทั้งหมด
+              </button>
             </div>
           </div>
         </div>
