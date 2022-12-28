@@ -23,9 +23,9 @@ const SubMenu = ({ item }) => {
             .join(' ')
         }
       >
-        <div className="flex w-full">
-          <div>{item.icon}</div>
-          <div className="ml-3">{item.title}</div>
+        <div className="flex w-full text-text-sidebar hover:text-text-green">
+          <div className="">{item.icon}</div>
+          <div className="ml-3 focus:text-black ">{item.title}</div>
         </div>
         <div className="">
           {item.subNav && subnav

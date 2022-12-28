@@ -1,85 +1,83 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Selector from "../components/selector/Selector";
-import RowOfTableArray from "../components/table/RowOfTableArray";
-import { HiChevronLeft } from "react-icons/hi";
-import { HiChevronRight } from "react-icons/hi";
-import { AiOutlineSearch } from "react-icons/ai";
-import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import DateInput from "../components/date/DateInput";
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Selector from '../components/selector/Selector'
+import RowOfTableArray from '../components/table/RowOfTableArray'
+import { HiChevronLeft } from 'react-icons/hi'
+import { HiChevronRight } from 'react-icons/hi'
+import { AiOutlineSearch } from 'react-icons/ai'
+import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
+import DateInput from '../components/date/DateInput'
 
-export const PackageAssetInformation = () => {
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
+const PackageAssetInformation = () => {
+  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
 
   // useState
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(10)
 
   //Main Date
-  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate);
+  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate)
 
   // data
   let dashboardTableArray = [
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "พัดลมโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
-  ];
+  ]
 
   return (
     <div className="bg-background-page px-5 pt-20 pb-36">
@@ -252,7 +250,7 @@ export const PackageAssetInformation = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PackageAssetInformation;
+export default PackageAssetInformation

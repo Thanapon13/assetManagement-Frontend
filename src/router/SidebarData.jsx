@@ -136,7 +136,7 @@ export const SidebarData = [
   },
   {
     title: 'ยืม-คืน ครุภัณฑ์',
-    path: '/messages',
+    // path: '/borrowList',
     icon: (
       <svg
         width="20"
@@ -156,7 +156,7 @@ export const SidebarData = [
     subNav: [
       {
         title: 'รายงาน ยืม-คืน',
-        path: '/messages/message1',
+        path: '/borrowList',
         icon: (
           <svg
             width="18"
@@ -174,7 +174,7 @@ export const SidebarData = [
       },
       {
         title: 'บันทึกยืม',
-        path: '/messages/message2',
+        path: '/borrowRecord',
         icon: (
           <svg
             width="20"
@@ -192,7 +192,7 @@ export const SidebarData = [
       },
       {
         title: 'อนุมัติยืม',
-        path: '/messages/message2',
+        path: '/borrowApprove',
         icon: (
           <svg
             width="22"

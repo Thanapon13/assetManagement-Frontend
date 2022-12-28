@@ -14,7 +14,10 @@ module.exports = {
         "background-light-blue":"#E8E9FF",
         "icon-dark-gray":"rgba(0, 0, 0, 0.54)",
         "focus-blue": '#0466BF',
-        "background-gray-table":"#F5F5F5"
+        "background-gray-table":"#F5F5F5",
+        'text-sidebar': '#999999',
+        'table-gray': '#F5F5F5',
+        'table-data': '#F0F0F0',
       },
       gridTemplateColumns: {
         // 14: 'repeat(14, minmax(0, 1fr))',
