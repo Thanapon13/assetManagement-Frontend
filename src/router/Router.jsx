@@ -9,6 +9,7 @@ import {
   AssetWithdraw,
   TransferAsset,
   RepairDashboard,
+  SaveAssetWithdraw
 } from '../pages'
 
 const Router = () => {
@@ -21,6 +22,7 @@ const Router = () => {
           <Route path="/assetInformation" element={<AssetInformation />} />
           <Route path="/packageAssetInformation" element={<PackageAssetInformation />} />
           <Route path="/assetWithdraw" element={<AssetWithdraw />} />
+          <Route path="/saveAssetWithdraw" element={<SaveAssetWithdraw />} />
           <Route path="/borrowList" element={<BorrowList />} />
           <Route path="/transferAsset" element={<TransferAsset />} />
           <Route path="/repairDashboard" element={<RepairDashboard />} />

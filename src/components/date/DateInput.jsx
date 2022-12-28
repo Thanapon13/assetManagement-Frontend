@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
 import th from "date-fns/locale/th";
 
-function DateInput({ state, setState }) {
+function DateInput({ state, setState , lable }) {
   setDefaultLocale("th", th);
   registerLocale("th", th);
 
@@ -37,7 +37,7 @@ function DateInput({ state, setState }) {
   return (
     <>
       <div className="relative">
-        <div className="text-xs w-20 absolute -top-2 z-10 left-2">วันที่เบิก</div>
+        <div className="text-xs font-semibold w-20 absolute -top-2 z-10 left-2">{lable}</div>
       </div>
       <DatePicker
         locale="th"

@@ -57,7 +57,7 @@ const Selector = ({ placeholder, fetchDataDropdown }) => {
         <BiChevronDown size={20} className={`${open && "rotate-180"} text-black`} />
       </div>
       <ul
-        className={`bg-white mt-2 overflow-y-auto scrollbar h-60 w-full z-10 border border-gray-300 rounded-lg ${
+        className={`bg-white mt-2 overflow-y-auto scrollbar h-60 w-full z-20 border border-gray-300 rounded-lg ${
           open ? "absolute" : "hidden"
         } `}
       >

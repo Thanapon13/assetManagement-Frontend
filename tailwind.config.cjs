@@ -14,14 +14,17 @@ module.exports = {
         "background-light-blue":"#E8E9FF",
         "icon-dark-gray":"rgba(0, 0, 0, 0.54)",
         "focus-blue": '#0466BF',
+        "background-gray-table":"#F5F5F5"
       },
       gridTemplateColumns: {
         // 14: 'repeat(14, minmax(0, 1fr))',
         13: 'repeat(13, minmax(0, 1fr))',
+        15: 'repeat(15, minmax(0, 1fr))',
         16: 'repeat(16, minmax(0, 1fr))',
-        // 21: 'repeat(21, minmax(0, 1fr))',
+        17: 'repeat(17, minmax(0, 1fr))',
+        // 20: 'repeat(20, minmax(0, 1fr))',
         // 22: 'repeat(22, minmax(0, 1fr))',
-        // 23: 'repeat(23, minmax(0, 1fr))',
+        23: 'repeat(23, minmax(0, 1fr))',
         // 24: 'repeat(24, minmax(0, 1fr))',
         // 26: 'repeat(26, minmax(0, 1fr))',
 

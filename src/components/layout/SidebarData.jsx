@@ -78,7 +78,7 @@ export const SidebarData = [
     subNav: [
       {
         title: 'รายการเบิกจ่าย',
-        path: '/reports/reports1',
+        path: '/assetWithdraw',
         icon: (
           <svg
             width="18"
@@ -97,7 +97,7 @@ export const SidebarData = [
       },
       {
         title: 'บันทึกเบิกจ่าย',
-        path: '/reports/reports2',
+        path: '/saveAssetWithdraw',
         icon: (
           <svg
             width="20"
