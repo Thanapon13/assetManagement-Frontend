@@ -12,6 +12,7 @@ import {
   AssetWithdraw,
   TransferAsset,
   RepairDashboard,
+  SaveAssetWithdraw
 } from '../pages'
 
 const Router = () => {
@@ -27,6 +28,7 @@ const Router = () => {
             element={<PackageAssetInformation />}
           />
           <Route path="/assetWithdraw" element={<AssetWithdraw />} />
+          <Route path="/saveAssetWithdraw" element={<SaveAssetWithdraw />} />
           <Route path="/borrowList" element={<BorrowList />} />
           <Route path="/BorrowRecord" element={<BorrowRecord />} />
           <Route path="/BorrowSaving" element={<BorrowSaving />} />
