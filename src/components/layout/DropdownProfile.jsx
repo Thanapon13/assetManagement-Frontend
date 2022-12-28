@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import * as RiIcons from 'react-icons/ri'
 import profile from '../../assets/profile.png'
 
-export const DropdownProfile = () => {
+const DropdownProfile = () => {
   const [isActive, setIsActive] = useState(false)
 
   const handleOnClick = () => {
@@ -66,3 +66,5 @@ export const DropdownProfile = () => {
     </div>
   )
 }
+
+export default DropdownProfile

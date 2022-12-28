@@ -2,7 +2,7 @@ import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { Navbar, LeftBar } from '../../components'
 
-export const Layout = ({ children }) => {
+const Layout = ({ children }) => {
   return (
     <div className="">
       <Navbar children={children} />

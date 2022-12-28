@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const TransferAsset = () => {
+const TransferAsset = () => {
   return <div>TransferAsset</div>
 }
 

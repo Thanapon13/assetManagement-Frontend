@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const AssetWithdraw = () => {
+const AssetWithdraw = () => {
   return <div>AssetWithdraw</div>
 }
 

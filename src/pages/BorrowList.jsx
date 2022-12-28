@@ -5,7 +5,7 @@ import TableBorrowList from '../components/table/TableBorrowList'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { AiOutlineSearch } from 'react-icons/ai'
 
-export const BorrowList = () => {
+const BorrowList = () => {
   // useState
   const [perPage, setPerPage] = useState(10)
   const [totalRow, setTotalRow] = useState(25)

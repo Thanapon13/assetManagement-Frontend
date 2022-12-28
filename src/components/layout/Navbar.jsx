@@ -1,8 +1,8 @@
 import React from 'react'
-import { DropdownProfile } from './DropdownProfile'
+import DropdownProfile from './DropdownProfile'
 import Sidebar from './Sidebar'
 
-export const Navbar = ({ children }) => {
+const Navbar = ({ children }) => {
   return (
     <div className="">
       <div className="h-[56px] bg-text-green flex justify-between items-center ">

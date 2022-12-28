@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const RepairDashboard = () => {
+const RepairDashboard = () => {
   return <div>RepairDashboard</div>
 }
 

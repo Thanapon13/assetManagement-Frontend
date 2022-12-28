@@ -1,85 +1,83 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Selector from "../components/selector/Selector";
-import RowOfTableArray from "../components/table/RowOfTableArray";
-import { HiChevronLeft } from "react-icons/hi";
-import { HiChevronRight } from "react-icons/hi";
-import { AiOutlineSearch } from "react-icons/ai";
-import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import DateInput from "../components/date/DateInput";
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Selector from '../components/selector/Selector'
+import RowOfTableArray from '../components/table/RowOfTableArray'
+import { HiChevronLeft } from 'react-icons/hi'
+import { HiChevronRight } from 'react-icons/hi'
+import { AiOutlineSearch } from 'react-icons/ai'
+import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
+import DateInput from '../components/date/DateInput'
 
-export const PackageAssetInformation = () => {
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
+const PackageAssetInformation = () => {
+  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
 
   // useState
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(10)
 
   //Main Date
-  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate);
+  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate)
 
   // data
   let dashboardTableArray = [
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "พัดลมโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
-  ];
+  ]
 
   return (
     <div className="bg-background-page px-5 pt-20 pb-36">
@@ -109,7 +107,7 @@ export const PackageAssetInformation = () => {
       <div className="grid grid-cols-13 gap-2 items-center mt-8 mb-3 pl-5">
         <div className="text-xs font-semibold">ค้นหาโดย</div>
         <div className="col-span-2">
-          <Selector placeholder={"ID"} />
+          <Selector placeholder={'ID'} />
         </div>
 
         <div className="col-span-3  h-full relative">
@@ -136,11 +134,11 @@ export const PackageAssetInformation = () => {
         </button>
 
         <div className="col-span-2">
-          <Selector placeholder={"หน่วยงาน"} />
+          <Selector placeholder={'หน่วยงาน'} />
         </div>
 
         <div className="col-span-2">
-          <Selector placeholder={"ฝ่าย/กลุ่มงาน"} />
+          <Selector placeholder={'ฝ่าย/กลุ่มงาน'} />
         </div>
 
         <div className="col-span-2 h-full ">
@@ -178,7 +176,7 @@ export const PackageAssetInformation = () => {
             building={el.building}
             status={el.status}
           />
-        );
+        )
       })}
       <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
         <div className="flex mr-10">
@@ -226,7 +224,7 @@ export const PackageAssetInformation = () => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PackageAssetInformation;
+export default PackageAssetInformation

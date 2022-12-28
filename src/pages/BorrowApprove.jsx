@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const BorrowApprove = () => {
+const BorrowApprove = () => {
   return <div>BorrowApprove</div>
 }
 

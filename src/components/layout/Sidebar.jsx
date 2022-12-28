@@ -6,7 +6,7 @@ import { SidebarData } from './SidebarData'
 import { IconContext } from 'react-icons/lib'
 import SubMenu from './SubMenu'
 
-export const Sidebar = ({ children }) => {
+const Sidebar = ({ children }) => {
   const [sidebar, setSidebar] = useState(false)
 
   const showSidebar = () => setSidebar(!sidebar)

@@ -1,3 +1,3 @@
-export * from '../components/layout/Layout'
-export * from '../components/layout/Navbar'
-export * from '../components/layout/LeftBar'
+export { default as Layout } from '../components/layout/Layout'
+export { default as Navbar } from '../components/layout/Navbar'
+export { default as LeftBar } from '../components/layout/LeftBar'

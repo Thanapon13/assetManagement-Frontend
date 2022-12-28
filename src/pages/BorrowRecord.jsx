@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import TableBorrowRecord from '../components/table/TableBorrowRecord'
 
-export const BorrowRecord = () => {
+const BorrowRecord = () => {
   const tableData = [
     {
       ID: '1',
