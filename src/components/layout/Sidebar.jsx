@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
-import { SidebarData } from './SidebarData'
+import { SidebarData } from '../../router/SidebarData'
 import { IconContext } from 'react-icons/lib'
 import SubMenu from './SubMenu'
 
