@@ -3,33 +3,58 @@ import { Link } from 'react-router-dom'
 // import TableBorrowApprove from '../components/table/TableBorrowApprove'
 
 const BorrowApprove = () => {
-  const tableData = [
+  const dataApproveList = [
     {
-      ID: '1',
-      assetId: '65/0322171',
-      assetName: 'Macbook Pro M2 16" -512GB',
-      borrowerName: 'สำนักคอมพิวเตอร์',
-      quantity: '3',
+      id: '1271',
+      agencyName: 'ภาควิชาอายุรศาสตร์',
+      date: '29/12/2565',
+      time: '18:00',
     },
     {
-      ID: '2',
-      assetId: '65/0322171',
-      assetName: 'Macbook Pro M2 16" -512GB',
-      borrowerName: 'สำนักคอมพิวเตอร์',
-      quantity: '3',
+      id: '1272',
+      agencyName: 'ภาควิชาเวทมนต์ศาสตร์มืด',
+      date: '30/12/2565',
+      time: '19:00',
     },
     {
-      ID: '3',
-      assetId: '65/0322171',
-      assetName: 'Macbook Pro M2 16" -512GB',
-      borrowerName: 'สำนักคอมพิวเตอร์',
-      quantity: '3',
+      id: '1273',
+      agencyName: 'ภาควิชาปรุงยาแมนเดรก',
+      date: '31/12/2565',
+      time: '20:10',
+    },
+  ]
+
+  const dataApprovedList = [
+    {
+      id: '1271',
+      agencyName: 'ภาควิชาศาสตร์มืด',
+      date: '29/12/2565',
+      time: '18:00',
+      offerDate: '9/03/2565',
+      offerTime: '9:31',
+    },
+    {
+      id: '1272',
+      agencyName: 'ภาควิชาศาสตร์มืดมิด',
+      date: '30/12/2565',
+      time: '19:00',
+      offerDate: '12/03/2565',
+      offerTime: '20:22',
+    },
+    {
+      id: '1273',
+      agencyName: 'ภาควิชาศาสตร์มืดมน',
+      date: '23/11/2565',
+      time: '12:00',
+      offerDate: '22/05/2565',
+      offerTime: '8:22',
     },
   ]
 
   const boxStyle = {
     boxStatus: `p-2 rounded-md flex flex-col items-center border-[2px] shadow-md`,
   }
+
   return (
     <>
       {/* body */}
@@ -108,7 +133,7 @@ const BorrowApprove = () => {
               <div className="text-2xl font-semibold pt-3 text-red-500">1</div>
             </div>
           </div>
-          {/* approve list */}
+          {/* header approve list */}
           <div className="flex justify-between mt-5 pt-5 border-t-2">
             <div className="flex items-center space-x-5">
               <div className="flex">
@@ -135,6 +160,53 @@ const BorrowApprove = () => {
               </button>
             </div>
           </div>
+          {/* approve list item */}
+          <ApproveListItem data={dataApproveList} />
+        </div>
+        {/* รายการคำขอที่จัดการแล้ว */}
+        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
+          {/* header */}
+          <div className="flex items-center space-x-10">
+            <div className="text-lg">รายการคำขอที่จัดการแล้ว</div>
+            <div className="flex space-x-5">
+              <div className="flex text-text-green bg-sidebar-green p-2 border rounded-2xl ">
+                อนุมัติแล้ว
+                <div className="ml-2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                      fill="#38821D"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex text-red-500 bg-red-100 p-2 border rounded-2xl">
+                ไม่อนุมัติ
+                <div className="ml-2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                      fill="#CE4646"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* approved list item */}
+          <ApprovedListItem data={dataApprovedList} />
         </div>
       </div>
       {/* footer */}
@@ -153,6 +225,97 @@ const BorrowApprove = () => {
           บันทึกคืนครุภัณฑ์
         </button>
       </div> */}
+    </>
+  )
+}
+
+const ApproveListItem = (props) => {
+  return (
+    <>
+      {props.data.map((item, idx) => {
+        return (
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
+            />
+            <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
+              <div className="flex justify-between">
+                <div className="flex space-x-10">
+                  <h1>เลขที่ ID เลขที่การยืม</h1>
+                  <h1>{item.id}</h1>
+                </div>
+                <div className="flex space-x-5 mr-5">
+                  <h1>{item.date}</h1>
+                  <h1>{item.time}</h1>
+                </div>
+              </div>
+              <div className="mt-5">
+                <div className="flex space-x-5">
+                  <h1>หน่วยงานที่เสนอ</h1>
+                  <h1>{item.agencyName}</h1>
+                </div>
+                <div className="flex justify-end space-x-5">
+                  <button
+                    type="button"
+                    className=" p-2 px-10 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-200"
+                  >
+                    ไม่อนุมัติ
+                  </button>
+                  <button
+                    type="button"
+                    className=" p-2 px-10 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
+                  >
+                    อนุมัติ
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
+const ApprovedListItem = (props) => {
+  return (
+    <>
+      {props.data.map((item, idx) => {
+        return (
+          <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
+            <div className="flex justify-between">
+              <div className="flex space-x-10">
+                <h1>เลขที่ ID เลขที่การยืม</h1>
+                <h1>{item.id}</h1>
+              </div>
+              <div className="flex space-x-2 mr-5 text-text-gray">
+                <h1>วันที่อนุมัติ: {item.date} ,</h1>
+                <h1>{item.time}</h1>
+              </div>
+            </div>
+            <div className="mt-5">
+              <div className="flex space-x-5">
+                <h1 className="text-text-gray">หน่วยงานที่เสนอ</h1>
+                <h1>{item.agencyName}</h1>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="flex text-text-gray">
+                  วันที่เสนอ
+                  <div className="px-5 text-black">
+                    {item.offerDate} , {item.offerTime}
+                  </div>
+                </div>
+                <div className="">
+                  <div className="text-text-green bg-sidebar-green p-2 border rounded-2xl ">
+                    อนุมัติแล้ว
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })}
     </>
   )
 }
