@@ -8,6 +8,7 @@ import {
   BorrowApprove,
   BorrowSaving,
   PackageAssetInformation,
+  AssetInformationIndex,
   AssetInformation,
   AssetWithdraw,
   TransferAsset,
@@ -23,6 +24,7 @@ const Router = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/assetInformation" element={<AssetInformation />} />
+          <Route path="/assetInformationIndex" element={<AssetInformationIndex />} />
           <Route
             path="/packageAssetInformation"
             element={<PackageAssetInformation />}
