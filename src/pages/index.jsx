@@ -1,15 +1,15 @@
 export { default as Dashboard } from './Dashboard'
 export { default as BorrowList } from './BorrowList'
-export { default as BorrowRecord } from './BorrowRecord'
 export { default as BorrowSaving } from './BorrowSaving'
+export { default as BorrowRecord } from './BorrowRecord'
 export { default as BorrowApprove } from './BorrowApprove'
+export { default as BorrowDetailApprove } from './BorrowDetailApprove'
 export { default as PackageAssetInformation } from './PackageAssetInformation'
 export { default as AssetInformation } from './AssetInformation'
 export { default as AssetWithdraw } from './AssetWithdraw'
 export { default as SaveAssetWithdraw } from './SaveAssetWithdraw'
 export { default as TransferAsset } from './TransferAsset'
 export { default as RepairDashboard } from './RepairDashboard'
-
 
 // export * from './Dashboard'
 // export * from './BorrowList'

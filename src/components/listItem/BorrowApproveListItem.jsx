@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export const BorrowApproveListItem = (props) => {
   return (
     <>
@@ -31,12 +33,13 @@ export const BorrowApproveListItem = (props) => {
                   >
                     ไม่อนุมัติ
                   </button>
-                  <button
-                    type="button"
+                  <Link
+                    // type="button"
+                    to="borrowDetailApprove"
                     className=" p-2 px-10 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
                   >
                     อนุมัติ
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

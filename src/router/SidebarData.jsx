@@ -137,6 +137,7 @@ export const SidebarData = [
   {
     title: 'ยืม-คืน ครุภัณฑ์',
     // path: '/borrowList',
+    path: '',
     icon: (
       <svg
         width="20"

@@ -7,12 +7,13 @@ import {
   BorrowRecord,
   BorrowApprove,
   BorrowSaving,
+  BorrowDetailApprove,
   PackageAssetInformation,
   AssetInformation,
   AssetWithdraw,
   TransferAsset,
   RepairDashboard,
-  SaveAssetWithdraw
+  SaveAssetWithdraw,
 } from '../pages'
 
 const Router = () => {
@@ -30,9 +31,13 @@ const Router = () => {
           <Route path="/assetWithdraw" element={<AssetWithdraw />} />
           <Route path="/saveAssetWithdraw" element={<SaveAssetWithdraw />} />
           <Route path="/borrowList" element={<BorrowList />} />
-          <Route path="/BorrowRecord" element={<BorrowRecord />} />
-          <Route path="/BorrowSaving" element={<BorrowSaving />} />
-          <Route path="/BorrowApprove" element={<BorrowApprove />} />
+          <Route path="/borrowList/borrowSaving" element={<BorrowSaving />} />
+          <Route path="/borrowRecord" element={<BorrowRecord />} />
+          <Route path="/borrowApprove" element={<BorrowApprove />} />
+          <Route
+            path="/borrowApprove/borrowDetailApprove"
+            element={<BorrowDetailApprove />}
+          />
           <Route path="/transferAsset" element={<TransferAsset />} />
           <Route path="/repairDashboard" element={<RepairDashboard />} />
         </Routes>
