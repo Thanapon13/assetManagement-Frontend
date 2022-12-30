@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-// import TableBorrowApprove from '../components/table/TableBorrowApprove'
+import { BorrowApproveListItem, BorrowApprovedListItem } from '../components/'
 
 const BorrowApprove = () => {
   const dataApproveList = [
@@ -161,10 +161,10 @@ const BorrowApprove = () => {
             </div>
           </div>
           {/* approve list item */}
-          <ApproveListItem data={dataApproveList} />
+          <BorrowApproveListItem data={dataApproveList} />
         </div>
         {/* รายการคำขอที่จัดการแล้ว */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
+        <div className="bg-white border-[1px] mb-5 p-4 rounded-lg shadow-sm text-sm mt-3">
           {/* header */}
           <div className="flex items-center space-x-10">
             <div className="text-lg">รายการคำขอที่จัดการแล้ว</div>
@@ -206,12 +206,12 @@ const BorrowApprove = () => {
             </div>
           </div>
           {/* approved list item */}
-          <ApprovedListItem data={dataApprovedList} />
+          <BorrowApprovedListItem data={dataApprovedList} />
         </div>
       </div>
       {/* footer */}
-      {/* <div className="flex justify-end items-center gap-10 p-3 text-sm mr-3 ">
-        <Link
+      <div className="flex justify-end items-center gap-10 p-3 text-sm mr-3 ">
+        {/* <Link
           // type="button"
           to="/borrowList"
           className="border-[2px] hover:bg-gray-100 text-black text-sm rounded-md p-2"
@@ -223,99 +223,8 @@ const BorrowApprove = () => {
           className="bg-text-green hover:bg-green-800 text-white text-sm rounded-md p-2"
         >
           บันทึกคืนครุภัณฑ์
-        </button>
-      </div> */}
-    </>
-  )
-}
-
-const ApproveListItem = (props) => {
-  return (
-    <>
-      {props.data.map((item, idx) => {
-        return (
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
-            />
-            <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
-              <div className="flex justify-between">
-                <div className="flex space-x-10">
-                  <h1>เลขที่ ID เลขที่การยืม</h1>
-                  <h1>{item.id}</h1>
-                </div>
-                <div className="flex space-x-5 mr-5">
-                  <h1>{item.date}</h1>
-                  <h1>{item.time}</h1>
-                </div>
-              </div>
-              <div className="mt-5">
-                <div className="flex space-x-5">
-                  <h1>หน่วยงานที่เสนอ</h1>
-                  <h1>{item.agencyName}</h1>
-                </div>
-                <div className="flex justify-end space-x-5">
-                  <button
-                    type="button"
-                    className=" p-2 px-10 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-200"
-                  >
-                    ไม่อนุมัติ
-                  </button>
-                  <button
-                    type="button"
-                    className=" p-2 px-10 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
-                  >
-                    อนุมัติ
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      })}
-    </>
-  )
-}
-
-const ApprovedListItem = (props) => {
-  return (
-    <>
-      {props.data.map((item, idx) => {
-        return (
-          <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
-            <div className="flex justify-between">
-              <div className="flex space-x-10">
-                <h1>เลขที่ ID เลขที่การยืม</h1>
-                <h1>{item.id}</h1>
-              </div>
-              <div className="flex space-x-2 mr-5 text-text-gray">
-                <h1>วันที่อนุมัติ: {item.date} ,</h1>
-                <h1>{item.time}</h1>
-              </div>
-            </div>
-            <div className="mt-5">
-              <div className="flex space-x-5">
-                <h1 className="text-text-gray">หน่วยงานที่เสนอ</h1>
-                <h1>{item.agencyName}</h1>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex text-text-gray">
-                  วันที่เสนอ
-                  <div className="px-5 text-black">
-                    {item.offerDate} , {item.offerTime}
-                  </div>
-                </div>
-                <div className="">
-                  <div className="text-text-green bg-sidebar-green p-2 border rounded-2xl ">
-                    อนุมัติแล้ว
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      })}
+        </button> */}
+      </div>
     </>
   )
 }
