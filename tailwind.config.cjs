@@ -1,20 +1,26 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: [
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
+    'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
+  ],
   theme: {
     extend: {
       colors: {
         'sidebar-green': '#F3FFEF',
-        "text-green": '#38821D',
-        "text-gray":"#6C757D",
-        "background-page":"#F8FAFB",
-        "border-gray-table":"#E0E0E0",
-        "text-black-table":"rgba(0, 0, 0, 0.87)",
-        "text-blue":"#1572FE",
-        "background-light-blue":"#E8E9FF",
-        "icon-dark-gray":"rgba(0, 0, 0, 0.54)",
-        "focus-blue": '#0466BF',
-        "background-gray-table":"#F5F5F5",
+        'text-green': '#38821D',
+        'text-gray': '#6C757D',
+        'background-page': '#F8FAFB',
+        'border-gray-table': '#E0E0E0',
+        'text-black-table': 'rgba(0, 0, 0, 0.87)',
+        'text-blue': '#1572FE',
+        'background-light-blue': '#E8E9FF',
+        'icon-dark-gray': 'rgba(0, 0, 0, 0.54)',
+        'focus-blue': '#0466BF',
+        'background-gray-table': '#F5F5F5',
         'text-sidebar': '#999999',
         'table-gray': '#F5F5F5',
         'table-data': '#F0F0F0',
@@ -35,7 +41,11 @@ module.exports = {
         // Complex site-specific column configuration
         // footer: '200px minmax(900px, 1fr) 100px',
       },
+      fontFamily: {
+        sans: ['IBM Plex Sans Thai', ...defaultTheme.fontFamily.sans],
+        // thai: ['IBM Plex Sans Thai', 'sans-serif'],
+      },
     },
   },
-  plugins: [],
+  plugins: [require('flowbite/plugin')],
 }

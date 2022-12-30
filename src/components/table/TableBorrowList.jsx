@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
-export const TableBorrowList = ({
+const TableBorrowList = ({
   index,
   borrowDocId,
   ID,
@@ -36,8 +37,10 @@ export const TableBorrowList = ({
       <div className="col-span-1">{totalDay}</div>
       <div className="col-span-1">{totalPrice}</div>
       <div className="col-span-2">
-        <button
-          type="button"
+        <Link
+          // type="button"
+          // to={`/borrowSaving/${ID}`}
+          to={`/borrowSaving`}
           onClick={handleClick}
           className={`${
             isClick
@@ -46,7 +49,7 @@ export const TableBorrowList = ({
           } bg-text-green hover:bg-green-800 border border-spacing-5  rounded-md p-2`}
         >
           {isClick ? 'คืนแล้ว' : 'บันทึกคืน'}
-        </button>
+        </Link>
       </div>
     </div>
   )
