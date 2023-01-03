@@ -1,4 +1,5 @@
 import { HiTrash } from "react-icons/hi";
+import Selector from "../selector/Selector";
 
 function RowOfTableSaveAssetWithdraw({
   index,
@@ -58,14 +59,18 @@ function RowOfTableSaveAssetWithdraw({
           {index + 1}
         </div>
       </div>
-      <input
+
+      <div className="col-span-3 ">
+        <Selector placeholder={"เลขครุภัณฑ์"}/>
+      </div>
+      {/* <input
         className="col-span-3 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
         onChange={handleChangeInventoryNumber}
         value={
           saveAssetWithdrawTableArray &&
           saveAssetWithdrawTableArray[index]?.inventoryNumber
         }
-      />
+      /> */}
       <input
         className="col-span-3 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
         onChange={handleChangeProductName}
@@ -117,14 +122,14 @@ function RowOfTableSaveAssetWithdraw({
         }
       />
 
-        <button
-          className="flex justify-center items-center hover:bg-gray-200 rounded-full focus:border-2 focus:outline-none  focus:border-focus-blue-full w-10 h-10 px-2 py-2 "
-          onClick={() => {
-            deleteRow(index);
-          }}
-        >
-          <HiTrash className="text-lg" />
-        </button>
+      <button
+        className="-ml-2 flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 px-2 py-2 "
+        onClick={() => {
+          deleteRow(index);
+        }}
+      >
+        <HiTrash className="text-lg" />
+      </button>
     </div>
   );
 }

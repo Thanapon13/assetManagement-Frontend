@@ -1,80 +1,89 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Selector from "../components/selector/Selector";
+import RowOfTableArray from "../components/table/RowOfTableArray";
 import { HiChevronLeft } from "react-icons/hi";
 import { HiChevronRight } from "react-icons/hi";
 import { AiOutlineSearch } from "react-icons/ai";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
-import RowOfWithdrawTableArray from "../components/table/RowOfWithdrawTableArray";
 
-export const AssetWithdraw = () => {
+const AssetInformationIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(
     new Date().toLocaleString("th-TH")
   );
 
   // useState
-  const [search, setSearch] = useState({
-    inventoryNumber: "",
-    wordSearch: "",
-    department: "",
-    sector: "",
-    // "withdrawDate":todayThaiDate
-  });
   const [perPage, setPerPage] = useState(10);
 
   //Main Date
   const [withdrawDate, setWithdrawDate] = useState(todayThaiDate);
 
   // data
-  let withdrawTableArray = [
+  let dashboardTableArray = [
     {
       ID: "84745",
-      billNumber: "4140-001-004",
-      documentRegistration: "พล072565",
-      sector: "ภาควิชาศัลยกรรมศาสตร์",
-      withdrawDate: "14/12/2565 ",
-      allPrice: 1100,
-      count: 20,
+      inventoryNumber: "4140-001-004/545353435",
+      name: "พัดลมโคจรติดเพดาน 16 นิ้ว",
+      department: "ไม่ระบุฝ่าย",
+      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
+      agency: "D043-หกดหกดหกดหกด",
+      building: "สงค์อาพาธ",
+      status: "ใช้งานได้",
     },
     {
-      billNumber: "4140-001-004",
-      documentRegistration: "พล072565",
-      sector: "ภาควิชาศัลยกรรมศาสตร์",
-      withdrawDate: "14/12/2565 ",
-      allPrice: 1100,
-      count: 20,
+      ID: "84745",
+      inventoryNumber: "4140-001-004/545353435",
+      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
+      department: "ไม่ระบุฝ่าย",
+      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
+      agency: "D043-หกดหกดหกดหกด",
+      building: "สงค์อาพาธ",
+      floor: "6",
+      room: "2",
+      status: "ใช้งานได้",
     },
     {
-      billNumber: "4140-001-004",
-      documentRegistration: "พล072565",
-      sector: "ภาควิชาศัลยกรรมศาสตร์",
-      withdrawDate: "14/12/2565 ",
-      allPrice: 1100,
-      count: 20,
+      ID: "84745",
+      inventoryNumber: "4140-001-004/545353435",
+      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
+      department: "ไม่ระบุฝ่าย",
+      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
+      agency: "D043-หกดหกดหกดหกด",
+      building: "สงค์อาพาธ",
+      floor: "6",
+      room: "2",
+      status: "ใช้งานได้",
     },
     {
-      billNumber: "4140-001-004",
-      documentRegistration: "พล072565",
-      sector: "ภาควิชาศัลยกรรมศาสตร์",
-      withdrawDate: "14/12/2565 ",
-      allPrice: 1100,
-      count: 20,
+      ID: "84745",
+      inventoryNumber: "4140-001-004/545353435",
+      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
+      department: "ไม่ระบุฝ่าย",
+      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
+      agency: "D043-หกดหกดหกดหกด",
+      building: "สงค์อาพาธ",
+      floor: "6",
+      room: "2",
+      status: "ใช้งานได้",
     },
     {
-      billNumber: "4140-001-004",
-      documentRegistration: "พล072565",
-      sector: "ภาควิชาศัลยกรรมศาสตร์",
-      withdrawDate: "14/12/2565 ",
-      allPrice: 1100,
-      count: 20,
+      ID: "84745",
+      inventoryNumber: "4140-001-004/545353435",
+      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
+      department: "ไม่ระบุฝ่าย",
+      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
+      agency: "D043-หกดหกดหกดหกด",
+      building: "สงค์อาพาธ",
+      floor: "6",
+      room: "2",
+      status: "ใช้งานได้",
     },
   ];
-
   return (
     <div className="bg-background-page px-5 pt-10 pb-36 w-[100vw] sm:w-[85vw]">
       {/* Header */}
-      <div className="text-xl text-text-green ">รายการเบิกจ่ายครุภัณฑ์</div>
+      <div className="text-xl text-text-green ">ข้อมูลครุภัณฑ์</div>
       <div className="flex justify-between items-center">
         {/* left home */}
         <div className="flex text-xs">
@@ -86,12 +95,12 @@ export const AssetWithdraw = () => {
           </Link>
 
           <div className="text-text-gray">/</div>
-          <div className="text-text-gray ml-2">รายการเบิกจ่าย</div>
+          <div className="text-text-gray ml-2">ข้อมูลครุภัณฑ์</div>
         </div>
 
         {/* right button เพิ่มใบเบิก */}
         <Link
-          to="/SaveAssetWithdraw"
+          to="/assetInformation"
           type="button"
           className=" text-white px-4 py-2 rounded  bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
         >
@@ -169,30 +178,37 @@ export const AssetWithdraw = () => {
               <div className="ml-2 text-sm">25 รายการ </div>
             </div>
             {/* top bar */}
-            <div className="grid grid-cols-17 gap-2 h-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-t-lg border-b-[1px] border-border-gray-table">
-              <div className="ml-2">ลำดับ</div>
-              <div className="col-span-2">เลขที่ใบเบิก</div>
-              <div className="col-span-3">ทะเบียนเอกสาร</div>
+            <div className="grid grid-cols-16 gap-2 h-12 items-center text-text-black-table text-xs font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
+              <div className="ml-2">ID</div>
+              <div className="col-span-3">เลขครุภัณฑ์</div>
+              <div className="col-span-3">ชื่อครุภัณฑ์</div>
+              <div className="col-span-2">ฝ่าย/กลุ่มงาน</div>
               <div className="col-span-3">หน่วยงาน</div>
-              <div className="col-span-2">วันที่เบิก</div>
-              <div className="col-span-2">รวมมูลค่า</div>
-              <div className="col-span-2 ">จำนวนรายการ</div>
+              <div className="col-span-1">อาคาร</div>
+              <div className="col-span-1 text-center">สถานะ</div>
               <div className="col-span-2 text-center font-bold mr-2">
                 Action
               </div>
             </div>
           </div>
-          {withdrawTableArray?.map((el, idx) => {
+          {dashboardTableArray?.map((el, idx) => {
             return (
-              <RowOfWithdrawTableArray
+              <RowOfTableArray
                 key={idx}
                 index={idx}
-                billNumber={el.billNumber}
-                documentRegistration={el.documentRegistration}
+                ID={el.ID}
+                inventoryNumber={el.inventoryNumber}
+                name={el.name}
+                department={el.department}
                 sector={el.sector}
-                withdrawDate={el.withdrawDate}
-                allPrice={el.allPrice}
-                count={el.count}
+                agency={el.agency}
+                building={el.building}
+                floor={el.floor}
+                room={el.room}
+                status={el.status}
+                price={el.price}
+                PM={el.PM}
+                CB={el.CB}
               />
             );
           })}
@@ -247,4 +263,4 @@ export const AssetWithdraw = () => {
   );
 };
 
-export default AssetWithdraw;
+export default AssetInformationIndex;

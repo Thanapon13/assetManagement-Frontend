@@ -22,7 +22,7 @@ export const SidebarData = [
   },
   {
     title: 'ข้อมูลครุภัณฑ์',
-    path: '/assetInformation',
+    path: '/assetInformationIndex',
     icon: (
       <svg
         width="20"
