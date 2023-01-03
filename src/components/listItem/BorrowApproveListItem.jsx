@@ -5,7 +5,7 @@ export const BorrowApproveListItem = (props) => {
     <>
       {props.data.map((item, idx) => {
         return (
-          <div className="flex items-center space-x-3">
+          <div key={idx} className="flex items-center space-x-3">
             <input
               type="checkbox"
               className=" text-text-green rounded-md placeholder-text-green focus:ring-0"

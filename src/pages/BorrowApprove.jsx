@@ -101,7 +101,7 @@ const BorrowApprove = () => {
             <div className="flex flex-col gap-y-2">
               <label className="text-text-gray">รายการ</label>
               <select className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md">
-                <option selected>ดูทั้งหมด</option>
+                <option defaultValue>ดูทั้งหมด</option>
                 <option>all</option>
                 <option>all</option>
                 <option>all</option>
