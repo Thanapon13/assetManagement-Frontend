@@ -58,7 +58,7 @@ export const SidebarData = [
   },
   {
     title: 'เบิกจ่ายครุภัณฑ์',
-    path: '/team',
+    path: '/',
     icon: (
       <svg
         width="21"
@@ -213,7 +213,7 @@ export const SidebarData = [
   },
   {
     title: 'โอน-ย้าย ครุภัณฑ์',
-    path: '/messages',
+    path: '/',
     icon: (
       <svg
         width="21"
@@ -233,7 +233,7 @@ export const SidebarData = [
     subNav: [
       {
         title: 'รายงานโอน-ย้าย',
-        path: '/messages/message1',
+        path: '/',
         icon: (
           <svg
             width="18"
@@ -251,7 +251,7 @@ export const SidebarData = [
       },
       {
         title: 'บันทึกโอน-ย้าย',
-        path: '/messages/message2',
+        path: '/',
         icon: (
           <svg
             width="20"
@@ -269,7 +269,7 @@ export const SidebarData = [
       },
       {
         title: 'อนุมัติโอน-ย้าย',
-        path: '/messages/message2',
+        path: '/',
         icon: (
           <svg
             width="22"
@@ -289,7 +289,7 @@ export const SidebarData = [
   },
   {
     title: 'งานซ่อม',
-    path: '/messages',
+    path: '/',
     icon: (
       <svg
         width="20"
@@ -309,7 +309,7 @@ export const SidebarData = [
     subNav: [
       {
         title: 'แดชบอร์ดงานซ่อม',
-        path: '/messages/message1',
+        path: '/',
         icon: (
           <svg
             width="20"
@@ -327,7 +327,7 @@ export const SidebarData = [
       },
       {
         title: 'เพิ่มการซ่อมบำรุง',
-        path: '/messages/message2',
+        path: '/',
         icon: (
           <svg
             width="20"
@@ -345,7 +345,7 @@ export const SidebarData = [
       },
       {
         title: 'ลงบันทึกรายละเอียด',
-        path: '/messages/message2',
+        path: '/',
         icon: (
           <svg
             width="20"
@@ -363,7 +363,7 @@ export const SidebarData = [
       },
       {
         title: 'บันทึกจ้างซ่อม',
-        path: '/messages/message2',
+        path: '/',
         icon: (
           <svg
             width="20"
@@ -381,7 +381,7 @@ export const SidebarData = [
       },
       {
         title: 'ตรวจสอบการจ้างซ่อม',
-        path: '/messages/message2',
+        path: '/',
         icon: (
           <svg
             width="20"
@@ -399,7 +399,7 @@ export const SidebarData = [
       },
       {
         title: 'ประวัติการซ่อม',
-        path: '/messages/message2',
+        path: '/',
         icon: (
           <svg
             width="20"

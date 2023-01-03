@@ -103,7 +103,7 @@ const BorrowRecord = () => {
             </button>
           </div>
           {/* table */}
-          <div className="overflow-x-auto relative text-xs font-semibold p-2 mt-3">
+          <div className="overflow-x-auto text-xs font-semibold p-2 mt-3">
             {/* header table */}
             <div className="grid grid-cols-10 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
               <div className="col-span-1">ลำดับ</div>

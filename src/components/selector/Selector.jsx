@@ -101,7 +101,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
         onClick={() => setOpen(!open)}
         className={` border border-gray-300 bg-white ${
           location.pathname === "/dashboard" ? "text-md" : "text-sm"
-        } rounded-lg focus:ring-blue-500 focus:border-blue-500  w-full  dark:focus:ring-blue-500 dark:focus:border-blue-500  p-2 flex items-center justify-between ${
+        } rounded-lg focus:ring-blue-500 focus:border-blue-500 z-0  w-full  dark:focus:ring-blue-500 dark:focus:border-blue-500  p-2 flex items-center justify-between ${
           (
             id === "ประเภทครุภัณฑ์"
               ? state?.type
@@ -204,7 +204,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
         />
       </div>
       <ul
-        className={`bg-white mt-2 overflow-y-auto scrollbar h-60 w-full z-20 border border-gray-300 rounded-lg ${
+        className={`bg-white mt-2 overflow-y-auto scrollbar h-60 w-full z-10 border border-gray-300 rounded-lg ${
           open ? "absolute" : "hidden"
         } `}
       >
