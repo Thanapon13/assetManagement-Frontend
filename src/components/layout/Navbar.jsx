@@ -2,7 +2,7 @@ import React from 'react'
 import DropdownProfile from './DropdownProfile'
 import Sidebar from './Sidebar'
 
-const Navbar = ({ children }) => {
+const Navbar = () => {
   return (
     <div className="">
       <div className="h-[56px] bg-text-green flex justify-between items-center ">
@@ -14,7 +14,7 @@ const Navbar = ({ children }) => {
         </div>
         <DropdownProfile />
       </div>
-      <main className="sm:hidden">{children}</main>
+      {/* <main className="sm:hidden">{children}</main> */}
     </div>
   )
 }
