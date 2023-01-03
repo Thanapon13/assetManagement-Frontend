@@ -23,7 +23,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
   };
 
   const handleClickOutSide = (e) => {
-    if (!refDropdown.current.contains(e.target)) {
+    if (!refDropdown?.current?.contains(e.target)) {
       setOpen(false);
     }
   };

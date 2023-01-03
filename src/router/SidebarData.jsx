@@ -116,7 +116,7 @@ export const SidebarData = [
       },
       {
         title: 'อนุมัติเบิกจ่าย',
-        path: '/reports/reports3',
+        path: '/approvalAssetWithdraw',
         icon: (
           <svg
             width="22"
