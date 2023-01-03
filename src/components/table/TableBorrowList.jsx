@@ -40,7 +40,7 @@ const TableBorrowList = ({
         <Link
           // type="button"
           // to={`/borrowSaving/${ID}`}
-          to={`/borrowSaving`}
+          to="borrowSaving"
           onClick={handleClick}
           className={`${
             isClick

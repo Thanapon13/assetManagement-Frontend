@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import Selector from '../components/selector/Selector'
 import TableBorrowList from '../components/table/TableBorrowList'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'

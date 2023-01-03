@@ -7,6 +7,7 @@ import {
   BorrowRecord,
   BorrowApprove,
   BorrowSaving,
+  BorrowDetailApprove,
   PackageAssetInformation,
   AssetInformationIndex,
   AssetInformation,
@@ -16,16 +17,13 @@ import {
   TransferAsset,
   RepairDashboard,
   LoginPage,
-} from "../pages";
+} from '../pages'
 
 const Router = () => {
   return (
     <BrowserRouter>
-      {/* <Routes> */}
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-
+      <Routes>
+        <Route path="/" element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/assetInformation" element={<AssetInformation />} />
           <Route
@@ -43,15 +41,17 @@ const Router = () => {
             element={<ApprovalAssetWithdraw />}
           />
           <Route path="/borrowList" element={<BorrowList />} />
-          <Route path="/BorrowRecord" element={<BorrowRecord />} />
-          <Route path="/BorrowSaving" element={<BorrowSaving />} />
-          <Route path="/BorrowApprove" element={<BorrowApprove />} />
+          <Route path="/borrowList/borrowSaving" element={<BorrowSaving />} />
+          <Route path="/borrowRecord" element={<BorrowRecord />} />
+          <Route path="/borrowApprove" element={<BorrowApprove />} />
+          <Route
+            path="/borrowApprove/borrowDetailApprove"
+            element={<BorrowDetailApprove />}
+          />
           <Route path="/transferAsset" element={<TransferAsset />} />
           <Route path="/repairDashboard" element={<RepairDashboard />} />
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
-      </Layout>
-      {/* </Routes> */}
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 };

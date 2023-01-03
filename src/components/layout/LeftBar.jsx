@@ -27,7 +27,7 @@ const LeftBar = ({ children }) => {
               })}
             </div>
           </div>
-          <main className="">{children}</main>
+          {/* <main className="">{children}</main> */}
         </div>
       </IconContext.Provider>
     </>
