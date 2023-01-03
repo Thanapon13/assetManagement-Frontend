@@ -6,8 +6,10 @@ const Layout = () => {
   return (
     <div className="">
       <Navbar />
-      <div className="hidden sm:flex">
-        <LeftBar />
+      <div className="flex">
+        <div className="hidden sm:block">
+          <LeftBar />
+        </div>
         <div className="w-[100vw]">
           <Outlet />
         </div>

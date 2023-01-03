@@ -6,7 +6,7 @@ import { SidebarData } from '../../router/SidebarData'
 import { IconContext } from 'react-icons/lib'
 import SubMenu from './SubMenu'
 
-const Sidebar = ({ children }) => {
+const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false)
 
   const showSidebar = () => setSidebar(!sidebar)
@@ -35,7 +35,6 @@ const Sidebar = ({ children }) => {
             })}
           </ul>
         </nav>
-        {/* <main className="">{children}</main> */}
       </IconContext.Provider>
     </>
   )
