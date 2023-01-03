@@ -1,128 +1,126 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Selector from "../components/selector/Selector";
-import { HiChevronLeft } from "react-icons/hi";
-import { HiChevronRight } from "react-icons/hi";
-import { AiOutlineSearch } from "react-icons/ai";
-import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import DateInput from "../components/date/DateInput";
-import RowOfWithdrawTableArray from "../components/table/RowOfWithdrawTableArray";
-import RowOfTableSaveAssetWithdraw from "../components/table/RowOfTableSaveAssetWithdraw";
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Selector from '../components/selector/Selector'
+import { HiChevronLeft } from 'react-icons/hi'
+import { HiChevronRight } from 'react-icons/hi'
+import { AiOutlineSearch } from 'react-icons/ai'
+import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
+import DateInput from '../components/date/DateInput'
+import RowOfWithdrawTableArray from '../components/table/RowOfWithdrawTableArray'
+import RowOfTableSaveAssetWithdraw from '../components/table/RowOfTableSaveAssetWithdraw'
 
 export const SaveAssetWithdraw = () => {
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
+  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
 
   // useState
 
   const [input, setInput] = useState({
-    ID: "",
-    billNumber: "",
-    documentRegistration: "",
-    sector: "",
-    eligiblePerson: "",
-    selfSector: "",
+    ID: '',
+    billNumber: '',
+    documentRegistration: '',
+    sector: '',
+    eligiblePerson: '',
+    selfSector: '',
     allPrice: 0,
-    firstName_recorder: "",
-    lastName_recorder: "",
-    dateTime_recorder: "",
-    firstName_courier: "",
-    lastName_courier: "",
-    dateTime_courier: "",
-    firstName_approver: "",
-    lastName_approver: "",
-    dateTime_approver: "",
-    status: "not approve",
-  });
+    firstName_recorder: '',
+    lastName_recorder: '',
+    dateTime_recorder: '',
+    firstName_courier: '',
+    lastName_courier: '',
+    dateTime_courier: '',
+    firstName_approver: '',
+    lastName_approver: '',
+    dateTime_approver: '',
+    status: 'not approve',
+  })
 
   const [saveAssetWithdrawTableArray, setSaveAssetWithdrawTableArray] =
     useState([
       {
         index: 0,
-        inventoryNumber: "",
-        productName: "",
-        brand: "",
-        serialNumber: "",
-        supplier: "",
-        amount: "",
-        price: "",
+        inventoryNumber: '',
+        productName: '',
+        brand: '',
+        serialNumber: '',
+        supplier: '',
+        amount: '',
+        price: '',
       },
-    ]);
+    ])
 
   //Main Date
-  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate);
+  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate)
 
-  const [countRow, setCountRow] = useState(1);
-  const [countIndexArray, setCountIndexArray] = useState([0]);
-  const [perPage, setPerPage] = useState(10);
+  const [countRow, setCountRow] = useState(1)
+  const [countIndexArray, setCountIndexArray] = useState([0])
+  const [perPage, setPerPage] = useState(10)
 
   // handle
   const handleChangeID = (e) => {
-    const clone = { ...input };
-    clone.ID = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.ID = e.target.value
+    setInput(clone)
+  }
   const handleChangeBillNumber = (e) => {
-    const clone = { ...input };
-    clone.billNumber = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.billNumber = e.target.value
+    setInput(clone)
+  }
   const handleChangeDocumentRegistration = (e) => {
-    const clone = { ...input };
-    clone.documentRegistration = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.documentRegistration = e.target.value
+    setInput(clone)
+  }
   const handleChangeSector = (e) => {
-    const clone = { ...input };
-    clone.sector = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.sector = e.target.value
+    setInput(clone)
+  }
   const handleChangeEligiblePerson = (e) => {
-    const clone = { ...input };
-    clone.eligiblePerson = e.target.value;
-    setInput(clone);
-  };
-  
+    const clone = { ...input }
+    clone.eligiblePerson = e.target.value
+    setInput(clone)
+  }
+
   const handleChangeAllPrice = (e) => {
-    const clone = { ...input };
-    clone.allPrice = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.allPrice = e.target.value
+    setInput(clone)
+  }
 
   //handle bottom table
   const handleClickIncrease = (e) => {
-    e.preventDefault();
-    setCountRow(countRow + 1);
-    setCountIndexArray([...countIndexArray, countRow]);
+    e.preventDefault()
+    setCountRow(countRow + 1)
+    setCountIndexArray([...countIndexArray, countRow])
 
-    let clone = [...saveAssetWithdrawTableArray];
+    let clone = [...saveAssetWithdrawTableArray]
     const newCloneArray = {
       index: countRow,
-      inventoryNumber: "",
-      productName: "",
-      brand: "",
-      serialNumber: "",
-      supplier: "",
-      amount: "",
-      price: "",
-    };
-    setSaveAssetWithdrawTableArray([...clone, newCloneArray]);
-  };
+      inventoryNumber: '',
+      productName: '',
+      brand: '',
+      serialNumber: '',
+      supplier: '',
+      amount: '',
+      price: '',
+    }
+    setSaveAssetWithdrawTableArray([...clone, newCloneArray])
+  }
 
   const deleteRow = (index) => {
     if (countRow > 0) {
-      setCountRow(countRow - 1);
+      setCountRow(countRow - 1)
     }
 
-    let clone = [...saveAssetWithdrawTableArray];
-    clone.splice(index, 1);
-    setSaveAssetWithdrawTableArray(clone);
-  };
+    let clone = [...saveAssetWithdrawTableArray]
+    clone.splice(index, 1)
+    setSaveAssetWithdrawTableArray(clone)
+  }
 
   return (
     <>
-      <div className="bg-background-page px-5 pt-10 pb-10 w-[100vw] sm:w-[85vw]">
+      <div className="bg-background-page px-5 pt-10 pb-10">
         {/* Header */}
         <div className="text-xl text-text-green ">บันทึกเบิกจ่ายครุภัณฑ์</div>
         <div className="flex justify-between items-center">
@@ -266,7 +264,7 @@ export const SaveAssetWithdraw = () => {
                     }
                     deleteRow={deleteRow}
                   />
-                );
+                )
               })}
               <button
                 type="button"
@@ -298,7 +296,7 @@ export const SaveAssetWithdraw = () => {
         </button>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default SaveAssetWithdraw;
+export default SaveAssetWithdraw

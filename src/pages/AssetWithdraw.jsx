@@ -1,78 +1,76 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Selector from "../components/selector/Selector";
-import { HiChevronLeft } from "react-icons/hi";
-import { HiChevronRight } from "react-icons/hi";
-import { AiOutlineSearch } from "react-icons/ai";
-import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import DateInput from "../components/date/DateInput";
-import RowOfWithdrawTableArray from "../components/table/RowOfWithdrawTableArray";
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Selector from '../components/selector/Selector'
+import { HiChevronLeft } from 'react-icons/hi'
+import { HiChevronRight } from 'react-icons/hi'
+import { AiOutlineSearch } from 'react-icons/ai'
+import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
+import DateInput from '../components/date/DateInput'
+import RowOfWithdrawTableArray from '../components/table/RowOfWithdrawTableArray'
 
 export const AssetWithdraw = () => {
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
+  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
 
   // useState
   const [search, setSearch] = useState({
-    inventoryNumber: "",
-    wordSearch: "",
-    department: "",
-    sector: "",
+    inventoryNumber: '',
+    wordSearch: '',
+    department: '',
+    sector: '',
     // "withdrawDate":todayThaiDate
-  });
-  const [perPage, setPerPage] = useState(10);
+  })
+  const [perPage, setPerPage] = useState(10)
 
   //Main Date
-  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate);
+  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate)
 
   // data
   let withdrawTableArray = [
     {
-      ID: "84745",
-      billNumber: "4140-001-004",
-      documentRegistration: "พล072565",
-      sector: "ภาควิชาศัลยกรรมศาสตร์",
-      withdrawDate: "14/12/2565 ",
+      ID: '84745',
+      billNumber: '4140-001-004',
+      documentRegistration: 'พล072565',
+      sector: 'ภาควิชาศัลยกรรมศาสตร์',
+      withdrawDate: '14/12/2565 ',
       allPrice: 1100,
       count: 20,
     },
     {
-      billNumber: "4140-001-004",
-      documentRegistration: "พล072565",
-      sector: "ภาควิชาศัลยกรรมศาสตร์",
-      withdrawDate: "14/12/2565 ",
+      billNumber: '4140-001-004',
+      documentRegistration: 'พล072565',
+      sector: 'ภาควิชาศัลยกรรมศาสตร์',
+      withdrawDate: '14/12/2565 ',
       allPrice: 1100,
       count: 20,
     },
     {
-      billNumber: "4140-001-004",
-      documentRegistration: "พล072565",
-      sector: "ภาควิชาศัลยกรรมศาสตร์",
-      withdrawDate: "14/12/2565 ",
+      billNumber: '4140-001-004',
+      documentRegistration: 'พล072565',
+      sector: 'ภาควิชาศัลยกรรมศาสตร์',
+      withdrawDate: '14/12/2565 ',
       allPrice: 1100,
       count: 20,
     },
     {
-      billNumber: "4140-001-004",
-      documentRegistration: "พล072565",
-      sector: "ภาควิชาศัลยกรรมศาสตร์",
-      withdrawDate: "14/12/2565 ",
+      billNumber: '4140-001-004',
+      documentRegistration: 'พล072565',
+      sector: 'ภาควิชาศัลยกรรมศาสตร์',
+      withdrawDate: '14/12/2565 ',
       allPrice: 1100,
       count: 20,
     },
     {
-      billNumber: "4140-001-004",
-      documentRegistration: "พล072565",
-      sector: "ภาควิชาศัลยกรรมศาสตร์",
-      withdrawDate: "14/12/2565 ",
+      billNumber: '4140-001-004',
+      documentRegistration: 'พล072565',
+      sector: 'ภาควิชาศัลยกรรมศาสตร์',
+      withdrawDate: '14/12/2565 ',
       allPrice: 1100,
       count: 20,
     },
-  ];
+  ]
 
   return (
-    <div className="bg-background-page px-5 pt-10 pb-36 w-[100vw] sm:w-[85vw]">
+    <div className="bg-background-page px-5 pt-10 pb-36">
       {/* Header */}
       <div className="text-xl text-text-green ">รายการเบิกจ่ายครุภัณฑ์</div>
       <div className="flex justify-between items-center">
@@ -103,7 +101,7 @@ export const AssetWithdraw = () => {
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
         <div className="text-xs font-semibold">ค้นหาโดย</div>
         <div className="md:col-span-2">
-          <Selector placeholder={"ID"} />
+          <Selector placeholder={'ID'} />
         </div>
 
         <div className="md:col-span-4  h-[38px] relative">
@@ -120,7 +118,7 @@ export const AssetWithdraw = () => {
         </div>
 
         <div className="md:col-span-3">
-          <Selector placeholder={"สถานะ"} />
+          <Selector placeholder={'สถานะ'} />
         </div>
 
         <div className="md:col-span-3 h-full ">
@@ -144,7 +142,7 @@ export const AssetWithdraw = () => {
         </div>
 
         <div className="md:col-span-3">
-          <Selector placeholder={"ฝ่าย/กลุ่มงาน"} />
+          <Selector placeholder={'ฝ่าย/กลุ่มงาน'} />
         </div>
 
         <div className="flex justify-end">
@@ -194,7 +192,7 @@ export const AssetWithdraw = () => {
                 allPrice={el.allPrice}
                 count={el.count}
               />
-            );
+            )
           })}
           <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
             <div className="flex mr-10">
@@ -244,7 +242,7 @@ export const AssetWithdraw = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AssetWithdraw;
+export default AssetWithdraw

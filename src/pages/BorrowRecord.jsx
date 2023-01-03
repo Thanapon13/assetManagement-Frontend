@@ -30,7 +30,7 @@ const BorrowRecord = () => {
   return (
     <>
       {/* body */}
-      <div className="bg-background-page pt-5 p-3 w-[100vw] sm:w-[85vw] ">
+      <div className="bg-background-page pt-5 p-3">
         {/* Header */}
         <div className="text-2xl text-text-green ">บันทึกใบยืมครุภัณฑ์</div>
         <div className="flex pt-3">
@@ -194,7 +194,7 @@ const BorrowRecord = () => {
         </div>
       </div>
       {/* footer */}
-      <div className="flex justify-end items-center gap-10 p-3 text-sm mr-3 ">
+      <div className="bottom-0 bg-white  flex justify-end items-center gap-10 p-3 text-sm mr-3 ">
         <button
           type="button"
           className="border-[2px] hover:bg-gray-100 text-black text-sm rounded-md p-2"
