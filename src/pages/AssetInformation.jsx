@@ -1,102 +1,100 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Selector from "../components/selector/Selector";
-import RowOfTableArray from "../components/table/RowOfTableArray";
-import { BsArrowLeft } from "react-icons/bs";
-import { HiChevronLeft } from "react-icons/hi";
-import { HiChevronRight } from "react-icons/hi";
-import { AiOutlineSearch } from "react-icons/ai";
-import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import DateInput from "../components/date/DateInput";
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Selector from '../components/selector/Selector'
+import RowOfTableArray from '../components/table/RowOfTableArray'
+import { BsArrowLeft } from 'react-icons/bs'
+import { HiChevronLeft } from 'react-icons/hi'
+import { HiChevronRight } from 'react-icons/hi'
+import { AiOutlineSearch } from 'react-icons/ai'
+import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
+import DateInput from '../components/date/DateInput'
 
 const AssetInformationIndex = () => {
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
+  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
 
   // useState
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(10)
 
   const [input, setInput] = useState({
-    ID: "",
-    serialNumber: "",
-    engProductName: "",
-    productName: "",
-    type: "",
-    kind: "",
-    unit: "",
-    brand: "",
-    model: "",
-    size: "",
+    ID: '',
+    serialNumber: '',
+    engProductName: '',
+    productName: '',
+    type: '',
+    kind: '',
+    unit: '',
+    brand: '',
+    model: '',
+    size: '',
     quantity: 0,
-    serialNumberMachine: "",
-    source: "",
-    category: "",
-    acquiredType: "",
-    group: "",
-    source: "",
-    guaranteedMonth: "",
-    purposeOfUse: "",
+    serialNumberMachine: '',
+    source: '',
+    category: '',
+    acquiredType: '',
+    group: '',
+    source: '',
+    guaranteedMonth: '',
+    purposeOfUse: '',
 
-    status: "not approve",
-  });
+    status: 'not approve',
+  })
 
   //Main Date
-  const [insuranceStartDate, setInsuranceStartDate] = useState(todayThaiDate);
+  const [insuranceStartDate, setInsuranceStartDate] = useState(todayThaiDate)
   const [insuranceExpiredDate, setInsuranceExpiredDate] =
-    useState(todayThaiDate);
+    useState(todayThaiDate)
 
   // handle
   const handleChangeID = (e) => {
-    const clone = { ...input };
-    clone.ID = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.ID = e.target.value
+    setInput(clone)
+  }
   const handleChangeSerialNumber = (e) => {
-    const clone = { ...input };
-    clone.serialNumber = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.serialNumber = e.target.value
+    setInput(clone)
+  }
   const handleChangeEngProductName = (e) => {
-    const clone = { ...input };
-    clone.engProductName = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.engProductName = e.target.value
+    setInput(clone)
+  }
   const handleChangeProductName = (e) => {
-    const clone = { ...input };
-    clone.productName = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.productName = e.target.value
+    setInput(clone)
+  }
   const handleChangeModel = (e) => {
-    const clone = { ...input };
-    clone.model = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.model = e.target.value
+    setInput(clone)
+  }
   const handleChangeSize = (e) => {
-    const clone = { ...input };
-    clone.size = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.size = e.target.value
+    setInput(clone)
+  }
   const handleChangeQuantity = (e) => {
-    const clone = { ...input };
-    clone.quantity = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.quantity = e.target.value
+    setInput(clone)
+  }
   const handleChangeSerialNumberMachine = (e) => {
-    const clone = { ...input };
-    clone.serialNumberMachine = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.serialNumberMachine = e.target.value
+    setInput(clone)
+  }
   const handleChangeSource = (e) => {
-    const clone = { ...input };
-    clone.source = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.source = e.target.value
+    setInput(clone)
+  }
   const handleChangeGuaranteedMonth = (e) => {
-    const clone = { ...input };
-    clone.guaranteedMonth = e.target.value;
-    setInput(clone);
-  };
+    const clone = { ...input }
+    clone.guaranteedMonth = e.target.value
+    setInput(clone)
+  }
 
   // const handleChangeAllPrice = (e) => {
   //   const clone = { ...input };
@@ -106,7 +104,7 @@ const AssetInformationIndex = () => {
 
   // data
   return (
-    <div className="bg-background-page px-5 pt-10 pb-36 w-[100vw] sm:w-[85vw]">
+    <div className="bg-background-page px-5 pt-10 pb-36">
       {/* Header */}
       <div className="flex items-center">
         <Link
@@ -196,10 +194,10 @@ const AssetInformationIndex = () => {
             <div className="mb-1">ประเภทครุภัณฑ์</div>
             <div className="flex h-[38px] ">
               <Selector
-                placeholder={"Select"}
+                placeholder={'Select'}
                 state={input}
                 setState={setInput}
-                id={"ประเภทครุภัณฑ์"}
+                id={'ประเภทครุภัณฑ์'}
               />
             </div>
           </div>
@@ -208,10 +206,10 @@ const AssetInformationIndex = () => {
             <div className="mb-1">ชนิดครุภัณฑ์</div>
             <div className="flex h-[38px] ">
               <Selector
-                placeholder={"Select"}
+                placeholder={'Select'}
                 state={input}
                 setState={setInput}
-                id={"ชนิดครุภัณฑ์"}
+                id={'ชนิดครุภัณฑ์'}
               />
             </div>
           </div>
@@ -228,10 +226,10 @@ const AssetInformationIndex = () => {
               /> */}
             <div className="flex h-[38px] ">
               <Selector
-                placeholder={"Select"}
+                placeholder={'Select'}
                 state={input}
                 setState={setInput}
-                id={"หน่วยนับ"}
+                id={'หน่วยนับ'}
               />
             </div>
           </div>
@@ -248,10 +246,10 @@ const AssetInformationIndex = () => {
               /> */}
             <div className="flex h-[38px] ">
               <Selector
-                placeholder={"Select"}
+                placeholder={'Select'}
                 state={input}
                 setState={setInput}
-                id={"ยี่ห้อ"}
+                id={'ยี่ห้อ'}
               />
             </div>
           </div>
@@ -316,10 +314,10 @@ const AssetInformationIndex = () => {
               /> */}
             <div className="flex h-[38px] ">
               <Selector
-                placeholder={"Select"}
+                placeholder={'Select'}
                 state={input}
                 setState={setInput}
-                id={"หมวด"}
+                id={'หมวด'}
               />
             </div>
           </div>
@@ -336,10 +334,10 @@ const AssetInformationIndex = () => {
               /> */}
             <div className="flex h-[38px] ">
               <Selector
-                placeholder={"Select"}
+                placeholder={'Select'}
                 state={input}
                 setState={setInput}
-                id={"กลุ่ม"}
+                id={'กลุ่ม'}
               />
             </div>
           </div>
@@ -356,10 +354,10 @@ const AssetInformationIndex = () => {
               /> */}
             <div className="flex h-[38px] ">
               <Selector
-                placeholder={"Select"}
+                placeholder={'Select'}
                 state={input}
                 setState={setInput}
-                id={"ประเภทที่ได้มา"}
+                id={'ประเภทที่ได้มา'}
               />
             </div>
           </div>
@@ -388,10 +386,10 @@ const AssetInformationIndex = () => {
               /> */}
             <div className="flex h-[38px] ">
               <Selector
-                placeholder={"Select"}
+                placeholder={'Select'}
                 state={input}
                 setState={setInput}
-                id={"วัตถุประสงค์ในการใช้งาน"}
+                id={'วัตถุประสงค์ในการใช้งาน'}
               />
             </div>
           </div>
@@ -444,7 +442,7 @@ const AssetInformationIndex = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AssetInformationIndex;
+export default AssetInformationIndex

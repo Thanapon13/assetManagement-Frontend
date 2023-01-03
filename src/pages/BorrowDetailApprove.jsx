@@ -35,7 +35,7 @@ const BorrowDetailApprove = () => {
   return (
     <>
       {/* body */}
-      <div className="bg-background-page pt-5 p-3 w-[100vw] sm:w-[85vw] ">
+      <div className="bg-background-page pt-5 p-3">
         {/* Header */}
         <div className="text-2xl text-text-green ">อนุมัติการยืมครุภัณฑ์</div>
         <div className="flex pt-3">

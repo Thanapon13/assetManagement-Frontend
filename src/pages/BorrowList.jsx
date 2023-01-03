@@ -145,7 +145,7 @@ const BorrowList = () => {
   ]
 
   return (
-    <div className="bg-background-page px-5 pt-5 pb-36 w-[85vw] ">
+    <div className="bg-background-page px-5 pt-5 pb-36 ">
       {/* Header */}
       <div className="text-2xl text-text-green ">รายการยืม-คืน ครุภัณฑ์</div>
       <div className="flex justify-between items-center">

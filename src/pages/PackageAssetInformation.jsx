@@ -1,88 +1,86 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Selector from "../components/selector/Selector";
-import RowOfTableArray from "../components/table/RowOfTableArray";
-import { HiChevronLeft } from "react-icons/hi";
-import { HiChevronRight } from "react-icons/hi";
-import { AiOutlineSearch } from "react-icons/ai";
-import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import DateInput from "../components/date/DateInput";
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Selector from '../components/selector/Selector'
+import RowOfTableArray from '../components/table/RowOfTableArray'
+import { HiChevronLeft } from 'react-icons/hi'
+import { HiChevronRight } from 'react-icons/hi'
+import { AiOutlineSearch } from 'react-icons/ai'
+import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
+import DateInput from '../components/date/DateInput'
 
 const PackageAssetInformation = () => {
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
+  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
 
   // useState
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(10)
 
   //Main Date
-  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate);
+  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate)
 
   // data
   let dashboardTableArray = [
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "พัดลมโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
     {
-      ID: "84745",
-      inventoryNumber: "4140-001-004/545353435",
-      name: "จรวดโคจรติดเพดาน 16 นิ้ว",
-      department: "ไม่ระบุฝ่าย",
-      sector: "D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ",
-      agency: "D043-หกดหกดหกดหกด",
-      building: "สงค์อาพาธ",
-      floor: "6",
-      room: "2",
-      status: "ใช้งานได้",
+      ID: '84745',
+      inventoryNumber: '4140-001-004/545353435',
+      name: 'จรวดโคจรติดเพดาน 16 นิ้ว',
+      department: 'ไม่ระบุฝ่าย',
+      sector: 'D041 - หอผู้ป่วยพิเศษสงค์อาพาธ ',
+      agency: 'D043-หกดหกดหกดหกด',
+      building: 'สงค์อาพาธ',
+      floor: '6',
+      room: '2',
+      status: 'ใช้งานได้',
     },
-  ];
+  ]
 
   return (
-    <div className="bg-background-page px-5 pt-10 pb-36 w-[100vw] sm:w-[85vw]">
+    <div className="bg-background-page px-5 pt-10 pb-36">
       {/* Header */}
       <div className="text-xl text-text-green ">ข้อมูลครุภัณฑ์เป็นชุด</div>
       <div className="flex justify-between items-center">
@@ -113,7 +111,7 @@ const PackageAssetInformation = () => {
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
         <div className="text-xs font-semibold">ค้นหาโดย</div>
         <div className="md:col-span-2">
-          <Selector placeholder={"ID"} />
+          <Selector placeholder={'ID'} />
         </div>
 
         <div className="md:col-span-4  h-[38px] relative">
@@ -130,7 +128,7 @@ const PackageAssetInformation = () => {
         </div>
 
         <div className="md:col-span-3">
-          <Selector placeholder={"สถานะ"} />
+          <Selector placeholder={'สถานะ'} />
         </div>
 
         <div className="md:col-span-3 h-full ">
@@ -154,7 +152,7 @@ const PackageAssetInformation = () => {
         </div>
 
         <div className="md:col-span-3">
-          <Selector placeholder={"ฝ่าย/กลุ่มงาน"} />
+          <Selector placeholder={'ฝ่าย/กลุ่มงาน'} />
         </div>
 
         <div className="flex justify-end">
@@ -206,7 +204,7 @@ const PackageAssetInformation = () => {
                 building={el.building}
                 status={el.status}
               />
-            );
+            )
           })}
           <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
             <div className="flex mr-10">
@@ -256,7 +254,7 @@ const PackageAssetInformation = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PackageAssetInformation;
+export default PackageAssetInformation
