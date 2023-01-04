@@ -268,7 +268,7 @@ export const SaveAssetWithdraw = () => {
               })}
               <button
                 type="button"
-                className="w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+                className="w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
                 onClick={handleClickIncrease}
               >
                 + เพิ่มครุภัณฑ์

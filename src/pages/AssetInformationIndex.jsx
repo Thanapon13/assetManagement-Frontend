@@ -211,11 +211,11 @@ const AssetInformationIndex = () => {
             )
           })}
           <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex mr-10">
+            <div className="flex items-end mr-10">
               <div>Rows per page:</div>
               <select
                 id="perPage"
-                className="w-12 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 onChange={(e) => setPerPage(e.target.value)}
               >
                 {/* <option value="" selected disabled hidden>

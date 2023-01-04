@@ -1,4 +1,6 @@
 export { default as LoginPage } from './LoginPage'
+export { default as ForgotPassword } from './ForgotPassword'
+export { default as EmailConfirmation } from './EmailConfirmation'
 export { default as Dashboard } from './Dashboard'
 export { default as BorrowList } from './BorrowList'
 export { default as BorrowSaving } from './BorrowSaving'
