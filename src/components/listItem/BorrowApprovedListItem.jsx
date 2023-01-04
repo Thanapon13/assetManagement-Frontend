@@ -3,7 +3,10 @@ export const BorrowApprovedListItem = (props) => {
     <>
       {props.data.map((item, idx) => {
         return (
-          <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
+          <div
+            key={idx}
+            className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full"
+          >
             <div className="flex justify-between">
               <div className="flex space-x-10">
                 <h1>เลขที่ ID เลขที่การยืม</h1>
