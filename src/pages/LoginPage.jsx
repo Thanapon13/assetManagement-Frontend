@@ -1,14 +1,74 @@
-import backgroundPageLogin from "../public/pics/backgroundPageLogin.png";
-import logo from "../public/pics/logo.png";
+import backgroundPageLogin from '../public/pics/backgroundPageLogin.png'
+import logo from '../public/pics/logo.png'
 
-import { AiOutlineEyeInvisible } from "react-icons/ai";
-import { BsFillEyeFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { AiOutlineEyeInvisible } from 'react-icons/ai'
+import { BsFillEyeFill } from 'react-icons/bs'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState, useRef } from 'react'
+
+import useAuth from '../hooks/useAuth'
+import axios from '../api/axios'
 
 function LoginPage() {
+  const { setAuth } = useAuth()
+
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/dashboard'
+
+  const userRef = useRef()
+  const errRef = useRef()
+
+  const [user, setUser] = useState('')
+  const [pwd, setPwd] = useState('')
+  const [errMsg, setErrMsg] = useState('')
+
+  useEffect(() => {
+    userRef.current.focus()
+  }, [])
+
+  useEffect(() => {
+    setErrMsg('')
+  }, [user, pwd])
+
   // main state
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(false)
+
+  let axiosConfig = {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Access-Control-Allow-Origin': '*',
+    },
+    withCredentails: true,
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await axios.post(
+        '/api/auth',
+        JSON.stringify({ username: user, password: pwd }),
+        axiosConfig
+      )
+      // console.log(response?.data)
+      const { accessToken, roles } = response?.data
+      setAuth({ user, pwd, roles, accessToken })
+      setUser('')
+      setPwd('')
+      navigate(from, { replace: true })
+      // navigate('/dashboard')
+    } catch (error) {
+      !error?.response
+        ? setErrMsg('No Server Response')
+        : error.response?.staus === 400
+        ? setErrMsg('Missing Username or Password')
+        : error.response?.state === 401
+        ? setErrMsg('Unauthorized')
+        : setErrMsg('Login Fail')
+
+      errRef.current.focus()
+    }
+  }
 
   return (
     <div className="relative">
@@ -21,12 +81,17 @@ function LoginPage() {
           {/* left */}
           <div>
             <div className="flex items-center justify-center">
-              <img src={logo} className="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px]  lg:w-[140px] lg:h-[140px]"/>
+              <img
+                src={logo}
+                className="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px]  lg:w-[140px] lg:h-[140px]"
+              />
               <div className="ml-2 sm:ml-4 text-2xl sm:text-3xl lg:text-5xl font-bold text-text-green">
                 <span>DEDE </span>
                 <span className="relative">
                   Hospital
-                  <span className="absolute -top-3 -right-4 sm:-top-4 sm:-right-5 lg:-top-6 lg:-right-6">+</span>
+                  <span className="absolute -top-3 -right-4 sm:-top-4 sm:-right-5 lg:-top-6 lg:-right-6">
+                    +
+                  </span>
                 </span>
               </div>
             </div>
@@ -43,24 +108,28 @@ function LoginPage() {
               เข้าสู่ระบบ / Login
             </div>
             {/* input */}
-            <div className="text-left">
+            <form className="text-left" onSubmit={handleSubmit}>
               <div className="text-xs text-text-gray mt-12">Username</div>
+              <p ref={errRef} className={errMsg ? 'bg-red-500 ' : ' block '}>
+                {errMsg}
+              </p>
               <input
                 type="text"
+                ref={userRef}
                 name="guaranteedMonth"
                 id="guaranteedMonth"
-                // onChange={handleChangeGuaranteedMonth}
-                // value={input.guaranteedMonth}
+                onChange={(e) => setUser(e.target.value)}
+                value={user}
                 className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
               <div className="text-xs text-text-gray mt-6">Password</div>
               <div className="flex relative">
                 <input
-                  type={toggle ? "text" : "password"}
+                  type={toggle ? 'text' : 'password'}
                   name="password"
                   id="password"
-                  // onChange={handleChangePassword}
-                  // value={input.password}
+                  onChange={(e) => setPwd(e.target.value)}
+                  value={pwd}
                   className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
                 <button
@@ -75,24 +144,27 @@ function LoginPage() {
                 </button>
               </div>
               <div className="flex justify-end mt-4  lg:mt-10">
-                <Link to="/emailConfirmation" className="underline text-text-blue text-xs ">
+                <Link
+                  to="/emailConfirmation"
+                  className="underline text-text-blue text-xs "
+                >
                   Forgot Password
                 </Link>
               </div>
 
               <button
                 // to="/assetInformation"
-                type="button"
+                type="submit"
                 className=" text-white w-full px-4 py-2 mt-12 lg:mt-20 rounded tracking-wider bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
               >
                 Login
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default LoginPage;
+export default LoginPage

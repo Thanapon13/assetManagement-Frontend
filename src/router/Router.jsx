@@ -1,6 +1,6 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Layout } from "../components";
+import React from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { Layout, RequireAuth } from '../components'
 import {
   Dashboard,
   BorrowList,
@@ -18,17 +18,20 @@ import {
   RepairDashboard,
   LoginPage,
   ForgotPassword,
-  EmailConfirmation
-} from "../pages";
+  EmailConfirmation,
+} from '../pages'
+
+import useAuth from '../hooks/useAuth'
 
 const Router = () => {
-  const user = "";
+  const { auth } = useAuth()
 
   return (
-    <BrowserRouter>
-      <Routes>
-        {user ? (
-          <Route path="/" element={<Layout />}>
+    <Routes>
+      {auth?.user ? (
+        <Route path="/" element={<Layout />}>
+          {/* protect routes */}
+          <Route element={<RequireAuth allowedRoles={['Manager']} />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/assetInformation" element={<AssetInformation />} />
             <Route
@@ -56,20 +59,21 @@ const Router = () => {
             <Route path="/transferAsset" element={<TransferAsset />} />
             <Route path="/repairDashboard" element={<RepairDashboard />} />
           </Route>
-        ) : (
-          <>
-            <Route index element={<Navigate to="/login" />} />
-            <Route path="login" element={<LoginPage />} />
-            {/* <Route path="signup" element={<SignupPage />} /> */}
-            <Route path="forgotPassword" element={<ForgotPassword />} />
-            <Route path="emailConfirmation" element={<EmailConfirmation />} />
-            {/* <Route path="changePassword/:word" element={<ChangePasswordPage />} /> */}
-            <Route path="*" element={<Navigate to="/login" />} />
-          </>
-        )}
-      </Routes>
-    </BrowserRouter>
-  );
-};
+        </Route>
+      ) : (
+        <Route>
+          {/* public routes */}
+          <Route index element={<Navigate to="/login" />} />
+          <Route path="login" element={<LoginPage />} />
+          {/* <Route path="signup" element={<SignupPage />} /> */}
+          <Route path="forgotPassword" element={<ForgotPassword />} />
+          <Route path="emailConfirmation" element={<EmailConfirmation />} />
+          {/* <Route path="changePassword/:word" element={<ChangePasswordPage />} /> */}
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Route>
+      )}
+    </Routes>
+  )
+}
 
-export default Router;
+export default Router
