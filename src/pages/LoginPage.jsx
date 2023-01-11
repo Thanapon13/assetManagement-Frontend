@@ -34,24 +34,22 @@ function LoginPage() {
   // main state
   const [toggle, setToggle] = useState(false)
 
-  let axiosConfig = {
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-      'Access-Control-Allow-Origin': '*',
-    },
-    withCredentails: true,
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       const response = await axios.post(
         '/api/auth',
-        JSON.stringify({ username: user, password: pwd }),
-        axiosConfig
+        {
+          username: user,
+          password: pwd,
+        },
+        {
+          withCredentials: true,
+        }
       )
       // console.log(response?.data)
       const { accessToken, roles } = response?.data
+      // localStorage.setItem('userProfile', JSON.stringify(apiResponse.data))
       setAuth({ user, pwd, roles, accessToken })
       setUser('')
       setPwd('')

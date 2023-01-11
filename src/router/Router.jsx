@@ -31,34 +31,35 @@ const Router = () => {
       {auth?.user ? (
         <Route path="/" element={<Layout />}>
           {/* protect routes */}
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route element={<RequireAuth allowedRoles={['Manager']} />}>
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/assetInformation" element={<AssetInformation />} />
-            <Route
-              path="/assetInformationIndex"
-              element={<AssetInformationIndex />}
-            />
-            <Route
-              path="/packageAssetInformation"
-              element={<PackageAssetInformation />}
-            />
-            <Route path="/assetWithdraw" element={<AssetWithdraw />} />
-            <Route path="/saveAssetWithdraw" element={<SaveAssetWithdraw />} />
-            <Route
-              path="/approvalAssetWithdraw"
-              element={<ApprovalAssetWithdraw />}
-            />
-            <Route path="/borrowList" element={<BorrowList />} />
-            <Route path="/borrowList/borrowSaving" element={<BorrowSaving />} />
-            <Route path="/borrowRecord" element={<BorrowRecord />} />
-            <Route path="/borrowApprove" element={<BorrowApprove />} />
-            <Route
-              path="/borrowApprove/borrowDetailApprove"
-              element={<BorrowDetailApprove />}
-            />
-            <Route path="/transferAsset" element={<TransferAsset />} />
-            <Route path="/repairDashboard" element={<RepairDashboard />} />
           </Route>
+          <Route
+            path="/assetInformationIndex"
+            element={<AssetInformationIndex />}
+          />
+          <Route
+            path="/packageAssetInformation"
+            element={<PackageAssetInformation />}
+          />
+          <Route path="/assetWithdraw" element={<AssetWithdraw />} />
+          <Route path="/saveAssetWithdraw" element={<SaveAssetWithdraw />} />
+          <Route
+            path="/approvalAssetWithdraw"
+            element={<ApprovalAssetWithdraw />}
+          />
+          <Route path="/borrowList" element={<BorrowList />} />
+          <Route path="/borrowList/borrowSaving" element={<BorrowSaving />} />
+          <Route path="/borrowRecord" element={<BorrowRecord />} />
+          <Route path="/borrowApprove" element={<BorrowApprove />} />
+          <Route
+            path="/borrowApprove/borrowDetailApprove"
+            element={<BorrowDetailApprove />}
+          />
+          <Route path="/transferAsset" element={<TransferAsset />} />
+          <Route path="/repairDashboard" element={<RepairDashboard />} />
+          {/* </Route> */}
         </Route>
       ) : (
         <Route>

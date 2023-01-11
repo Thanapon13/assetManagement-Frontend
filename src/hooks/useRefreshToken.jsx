@@ -2,21 +2,12 @@ import axios from '../api/axios'
 import useAuth from './useAuth'
 
 const useRefreshToken = () => {
-  const { auth, setAuth } = useAuth()
-
-  // console.log(auth?.accessToken)
-
-  let axiosConfig = {
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-      'Access-Control-Allow-Origin': '*',
-      Authorization: `${auth.accessToken}`,
-    },
-    withCredentails: true,
-  }
+  const { setAuth } = useAuth()
 
   const refresh = async () => {
-    const response = await axios.get('/api/auth/refresh', axiosConfig)
+    const response = await axios.get('/api/auth/refresh', {
+      withCredentials: true,
+    })
     setAuth((prev) => {
       console.log(JSON.stringify(prev))
       console.log(response.data.accessToken)
