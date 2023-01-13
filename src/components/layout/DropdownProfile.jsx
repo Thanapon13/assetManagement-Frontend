@@ -1,9 +1,19 @@
 import React, { useState } from 'react'
 import * as RiIcons from 'react-icons/ri'
 import profile from '../../assets/profile.png'
+import useLogout from '../../hooks/useLogout'
+import { useNavigate, Link } from 'react-router-dom'
 
 const DropdownProfile = () => {
   const [isActive, setIsActive] = useState(false)
+
+  const navigate = useNavigate()
+  const logout = useLogout()
+
+  const signOut = async () => {
+    await logout()
+    navigate('/login')
+  }
 
   const handleOnClick = () => {
     setIsActive(!isActive)
@@ -42,12 +52,13 @@ const DropdownProfile = () => {
           }
         >
           <div className="p-2">
-            <a
-              href="#"
+            <button
+              type="button"
+              onClick={signOut}
               className="block px-4 py-2 text-sm text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700"
             >
-              Some Menu
-            </a>
+              LogOut
+            </button>
             <a
               href="#"
               className="block px-4 py-2 text-sm text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700"

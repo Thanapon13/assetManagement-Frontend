@@ -10,7 +10,7 @@ import useAuth from '../hooks/useAuth'
 import axios from '../api/axios'
 
 function LoginPage() {
-  const { setAuth } = useAuth()
+  const { setAuth, persist, setPersist } = useAuth()
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -33,6 +33,14 @@ function LoginPage() {
 
   // main state
   const [toggle, setToggle] = useState(false)
+
+  const togglePersist = () => {
+    setPersist((prev) => !prev)
+  }
+
+  useEffect(() => {
+    localStorage.setItem('persist', persist)
+  }, [persist])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -140,6 +148,14 @@ function LoginPage() {
                     <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
                   )}
                 </button>
+              </div>
+              <div className="">
+                <input
+                  type="checkbox"
+                  id="persist"
+                  onChange={togglePersist}
+                  checked={persist}
+                />
               </div>
               <div className="flex justify-end mt-4  lg:mt-10">
                 <Link
