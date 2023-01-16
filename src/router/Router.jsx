@@ -44,7 +44,7 @@ const Router = () => {
     <Routes>
       <Route path="/" element={<PublicLayout />}>
         {/* public routes */}
-        <Route index element={<Public />} />
+        {/* <Route index element={<Public />} /> */}
         {/* <Route index element={<Navigate to="/login" />} /> */}
         <Route path="login" element={<LoginPage />} />
         {/* <Route path="signup" element={<SignupPage />} /> */}

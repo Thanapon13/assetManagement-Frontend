@@ -4,19 +4,23 @@ import Selector from '../components/selector/Selector'
 import TableBorrowList from '../components/table/TableBorrowList'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { AiOutlineSearch } from 'react-icons/ai'
+import DateInput from '../components/date/DateInput'
 
 const BorrowList = () => {
   // useState
   const [perPage, setPerPage] = useState(10)
   const [totalRow, setTotalRow] = useState(25)
 
+  //Main Date
+  const [withdrawDate, setWithdrawDate] = useState()
+
   // data
   let tableData = [
     {
       borrowDocId: '001',
       ID: '202123',
-      assetId: '411-3124-213',
-      assetName: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
+      assetName: 'HP DESKTOP AIO 24-cb1005d',
       borrowerName: 'กิตติศักดิ์',
       borrowDateAt: '20/12/2565',
       borrowSetDateReturn: '22/12/2565',
@@ -28,8 +32,8 @@ const BorrowList = () => {
     {
       borrowDocId: '001',
       ID: '202123',
-      assetId: '411-3124-213',
-      assetName: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
+      assetName: 'HP DESKTOP AIO 24-cb1005d',
       borrowerName: 'กิตติศักดิ์',
       borrowDateAt: '20/12/2565',
       borrowSetDateReturn: '22/12/2565',
@@ -41,8 +45,8 @@ const BorrowList = () => {
     {
       borrowDocId: '001',
       ID: '202123',
-      assetId: '411-3124-213',
-      assetName: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
+      assetName: 'HP DESKTOP AIO 24-cb1005d',
       borrowerName: 'กิตติศักดิ์',
       borrowDateAt: '20/12/2565',
       borrowSetDateReturn: '22/12/2565',
@@ -54,8 +58,8 @@ const BorrowList = () => {
     {
       borrowDocId: '001',
       ID: '202123',
-      assetId: '411-3124-213',
-      assetName: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
+      assetName: 'HP DESKTOP AIO 24-cb1005d',
       borrowerName: 'กิตติศักดิ์',
       borrowDateAt: '20/12/2565',
       borrowSetDateReturn: '22/12/2565',
@@ -67,8 +71,8 @@ const BorrowList = () => {
     {
       borrowDocId: '001',
       ID: '202123',
-      assetId: '411-3124-213',
-      assetName: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
+      assetName: 'HP DESKTOP AIO 24-cb1005d',
       borrowerName: 'กิตติศักดิ์',
       borrowDateAt: '20/12/2565',
       borrowSetDateReturn: '22/12/2565',
@@ -80,8 +84,8 @@ const BorrowList = () => {
     {
       borrowDocId: '001',
       ID: '202123',
-      assetId: '411-3124-213',
-      assetName: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
+      assetName: 'HP DESKTOP AIO 24-cb1005d',
       borrowerName: 'กิตติศักดิ์',
       borrowDateAt: '20/12/2565',
       borrowSetDateReturn: '22/12/2565',
@@ -93,8 +97,8 @@ const BorrowList = () => {
     {
       borrowDocId: '001',
       ID: '202123',
-      assetId: '411-3124-213',
-      assetName: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
+      assetName: 'HP DESKTOP AIO 24-cb1005d',
       borrowerName: 'กิตติศักดิ์',
       borrowDateAt: '20/12/2565',
       borrowSetDateReturn: '22/12/2565',
@@ -106,8 +110,8 @@ const BorrowList = () => {
     {
       borrowDocId: '001',
       ID: '202123',
-      assetId: '411-3124-213',
-      assetName: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
+      assetName: 'HP DESKTOP AIO 24-cb1005d',
       borrowerName: 'กิตติศักดิ์',
       borrowDateAt: '20/12/2565',
       borrowSetDateReturn: '22/12/2565',
@@ -119,8 +123,8 @@ const BorrowList = () => {
     {
       borrowDocId: '001',
       ID: '202123',
-      assetId: '411-3124-213',
-      assetName: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
+      assetName: 'HP DESKTOP AIO 24-cb1005d',
       borrowerName: 'กิตติศักดิ์',
       borrowDateAt: '20/12/2565',
       borrowSetDateReturn: '22/12/2565',
@@ -132,8 +136,8 @@ const BorrowList = () => {
     {
       borrowDocId: '001',
       ID: '202123',
-      assetId: '411-3124-213',
-      assetName: 'พัดลมโคจรติดเพดาน 16 นิ้ว',
+      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
+      assetName: 'HP DESKTOP AIO 24-cb1005d',
       borrowerName: 'กิตติศักดิ์',
       borrowDateAt: '20/12/2565',
       borrowSetDateReturn: '22/12/2565',
@@ -171,104 +175,134 @@ const BorrowList = () => {
       </div>
 
       {/* search bar */}
-      <div className="grid grid-cols-12 gap-2 items-center mt-8 mb-3 pl-5">
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
         <div className="text-xs font-semibold">ค้นหาโดย</div>
-        <div className="col-span-2">
-          <Selector placeholder={'เลขที่ใบเบิก'} />
+        <div className="md:col-span-2">
+          <Selector placeholder={'ID'} />
         </div>
 
-        <div className="col-span-6 h-full relative">
+        <div className="md:col-span-4  h-[38px] relative">
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
+            // name="requestedId"
+            // id="requestedId"
+            // onChange={(e) => setRequestedId(e.target.value)}
+            // value={requestedId}
             placeholder="ค้นหาโดยเลขที่ใบเบิก"
-            className="pl-8 w-full h-full border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+            className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
         </div>
 
-        <button
-          type="button"
-          className="flex justify-center h-full items-center  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-        >
-          <div className="text-xl text-white">
-            <AiOutlineSearch />
+        <div className="md:col-span-3">
+          <Selector placeholder={'สถานะ'} />
+        </div>
+
+        <div className="md:col-span-3 h-full ">
+          <div className="flex h-full">
+            <DateInput
+              state={withdrawDate}
+              setState={setWithdrawDate}
+              lable="date from"
+            />
           </div>
-        </button>
-
-        <div className="col-span-2">
-          <Selector placeholder={'สถานะการยืม'} />
         </div>
-      </div>
 
-      {/* table */}
-      <div className="text-text-black-table text-xs font-semibold bg-white rounded-t-lg border-b-[1px] border-border-gray-table p-2">
-        <div>ผลการค้นหา {totalRow} รายการ</div>
-        {/* top bar */}
-        <div className="grid grid-cols-16 gap-2 h-12 items-center text-center">
-          <div className="col-span-1">ขอยืม</div>
-          <div className="col-span-1">ID</div>
-          <div className="col-span-2">เลขครุภัณฑ์</div>
-          <div className="col-span-2">ชื่อครุภัณฑ์</div>
-          <div className="col-span-2">ชื่อผู้ขอยืม</div>
-          <div className="col-span-1">วันที่ยืม</div>
-          <div className="col-span-1">กำหนดคืน</div>
-          <div className="col-span-1">วันที่คืน</div>
-          <div className="col-span-1">ค่ายืม/วัน</div>
-          <div className="col-span-1">จำนวนวัน</div>
-          <div className="col-span-1">มูลค่าการยืม</div>
-          <div className="col-span-2">Action</div>
+        <div className="md:col-span-3 h-full ">
+          <div className="flex h-full">
+            <DateInput
+              state={withdrawDate}
+              setState={setWithdrawDate}
+              lable="date to"
+            />
+          </div>
         </div>
-      </div>
-      {tableData?.map((val, idx) => {
-        return (
-          <TableBorrowList
-            key={idx}
-            index={idx}
-            borrowDocId={val.borrowDocId}
-            ID={val.ID}
-            assetId={val.assetId}
-            assetName={val.assetName}
-            borrowerName={val.borrowerName}
-            borrowDateAt={val.borrowDateAt}
-            borrowSetDateReturn={val.borrowSetDateReturn}
-            borrowReturnDate={val.borrowReturnDate}
-            borrowPricePerDay={val.borrowPricePerDay}
-            totalDay={val.totalDay}
-            totalPrice={val.totalPrice}
-          />
-        )
-      })}
-      <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-        <div className="flex mr-10">
-          <div>Rows per page:</div>
-          <select
-            id="perPage"
-            className="w-12 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            onChange={(e) => setPerPage(e.target.value)}
+
+        <div className="md:col-span-3">
+          <Selector placeholder={'ฝ่าย/กลุ่มงาน'} />
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            type="button"
+            className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+            // onClick={handleSearch}
           >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10" defaultValue="selected">
-              10
-            </option>
-          </select>
+            <div className="text-xl text-white">
+              <AiOutlineSearch />
+            </div>
+          </button>
         </div>
+      </div>
+      {/* table */}
+      <div className="bg-white rounded-lg  my-3 overflow-x-auto scrollbar">
+        <div className="w-[1200px] lg:w-full lg:h-full h-[500px]">
+          <div className="text-text-black-table text-xs font-semibold bg-white rounded-t-lg border-b-[1px] border-border-gray-table p-2">
+            <div>ผลการค้นหา {totalRow} รายการ</div>
+            {/* top bar */}
+            <div className="grid grid-cols-12 gap-2 h-12 items-center text-center">
+              <div className="col-span-1">ID ใบยืม</div>
+              <div className="col-span-2">เลขครุภัณฑ์</div>
+              <div className="col-span-3">ชื่อครุภัณฑ์</div>
+              <div className="col-span-1">ชื่อผู้ขอยืม</div>
+              <div className="col-span-1">วันที่ยืม</div>
+              <div className="col-span-1">กำหนดคืน</div>
+              <div className="col-span-1">วันที่คืน</div>
+              <div className="col-span-2">Action</div>
+            </div>
+          </div>
+          {tableData?.map((val, idx) => {
+            return (
+              <TableBorrowList
+                key={idx}
+                index={idx}
+                borrowDocId={val.borrowDocId}
+                ID={val.ID}
+                assetId={val.assetId}
+                assetName={val.assetName}
+                borrowerName={val.borrowerName}
+                borrowDateAt={val.borrowDateAt}
+                borrowSetDateReturn={val.borrowSetDateReturn}
+                borrowReturnDate={val.borrowReturnDate}
+                borrowPricePerDay={val.borrowPricePerDay}
+                totalDay={val.totalDay}
+                totalPrice={val.totalPrice}
+              />
+            )
+          })}
+          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+            <div className="flex mr-10 items-center">
+              <div>Rows per page:</div>
+              <select
+                id="perPage"
+                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                onChange={(e) => setPerPage(e.target.value)}
+              >
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10" defaultValue="selected">
+                  10
+                </option>
+              </select>
+            </div>
 
-        <div>1-{perPage} of 13</div>
+            <div>1-{perPage} of 13</div>
 
-        <button className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
-          <HiChevronLeft className="text-lg" />
-        </button>
-        <button className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
-          <HiChevronRight className="text-lg" />
-        </button>
+            <button className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
+              <HiChevronLeft className="text-lg" />
+            </button>
+            <button className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
+              <HiChevronRight className="text-lg" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )

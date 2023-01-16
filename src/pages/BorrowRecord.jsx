@@ -1,8 +1,46 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import TableBorrowRecord from '../components/table/TableBorrowRecord'
+import Selector from '../components/selector/Selector'
 
 const BorrowRecord = () => {
+  const [countRow, setCountRow] = useState(1)
+
+  const [input, setInput] = useState({
+    ID: '',
+    billNumber: '',
+    documentRegistration: '',
+    sector: '',
+    eligiblePerson: '',
+    selfSector: '',
+    allPrice: 0,
+    firstName_recorder: '',
+    lastName_recorder: '',
+    dateTime_recorder: '',
+    firstName_courier: '',
+    lastName_courier: '',
+    dateTime_courier: '',
+    firstName_approver: '',
+    lastName_approver: '',
+    dateTime_approver: '',
+    status: 'not approve',
+  })
+  const [countIndexArray, setCountIndexArray] = useState([0])
+
+  const [saveAssetWithdrawTableArray, setSaveAssetWithdrawTableArray] =
+    useState([
+      {
+        index: 0,
+        inventoryNumber: '',
+        productName: '',
+        brand: '',
+        serialNumber: '',
+        supplier: '',
+        amount: '',
+        price: '',
+      },
+    ])
+
   const tableData = [
     {
       ID: '1',
@@ -27,6 +65,69 @@ const BorrowRecord = () => {
     },
   ]
 
+  // handle
+  const handleChangeID = (e) => {
+    const clone = { ...input }
+    clone.ID = e.target.value
+    setInput(clone)
+  }
+  const handleChangeBillNumber = (e) => {
+    const clone = { ...input }
+    clone.billNumber = e.target.value
+    setInput(clone)
+  }
+  const handleChangeDocumentRegistration = (e) => {
+    const clone = { ...input }
+    clone.documentRegistration = e.target.value
+    setInput(clone)
+  }
+  const handleChangeSector = (e) => {
+    const clone = { ...input }
+    clone.sector = e.target.value
+    setInput(clone)
+  }
+  const handleChangeEligiblePerson = (e) => {
+    const clone = { ...input }
+    clone.eligiblePerson = e.target.value
+    setInput(clone)
+  }
+
+  const handleChangeAllPrice = (e) => {
+    const clone = { ...input }
+    clone.allPrice = e.target.value
+    setInput(clone)
+  }
+
+  //handle bottom table
+  const handleClickIncrease = (e) => {
+    e.preventDefault()
+    setCountRow(countRow + 1)
+    setCountIndexArray([...countIndexArray, countRow])
+
+    let clone = [...saveAssetWithdrawTableArray]
+    const newCloneArray = {
+      index: countRow,
+      inventoryNumber: '',
+      productName: '',
+      brand: '',
+      serialNumber: '',
+      supplier: '',
+      amount: '',
+      price: '',
+    }
+    setSaveAssetWithdrawTableArray([...clone, newCloneArray])
+  }
+
+  const deleteRow = (index) => {
+    if (countRow > 0) {
+      setCountRow(countRow - 1)
+    }
+
+    let clone = [...saveAssetWithdrawTableArray]
+    clone.splice(index, 1)
+    setSaveAssetWithdrawTableArray(clone)
+  }
+
   return (
     <>
       {/* body */}
@@ -48,7 +149,7 @@ const BorrowRecord = () => {
         </div>
         {/* ข้อมูลการยืมครุภัณฑ์ */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
-          <div className="text-md font-semibold">ข้อมูลการยืมครุภัณฑ์</div>
+          <div className="text-xl">ข้อมูลการยืมครุภัณฑ์</div>
           {/* Row 1 เลขที่เอกสารการยืม */}
           <div className="grid grid-cols-5 pt-4 gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
@@ -91,102 +192,126 @@ const BorrowRecord = () => {
             </div>
           </div>
         </div>
-        {/* ข้อมูลครุภัณฑ์ที่เลือก */}
+        {/* รายการครุภัณฑ์ที่เลือก */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
-          <div className="flex justify-between">
-            <div className="text-md font-semibold">ข้อมูลครุภัณฑ์ที่เลือก</div>
-            <button
-              type="button"
-              className="border border-text-green text-text-green px-4 py-2 rounded hover:bg-green-800 hover:text-white"
-            >
-              เลือกรายการครุภัณฑ์
-            </button>
-          </div>
+          <div className="text-xl">รายการครุภัณฑ์ที่เลือก</div>
           {/* table */}
-          <div className="overflow-x-auto text-xs font-semibold p-2 mt-3">
-            {/* header table */}
-            <div className="grid grid-cols-10 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
-              <div className="col-span-1">ลำดับ</div>
-              <div className="col-span-2">ID ครุภัณฑ์</div>
-              <div className="col-span-3">ชื่อครุภัณฑ์</div>
-              <div className="col-span-2">เจ้าของครุภัณฑ์</div>
-              <div className="col-span-1">จำนวน</div>
-              <div className="col-span-1"></div>
+          <div className="overflow-x-auto scrollbar pt-4">
+            <div className="w-[1000px] lg:w-full p-2 ">
+              <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+                <div className="grid grid-cols-11 gap-2 text-center">
+                  <div className="ml-2 col-span-1 ">ลำดับ</div>
+                  <div className="col-span-2">เลขครุภัณฑ์</div>
+                  <div className="col-span-3">ชื่อครุภัณฑ์</div>
+                  <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
+                  <div className="col-span-1">จำนวน</div>
+                  <div className="col-span-1">จำนวนเงิน (บาท)</div>
+                </div>
+              </div>
+              {saveAssetWithdrawTableArray?.map((el, idx) => {
+                return (
+                  <TableBorrowRecord
+                    key={idx}
+                    index={idx}
+                    saveAssetWithdrawTableArray={saveAssetWithdrawTableArray}
+                    setSaveAssetWithdrawTableArray={
+                      setSaveAssetWithdrawTableArray
+                    }
+                    deleteRow={deleteRow}
+                  />
+                )
+              })}
+              <button
+                type="button"
+                className="w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+                onClick={handleClickIncrease}
+              >
+                + เพิ่มครุภัณฑ์
+              </button>
+
+              <div className="h-[24px]"></div>
             </div>
           </div>
-          {tableData?.map((val, idx) => {
-            return (
-              <TableBorrowRecord
-                key={idx}
-                index={idx}
-                ID={val.ID}
-                assetId={val.assetId}
-                assetName={val.assetName}
-                borrowerName={val.borrowerName}
-                quantity={val.quantity}
-              />
-            )
-          })}
         </div>
         {/* รายละเอียดผู้ยืม */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
           <div className="text-md font-semibold">รายละเอียดผู้ยืม</div>
-          {/* Row 1 ชื่อ */}
+          {/* Row 1 ชื่อ - นามสกุล */}
           <div className="grid grid-cols-5 pt-4 gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className=" text-text-gray flex">
-                ชื่อ
+                ชื่อ - นามสกุล
                 <h1 className="text-red-500 ml-2 font-bold">*</h1>
               </label>
-              <input
-                type="text"
-                placeholder="Example"
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+              <Selector placeholder={'Select'} />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">หมายเลขโทรศัพท์</label>
-              <input
-                type="number"
-                placeholder="00000000"
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+              <label className="text-text-gray">รหัสเจ้าหน้าทื่</label>
+              <Selector placeholder={'Select'} />
             </div>
           </div>
-          {/* Row 2 หน่วยงานผู้ยืม */}
+          {/* Row 2 หมายเลขโทรศัพท์ */}
           <div className="grid grid-cols-5 pt-4 gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">หน่วยงานผู้ยืม</label>
+              <label className=" text-text-gray">หมายเลขโทรศัพท์</label>
               <input
                 type="text"
-                placeholder="Example"
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                placeholder="0812312394"
+                className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                readOnly
               />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">ภาควิชาผู้ยืม</label>
+              <label className="text-text-gray">ที่อยู่</label>
               <input
                 type="text"
                 placeholder="Example"
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                readOnly
               />
             </div>
           </div>
-          {/* Row 3 ที่อยู่ */}
+          {/* Row 3 หน่วยงาน */}
           <div className="grid grid-cols-5 pt-4  gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">ที่อยู่</label>
-              <input
-                type="text"
-                placeholder="Example"
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+              <label className=" text-text-gray">หน่วยงาน</label>
+              <Selector placeholder={'Select'} />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className="text-text-gray">วัตถุประสงค์การขอยืม</label>
               <input
                 type="text"
                 placeholder="Example"
+                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              />
+            </div>
+          </div>
+        </div>
+        {/* สถานที่ตั้งใหม่ */}
+        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+          <div className="text-md font-semibold">สถานที่ตั้งใหม่</div>
+          {/* Row 1 ชื่อ */}
+          <div className="grid grid-cols-5 pt-4 gap-20">
+            <div className="flex flex-col gap-y-2 col-span-2">
+              <label className=" text-text-gray flex">
+                อาคาร
+                <h1 className="text-red-500 ml-2 font-bold">*</h1>
+              </label>
+              <Selector placeholder={'Select'} />
+            </div>
+            <div className="flex flex-col gap-y-2 col-span-1">
+              <label className="text-text-gray">ชั้น</label>
+              <input
+                type="number"
+                placeholder="00000000"
+                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              />
+            </div>
+            <div className="flex flex-col gap-y-2 col-span-1">
+              <label className="text-text-gray">ห้อง</label>
+              <input
+                type="number"
+                placeholder="00000000"
                 className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>

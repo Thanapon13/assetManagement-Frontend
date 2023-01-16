@@ -24,7 +24,7 @@ module.exports = {
         'text-sidebar': '#999999',
         'table-gray': '#F5F5F5',
         'table-data': '#F0F0F0',
-        "button-red":"#FE5F7C"
+        'button-red': '#FE5F7C',
       },
       gridTemplateColumns: {
         // 14: 'repeat(14, minmax(0, 1fr))',
