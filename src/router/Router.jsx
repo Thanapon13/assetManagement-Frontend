@@ -18,11 +18,12 @@ import {
   RepairDashboard,
   LoginPage,
   ForgotPassword,
-  EmailConfirmation
+  EmailConfirmation,
+  DefaultData
 } from "../pages";
 
 const Router = () => {
-  const user = "";
+  const user = "a";
 
   return (
     <BrowserRouter>
@@ -55,6 +56,7 @@ const Router = () => {
             />
             <Route path="/transferAsset" element={<TransferAsset />} />
             <Route path="/repairDashboard" element={<RepairDashboard />} />
+            <Route path="/defaultData" element={<DefaultData />} />
           </Route>
         ) : (
           <>

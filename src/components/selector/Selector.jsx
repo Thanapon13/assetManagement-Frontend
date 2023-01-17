@@ -60,7 +60,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
     clone.acquiredType = value;
     setState(clone);
   };
-  // หมวด
+  // หมวดหมู่ครุภัณฑ์
   const handleChangeCategory = (value) => {
     const clone = { ...state };
     clone.category = value;
@@ -111,7 +111,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
               ? state?.unit
               : id === "ยี่ห้อ"
               ? state?.brand
-              : id === "หมวด"
+              : id === "หมวดหมู่ครุภัณฑ์"
               ? state?.category
               : id === "กลุ่ม"
               ? state?.group
@@ -119,6 +119,12 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
               ? state?.acquiredType
               : id === "วัตถุประสงค์ในการใช้งาน"
               ? state?.purposeOfUse
+              : id === "วิธีการได้มา" ||
+                id === "ประเภทเงิน" ||
+                id === "ผู้ขาย" ||
+                id === "สถานะ" ||
+                id === "ชื่อ - นามสกุล"
+              ? state
               : null
           )
             ? "text-gray-700"
@@ -134,7 +140,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
             ? state?.unit
             : id === "ยี่ห้อ"
             ? state?.brand
-            : id === "หมวด"
+            : id === "หมวดหมู่ครุภัณฑ์"
             ? state?.category
             : id === "กลุ่ม"
             ? state?.group
@@ -142,6 +148,12 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
             ? state?.acquiredType
             : id === "วัตถุประสงค์ในการใช้งาน"
             ? state?.purposeOfUse
+            : id === "วิธีการได้มา" ||
+              id === "ประเภทเงิน" ||
+              id === "ผู้ขาย" ||
+              id === "สถานะ"||
+              id === "ชื่อ - นามสกุล"
+            ? state
             : null
         )
           ? (id === "ประเภทครุภัณฑ์"
@@ -152,7 +164,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
               ? state?.unit
               : id === "ยี่ห้อ"
               ? state?.brand
-              : id === "หมวด"
+              : id === "หมวดหมู่ครุภัณฑ์"
               ? state?.category
               : id === "กลุ่ม"
               ? state?.group
@@ -160,6 +172,12 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
               ? state?.acquiredType
               : id === "วัตถุประสงค์ในการใช้งาน"
               ? state?.purposeOfUse
+              : id === "วิธีการได้มา" ||
+                id === "ประเภทเงิน" ||
+                id === "ผู้ขาย" ||
+                id === "สถานะ" ||
+                id === "ชื่อ - นามสกุล"
+              ? state
               : null
             )?.length > 25
             ? (id === "ประเภทครุภัณฑ์"
@@ -170,7 +188,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
                 ? state?.unit
                 : id === "ยี่ห้อ"
                 ? state?.brand
-                : id === "หมวด"
+                : id === "หมวดหมู่ครุภัณฑ์"
                 ? state?.category
                 : id === "กลุ่ม"
                 ? state?.group
@@ -178,6 +196,12 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
                 ? state?.acquiredType
                 : id === "วัตถุประสงค์ในการใช้งาน"
                 ? state?.purposeOfUse
+                : id === "วิธีการได้มา" ||
+                  id === "ประเภทเงิน" ||
+                  id === "ผู้ขาย" ||
+                  id === "สถานะ" ||
+                  id === "ชื่อ - นามสกุล"
+                ? state
                 : null
               )?.substring(0, 25) + "..."
             : id === "ประเภทครุภัณฑ์"
@@ -188,7 +212,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
             ? state?.unit
             : id === "ยี่ห้อ"
             ? state?.brand
-            : id === "หมวด"
+            : id === "หมวดหมู่ครุภัณฑ์"
             ? state?.category
             : id === "กลุ่ม"
             ? state?.group
@@ -196,6 +220,12 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
             ? state?.acquiredType
             : id === "วัตถุประสงค์ในการใช้งาน"
             ? state?.purposeOfUse
+            : id === "วิธีการได้มา" ||
+              id === "ประเภทเงิน" ||
+              id === "ผู้ขาย" ||
+              id === "สถานะ" ||
+              id === "ชื่อ - นามสกุล"
+            ? state
             : null
           : placeholder}
         <BiChevronDown
@@ -234,7 +264,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
                   ? state?.unit
                   : id === "ยี่ห้อ"
                   ? state?.brand
-                  : id === "หมวด"
+                  : id === "หมวดหมู่ครุภัณฑ์"
                   ? state?.category
                   : id === "กลุ่ม"
                   ? state?.group
@@ -261,12 +291,14 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
                   ? state?.unit
                   : id === "ยี่ห้อ"
                   ? state?.brand
-                  : id === "หมวด"
+                  : id === "หมวดหมู่ครุภัณฑ์"
                   ? state?.category
                   : id === "กลุ่ม"
                   ? state?.group
                   : id === "ประเภทที่ได้มา"
                   ? state?.acquiredType
+                  : id === "วัตถุประสงค์ในการใช้งาน"
+                  ? state?.purposeOfUse
                   : id === "วัตถุประสงค์ในการใช้งาน"
                   ? state?.purposeOfUse
                   : ""
@@ -282,7 +314,7 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
                   handleChangeUnit(data?.name);
                 } else if (id === "ยี่ห้อ") {
                   handleChangeBrand(data?.name);
-                } else if (id === "หมวด") {
+                } else if (id === "หมวดหมู่ครุภัณฑ์") {
                   handleChangeCategory(data?.name);
                 } else if (id === "กลุ่ม") {
                   handleChangeGroup(data?.name);
@@ -290,6 +322,16 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
                   handleChangeAcquiredType(data?.name);
                 } else if (id === "วัตถุประสงค์ในการใช้งาน") {
                   handleChangePurposeOfUse(data?.name);
+                } else if (
+                  id === "วิธีการได้มา" ||
+                  id === "ประเภทเงิน" ||
+                  id === "ผู้ขาย" ||
+                  id === "สถานะ" ||
+                  id === "ชื่อ - นามสกุล"
+                ) {
+                  setState(data?.name);
+                  // console.log(state);
+                  // console.log(setState);
                 }
 
                 setOpen(false);
