@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import TableBorrowRecord from '../components/table/TableBorrowRecord'
 import Selector from '../components/selector/Selector'
+import TableLocationHistory from '../components/table/TableLocationHistory'
 
 const BorrowRecord = () => {
   const [countRow, setCountRow] = useState(1)
@@ -44,24 +45,27 @@ const BorrowRecord = () => {
   const tableData = [
     {
       ID: '1',
-      assetId: '65/0322171',
-      assetName: 'Macbook Pro M2 16" -512GB',
-      borrowerName: 'สำนักคอมพิวเตอร์',
-      quantity: '3',
+      building: 'อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ',
+      floor: '12',
+      room: 'ห้องรับห้องพิเศษ',
+      moveInDate: '19/04/2565',
+      moveOutDate: '22/12/2565',
     },
     {
       ID: '2',
-      assetId: '65/0322171',
-      assetName: 'Macbook Pro M2 16" -512GB',
-      borrowerName: 'สำนักคอมพิวเตอร์',
-      quantity: '3',
+      building: 'อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ',
+      floor: '12',
+      room: 'ห้องรับห้องพิเศษ',
+      moveInDate: '19/04/2565',
+      moveOutDate: '22/12/2565',
     },
     {
       ID: '3',
-      assetId: '65/0322171',
-      assetName: 'Macbook Pro M2 16" -512GB',
-      borrowerName: 'สำนักคอมพิวเตอร์',
-      quantity: '3',
+      building: 'อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ',
+      floor: '12',
+      room: 'ห้องรับห้องพิเศษ',
+      moveInDate: '19/04/2565',
+      moveOutDate: '22/12/2565',
     },
   ]
 
@@ -151,7 +155,7 @@ const BorrowRecord = () => {
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
           <div className="text-xl">ข้อมูลการยืมครุภัณฑ์</div>
           {/* Row 1 เลขที่เอกสารการยืม */}
-          <div className="grid grid-cols-5 pt-4 gap-20">
+          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className=" text-text-gray flex">
                 เลขที่เอกสารการยืม
@@ -160,7 +164,8 @@ const BorrowRecord = () => {
               <input
                 type="text"
                 placeholder="Example"
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                readOnly
+                className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
@@ -168,18 +173,20 @@ const BorrowRecord = () => {
               <input
                 type="text"
                 placeholder="Example"
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                readOnly
+                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
           </div>
           {/* Row 2 วันที่ยืม */}
-          <div className="grid grid-cols-5 pt-4 gap-20">
+          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className=" text-text-gray">วันที่ยืม</label>
               <input
                 type="date"
                 placeholder="Example"
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                readOnly
+                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
@@ -199,13 +206,16 @@ const BorrowRecord = () => {
           <div className="overflow-x-auto scrollbar pt-4">
             <div className="w-[1000px] lg:w-full p-2 ">
               <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                <div className="grid grid-cols-11 gap-2 text-center">
+                <div className="grid grid-cols-12 gap-2 text-center">
                   <div className="ml-2 col-span-1 ">ลำดับ</div>
                   <div className="col-span-2">เลขครุภัณฑ์</div>
                   <div className="col-span-3">ชื่อครุภัณฑ์</div>
                   <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
-                  <div className="col-span-1">จำนวน</div>
-                  <div className="col-span-1">จำนวนเงิน (บาท)</div>
+                  <div className="col-span-3 grid grid-cols-4 gap-5">
+                    <div className="col-span-1">จำนวน</div>
+                    <div className="col-span-1">หน่วยนับ</div>
+                    <div className="col-span-2">จำนวนเงิน (บาท)</div>
+                  </div>
                 </div>
               </div>
               {saveAssetWithdrawTableArray?.map((el, idx) => {
@@ -235,50 +245,31 @@ const BorrowRecord = () => {
         </div>
         {/* รายละเอียดผู้ยืม */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-md font-semibold">รายละเอียดผู้ยืม</div>
-          {/* Row 1 ชื่อ - นามสกุล */}
-          <div className="grid grid-cols-5 pt-4 gap-20">
+          <div className="text-xl">รายละเอียดผู้ยืม</div>
+          {/* Row 1 หน่วยงาน */}
+          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray flex">
-                ชื่อ - นามสกุล
-                <h1 className="text-red-500 ml-2 font-bold">*</h1>
-              </label>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className=" text-text-gray flex">
+                  หน่วยงาน
+                  <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                </label>
+              </div>
               <Selector placeholder={'Select'} />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">รหัสเจ้าหน้าทื่</label>
+              <label className="text-text-gray">ภาควิชา</label>
               <Selector placeholder={'Select'} />
             </div>
           </div>
-          {/* Row 2 หมายเลขโทรศัพท์ */}
-          <div className="grid grid-cols-5 pt-4 gap-20">
+          {/* Row 2 วัตถุประสงค์การขอยืม */}
+          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">หมายเลขโทรศัพท์</label>
-              <input
-                type="text"
-                placeholder="0812312394"
-                className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                readOnly
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">ที่อยู่</label>
-              <input
-                type="text"
-                placeholder="Example"
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                readOnly
-              />
-            </div>
-          </div>
-          {/* Row 3 หน่วยงาน */}
-          <div className="grid grid-cols-5 pt-4  gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">หน่วยงาน</label>
+              <label className=" text-text-gray">วัตถุประสงค์การขอยืม</label>
               <Selector placeholder={'Select'} />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">วัตถุประสงค์การขอยืม</label>
+              <label className=" text-text-gray">ผู้ดำเนินการ</label>
               <input
                 type="text"
                 placeholder="Example"
@@ -289,9 +280,9 @@ const BorrowRecord = () => {
         </div>
         {/* สถานที่ตั้งใหม่ */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-md font-semibold">สถานที่ตั้งใหม่</div>
+          <div className="text-xl">สถานที่ตั้งใหม่</div>
           {/* Row 1 ชื่อ */}
-          <div className="grid grid-cols-5 pt-4 gap-20">
+          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className=" text-text-gray flex">
                 อาคาร
@@ -314,6 +305,26 @@ const BorrowRecord = () => {
                 placeholder="00000000"
                 className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
+            </div>
+          </div>
+        </div>
+        {/* ประวัติสถานที่ตั้ง */}
+        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+          <div className="text-xl">ประวัติสถานที่ตั้ง</div>
+          {/* table */}
+          <div className="overflow-x-auto scrollbar pt-4">
+            <div className="w-[1000px] lg:w-full p-2 ">
+              <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+                <div className="grid grid-cols-11 gap-2 text-center">
+                  <div className="ml-2 col-span-1 ">ลำดับ</div>
+                  <div className="col-span-3">อาคาร</div>
+                  <div className="col-span-1">ชั้น</div>
+                  <div className="col-span-2">ห้อง</div>
+                  <div className="col-span-2">วันที่ย้ายเข้า</div>
+                  <div className="col-span-2">วันที่ย้ายออก</div>
+                </div>
+              </div>
+              <TableLocationHistory data={tableData} />
             </div>
           </div>
         </div>

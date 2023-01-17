@@ -52,7 +52,7 @@ function TableBorrowRecord({
 
   return (
     <div
-      className={` p-2 grid grid-cols-11 justify-center items-center gap-4 h-16 text-xs bg-white`}
+      className={` p-2 grid grid-cols-12 justify-center items-center gap-4 h-16 text-xs bg-white`}
     >
       <div className="col-span-1 ml-2 text-center flex justify-center items-center ">
         <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
@@ -67,29 +67,32 @@ function TableBorrowRecord({
         <Selector placeholder={'ชื่อครุภัณฑ์'} />
       </div>
       <input
-        className="col-span-2 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+        className="col-span-2 bg-table-gray text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
         onChange={handleChangeBrand}
         value={
           saveAssetWithdrawTableArray &&
           saveAssetWithdrawTableArray[index]?.brand
         }
       />
-      <input
-        className="col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
-        onChange={handleChangeSerialNumber}
-        value={
-          saveAssetWithdrawTableArray &&
-          saveAssetWithdrawTableArray[index]?.serialNumber
-        }
-      />
-      <input
-        className="col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
-        onChange={handleChangeSupplier}
-        value={
-          saveAssetWithdrawTableArray &&
-          saveAssetWithdrawTableArray[index]?.supplier
-        }
-      />
+      <div className="col-span-3 grid grid-cols-4 gap-5">
+        <input
+          className="col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          onChange={handleChangeSerialNumber}
+          value={
+            saveAssetWithdrawTableArray &&
+            saveAssetWithdrawTableArray[index]?.serialNumber
+          }
+        />
+        <input
+          className="col-span-1 bg-table-gray text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          onChange={handleChangeSupplier}
+          value={
+            saveAssetWithdrawTableArray &&
+            saveAssetWithdrawTableArray[index]?.supplier
+          }
+        />
+        <input className=" bg-table-gray col-span-2 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue" />
+      </div>
       <div className="flex justify-center items-center">
         <button
           className="flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 "
