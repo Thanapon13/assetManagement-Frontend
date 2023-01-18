@@ -48,7 +48,7 @@ const TableBorrowCheckReturn = ({
         <Link
           // type="button"
           // to={`/borrowSaving/${ID}`}
-          // to="borrowSaving"
+          to="/borrowCheckReturn/borrowCheckSaving"
           onClick={handleClick}
           className={`${
             isClick

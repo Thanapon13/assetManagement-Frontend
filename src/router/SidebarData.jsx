@@ -175,7 +175,7 @@ export const SidebarData = [
       },
       {
         title: 'ตรวจรับคืน',
-        path: '/BorrowCheckReturn',
+        path: '/borrowCheckReturn',
         icon: (
           <svg
             width="20"
