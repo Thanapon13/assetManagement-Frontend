@@ -49,18 +49,6 @@ const TableBorrowList = ({
         >
           {isClick ? 'คืนแล้ว' : 'บันทึกคืน'}
         </Link>
-        <Link
-          to="borrowEdit"
-          className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
-        >
-          <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
-        </Link>
-        <Link
-          to="borrowDetail"
-          className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
-        >
-          <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
-        </Link>
       </div>
     </div>
   )
