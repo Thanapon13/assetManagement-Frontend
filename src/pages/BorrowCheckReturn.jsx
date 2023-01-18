@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import Selector from '../components/selector/Selector'
-import TableBorrowDetailList from '../components/table/TableBorrowDetailList'
+import TableBorrowCheckReturn from '../components/table/TableBorrowCheckReturn'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { AiOutlineSearch } from 'react-icons/ai'
 import DateInput from '../components/date/DateInput'
 
-const BorrowReturnCheck = () => {
+const BorrowCheckReturn = () => {
   // useState
   const [perPage, setPerPage] = useState(10)
   const [totalRow, setTotalRow] = useState(25)
@@ -253,7 +253,7 @@ const BorrowReturnCheck = () => {
           </div>
           {tableData?.map((val, idx) => {
             return (
-              <TableBorrowDetailList
+              <TableBorrowCheckReturn
                 key={idx}
                 index={idx}
                 borrowDocId={val.borrowDocId}
@@ -308,4 +308,4 @@ const BorrowReturnCheck = () => {
   )
 }
 
-export default BorrowReturnCheck
+export default BorrowCheckReturn

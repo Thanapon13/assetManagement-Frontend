@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BsFillPencilFill, BsFillEyeFill } from 'react-icons/bs'
 
-const TableBorrowList = ({
+const TableBorrowCheckReturn = ({
   index,
   borrowDocId,
   ID,
@@ -36,34 +36,31 @@ const TableBorrowList = ({
       <div className="col-span-1 ">{borrowSetDateReturn}</div>
       <div className="col-span-1">{borrowReturnDate}</div>
       <div className="col-span-2 flex justify-center space-x-5">
+        <div
+          className={`${
+            isClick
+              ? ' bg-green-100 text-green-700 border-green-100'
+              : ' bg-orange-100 border-orange-100 text-orange-400 '
+          } px-4 py-2 rounded-2xl border`}
+        >
+          {isClick ? 'คืนสำเร็จ' : 'รอตรวจรับ'}
+        </div>
         <Link
           // type="button"
           // to={`/borrowSaving/${ID}`}
-          to="borrowSaving"
+          // to="borrowSaving"
           onClick={handleClick}
           className={`${
             isClick
-              ? 'bg-sidebar-green text-text-green rounded-xl hover:text-white'
+              ? 'bg-sidebar-green hidden text-text-green rounded-xl hover:text-white'
               : ' text-white'
           } bg-text-green hover:bg-green-800 border border-spacing-5  rounded-md p-2`}
         >
-          {isClick ? 'คืนแล้ว' : 'บันทึกคืน'}
-        </Link>
-        <Link
-          to="borrowEdit"
-          className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
-        >
-          <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
-        </Link>
-        <Link
-          to="borrowDetail"
-          className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
-        >
-          <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
+          {isClick ? '' : 'ตรวจรับ'}
         </Link>
       </div>
     </div>
   )
 }
 
-export default TableBorrowList
+export default TableBorrowCheckReturn

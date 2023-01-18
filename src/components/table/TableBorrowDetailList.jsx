@@ -1,65 +1,42 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { BsFillPencilFill, BsFillEyeFill } from 'react-icons/bs'
+import DropdownStatus from '../dropdown/DropdownStatus'
 
-const TableBorrowDetailList = ({
-  index,
-  borrowDocId,
-  ID,
-  assetId,
-  assetName,
-  borrowerName,
-  borrowDateAt,
-  borrowSetDateReturn,
-  borrowReturnDate,
-  borrowPricePerDay,
-  totalDay,
-  totalPrice,
-}) => {
+const TableBorrowDetailList = (props) => {
   const [isClick, setIsClick] = useState(false)
-
-  let navigate = useNavigate()
 
   const handleClick = () => {
     setIsClick(!isClick)
   }
 
   return (
-    <div
-      className={`grid grid-cols-12 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
-    >
-      <div className="col-span-1">{borrowDocId}</div>
-      <div className="col-span-2">{assetId}</div>
-      <div className="col-span-3 ">{assetName}</div>
-      <div className="col-span-1">{borrowerName}</div>
-      <div className="col-span-1">{borrowDateAt}</div>
-      <div className="col-span-1 ">{borrowSetDateReturn}</div>
-      <div className="col-span-1">{borrowReturnDate}</div>
-      <div className="col-span-2 flex justify-center space-x-5">
-        <div
-          className={`${
-            isClick
-              ? ' bg-green-100 text-green-700 border-green-100'
-              : ' bg-orange-100 border-orange-100 text-orange-400 '
-          } px-4 py-2 rounded-2xl border`}
-        >
-          {isClick ? 'คืนสำเร็จ' : 'รอตรวจรับ'}
-        </div>
-        <Link
-          // type="button"
-          // to={`/borrowSaving/${ID}`}
-          // to="borrowSaving"
-          onClick={handleClick}
-          className={`${
-            isClick
-              ? 'bg-sidebar-green hidden text-text-green rounded-xl hover:text-white'
-              : ' text-white'
-          } bg-text-green hover:bg-green-800 border border-spacing-5  rounded-md p-2`}
-        >
-          {isClick ? '' : 'ตรวจรับ'}
-        </Link>
-      </div>
-    </div>
+    <>
+      {props.data.map((item, idx) => {
+        return (
+          <div className="grid grid-cols-10 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+            <div className="col-span-1  text-center flex justify-center items-center ">
+              <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+                {idx + 1}
+              </div>
+            </div>
+            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+              {item.assetId}
+            </div>
+            <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+              {item.assetName}
+            </div>
+            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+              {item.assetModelDetail}
+            </div>
+            <div className="col-span-1 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+              {item.status}
+            </div>
+            <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
+              {item.totalPrice}
+            </div>
+          </div>
+        )
+      })}
+    </>
   )
 }
 

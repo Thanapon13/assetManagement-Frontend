@@ -163,10 +163,10 @@ const BorrowList = () => {
           <div className="text-text-gray">/</div>
           <div className="text-text-gray ml-2">รายการเบิกจ่าย</div>
         </div>
-        <div className="flex gap-5">
+        <div className="md:flex gap-5 space-y-2 md:space-y-0">
           <button
             type="button"
-            className="bg-background-page  flex items-center gap-3 text-text-green border border-text-green px-4 py-2 rounded hover:bg-green-800"
+            className="bg-background-page px-4 py-2  flex items-center gap-3 text-text-green border border-text-green rounded hover:bg-green-800"
           >
             <svg
               width="22"
