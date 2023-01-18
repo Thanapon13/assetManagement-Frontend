@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { BsFillPencilFill, BsFillEyeFill } from 'react-icons/bs'
 
 const TableBorrowList = ({
@@ -17,6 +17,8 @@ const TableBorrowList = ({
   totalPrice,
 }) => {
   const [isClick, setIsClick] = useState(false)
+
+  let navigate = useNavigate()
 
   const handleClick = () => {
     setIsClick(!isClick)
@@ -47,12 +49,18 @@ const TableBorrowList = ({
         >
           {isClick ? 'คืนแล้ว' : 'บันทึกคืน'}
         </Link>
-        <button className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
+        <Link
+          to="borrowEdit"
+          className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
+        >
           <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
-        </button>
-        <button className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
+        </Link>
+        <Link
+          to="borrowDetail"
+          className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
+        >
           <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
-        </button>
+        </Link>
       </div>
     </div>
   )

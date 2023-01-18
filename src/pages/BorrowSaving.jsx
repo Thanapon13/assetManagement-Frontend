@@ -64,6 +64,13 @@ const BorrowSaving = () => {
               Home
             </Link>
             <div className="text-text-gray">/</div>
+            <Link
+              to="/borrowList"
+              className=" text-text-green ml-2 underline text-xs focus:text-sky-700 focus:underline mr-2"
+            >
+              รายการ ยืม-คืน
+            </Link>
+            <div className="text-text-gray">/</div>
             <div className="text-text-gray ml-2">บันทึกการคืนครุภัณฑ์</div>
           </div>
         </div>

@@ -10,6 +10,9 @@ import {
 import {
   Dashboard,
   BorrowList,
+  BorrowEdit,
+  BorrowDetail,
+  BorrowReturnCheck,
   BorrowRecord,
   BorrowApprove,
   BorrowSaving,
@@ -51,7 +54,7 @@ const Router = () => {
         <Route path="forgotPassword" element={<ForgotPassword />} />
         <Route path="emailConfirmation" element={<EmailConfirmation />} />
         {/* <Route path="changePassword/:word" element={<ChangePasswordPage />} /> */}
-        <Route path="*" element={<Navigate to="/login" />} />
+        {/* <Route path="*" element={<Navigate to="/login" />} /> */}
         <Route path="unauthorized" element={<Unauthorized />} />
 
         {/* protect routes */}
@@ -77,6 +80,10 @@ const Router = () => {
           />
           <Route path="borrowList" element={<BorrowList />} />
           <Route path="borrowList/borrowSaving" element={<BorrowSaving />} />
+          <Route path="borrowList/borrowEdit" element={<BorrowEdit />} />
+          <Route path="borrowList/borrowDetail" element={<BorrowDetail />} />
+
+          <Route path="borrowReturnCheck" element={<BorrowReturnCheck />} />
           <Route path="borrowRecord" element={<BorrowRecord />} />
           <Route path="borrowApprove" element={<BorrowApprove />} />
           <Route
