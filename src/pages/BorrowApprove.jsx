@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { BorrowApproveListItem, BorrowApprovedListItem } from '../components/'
+import ModalBorrowApprove from '../components/modal/ModalBorrowApprove'
 
 const BorrowApprove = () => {
   const dataApproveList = [
@@ -57,7 +58,6 @@ const BorrowApprove = () => {
 
   return (
     <>
-      {/* body */}
       <div className="bg-background-page pt-5 p-3 ">
         {/* Header */}
         <div className="text-2xl text-text-green ">อนุมัติยืมครุภัณฑ์</div>
@@ -146,12 +146,7 @@ const BorrowApprove = () => {
               <h1 className="">เลือกแล้ว {3} รายการ</h1>
             </div>
             <div className="space-x-10">
-              <button
-                type="button"
-                className=" p-2 border-[2px] text-red-500 border-red-400 rounded-sm hover:bg-red-200"
-              >
-                ไม่อนุมัติทั้งหมด
-              </button>
+              <ModalBorrowApprove />
               <button
                 type="button"
                 className=" p-2 border-[2px] bg-text-green border-text-green text-white rounded-sm hover:bg-green-800"
