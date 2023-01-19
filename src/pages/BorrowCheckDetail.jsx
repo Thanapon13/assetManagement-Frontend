@@ -66,7 +66,7 @@ const BorrowCheckDetail = () => {
       <div className="bg-background-page pt-5 p-3">
         {/* Header */}
         <div className="text-2xl text-text-green flex items-center space-x-5 ">
-          <Link to={`/borrowIndex`}>
+          <Link to={`/borrowCheckIndex`}>
             <FaArrowLeft className="text-gray-400" />
           </Link>
           <h1>รายละเอียดการตรวจรับคืน</h1>
