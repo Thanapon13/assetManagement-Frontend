@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import Selector from '../components/selector/Selector'
-import TableBorrowCheckReturn from '../components/table/TableBorrowCheckReturn'
+import TableBorrowCheckIndex from '../components/table/TableBorrowCheckIndex'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { AiOutlineSearch } from 'react-icons/ai'
 import DateInput from '../components/date/DateInput'
 
-const BorrowCheckReturn = () => {
+const BorrowCheckIndex = () => {
   // useState
   const [perPage, setPerPage] = useState(10)
   const [totalRow, setTotalRow] = useState(25)
@@ -28,6 +28,7 @@ const BorrowCheckReturn = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      status: 'inProgress',
     },
     {
       borrowDocId: '001',
@@ -41,6 +42,7 @@ const BorrowCheckReturn = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      status: 'inProgress',
     },
     {
       borrowDocId: '001',
@@ -54,6 +56,7 @@ const BorrowCheckReturn = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      status: 'done',
     },
     {
       borrowDocId: '001',
@@ -67,6 +70,7 @@ const BorrowCheckReturn = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      status: 'inProgress',
     },
     {
       borrowDocId: '001',
@@ -80,6 +84,7 @@ const BorrowCheckReturn = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      status: 'done',
     },
     {
       borrowDocId: '001',
@@ -93,6 +98,7 @@ const BorrowCheckReturn = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      status: 'done',
     },
     {
       borrowDocId: '001',
@@ -106,6 +112,7 @@ const BorrowCheckReturn = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      status: 'inProgress',
     },
     {
       borrowDocId: '001',
@@ -119,6 +126,7 @@ const BorrowCheckReturn = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      status: 'inProgress',
     },
     {
       borrowDocId: '001',
@@ -132,6 +140,7 @@ const BorrowCheckReturn = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      status: 'done',
     },
     {
       borrowDocId: '001',
@@ -145,6 +154,7 @@ const BorrowCheckReturn = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      status: 'done',
     },
   ]
 
@@ -251,25 +261,7 @@ const BorrowCheckReturn = () => {
               <div className="col-span-2">Action</div>
             </div>
           </div>
-          {tableData?.map((val, idx) => {
-            return (
-              <TableBorrowCheckReturn
-                key={idx}
-                index={idx}
-                borrowDocId={val.borrowDocId}
-                ID={val.ID}
-                assetId={val.assetId}
-                assetName={val.assetName}
-                borrowerName={val.borrowerName}
-                borrowDateAt={val.borrowDateAt}
-                borrowSetDateReturn={val.borrowSetDateReturn}
-                borrowReturnDate={val.borrowReturnDate}
-                borrowPricePerDay={val.borrowPricePerDay}
-                totalDay={val.totalDay}
-                totalPrice={val.totalPrice}
-              />
-            )
-          })}
+          <TableBorrowCheckIndex data={tableData} />
           <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
             <div className="flex mr-10 items-center">
               <div>Rows per page:</div>
@@ -308,4 +300,4 @@ const BorrowCheckReturn = () => {
   )
 }
 
-export default BorrowCheckReturn
+export default BorrowCheckIndex

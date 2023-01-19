@@ -12,8 +12,9 @@ import {
   BorrowList,
   BorrowEdit,
   BorrowDetail,
-  BorrowCheckReturn,
+  BorrowCheckIndex,
   BorrowCheckSaving,
+  BorrowCheckDetail,
   BorrowRecord,
   BorrowApprove,
   BorrowSaving,
@@ -84,10 +85,14 @@ const Router = () => {
           <Route path="borrowList/borrowEdit" element={<BorrowEdit />} />
           <Route path="borrowList/borrowDetail" element={<BorrowDetail />} />
 
-          <Route path="borrowCheckReturn" element={<BorrowCheckReturn />} />
+          <Route path="borrowCheckIndex" element={<BorrowCheckIndex />} />
           <Route
-            path="borrowCheckReturn/borrowCheckSaving"
+            path="borrowCheckIndex/borrowCheckSaving"
             element={<BorrowCheckSaving />}
+          />
+          <Route
+            path="borrowCheckIndex/borrowCheckDetail"
+            element={<BorrowCheckDetail />}
           />
           <Route path="borrowRecord" element={<BorrowRecord />} />
           <Route path="borrowApprove" element={<BorrowApprove />} />

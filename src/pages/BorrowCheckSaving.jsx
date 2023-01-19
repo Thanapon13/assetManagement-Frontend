@@ -54,7 +54,7 @@ const BorrowCheckSaving = () => {
       <div className="bg-background-page pt-5 p-3">
         {/* Header */}
         <div className="text-2xl text-text-green flex items-center space-x-5 ">
-          <Link to={`/borrowList`}>
+          <Link to={`/borrowCheckIndex`}>
             <FaArrowLeft className="text-gray-400" />
           </Link>
           <h1>ตรวจรับคืนครุภัณฑ์</h1>
@@ -69,7 +69,7 @@ const BorrowCheckSaving = () => {
             </Link>
             <div className="text-text-gray">/</div>
             <Link
-              to="/borrowCheckReturn"
+              to="/borrowCheckIndex"
               className=" text-text-green ml-2 underline text-xs focus:text-sky-700 focus:underline mr-2"
             >
               รายการรอตรวจรับคืน
@@ -164,6 +164,24 @@ const BorrowCheckSaving = () => {
             </div>
           </div>
         </div>
+        {/* รายละเอียดผู้ยืม */}
+        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+          <div className="text-xl">รายละเอียดผู้ยืม</div>
+          {/* row 1 หน่วยงานที่ยืม */}
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-5 mt-5 p-2">
+            <div className="text-text-gray flex items-center ">
+              หน่วยงานที่ยืม
+            </div>
+            <div className="flex items-center ">{'สำนักบริหารงานเภสัช'}</div>
+            <div className="text-text-gray flex items-center ">ภาควิชา</div>
+            <div className="flex items-center ">{'งานบริหารเภสัช'}</div>
+          </div>
+          {/* row 2 ผู้ดำเนินการ */}
+          <div className="grid grid-cols-2 md:grid-cols-5 p-2">
+            <div className="text-text-gray flex items-center">ผู้ดำเนินการ</div>
+            <div className="flex items-center">{'นายธรรมกร นามสมมุติ'}</div>
+          </div>
+        </div>
         {/* รายการครุภัณฑ์ที่ยืม */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
           <div className="flex justify-between">
@@ -221,67 +239,6 @@ const BorrowCheckSaving = () => {
               </div>
             )
           })}
-        </div>
-        {/* รายละเอียดผู้ยืม */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-xl">รายละเอียดผู้ยืม</div>
-          {/* Row 1 ชื่อ - นามสกุล */}
-          <div className="grid md:grid-cols-5 pt-4 md:gap-20 gap-3">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">ชื่อ - นามสกุล</label>
-              <input
-                type="text"
-                placeholder="Example"
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">รหัสเจ้าหน้าที่</label>
-              <input
-                type="text"
-                placeholder="Example"
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-          {/* Row 2 หน่วยงานผู้ยืม */}
-          <div className="grid md:grid-cols-5 pt-4 md:gap-20 gap-3">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">หมายเลขโทรศัพท์</label>
-              <input
-                type="text"
-                placeholder="Example"
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">ที่อยู่</label>
-              <input
-                type="text"
-                placeholder="Example"
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-          {/* Row 3 ที่อยู่ */}
-          <div className="grid md:grid-cols-5 pt-4 md:gap-20 gap-3">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">หน่วยงานผู้ยืม</label>
-              <input
-                type="text"
-                placeholder="Example"
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">ภาควิชา</label>
-              <input
-                type="text"
-                placeholder="Example"
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
         </div>
       </div>
       {/* footer */}
