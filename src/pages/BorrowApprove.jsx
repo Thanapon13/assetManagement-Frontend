@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { BorrowApproveListItem, BorrowApprovedListItem } from '../components/'
 import ModalBorrowApprove from '../components/modal/ModalBorrowApprove'
 
 const BorrowApprove = () => {
@@ -163,7 +162,7 @@ const BorrowApprove = () => {
           {/* header */}
           <div className="flex items-center space-x-10">
             <div className="text-lg">รายการคำขอที่จัดการแล้ว</div>
-            <div className="flex space-x-5">
+            <div className="md:flex space-x-5">
               <div className="flex text-text-green bg-sidebar-green p-2 border rounded-2xl ">
                 อนุมัติแล้ว
                 <div className="ml-2">
@@ -198,6 +197,23 @@ const BorrowApprove = () => {
                   </svg>
                 </div>
               </div>
+              <div className="flex text-orange-400 bg-orange-100 p-2 border rounded-2xl">
+                อนุมัติบางส่วน
+                <div className="ml-2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                      fill="#F2994A"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
           {/* approved list item */}
@@ -220,6 +236,101 @@ const BorrowApprove = () => {
           บันทึกคืนครุภัณฑ์
         </button> */}
       </div>
+    </>
+  )
+}
+
+const BorrowApproveListItem = (props) => {
+  return (
+    <>
+      {props.data.map((item, idx) => {
+        return (
+          <div key={idx} className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
+            />
+            <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
+              <div className="flex justify-between">
+                <div className="flex space-x-10">
+                  <h1>เลขที่ ID เลขที่การยืม</h1>
+                  <h1>{item.id}</h1>
+                </div>
+                <div className="flex space-x-5 mr-5">
+                  <h1>{item.date}</h1>
+                  <h1>{item.time}</h1>
+                </div>
+              </div>
+              <div className="mt-5">
+                <div className="flex space-x-5">
+                  <h1>หน่วยงานที่เสนอ</h1>
+                  <h1>{item.agencyName}</h1>
+                </div>
+                <div className="flex justify-end space-x-5">
+                  <button
+                    type="button"
+                    className=" p-2 px-10 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-200"
+                  >
+                    ไม่อนุมัติ
+                  </button>
+                  <Link
+                    // type="button"
+                    to="borrowApproveDetail"
+                    className=" p-2 px-10 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
+                  >
+                    อนุมัติ
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
+const BorrowApprovedListItem = (props) => {
+  return (
+    <>
+      {props.data.map((item, idx) => {
+        return (
+          <div
+            key={idx}
+            className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full"
+          >
+            <div className="flex justify-between">
+              <div className="flex space-x-10">
+                <h1>เลขที่ ID เลขที่การยืม</h1>
+                <h1>{item.id}</h1>
+              </div>
+              <div className="flex space-x-2 mr-5 text-text-gray">
+                <h1>วันที่อนุมัติ: {item.date} ,</h1>
+                <h1>{item.time}</h1>
+              </div>
+            </div>
+            <div className="mt-5">
+              <div className="flex space-x-5">
+                <h1 className="text-text-gray">หน่วยงานที่เสนอ</h1>
+                <h1>{item.agencyName}</h1>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="flex text-text-gray">
+                  วันที่เสนอ
+                  <div className="px-5 text-black">
+                    {item.offerDate} , {item.offerTime}
+                  </div>
+                </div>
+                <div className="">
+                  <div className="text-text-green bg-sidebar-green p-2 border rounded-2xl ">
+                    อนุมัติแล้ว
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })}
     </>
   )
 }
