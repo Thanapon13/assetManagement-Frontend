@@ -1,6 +1,6 @@
 import { useState } from 'React'
 
-const DropdownModalBorrowApprove = () => {
+const DropdownModalBorrowApprove = ({ callback, header }) => {
   const [isOpen, setOpen] = useState(false)
 
   const handleDropDown = () => {
@@ -13,7 +13,7 @@ const DropdownModalBorrowApprove = () => {
         className=" text-text-gray border-[1px] rounded-md text-xs px-6 py-2.5 text-center inline-flex items-center"
         onClick={handleDropDown}
       >
-        แยกการให้สาเหตุแต่ละรายการ
+        {header}
         <svg
           className="ml-2 w-4 h-4"
           aria-hidden="true"
@@ -38,16 +38,25 @@ const DropdownModalBorrowApprove = () => {
             : 'hidden'
         }
       >
-        <ul className="bg-white rounded divide-y divide-gray-100 shadow text-text-gray ">
+        <ul
+          className="bg-white rounded divide-y divide-gray-100 shadow text-text-gray"
+          onClick={handleDropDown}
+        >
           <li>
-            <div className="block py-2 px-4 hover:bg-gray-100">
+            <button
+              className="py-2 px-4 w-full hover:bg-gray-100"
+              onClick={() => callback('แยกการให้สาเหตุแต่ละรายการ')}
+            >
               แยกการให้สาเหตุแต่ละรายการ
-            </div>
+            </button>
           </li>
           <li>
-            <div className="block py-2 px-4 hover:bg-gray-100">
+            <button
+              className="py-2 px-4 w-full hover:bg-gray-100"
+              onClick={() => callback('สาเหตุแบบหลายรายการ')}
+            >
               สาเหตุแบบหลายรายการ
-            </div>
+            </button>
           </li>
         </ul>
       </div>
