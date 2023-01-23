@@ -22,12 +22,20 @@ const ModalBorrowApprove = () => {
       offerTime: '20:22',
     },
     {
-      id: '1273',
-      agencyName: 'ภาควิชาศาสตร์มืดมน',
-      date: '23/11/2565',
-      time: '12:00',
-      offerDate: '22/05/2565',
-      offerTime: '8:22',
+      id: '1272',
+      agencyName: 'ภาควิชาศาสตร์มืดมิด',
+      date: '30/12/2565',
+      time: '19:00',
+      offerDate: '12/03/2565',
+      offerTime: '20:22',
+    },
+    {
+      id: '1272',
+      agencyName: 'ภาควิชาศาสตร์มืดมิด',
+      date: '30/12/2565',
+      time: '19:00',
+      offerDate: '12/03/2565',
+      offerTime: '20:22',
     },
   ]
   return (
@@ -41,11 +49,12 @@ const ModalBorrowApprove = () => {
       </button>
       {showModal ? (
         <>
-          <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-40 w-screen">
-            <div className="relative w-11/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white">
+          <div className="fixed inset-0 -left-10 bg-black opacity-50" />
+          <div className="flex justify-center items-center overflow-y-auto fixed top-20 left-0 z-40 md:inset-0 md:w-screen">
+            <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
+              <div className="border-0 rounded-lg shadow-lg flex flex-col w-full h-auto md:h-[80vh] bg-white">
                 {/* header */}
-                <div className="flex items-center justify-between p-5 border-b border-solid border-gray-300 rounded-t ">
+                <div className="flex items-center justify-between p-5 ">
                   <h3 className="text-xl text-text-green">
                     ระบุสาเหตุที่ไม่อนุมัติ
                   </h3>
@@ -54,7 +63,7 @@ const ModalBorrowApprove = () => {
                     <DropdownModalBorrowApprove />
                   </div>
                   <button
-                    className="bg-transparent border-0 text-black float-right"
+                    className="border-0 text-black float-right"
                     onClick={() => setShowModal(false)}
                   >
                     <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
@@ -65,9 +74,9 @@ const ModalBorrowApprove = () => {
                 {/* body */}
                 {approveList.map((item, idx) => {
                   return (
-                    <div className="relative p-6 flex-auto">
+                    <div key={idx} className="p-3">
                       <div className="bg-background-page border-[2px] rounded-md p-3 w-full">
-                        <div className="flex justify-between">
+                        <div className="md:flex justify-between">
                           <div className="flex space-x-10">
                             <h1>เลขที่ ID เลขที่การยืม</h1>
                             <h1>{item.id}</h1>

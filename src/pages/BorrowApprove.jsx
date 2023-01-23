@@ -78,7 +78,7 @@ const BorrowApprove = () => {
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
           <div className="text-lg ">รายการเสนออนุมัติประจำวัน</div>
           {/* วันที่ */}
-          <div className="grid grid-cols-3 pt-4 gap-10">
+          <div className="grid md:grid-cols-3 pt-4 gap-5 md:gap-10">
             <div className="flex flex-col gap-y-2">
               <label className=" text-text-gray flex">วันที่</label>
               <input
@@ -109,7 +109,7 @@ const BorrowApprove = () => {
             </div>
           </div>
           {/* status */}
-          <div className="grid grid-cols-4 pt-5 gap-20 p-2">
+          <div className="grid md:grid-cols-4 pt-5 gap-5 md:gap-20 p-2">
             <div className={`${boxStyle.boxStatus} border-blue-500`}>
               <h1>ทั้งหมด (รายการ)</h1>
               <div className="text-2xl font-semibold pt-3 text-blue-500">
@@ -145,7 +145,7 @@ const BorrowApprove = () => {
               </div>
               <h1 className="">เลือกแล้ว {3} รายการ</h1>
             </div>
-            <div className="space-x-10">
+            <div className="flex space-x-5 md:space-x-10">
               <ModalBorrowApprove />
               <button
                 type="button"
