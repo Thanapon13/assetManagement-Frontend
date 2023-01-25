@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import Selector from '../components/selector/Selector'
-import TableBorrowList from '../components/table/TableBorrowList'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 
 const BorrowHistoryIndex = () => {
@@ -209,8 +208,9 @@ const TableBorrowHistory = (props) => {
             <div className="col-span-1">{item.borrowSetReturnDate}</div>
             <div className="col-span-1 ">{item.borrowRealReturn}</div>
             <div className="col-span-1 flex justify-center">
-              <button
-                type="button"
+              <Link
+                // type="button"
+                to="borrowHistoryDetail"
                 className="border flex gap-1 items-center p-2 rounded-md border-text-green text-text-green hover:bg-green-700 hover:text-white"
               >
                 <svg
@@ -226,7 +226,7 @@ const TableBorrowHistory = (props) => {
                   />
                 </svg>
                 ดูรายละเอียด
-              </button>
+              </Link>
             </div>
           </div>
         )
