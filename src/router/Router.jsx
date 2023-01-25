@@ -19,6 +19,7 @@ import {
   BorrowApprove,
   BorrowSaving,
   BorrowApproveDetail,
+  BorrowHistory,
   PackageAssetInformation,
   AssetInformationIndex,
   AssetInformation,
@@ -84,7 +85,6 @@ const Router = () => {
           <Route path="borrowList/borrowSaving" element={<BorrowSaving />} />
           <Route path="borrowList/borrowEdit" element={<BorrowEdit />} />
           <Route path="borrowList/borrowDetail" element={<BorrowDetail />} />
-
           <Route path="borrowCheckIndex" element={<BorrowCheckIndex />} />
           <Route
             path="borrowCheckIndex/borrowCheckSaving"
@@ -94,14 +94,13 @@ const Router = () => {
             path="borrowCheckIndex/borrowCheckDetail"
             element={<BorrowCheckDetail />}
           />
-
           <Route path="borrowRecord" element={<BorrowRecord />} />
-
           <Route path="borrowApprove" element={<BorrowApprove />} />
           <Route
             path="borrowApprove/borrowApproveDetail"
             element={<BorrowApproveDetail />}
           />
+          <Route path="borrowHistory" element={<BorrowHistory />} />
 
           <Route path="transferAsset" element={<TransferAsset />} />
           <Route path="repairDashboard" element={<RepairDashboard />} />
