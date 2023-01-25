@@ -419,7 +419,7 @@ const ModalApproveAll = () => {
 
 const ModalIndividualReject = (props) => {
   const [showModal, setShowModal] = useState(false)
-  const dataSendToEachReject = props.data
+  const item = props.data
 
   return (
     <>
@@ -452,8 +452,36 @@ const ModalIndividualReject = (props) => {
                       </span>
                     </button>
                   </div>
-                  {/* table */}
-                  <EachReject data={dataSendToEachReject} />
+                  {/* reject information */}
+                  <div className="p-3">
+                    <div className="bg-background-page border-[2px] rounded-md p-3 w-full">
+                      <div className="md:flex justify-between">
+                        <div className="flex space-x-10">
+                          <h1>เลขที่ ID เลขที่การยืม</h1>
+                          <h1>{item.id}</h1>
+                        </div>
+                        <div className="flex space-x-5 mr-5">
+                          <h1>{item.date}</h1>
+                          <h1>{item.time}</h1>
+                        </div>
+                      </div>
+                      <div className="mt-2">
+                        <div className="flex space-x-5">
+                          <h1>หน่วยงานที่เสนอ</h1>
+                          <h1>{item.agencyName}</h1>
+                        </div>
+                        <div className="flex items-center space-x-5 mt-2">
+                          <label>สาเหตุที่ไม่อนุมัติ</label>
+                          <input
+                            type="text"
+                            placeholder="Example"
+                            required
+                            className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 {/* footer */}
                 <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
@@ -478,42 +506,6 @@ const ModalIndividualReject = (props) => {
           </div>
         </>
       ) : null}
-    </>
-  )
-}
-
-const EachReject = (props) => {
-  const item = props.data
-  return (
-    <>
-      <div key={1} className="p-3">
-        <div className="bg-background-page border-[2px] rounded-md p-3 w-full">
-          <div className="md:flex justify-between">
-            <div className="flex space-x-10">
-              <h1>เลขที่ ID เลขที่การยืม</h1>
-              <h1>{item.id}</h1>
-            </div>
-            <div className="flex space-x-5 mr-5">
-              <h1>{item.date}</h1>
-              <h1>{item.time}</h1>
-            </div>
-          </div>
-          <div className="mt-2">
-            <div className="flex space-x-5">
-              <h1>หน่วยงานที่เสนอ</h1>
-              <h1>{item.agencyName}</h1>
-            </div>
-            <div className="flex items-center space-x-5 mt-2">
-              <label>สาเหตุที่ไม่อนุมัติ</label>
-              <input
-                type="text"
-                placeholder="Example"
-                className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   )
 }
