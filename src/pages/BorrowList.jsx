@@ -28,6 +28,7 @@ const BorrowList = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      borrowStatus: 'waitApprove',
     },
     {
       borrowDocId: '001',
@@ -41,6 +42,7 @@ const BorrowList = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      borrowStatus: 'waitApprove',
     },
     {
       borrowDocId: '001',
@@ -54,6 +56,7 @@ const BorrowList = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      borrowStatus: 'done',
     },
     {
       borrowDocId: '001',
@@ -67,6 +70,7 @@ const BorrowList = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      borrowStatus: 'waitCheckReturn',
     },
     {
       borrowDocId: '001',
@@ -80,6 +84,7 @@ const BorrowList = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      borrowStatus: 'waitToReturn',
     },
     {
       borrowDocId: '001',
@@ -93,6 +98,7 @@ const BorrowList = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      borrowStatus: 'waitToReturn',
     },
     {
       borrowDocId: '001',
@@ -106,6 +112,7 @@ const BorrowList = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
+      borrowStatus: 'waitApprove',
     },
     {
       borrowDocId: '001',
@@ -119,32 +126,7 @@ const BorrowList = () => {
       borrowPricePerDay: '150 บ.',
       totalDay: '5',
       totalPrice: '750 บ.',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
+      borrowStatus: 'waitApprove',
     },
   ]
 
@@ -190,9 +172,8 @@ const BorrowList = () => {
           </button>
         </div>
       </div>
-
       {/* search bar */}
-      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 md:pl-5">
         <div className="text-xs font-semibold">ค้นหาโดย</div>
         <div className="md:col-span-2">
           <Selector placeholder={'ID'} />
@@ -268,25 +249,8 @@ const BorrowList = () => {
               <div className="col-span-2">Action</div>
             </div>
           </div>
-          {tableData?.map((val, idx) => {
-            return (
-              <TableBorrowList
-                key={idx}
-                index={idx}
-                borrowDocId={val.borrowDocId}
-                ID={val.ID}
-                assetId={val.assetId}
-                assetName={val.assetName}
-                borrowerName={val.borrowerName}
-                borrowDateAt={val.borrowDateAt}
-                borrowSetDateReturn={val.borrowSetDateReturn}
-                borrowReturnDate={val.borrowReturnDate}
-                borrowPricePerDay={val.borrowPricePerDay}
-                totalDay={val.totalDay}
-                totalPrice={val.totalPrice}
-              />
-            )
-          })}
+          <TableBorrowList data={tableData} />
+
           <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
             <div className="flex mr-10 items-center">
               <div>Rows per page:</div>
