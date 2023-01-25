@@ -440,9 +440,7 @@ const ModalIndividualReject = (props) => {
                 <div>
                   {/* header*/}
                   <div className="flex items-center justify-between p-5 ">
-                    <h3 className="text-xl text-text-green">
-                      สาเหตุที่ไม่อนุมัติ
-                    </h3>
+                    <h3 className="text-xl">สาเหตุที่ไม่อนุมัติ</h3>
                     <button
                       className="border-0 text-black float-right"
                       onClick={() => setShowModal(false)}
@@ -494,7 +492,7 @@ const ModalIndividualReject = (props) => {
                   </button>
                   <Link
                     to="/borrowApprove"
-                    className="text-white bg-text-green px-10 py-2 border rounded-md "
+                    className="text-white bg-red-600 px-10 py-2 border rounded-md "
                     // type="button"
                     onClick={() => setShowModal(false)}
                   >

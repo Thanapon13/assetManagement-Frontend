@@ -60,9 +60,7 @@ const ModalBorrowRejectAllApprove = () => {
               <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
                 {/* header */}
                 <div className="flex items-center justify-between p-5 ">
-                  <h3 className="text-xl text-text-green">
-                    ระบุสาเหตุที่ไม่อนุมัติ
-                  </h3>
+                  <h3 className="text-xl">ระบุสาเหตุที่ไม่อนุมัติ</h3>
                   <div className="flex items-center gap-5 mr-[5vw]">
                     <div>ประเภทการให้เหตุผล</div>
                     <DropdownModalBorrowApprove
@@ -95,7 +93,7 @@ const ModalBorrowRejectAllApprove = () => {
                     ยกเลิก
                   </button>
                   <button
-                    className="text-white bg-text-green px-10 py-2 border rounded-md "
+                    className="text-white bg-red-600 px-10 py-2 border rounded-md "
                     type="button"
                     onClick={() => setShowModal(false)}
                   >

@@ -38,13 +38,13 @@ const TableBorrowList = (props) => {
                   onClick={() => handleClick(item.borrowStatus)}
                   className={`${
                     item.borrowStatus === 'waitApprove'
-                      ? 'bg-sky-200 text-blue-600 rounded-xl border-sky-200 hover:text-white'
+                      ? 'bg-sky-200 text-blue-600 rounded-xl border-sky-200'
                       : item.borrowStatus === 'done'
                       ? ' bg-sidebar-green text-text-green  rounded-xl border-sidebar-green '
                       : item.borrowStatus === 'waitCheckReturn'
                       ? 'bg-orange-100 text-orange-400 border-orange-100 rounded-xl'
-                      : 'bg-text-green text-white rounded-md'
-                  } border border-spacing-5 p-2`}
+                      : 'bg-text-green text-white rounded-md hover:bg-green-800'
+                  } border border-spacing-5 p-2 w-full`}
                 >
                   {item.borrowStatus === 'waitApprove'
                     ? 'รออนุมัติ'
@@ -132,7 +132,7 @@ const ModalCancel = () => {
                 </div>
                 {/* สาเหตุไม่อนุมัติ */}
                 <div>
-                  <textarea className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"></textarea>
+                  <textarea className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue"></textarea>
                 </div>
 
                 {/* footer */}
