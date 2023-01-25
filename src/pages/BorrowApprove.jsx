@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import ModalBorrowApprove from '../components/modal/ModalBorrowApprove'
+import ModalBorrowRejectAllApprove from '../components/modal/ModalBorrowRejectAllApprove'
 
 const BorrowApprove = () => {
   const dataApproveList = [
@@ -145,13 +145,8 @@ const BorrowApprove = () => {
               <h1 className="">เลือกแล้ว {3} รายการ</h1>
             </div>
             <div className="flex space-x-5 md:space-x-10">
-              <ModalBorrowApprove />
-              <button
-                type="button"
-                className=" p-2 border-[2px] bg-text-green border-text-green text-white rounded-sm hover:bg-green-800"
-              >
-                อนุมัติทั้งหมด
-              </button>
+              <ModalBorrowRejectAllApprove />
+              <ModalApproveAll />
             </div>
           </div>
           {/* approve list item */}
@@ -267,12 +262,7 @@ const BorrowApproveListItem = (props) => {
                   <h1>{item.agencyName}</h1>
                 </div>
                 <div className="flex justify-end space-x-5">
-                  <button
-                    type="button"
-                    className=" p-2 px-10 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-200"
-                  >
-                    ไม่อนุมัติ
-                  </button>
+                  <ModalIndividualReject data={item} />
                   <Link
                     // type="button"
                     to="borrowApproveDetail"
@@ -327,6 +317,232 @@ const BorrowApprovedListItem = (props) => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
+const ModalApproveAll = () => {
+  const [showModal, setShowModal] = useState(false)
+
+  const tableData = [
+    {
+      borrowIdDoc: 'br.2314530087',
+      agencyBorrowerName: 'พัดลม hatari แบบ',
+      borrowDate: '27/05/2132',
+    },
+    {
+      borrowIdDoc: 'br.2314530087',
+      agencyBorrowerName: 'พัดลม hatari แบบ',
+      borrowDate: '27/05/2132',
+    },
+    {
+      borrowIdDoc: 'br.2314530087',
+      agencyBorrowerName: 'พัดลม hatari แบบ',
+      borrowDate: '27/05/2132',
+    },
+  ]
+
+  return (
+    <>
+      <button
+        className="p-2 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
+        type="button"
+        onClick={() => setShowModal(true)}
+      >
+        อนุมัติทั้งหมด
+      </button>
+      {showModal ? (
+        <>
+          <div className="fixed inset-0 -left-10 bg-black opacity-50" />
+          <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
+            <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
+              <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
+                {/* รายการครุภัณฑ์ที่อนุมัติ */}
+                <div>
+                  {/* header*/}
+                  <div className="flex items-center justify-between p-5 ">
+                    <h3 className="text-xl text-text-green">
+                      รายการครุภัณฑ์ที่อนุมัติ
+                    </h3>
+                    <button
+                      className="border-0 text-black float-right"
+                      onClick={() => setShowModal(false)}
+                    >
+                      <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
+                        x
+                      </span>
+                    </button>
+                  </div>
+                  {/* table */}
+                  <div className="overflow-x-auto  scrollbar pt-4 mb-5">
+                    <div className="w-[1000px] lg:w-full">
+                      <div className="grid grid-cols-8 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
+                        <div className="col-span-1">ลำดับ</div>
+                        <div className="col-span-2">เลขที่เอกสารการยืม</div>
+                        <div className="col-span-3">หน่วยงานที่เสนอ</div>
+                        <div className="col-span-2">วันที่เสนอ</div>
+                      </div>
+                      <TableSummaryApprove data={tableData} />
+                    </div>
+                  </div>
+                </div>
+                {/* footer */}
+                <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
+                  <button
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md "
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                  >
+                    ยกเลิก
+                  </button>
+                  <Link
+                    to="/borrowApprove"
+                    className="text-white bg-text-green px-10 py-2 border rounded-md "
+                    // type="button"
+                    onClick={() => setShowModal(false)}
+                  >
+                    ยืนยัน
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null}
+    </>
+  )
+}
+
+const ModalIndividualReject = (props) => {
+  const [showModal, setShowModal] = useState(false)
+  const dataSendToEachReject = props.data
+
+  return (
+    <>
+      <button
+        className="p-2 px-10 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-200"
+        type="button"
+        onClick={() => setShowModal(true)}
+      >
+        ไม่อนุมัติ
+      </button>
+      {showModal ? (
+        <>
+          <div className="fixed inset-0 -left-10 bg-black opacity-50" />
+          <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
+            <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
+              <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
+                {/* สาเหตุที่ไม่อนุมัติ */}
+                <div>
+                  {/* header*/}
+                  <div className="flex items-center justify-between p-5 ">
+                    <h3 className="text-xl text-text-green">
+                      สาเหตุที่ไม่อนุมัติ
+                    </h3>
+                    <button
+                      className="border-0 text-black float-right"
+                      onClick={() => setShowModal(false)}
+                    >
+                      <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
+                        x
+                      </span>
+                    </button>
+                  </div>
+                  {/* table */}
+                  <EachReject data={dataSendToEachReject} />
+                </div>
+                {/* footer */}
+                <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
+                  <button
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md "
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                  >
+                    ยกเลิก
+                  </button>
+                  <Link
+                    to="/borrowApprove"
+                    className="text-white bg-text-green px-10 py-2 border rounded-md "
+                    // type="button"
+                    onClick={() => setShowModal(false)}
+                  >
+                    ยืนยัน
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null}
+    </>
+  )
+}
+
+const EachReject = (props) => {
+  const item = props.data
+  return (
+    <>
+      <div key={1} className="p-3">
+        <div className="bg-background-page border-[2px] rounded-md p-3 w-full">
+          <div className="md:flex justify-between">
+            <div className="flex space-x-10">
+              <h1>เลขที่ ID เลขที่การยืม</h1>
+              <h1>{item.id}</h1>
+            </div>
+            <div className="flex space-x-5 mr-5">
+              <h1>{item.date}</h1>
+              <h1>{item.time}</h1>
+            </div>
+          </div>
+          <div className="mt-2">
+            <div className="flex space-x-5">
+              <h1>หน่วยงานที่เสนอ</h1>
+              <h1>{item.agencyName}</h1>
+            </div>
+            <div className="flex items-center space-x-5 mt-2">
+              <label>สาเหตุที่ไม่อนุมัติ</label>
+              <input
+                type="text"
+                placeholder="Example"
+                className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+const TableSummaryApprove = (props) => {
+  const [isClick, setIsClick] = useState(false)
+
+  const handleClick = () => {
+    setIsClick(!isClick)
+  }
+
+  return (
+    <>
+      {props.data.map((item, idx) => {
+        return (
+          <div className="grid grid-cols-8 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+            <div className="col-span-1  text-center flex justify-center items-center ">
+              <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+                {idx + 1}
+              </div>
+            </div>
+            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+              {item.borrowIdDoc}
+            </div>
+            <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+              {item.agencyBorrowerName}
+            </div>
+            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+              {item.borrowDate}
             </div>
           </div>
         )

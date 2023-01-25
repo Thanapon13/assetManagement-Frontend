@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import DropdownModalBorrowApprove from '../dropdown/DropdownModalBorrowApprove'
 
-const ModalBorrowApprove = () => {
+const ModalBorrowRejectAllApprove = () => {
   const [showModal, setShowModal] = useState(false)
   const [isAllReject, setAllReject] = useState('แยกการให้สาเหตุแต่ละรายการ')
 
@@ -46,7 +46,7 @@ const ModalBorrowApprove = () => {
   return (
     <>
       <button
-        className="p-2 border-[2px] text-red-500 border-red-400 rounded-sm hover:bg-red-200"
+        className="p-2 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-200"
         type="button"
         onClick={() => setShowModal(true)}
       >
@@ -189,4 +189,4 @@ const AllReject = (props) => {
   )
 }
 
-export default ModalBorrowApprove
+export default ModalBorrowRejectAllApprove
