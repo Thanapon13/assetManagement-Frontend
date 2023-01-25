@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Selector from "../components/selector/Selector";
 import RowOfTableArray from "../components/table/RowOfTableArray";
 import { BsArrowLeft } from "react-icons/bs";
+import { BsFillEyeFill } from "react-icons/bs";
 import { HiChevronLeft } from "react-icons/hi";
 import { HiChevronRight } from "react-icons/hi";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -16,6 +17,9 @@ import Modal from "../components/modal/Modal";
 import DeprecationDropdown from "../components/dropdown/DeprecationDropdown";
 import { ToastContainer, toast } from "react-toastify";
 import { createAsset } from "../api/assetApi";
+import BarcodeScanner from "../components/scanner/BarcodeScanner";
+import QRscanner from "../components/scanner/QRscanner";
+import { useEffect } from "react";
 
 const AssetInformation = () => {
   const inputImg = useRef();
@@ -43,6 +47,7 @@ const AssetInformation = () => {
     productName: "",
     type: "",
     kind: "",
+    realAssetId: "",
     unit: "",
     brand: "",
     model: "",
@@ -54,15 +59,18 @@ const AssetInformation = () => {
     acquiredType: "",
     group: "",
     source: "",
+    pricePerUnit: 0,
     guaranteedMonth: "",
     purposeOfUse: "",
-    assetNumber:"แมม",
+    allSector: "",
+    assetNumber: "แมม",
 
     status: "not approve",
   });
 
   // upload image
   const [arrayImage, setArrayImage] = useState([]);
+  const [arrayImageURL, setArrayImageURL] = useState([]);
 
   // คู่มือและเอกสารแนบ
   const [arrayDocument, setArrayDocument] = useState([]);
@@ -74,15 +82,23 @@ const AssetInformation = () => {
       realAssetId: "123",
       productName: "aaa",
       serialNumber: "a12b12",
+      sector: "",
+      asset01: "66071032",
     },
     {
-      // index: 0,
       realAssetId: "222",
       productName: "bbb",
       serialNumber: "dfg234htjn",
+      sector: "",
+      asset01: "66071032",
     },
   ]);
 
+  const [indexGenData, setIndexGenData] = useState(0);
+  const [barcode, setBarcode] = useState(genData[indexGenData]?.serialNumber);
+  const [qr, setQr] = useState(genData[indexGenData]?.serialNumber);
+
+  // console.log(barcode,"barcode")
   // ข้อมูลผู้รับผิดชอบ
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -115,11 +131,12 @@ const AssetInformation = () => {
   const [distributionNote, setDistributionNote] = useState("");
 
   //Show Modal
+  const [showViewImageModal, setShowViewImageModal] = useState(false);
   const [showDepreciationModal, setDepreciationShowModal] = useState(false);
   const [showAccumulateDepreciationModal, setAccumulateDepreciationShowModal] =
     useState(false);
-  //  const [showAddSubComponentShowModal, setShowAddSubComponentShowModal] =
-  //    useState(false);
+  const [scanBarcodeModal, setScanBarcodeModal] = useState(false);
+  const [scanQRCodeModal, setScanQRCodeModal] = useState(false);
 
   //Modal ค่าเสื่อมราคา
   const [depreciationStartDate, setDepreciationStartDate] = useState(
@@ -186,9 +203,9 @@ const AssetInformation = () => {
     useState(todayThaiDate);
 
   // handle
-  const handleChangeID = (e) => {
+  const handleChangeRealAssetId = (e) => {
     const clone = { ...input };
-    clone.ID = e.target.value;
+    clone.realAssetId = e.target.value;
     setInput(clone);
   };
   const handleChangeAssetNumber = (e) => {
@@ -221,14 +238,19 @@ const AssetInformation = () => {
     clone.quantity = e.target.value;
     setInput(clone);
   };
-  const handleChangeSerialNumberMachine = (e) => {
+  const handleChangePricePerUnit = (e) => {
     const clone = { ...input };
-    clone.serialNumberMachine = e.target.value;
+    clone.pricePerUnit = e.target.value;
     setInput(clone);
   };
   const handleChangeSource = (e) => {
     const clone = { ...input };
     clone.source = e.target.value;
+    setInput(clone);
+  };
+  const handleChangeAllSector = (e) => {
+    const clone = { ...input };
+    clone.allSector = e.target.value;
     setInput(clone);
   };
   const handleChangeGuaranteedMonth = (e) => {
@@ -326,80 +348,126 @@ const AssetInformation = () => {
 
   const handleGenData = (e) => {};
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const inputJSON = JSON.stringify(input);
     const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
-      formData.append("input", inputJSON);
-      formData.append("insuranceStartDate", insuranceStartDate);
-      formData.append("insuranceExpiredDate", insuranceExpiredDate);
-      arrayImage.forEach(file=>{
-        formData.append("arrayImage", file.image);
-      });
-      arrayDocument.forEach(file=>{
-        formData.append("arrayDocument", file.document);
-      });
-      formData.append("genDataJSON", genDataJSON);
-      formData.append("depreciationStartDate", depreciationStartDate);
-      formData.append("depreciationRegisterDate", depreciationRegisterDate);
-      formData.append("depreciationReceivedDate", depreciationReceivedDate);
-      formData.append("depreciationPrice", depreciationPrice);
-      formData.append("depreciationYearUsed", depreciationYearUsed);
-      formData.append("depreciationCarcassPrice", depreciationCarcassPrice);
-      formData.append("depreciationProcess", depreciationProcess);
-      formData.append("depreciationPresentMonth", depreciationPresentMonth);
-      formData.append("depreciationCumulativePrice", depreciationCumulativePrice);
-      formData.append("depreciationYearPrice", depreciationYearPrice);
-      formData.append("depreciationRemainPrice", depreciationRemainPrice);
-      formData.append("depreciationBookValue", depreciationBookValue);
+    formData.append("input", inputJSON);
+    formData.append("insuranceStartDate", insuranceStartDate);
+    formData.append("insuranceExpiredDate", insuranceExpiredDate);
+    arrayImage.forEach((file) => {
+      formData.append("arrayImage", file.image);
+    });
+    arrayDocument.forEach((file) => {
+      formData.append("arrayDocument", file.document);
+    });
+    formData.append("genDataJSON", genDataJSON);
+    formData.append("depreciationStartDate", depreciationStartDate);
+    formData.append("depreciationRegisterDate", depreciationRegisterDate);
+    formData.append("depreciationReceivedDate", depreciationReceivedDate);
+    formData.append("depreciationPrice", depreciationPrice);
+    formData.append("depreciationYearUsed", depreciationYearUsed);
+    formData.append("depreciationCarcassPrice", depreciationCarcassPrice);
+    formData.append("depreciationProcess", depreciationProcess);
+    formData.append("depreciationPresentMonth", depreciationPresentMonth);
+    formData.append("depreciationCumulativePrice", depreciationCumulativePrice);
+    formData.append("depreciationYearPrice", depreciationYearPrice);
+    formData.append("depreciationRemainPrice", depreciationRemainPrice);
+    formData.append("depreciationBookValue", depreciationBookValue);
 
-       //Modal ค่าเสื่อมราคา(ผลรวมจำนวนปี)
-      formData.append("accumulateDepreciationStartDate", accumulateDepreciationStartDate);
-      formData.append("accumulateDepreciationRegisterDate", accumulateDepreciationRegisterDate);
-      formData.append("accumulateDepreciationReceivedDate", accumulateDepreciationReceivedDate);
-      formData.append("accumulateDepreciationPrice", accumulateDepreciationPrice);
-      formData.append("accumulateDepreciationYearUsed", accumulateDepreciationYearUsed);
-      formData.append("accumulateDepreciationCarcassPrice", accumulateDepreciationCarcassPrice);
-      formData.append("accumulateDepreciationProcess", accumulateDepreciationProcess);
-      formData.append("accumulateDepreciationPresentMonth", accumulateDepreciationPresentMonth);
-      formData.append("accumulateDepreciationCumulativePrice", accumulateDepreciationCumulativePrice);
-      formData.append("accumulateDepreciationYearPrice", accumulateDepreciationYearPrice);
-      formData.append("accumulateDepreciationRemainPrice", accumulateDepreciationRemainPrice);
-      formData.append("accumulateDepreciationBookValue", accumulateDepreciationBookValue);
+    //Modal ค่าเสื่อมราคา(ผลรวมจำนวนปี)
+    formData.append(
+      "accumulateDepreciationStartDate",
+      accumulateDepreciationStartDate
+    );
+    formData.append(
+      "accumulateDepreciationRegisterDate",
+      accumulateDepreciationRegisterDate
+    );
+    formData.append(
+      "accumulateDepreciationReceivedDate",
+      accumulateDepreciationReceivedDate
+    );
+    formData.append("accumulateDepreciationPrice", accumulateDepreciationPrice);
+    formData.append(
+      "accumulateDepreciationYearUsed",
+      accumulateDepreciationYearUsed
+    );
+    formData.append(
+      "accumulateDepreciationCarcassPrice",
+      accumulateDepreciationCarcassPrice
+    );
+    formData.append(
+      "accumulateDepreciationProcess",
+      accumulateDepreciationProcess
+    );
+    formData.append(
+      "accumulateDepreciationPresentMonth",
+      accumulateDepreciationPresentMonth
+    );
+    formData.append(
+      "accumulateDepreciationCumulativePrice",
+      accumulateDepreciationCumulativePrice
+    );
+    formData.append(
+      "accumulateDepreciationYearPrice",
+      accumulateDepreciationYearPrice
+    );
+    formData.append(
+      "accumulateDepreciationRemainPrice",
+      accumulateDepreciationRemainPrice
+    );
+    formData.append(
+      "accumulateDepreciationBookValue",
+      accumulateDepreciationBookValue
+    );
 
-       //ข้อมูลผู้รับผิดชอบ
-       formData.append("name", name);
-       formData.append("email", email);
-       formData.append("phoneNumber", phoneNumber);
-       formData.append("responsibleSector", responsibleSector);
-       formData.append("building", building);
-       formData.append("floor", floor);
-       formData.append("room", room);
+    //ข้อมูลผู้รับผิดชอบ
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("responsibleSector", responsibleSector);
+    formData.append("building", building);
+    formData.append("floor", floor);
+    formData.append("room", room);
 
-       //สัญญาจัดซื้อ
-       formData.append("acquisitionMethod", acquisitionMethod);
-       formData.append("moneyType", moneyType);
-       formData.append("deliveryDocument", deliveryDocument);
-       formData.append("contractNumber", contractNumber);
-       formData.append("receivedDate", receivedDate);
-       formData.append("seller", seller);
-       formData.append("price", price);
-       formData.append("billNumber", billNumber);
-       formData.append("purchaseYear", purchaseYear);
-       formData.append("purchaseDate", purchaseDate);
-       formData.append("documentDate", documentDate);
+    //สัญญาจัดซื้อ
+    formData.append("acquisitionMethod", acquisitionMethod);
+    formData.append("moneyType", moneyType);
+    formData.append("deliveryDocument", deliveryDocument);
+    formData.append("contractNumber", contractNumber);
+    formData.append("receivedDate", receivedDate);
+    formData.append("seller", seller);
+    formData.append("price", price);
+    formData.append("billNumber", billNumber);
+    formData.append("purchaseYear", purchaseYear);
+    formData.append("purchaseDate", purchaseDate);
+    formData.append("documentDate", documentDate);
 
-       //การจำหน่าย
-       formData.append("salesDocument", salesDocument);
-       formData.append("distributeDocumentDate", distributeDocumentDate);
-       formData.append("distributeApprovalReleaseDate", distributeApprovalReleaseDate);
-       formData.append("distributeStatus", distributeStatus);
-       formData.append("distributionNote", distributionNote);
-       
+    //การจำหน่าย
+    formData.append("salesDocument", salesDocument);
+    formData.append("distributeDocumentDate", distributeDocumentDate);
+    formData.append(
+      "distributeApprovalReleaseDate",
+      distributeApprovalReleaseDate
+    );
+    formData.append("distributeStatus", distributeStatus);
+    formData.append("distributionNote", distributionNote);
 
-    await createAsset(formData)
+    await createAsset(formData);
   };
+
+  useEffect(() => {
+    if (arrayImage.length < 1) return;
+    const newImageUrls = [];
+    // console.log(arrayImage);
+    arrayImage.forEach(
+      (img) => newImageUrls.push(URL.createObjectURL(img.image))
+      // console.log(img)
+    );
+    setArrayImageURL(newImageUrls);
+  }, [arrayImage]);
 
   // data
   return (
@@ -441,19 +509,6 @@ const AssetInformation = () => {
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
           <div>บันทึกใบเบิกจ่ายครุภัณฑ์</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-            {/* ID
-          <div>
-            <div className="mb-1">ID ครุภัณฑ์</div>
-            <input
-              type="text"
-              name="ID"
-              id="ID"
-              onChange={handleChangeID}
-              value={input.ID}
-              className="w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-            />
-          </div> */}
-
             {/* ชื่อครุภัณฑ์ภาษาอังกฤษ */}
             <div>
               <div className="mb-1">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
@@ -503,31 +558,46 @@ const AssetInformation = () => {
               </div>
             </div>
 
-            {/* จำนวน */}
+            {/* ลำดับครุภัณฑ์ (ID) */}
             <div>
-              <div className="mb-1">จำนวน</div>
+              <div className="mb-1">ลำดับครุภัณฑ์ (ID)</div>
               <input
                 type="text"
-                name="quantity"
-                id="quantity"
-                onChange={handleChangeQuantity}
-                value={input.quantity}
+                name="realAssetId"
+                id="realAssetId"
+                onChange={handleChangeRealAssetId}
+                value={input.realAssetId}
                 className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
 
-            {/* หน่วยนับ */}
-            <div>
-              <div className="mb-1">หน่วยนับ</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"หน่วยนับ"}
+            {/* จำนวน */}
+            <div className="grid grid-cols-2 gap-x-5 gap-y-3  text-xs">
+              <div>
+                <div className="mb-1">จำนวน</div>
+                <input
+                  type="text"
+                  name="quantity"
+                  id="quantity"
+                  onChange={handleChangeQuantity}
+                  value={input.quantity}
+                  className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
+              {/* หน่วยนับ */}
+              <div>
+                <div className="mb-1">หน่วยนับ</div>
+                <div className="flex h-[38px] ">
+                  <Selector
+                    placeholder={"Select"}
+                    state={input}
+                    setState={setInput}
+                    id={"หน่วยนับ"}
+                  />
+                </div>
+              </div>
             </div>
+
             {/* ยี่ห้อ */}
             <div>
               <div className="mb-1">ยี่ห้อ</div>
@@ -625,6 +695,18 @@ const AssetInformation = () => {
                 />
               </div>
             </div>
+            {/* ราคาต่อหน่วย (บาท) */}
+            <div>
+              <div className="mb-1">ราคาต่อหน่วย (บาท)</div>
+              <input
+                type="text"
+                name="pricePerUnit"
+                id="pricePerUnit"
+                onChange={handleChangePricePerUnit}
+                value={input.pricePerUnit}
+                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              />
+            </div>
             {/* จำนวนเดือนที่รับประกัน (เดือน) */}
             <div>
               <div className="mb-1">จำนวนเดือนที่รับประกัน (เดือน)</div>
@@ -658,9 +740,30 @@ const AssetInformation = () => {
               </div>
             </div>
 
-            {/* เลขครุภัณฑ์ */}
+            {/* การจ่ายครุภัณฑ์ให้หน่วยงาน */}
             <div>
-              <div className="mb-1">เลขครุภัณฑ์</div>
+              <div className="mb-1">การจ่ายครุภัณฑ์ให้หน่วยงาน</div>
+              <div className="flex h-[38px] ">
+                <Selector
+                  placeholder={"Select"}
+                  state={genData}
+                  setState={setGenData}
+                  id={"การจ่ายครุภัณฑ์ให้หน่วยงาน"}
+                />
+              </div>
+              {/* <input
+                type="text"
+                name="allSector"
+                id="allSector"
+                onChange={handleChangeAllSector}
+                value={input.allSector}
+                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              /> */}
+            </div>
+
+            {/* รหัสกลุ่มครุภัณฑ์ */}
+            <div>
+              <div className="mb-1">รหัสกลุ่มครุภัณฑ์</div>
               <input
                 type="text"
                 name="assetNumber"
@@ -683,14 +786,17 @@ const AssetInformation = () => {
 
           {/* block white bottom */}
           <div className=" my-3 p-3">
-            <div className="overflow-x-auto scrollbar pb-3">
-              <div className="w-[800px] lg:w-full h-[500px] ">
+            <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
+              <div className="w-[1000px] xl:w-full h-[500px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                  <div className="grid grid-cols-13 gap-2 text-center">
+                  <div className="grid grid-cols-12 gap-2 text-center">
                     <div className="ml-2">ลำดับ</div>
-                    <div className="col-span-4">ID เลขครุภัณฑ์</div>
-                    <div className="col-span-4">ชื่อครุภัณฑ์</div>
-                    <div className="col-span-4">Serial Number</div>
+                    <div className="col-span-2">ID เลขครุภัณฑ์</div>
+                    <div className="col-span-2">ชื่อครุภัณฑ์</div>
+                    <div className="col-span-2">Serial Number</div>
+                    <div className="col-span-2">หน่วยงาน</div>
+                    <div className="col-span-2">สท.01</div>
+                    <div className="">สติกเกอร์</div>
                   </div>
                 </div>
                 {genData?.map((el, idx) => {
@@ -700,6 +806,16 @@ const AssetInformation = () => {
                       index={idx}
                       genData={genData}
                       setGenData={setGenData}
+                      scanBarcodeModal={scanBarcodeModal}
+                      scanQRCodeModal={scanQRCodeModal}
+                      setScanBarcodeModal={setScanBarcodeModal}
+                      setScanQRCodeModal={setScanQRCodeModal}
+                      setIndexGenData={setIndexGenData}
+                      indexGenData={indexGenData}
+                      barcode={barcode}
+                      setBarcode={setBarcode}
+                      qr={qr}
+                      setQr={setQr}
                     />
                   );
                 })}
@@ -719,7 +835,7 @@ const AssetInformation = () => {
           </div>
           {/* image */}
           <div className="sm:grid sm:grid-cols-6 gap-6">
-            <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4">
+            <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4 h-96">
               <img src={boxIcon} className="w-[50px]" />
               <div className="text-text-green font-semibold">
                 วางรูปภาพครุภัณฑ์ หรือ
@@ -746,6 +862,13 @@ const AssetInformation = () => {
                 </div>
                 <div className="text-text-gray text-sm">(JPEG , PNG , SVG)</div>
               </div>
+              <button
+                className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                onClick={() => setShowViewImageModal(true)}
+              >
+                <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
+                ดูรูปภาพ
+              </button>
             </div>
             {/* file upload image*/}
             <div className="col-span-2 sm:mt-5">
@@ -1742,6 +1865,68 @@ const AssetInformation = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </Modal>
+
+        {/* scan barcode */}
+        <Modal
+          id="scanBarcodeModal"
+          isVisible={scanBarcodeModal}
+          width={"[800px]"}
+          onClose={() => setScanBarcodeModal(false)}
+          header={"Scan Barcode"}
+          scanBarcodeModal={scanBarcodeModal}
+        >
+          <div className=" px-10 pt-2 pb-10">
+            <BarcodeScanner
+              state={genData}
+              setState={setGenData}
+              index={indexGenData}
+              setIndex={setIndexGenData}
+              barcode={barcode}
+              setBarcode={setBarcode}
+              qr={qr}
+              setQr={setQr}
+            />
+          </div>
+        </Modal>
+
+        {/* scan qrcode */}
+        <Modal
+          id="scanQRCodeModal"
+          isVisible={scanQRCodeModal}
+          width={"[800px]"}
+          onClose={() => setScanQRCodeModal(false)}
+          header={"Scan QRrcode"}
+          scanQRCodeModal={scanQRCodeModal}
+        >
+          <div className=" px-10 pt-2 pb-10">
+            <QRscanner
+              state={genData}
+              setState={setGenData}
+              index={indexGenData}
+              setIndex={setIndexGenData}
+              barcode={barcode}
+              setBarcode={setBarcode}
+              qr={qr}
+              setQr={setQr}
+            />
+          </div>
+        </Modal>
+
+        {/* view image */}
+        <Modal
+          id="showViewImageModal"
+          isVisible={showViewImageModal}
+          width={"[800px]"}
+          onClose={() => setShowViewImageModal(false)}
+          header={"รูปภาพครุภัณฑ์"}
+          showViewImageModal={showViewImageModal}
+        >
+          <div className=" px-10 pt-2 pb-10">
+            {arrayImageURL.map((el, idx) => (
+              <img src={el} className="w-[640px] mb-5" />
+            ))}
           </div>
         </Modal>
 

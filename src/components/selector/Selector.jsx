@@ -5,7 +5,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useRef } from "react";
 
-const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
+const Selector = ({ placeholder, fetchDataDropdown, state, setState, id ,index}) => {
   let location = useLocation();
   const refDropdown = useRef(null);
 
@@ -78,11 +78,22 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
     clone.purposeOfUse = value;
     setState(clone);
   };
-  // const handleChangeBrand = (value) => {
-  //   const clone = { ...state };
-  //   clone.brand = value;
-  //   setState(clone);
-  // };
+  // หน่วยงาน
+  const handleChangeSector = (value) => {
+    // console.log(index)
+    // console.log(state)
+    // console.log(value)
+    const clone = [ ...state ];
+    // console.log(clone)
+    clone[index].sector = value;
+    // console.log(clone)
+    setState(clone);
+  };
+  const handleChangeAllSector = (value) => {
+    const clone = [ ...state ];
+    clone[index].allSector = value;
+    setState(clone);
+  };
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutSide, true);
@@ -119,6 +130,10 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
               ? state?.acquiredType
               : id === "วัตถุประสงค์ในการใช้งาน"
               ? state?.purposeOfUse
+              : id === "หน่วยงาน"
+              ? state[index]?.sector
+              : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
+              ? state[index]?.allSector
               : id === "วิธีการได้มา" ||
                 id === "ประเภทเงิน" ||
                 id === "ผู้ขาย" ||
@@ -148,6 +163,10 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
             ? state?.acquiredType
             : id === "วัตถุประสงค์ในการใช้งาน"
             ? state?.purposeOfUse
+            : id === "หน่วยงาน"
+            ? state[index]?.sector
+            : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
+            ? state[index]?.allSector
             : id === "วิธีการได้มา" ||
               id === "ประเภทเงิน" ||
               id === "ผู้ขาย" ||
@@ -172,6 +191,10 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
               ? state?.acquiredType
               : id === "วัตถุประสงค์ในการใช้งาน"
               ? state?.purposeOfUse
+              : id === "หน่วยงาน"
+              ? state[index]?.sector
+              : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
+              ? state[index]?.allSector
               : id === "วิธีการได้มา" ||
                 id === "ประเภทเงิน" ||
                 id === "ผู้ขาย" ||
@@ -196,6 +219,10 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
                 ? state?.acquiredType
                 : id === "วัตถุประสงค์ในการใช้งาน"
                 ? state?.purposeOfUse
+                : id === "หน่วยงาน"
+                ? state[index]?.sector
+                : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
+                ? state[index]?.allSector
                 : id === "วิธีการได้มา" ||
                   id === "ประเภทเงิน" ||
                   id === "ผู้ขาย" ||
@@ -220,6 +247,10 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
             ? state?.acquiredType
             : id === "วัตถุประสงค์ในการใช้งาน"
             ? state?.purposeOfUse
+            : id === "หน่วยงาน"
+            ? state[index]?.sector
+            : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
+            ? state[index]?.allSector
             : id === "วิธีการได้มา" ||
               id === "ประเภทเงิน" ||
               id === "ผู้ขาย" ||
@@ -272,6 +303,10 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
                   ? state?.acquiredType
                   : id === "วัตถุประสงค์ในการใช้งาน"
                   ? state?.purposeOfUse
+                  : id === "หน่วยงาน"
+                  ? state[index]?.sector
+                  : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
+                  ? state[index]?.allSector
                   : ""
                 )?.toLowerCase() && "bg-sky-600 text-white"
             }
@@ -301,6 +336,10 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
                   ? state?.purposeOfUse
                   : id === "วัตถุประสงค์ในการใช้งาน"
                   ? state?.purposeOfUse
+                  : id === "หน่วยงาน"
+                  ? state[index]?.sector
+                  : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
+                  ? state[index]?.allSector
                   : ""
                 )?.toLowerCase()
               ) {
@@ -322,7 +361,12 @@ const Selector = ({ placeholder, fetchDataDropdown, state, setState, id }) => {
                   handleChangeAcquiredType(data?.name);
                 } else if (id === "วัตถุประสงค์ในการใช้งาน") {
                   handleChangePurposeOfUse(data?.name);
-                } else if (
+                } else if (id === "หน่วยงาน") {
+                  handleChangeSector(data?.name);
+                } else if (id === "การจ่ายครุภัณฑ์ให้หน่วยงาน") {
+                  handleChangeAllSector(data?.name);
+                } 
+                else if (
                   id === "วิธีการได้มา" ||
                   id === "ประเภทเงิน" ||
                   id === "ผู้ขาย" ||

@@ -40,7 +40,7 @@ export const SidebarData = [
   },
   {
     title: "ข้อมูลครุภัณฑ์เป็นชุด",
-    path: "/packageAssetInformation",
+    path: "/packageAssetInformationIndex",
     icon: (
       <svg
         width="18"
@@ -419,7 +419,7 @@ export const SidebarData = [
   },
   {
     title: "ข้อมูลผู้ใช้งาน",
-    path: "/userInformation",
+    path: "/userInformationIndex",
     icon: (
       <svg
         width="22"

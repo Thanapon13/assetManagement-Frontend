@@ -8,7 +8,9 @@ import {
   BorrowApprove,
   BorrowSaving,
   BorrowDetailApprove,
+  PackageAssetInformationIndex,
   PackageAssetInformation,
+
   AssetInformationIndex,
   AssetInformation,
   AssetWithdraw,
@@ -19,7 +21,10 @@ import {
   LoginPage,
   ForgotPassword,
   EmailConfirmation,
-  DefaultData
+  DefaultData,
+  MerchantIndex,
+  UserInformationIndex,
+  AddUserInformation
 } from "../pages";
 
 const Router = () => {
@@ -35,6 +40,10 @@ const Router = () => {
             <Route
               path="/assetInformationIndex"
               element={<AssetInformationIndex />}
+            />
+            <Route
+              path="/packageAssetInformationIndex"
+              element={<PackageAssetInformationIndex />}
             />
             <Route
               path="/packageAssetInformation"
@@ -57,6 +66,9 @@ const Router = () => {
             <Route path="/transferAsset" element={<TransferAsset />} />
             <Route path="/repairDashboard" element={<RepairDashboard />} />
             <Route path="/defaultData" element={<DefaultData />} />
+            <Route path="/merchantIndex" element={<MerchantIndex />} />
+            <Route path="/userInformationIndex" element={<UserInformationIndex />} />
+            <Route path="/addUserInformation" element={<AddUserInformation />} />
           </Route>
         ) : (
           <>
