@@ -437,26 +437,65 @@ const ModalCancel = () => {
           <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
             <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
               <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
-                {/* ระบุสาเหตุที่ยกเลิก */}
+                {/* ยกเลิกการแจ้งซ่อม */}
                 <div>
                   {/* header*/}
-                  <div className="flex items-center justify-between p-5 ">
-                    <h3 className="text-xl">ระบุสาเหตุที่ยกเลิก</h3>
-                    <button
-                      className="border-0 text-black float-right"
-                      onClick={() => setShowModal(false)}
+                  <div className="flex justify-center items-center gap-5 p-5 ">
+                    <svg
+                      width="84"
+                      height="84"
+                      viewBox="0 0 84 84"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
-                        x
-                      </span>
-                    </button>
+                      <path
+                        d="M42.0001 0.333984C39.9167 0.333984 37.8334 1.12565 36.1251 2.79232L2.79175 36.1256C-0.499919 39.3756 -0.499919 44.6256 2.79175 47.8756L36.1251 81.209C39.3751 84.5006 44.6251 84.5006 47.8751 81.209L81.2084 47.8756C84.5001 44.6256 84.5001 39.3756 81.2084 36.1256L47.8751 2.79232C46.1667 1.12565 44.0834 0.333984 42.0001 0.333984ZM37.8334 21.1673H46.1667V46.1673H37.8334V21.1673ZM37.8334 54.5006H46.1667V62.834H37.8334V54.5006Z"
+                        fill="#EB5757"
+                      />
+                    </svg>
+                    <h1 className="text-2xl text-red-700">ยกเลิกการแจ้งซ่อม</h1>
+                  </div>
+                  {/* ข้อมูลผู้เกี่ยวข้อง */}
+                  <div className="p-6 text-base">
+                    {/* row 1 เลขที่ใบแจ้งซ่อม */}
+                    <div className="grid grid-cols-2  md:grid-cols-4 p-2">
+                      <div className="text-text-gray flex items-center ">
+                        เลขที่ใบแจ้งซ่อม
+                      </div>
+                      <div className="flex items-center ">
+                        {'mnt-0308/65-002'}
+                      </div>
+                      <div className="text-text-gray flex items-center ">
+                        เวลาที่แจ้งซ่อม
+                      </div>
+                      <div className="flex items-center ">
+                        {'18/03/2566 , 09.42 น.'}
+                      </div>
+                    </div>
+                    {/* row 2 ผู้ประสานงาน */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 p-2">
+                      <div className="text-text-gray flex items-center">
+                        ผู้ประสานงาน
+                      </div>
+                      <div className="flex items-center">
+                        {'เมตตา ดวงรุ่งเรืองโรจน์'}
+                      </div>
+                      <div className="text-text-gray flex items-center">
+                        หน่วยงาน
+                      </div>
+                      <div className="flex items-center">
+                        {'กองงานบัญชีกลาง'}
+                      </div>
+                    </div>
+                    {/* สาเหตุที่ยกเลิก */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 p-2">
+                      <div className="text-text-gray flex items-center">
+                        สาเหตุที่ยกเลิก
+                      </div>
+                      <textarea className="col-span-3 border-[1px] p-2 h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue"></textarea>
+                    </div>
                   </div>
                 </div>
-                {/* สาเหตุไม่อนุมัติ */}
-                <div>
-                  <textarea className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue"></textarea>
-                </div>
-
                 {/* footer */}
                 <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
                   <button
