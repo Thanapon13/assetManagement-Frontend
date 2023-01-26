@@ -58,7 +58,6 @@ const PackageAssetInformation = () => {
     category: "",
     acquiredType: "",
     group: "",
-    source: "",
     pricePerUnit: 0,
     guaranteedMonth: "",
     purposeOfUse: "",

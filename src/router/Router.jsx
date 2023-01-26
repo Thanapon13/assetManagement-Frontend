@@ -24,8 +24,8 @@ import {
   DefaultData,
   MerchantIndex,
   UserInformationIndex,
-  AddUserInformation
-} from "../pages";
+  AddUserInformation,
+  ViewAssetInformation} from "../pages";
 
 const Router = () => {
   const user = "a";
@@ -40,6 +40,10 @@ const Router = () => {
             <Route
               path="/assetInformationIndex"
               element={<AssetInformationIndex />}
+            />
+            <Route
+              path="/viewAssetInformation"
+              element={<ViewAssetInformation />}
             />
             <Route
               path="/packageAssetInformationIndex"

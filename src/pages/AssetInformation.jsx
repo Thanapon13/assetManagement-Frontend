@@ -58,7 +58,6 @@ const AssetInformation = () => {
     category: "",
     acquiredType: "",
     group: "",
-    source: "",
     pricePerUnit: 0,
     guaranteedMonth: "",
     purposeOfUse: "",
@@ -476,7 +475,7 @@ const AssetInformation = () => {
         {/* Header */}
         <div className="flex items-center">
           <Link
-            to="/assetInformation"
+            to="/assetInformationIndex"
             className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
           >
             <BsArrowLeft className="text-lg" />
@@ -495,7 +494,7 @@ const AssetInformation = () => {
 
             <div className="text-text-gray">/</div>
             <Link
-              to="/assetInformation"
+              to="/assetInformationIndex"
               className=" text-text-green underline text-xs focus:text-sky-700 focus:underline ml-2"
             >
               ข้อมูลครุภัณฑ์
