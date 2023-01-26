@@ -1,4 +1,4 @@
-import { useState } from 'React'
+import { useState } from 'react'
 
 const DropdownStatus = () => {
   const [isOpen, setOpen] = useState(false)

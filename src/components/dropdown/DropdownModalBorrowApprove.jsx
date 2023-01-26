@@ -1,4 +1,4 @@
-import { useState } from 'React'
+import { useState } from 'react'
 
 const DropdownModalBorrowApprove = ({ callback, header }) => {
   const [isOpen, setOpen] = useState(false)

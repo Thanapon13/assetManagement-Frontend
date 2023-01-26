@@ -9,6 +9,13 @@ import {
 } from '../components'
 import {
   Dashboard,
+  PackageAssetInformationIndex,
+  PackageAssetInformation,
+  AssetInformationIndex,
+  AssetInformation,
+  AssetWithdraw,
+  SaveAssetWithdraw,
+  ApprovalAssetWithdraw,
   BorrowList,
   BorrowEdit,
   BorrowDetail,
@@ -21,20 +28,33 @@ import {
   BorrowApproveDetail,
   BorrowHistoryIndex,
   BorrowHistoryDetail,
-  PackageAssetInformation,
-  AssetInformationIndex,
-  AssetInformation,
-  AssetWithdraw,
-  SaveAssetWithdraw,
-  ApprovalAssetWithdraw,
   TransferAsset,
   RepairDashboard,
   LoginPage,
   ForgotPassword,
   EmailConfirmation,
+  DefaultData,
+  MerchantIndex,
+  UserInformationIndex,
+  AddUserInformation,
 } from '../pages'
 
-// import useAuth from '../hooks/useAuth'
+// import {
+//   BorrowList,
+//   BorrowEdit,
+//   BorrowDetail,
+//   BorrowCheckIndex,
+//   BorrowCheckSaving,
+//   BorrowCheckDetail,
+//   BorrowRecord,
+//   BorrowApprove,
+//   BorrowSaving,
+//   BorrowApproveDetail,
+//   BorrowHistoryIndex,
+//   BorrowHistoryDetail,
+// } from '../pages'
+
+import useAuth from '../hooks/useAuth'
 
 const Public = () => {
   return (
@@ -73,6 +93,10 @@ const Router = () => {
           />
           {/* </Route> */}
           <Route
+            path="/packageAssetInformationIndex"
+            element={<PackageAssetInformationIndex />}
+          />
+          <Route
             path="packageAssetInformation"
             element={<PackageAssetInformation />}
           />
@@ -109,6 +133,13 @@ const Router = () => {
 
           <Route path="transferAsset" element={<TransferAsset />} />
           <Route path="repairDashboard" element={<RepairDashboard />} />
+          <Route path="/defaultData" element={<DefaultData />} />
+          <Route path="/merchantIndex" element={<MerchantIndex />} />
+          <Route
+            path="/userInformationIndex"
+            element={<UserInformationIndex />}
+          />
+          <Route path="/addUserInformation" element={<AddUserInformation />} />
         </Route>
       </Route>
       {/* </Route> */}
