@@ -29,7 +29,7 @@ import {
   BorrowHistoryIndex,
   BorrowHistoryDetail,
   TransferAsset,
-  RepairDashboard,
+  RepairIndex,
   LoginPage,
   ForgotPassword,
   EmailConfirmation,
@@ -38,21 +38,6 @@ import {
   UserInformationIndex,
   AddUserInformation,
 } from '../pages'
-
-// import {
-//   BorrowList,
-//   BorrowEdit,
-//   BorrowDetail,
-//   BorrowCheckIndex,
-//   BorrowCheckSaving,
-//   BorrowCheckDetail,
-//   BorrowRecord,
-//   BorrowApprove,
-//   BorrowSaving,
-//   BorrowApproveDetail,
-//   BorrowHistoryIndex,
-//   BorrowHistoryDetail,
-// } from '../pages'
 
 import useAuth from '../hooks/useAuth'
 
@@ -133,7 +118,7 @@ const Router = () => {
         />
 
         <Route path="transferAsset" element={<TransferAsset />} />
-        <Route path="repairDashboard" element={<RepairDashboard />} />
+        <Route path="repairIndex" element={<RepairIndex />} />
         <Route path="/defaultData" element={<DefaultData />} />
         <Route path="/merchantIndex" element={<MerchantIndex />} />
         <Route
