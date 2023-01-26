@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import DropdownStatus from '../dropdown/DropdownStatus'
 
-const TableBorrowSaving = (props) => {
+const TableBorrowCheckSaving = (props) => {
   const [isClick, setIsClick] = useState(false)
 
   const handleClick = () => {
@@ -36,7 +36,7 @@ const TableBorrowSaving = (props) => {
             <div className="col-span-1">
               <DropdownStatus />
             </div>
-            <div className="col-span-1  h-[42px] border-[2px] flex justify-center items-center rounded-md">
+            <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
               {item.totalPrice}
             </div>
           </div>
@@ -46,4 +46,4 @@ const TableBorrowSaving = (props) => {
   )
 }
 
-export default TableBorrowSaving
+export default TableBorrowCheckSaving

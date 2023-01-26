@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom'
 import TableBorrowRecord from '../components/table/TableBorrowRecord'
 import Selector from '../components/selector/Selector'
 import TableLocationHistory from '../components/table/TableLocationHistory'
+import { FaArrowLeft } from 'react-icons/fa'
 
-const BorrowRecord = () => {
+const BorrowEdit = () => {
   const [countRow, setCountRow] = useState(1)
 
   const [input, setInput] = useState({
@@ -137,7 +138,12 @@ const BorrowRecord = () => {
       {/* body */}
       <div className="bg-background-page pt-5 p-3">
         {/* Header */}
-        <div className="text-2xl text-text-green ">บันทึกใบยืมครุภัณฑ์</div>
+        <div className="text-2xl text-text-green flex items-center space-x-5 ">
+          <Link to={`/borrowList`}>
+            <FaArrowLeft className="text-gray-400" />
+          </Link>
+          <h1>แก้ไขใบยืมครุภัณฑ์</h1>
+        </div>
         <div className="flex pt-3">
           {/* left home */}
           <div className="flex text-xs">
@@ -148,7 +154,14 @@ const BorrowRecord = () => {
               Home
             </Link>
             <div className="text-text-gray">/</div>
-            <div className="text-text-gray ml-2">บันทึกใบยืมครุภัณฑ์</div>
+            <Link
+              to="/borrowList"
+              className=" text-text-green ml-2 underline text-xs focus:text-sky-700 focus:underline mr-2"
+            >
+              รายการ ยืม-คืน
+            </Link>
+            <div className="text-text-gray">/</div>
+            <div className="text-text-gray ml-2">แก้ไขใบยืมครุภัณฑ์</div>
           </div>
         </div>
         {/* ข้อมูลการยืมครุภัณฑ์ */}
@@ -348,4 +361,4 @@ const BorrowRecord = () => {
   )
 }
 
-export default BorrowRecord
+export default BorrowEdit
