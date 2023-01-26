@@ -25,11 +25,13 @@ module.exports = {
         'table-gray': '#F5F5F5',
         'table-data': '#F0F0F0',
         'button-red': '#FE5F7C',
+        'button-orange': '#FFAE66',
         'upload-pic': '#FBFBFB',
       },
       gridTemplateColumns: {
         // 14: 'repeat(14, minmax(0, 1fr))',
         13: 'repeat(13, minmax(0, 1fr))',
+        14: 'repeat(14, minmax(0, 1fr))',
         15: 'repeat(15, minmax(0, 1fr))',
         16: 'repeat(16, minmax(0, 1fr))',
         17: 'repeat(17, minmax(0, 1fr))',
