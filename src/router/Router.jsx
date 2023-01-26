@@ -30,6 +30,7 @@ import {
   BorrowHistoryDetail,
   TransferAsset,
   RepairIndex,
+  RepairDetail,
   LoginPage,
   ForgotPassword,
   EmailConfirmation,
@@ -119,6 +120,7 @@ const Router = () => {
 
         <Route path="transferAsset" element={<TransferAsset />} />
         <Route path="repairIndex" element={<RepairIndex />} />
+        <Route path="repairIndex/repairDetail" element={<RepairDetail />} />
         <Route path="/defaultData" element={<DefaultData />} />
         <Route path="/merchantIndex" element={<MerchantIndex />} />
         <Route
