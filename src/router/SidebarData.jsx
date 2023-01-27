@@ -518,7 +518,7 @@ export const SidebarData = [
       },
       {
         title: 'เพิ่มการซ่อมบำรุง',
-        path: '/',
+        path: '/repairRecord',
         icon: (
           <svg
             width="20"
