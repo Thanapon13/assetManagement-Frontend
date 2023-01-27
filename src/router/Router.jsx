@@ -1,12 +1,12 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import {
   PublicLayout,
   Layout,
   RequireAuth,
   PersistLogin,
   Unauthorized,
-} from "../components";
+} from '../components'
 import {
   Dashboard,
   PackageAssetInformationIndex,
@@ -29,7 +29,9 @@ import {
   BorrowHistoryIndex,
   BorrowHistoryDetail,
   TransferAsset,
-  RepairDashboard,
+  RepairIndex,
+  RepairDetail,
+  RepairRecord,
   LoginPage,
   ForgotPassword,
   EmailConfirmation,
@@ -39,24 +41,9 @@ import {
   AddUserInformation,
   ViewAssetInformation,
   EditAssetInformation,
-} from "../pages";
+} from '../pages'
 
-// import {
-//   BorrowList,
-//   BorrowEdit,
-//   BorrowDetail,
-//   BorrowCheckIndex,
-//   BorrowCheckSaving,
-//   BorrowCheckDetail,
-//   BorrowRecord,
-//   BorrowApprove,
-//   BorrowSaving,
-//   BorrowApproveDetail,
-//   BorrowHistoryIndex,
-//   BorrowHistoryDetail,
-// } from '../pages'
-
-import useAuth from "../hooks/useAuth";
+import useAuth from '../hooks/useAuth'
 
 const Public = () => {
   return (
@@ -65,8 +52,8 @@ const Public = () => {
         Hi !!!!! you wrong again
       </div>
     </>
-  );
-};
+  )
+}
 
 const Router = () => {
   return (
@@ -142,7 +129,9 @@ const Router = () => {
         />
 
         <Route path="transferAsset" element={<TransferAsset />} />
-        <Route path="repairDashboard" element={<RepairDashboard />} />
+        <Route path="repairIndex" element={<RepairIndex />} />
+        <Route path="repairIndex/repairDetail" element={<RepairDetail />} />
+        <Route path="repairRecord" element={<RepairRecord />} />
         <Route path="/defaultData" element={<DefaultData />} />
         <Route path="/merchantIndex" element={<MerchantIndex />} />
         <Route
@@ -154,7 +143,7 @@ const Router = () => {
 
       {/* </Route> */}
     </Routes>
-  );
-};
+  )
+}
 
-export default Router;
+export default Router
