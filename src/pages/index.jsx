@@ -18,6 +18,7 @@ export { default as PackageAssetInformationIndex } from './PackageAssetInformati
 export { default as PackageAssetInformation } from './PackageAssetInformation'
 export { default as AssetInformationIndex } from './AssetInformationIndex'
 export { default as AssetInformation } from './AssetInformation'
+export { default as EditAssetInformation } from './EditAssetInformation'
 export { default as AssetWithdraw } from './AssetWithdraw'
 export { default as SaveAssetWithdraw } from './SaveAssetWithdraw'
 export { default as ApprovalAssetWithdraw } from './ApprovalAssetWithdraw'

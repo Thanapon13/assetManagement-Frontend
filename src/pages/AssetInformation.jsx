@@ -1,55 +1,57 @@
-import React, { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import Selector from '../components/selector/Selector'
-import RowOfTableArray from '../components/table/RowOfTableArray'
-import { BsArrowLeft } from 'react-icons/bs'
-import { BsFillEyeFill } from 'react-icons/bs'
-import { HiChevronLeft } from 'react-icons/hi'
-import { HiChevronRight } from 'react-icons/hi'
-import { AiOutlineSearch } from 'react-icons/ai'
-import { GrDocument } from 'react-icons/gr'
-import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
-import DateInput from '../components/date/DateInput'
-import RowOfTableAssetInformation from '../components/table/RowOfTableAssetInformation'
-import boxIcon from '../public/pics/boxIcon.png'
-import docIcon from '../public/pics/docIcon.png'
-import Modal from '../components/modal/Modal'
-import DeprecationDropdown from '../components/dropdown/DeprecationDropdown'
-import { ToastContainer, toast } from 'react-toastify'
-import { createAsset } from '../api/assetApi'
-import BarcodeScanner from '../components/scanner/BarcodeScanner'
-import QRscanner from '../components/scanner/QRscanner'
-import { useEffect } from 'react'
+import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import Selector from "../components/selector/Selector";
+import RowOfTableArray from "../components/table/RowOfTableArray";
+import { BsArrowLeft } from "react-icons/bs";
+import { BsFillEyeFill } from "react-icons/bs";
+import { HiChevronLeft } from "react-icons/hi";
+import { HiChevronRight } from "react-icons/hi";
+import { AiOutlineSearch } from "react-icons/ai";
+import { GrDocument } from "react-icons/gr";
+import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
+import DateInput from "../components/date/DateInput";
+import RowOfTableAssetInformation from "../components/table/RowOfTableAssetInformation";
+import boxIcon from "../public/pics/boxIcon.png";
+import docIcon from "../public/pics/docIcon.png";
+import Modal from "../components/modal/Modal";
+import DeprecationDropdown from "../components/dropdown/DeprecationDropdown";
+import { ToastContainer, toast } from "react-toastify";
+import { createAsset } from "../api/assetApi";
+import BarcodeScanner from "../components/scanner/BarcodeScanner";
+import QRscanner from "../components/scanner/QRscanner";
+import { useEffect } from "react";
 
 const AssetInformation = () => {
-  const inputImg = useRef()
-  const inputDoc = useRef()
+  const inputImg = useRef();
+  const inputDoc = useRef();
 
-  const imageTypes = ['image/png', 'image/jpeg', 'image/svg+xml']
+  const imageTypes = ["image/png", "image/jpeg", "image/svg+xml"];
 
   const fileTypes = [
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/pdf',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  ]
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ];
 
-  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
+  const todayThaiDate = ChangeDateToBuddhist(
+    new Date().toLocaleString("th-TH")
+  );
 
   // useState
-  const [perPage, setPerPage] = useState(10)
+  const [perPage, setPerPage] = useState(10);
 
   const [input, setInput] = useState({
     // ID: "",
     // serialNumber: "",
-    engProductName: '',
-    productName: '',
-    type: '',
-    kind: '',
-    realAssetId: '',
-    unit: '',
-    brand: '',
-    model: '',
-    size: '',
+    engProductName: "",
+    productName: "",
+    type: "",
+    kind: "",
+    realAssetId: "",
+    unit: "",
+    brand: "",
+    model: "",
+    size: "",
     quantity: 0,
     serialNumberMachine: "",
     source: "",
@@ -57,412 +59,410 @@ const AssetInformation = () => {
     acquiredType: "",
     group: "",
     pricePerUnit: 0,
-    guaranteedMonth: '',
-    purposeOfUse: '',
-    allSector: '',
-    assetNumber: 'แมม',
+    guaranteedMonth: "",
+    purposeOfUse: "",
+    allSector: "",
+    assetNumber: "แมม",
 
-    status: 'not approve',
-  })
+    status: "not approve",
+  });
 
   // upload image
-  const [arrayImage, setArrayImage] = useState([])
-  const [arrayImageURL, setArrayImageURL] = useState([])
+  const [arrayImage, setArrayImage] = useState([]);
+  const [arrayImageURL, setArrayImageURL] = useState([]);
 
   // คู่มือและเอกสารแนบ
-  const [arrayDocument, setArrayDocument] = useState([])
+  const [arrayDocument, setArrayDocument] = useState([]);
 
   // gen เลขครุภัณฑ์
   const [genData, setGenData] = useState([
     {
       // index: 0,
-      realAssetId: '123',
-      productName: 'aaa',
-      serialNumber: 'a12b12',
-      sector: '',
-      asset01: '66071032',
+      realAssetId: "123",
+      productName: "aaa",
+      serialNumber: "a12b12",
+      sector: "",
+      asset01: "66071032",
     },
     {
-      realAssetId: '222',
-      productName: 'bbb',
-      serialNumber: 'dfg234htjn',
-      sector: '',
-      asset01: '66071032',
+      realAssetId: "222",
+      productName: "bbb",
+      serialNumber: "dfg234htjn",
+      sector: "",
+      asset01: "66071032",
     },
-  ])
+  ]);
 
-  const [indexGenData, setIndexGenData] = useState(0)
-  const [barcode, setBarcode] = useState(genData[indexGenData]?.serialNumber)
-  const [qr, setQr] = useState(genData[indexGenData]?.serialNumber)
-
-  // console.log(barcode,"barcode")
-  // ข้อมูลผู้รับผิดชอบ
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [responsibleSector, setResponsibleSector] = useState('')
-  const [building, setBuilding] = useState('')
-  const [floor, setFloor] = useState('')
-  const [room, setRoom] = useState('')
+  const [indexGenData, setIndexGenData] = useState(0);
+  const [barcode, setBarcode] = useState(genData[indexGenData]?.serialNumber);
+  const [qr, setQr] = useState(genData[indexGenData]?.serialNumber);
 
   // สัญญาจัดซื้อ
-  const [acquisitionMethod, setAcquisitionMethod] = useState('')
-  const [moneyType, setMoneyType] = useState('')
-  const [deliveryDocument, setDeliveryDocument] = useState('')
-  const [contractNumber, setContractNumber] = useState('')
-  const [receivedDate, setReceivedDate] = useState(todayThaiDate)
-  const [seller, setSeller] = useState('')
-  const [price, setPrice] = useState('')
-  const [billNumber, setBillNumber] = useState('')
-  const [purchaseYear, setPurchaseYear] = useState(todayThaiDate)
-  const [purchaseDate, setPurchaseDate] = useState(todayThaiDate)
-  const [documentDate, setDocumentDate] = useState(todayThaiDate)
+  const [acquisitionMethod, setAcquisitionMethod] = useState("");
+  const [moneyType, setMoneyType] = useState("");
+  const [deliveryDocument, setDeliveryDocument] = useState("");
+  const [contractNumber, setContractNumber] = useState("");
+  const [receivedDate, setReceivedDate] = useState(todayThaiDate);
+  const [seller, setSeller] = useState("");
+  const [price, setPrice] = useState("");
+  const [billNumber, setBillNumber] = useState("");
+  const [purchaseYear, setPurchaseYear] = useState(todayThaiDate);
+  const [purchaseDate, setPurchaseDate] = useState(todayThaiDate);
+  const [documentDate, setDocumentDate] = useState(todayThaiDate);
 
   // การจำหน่าย
-  const [salesDocument, setSalesDocument] = useState('')
+  const [salesDocument, setSalesDocument] = useState("");
   const [distributeDocumentDate, setDistributeDocumentDate] =
-    useState(todayThaiDate)
+    useState(todayThaiDate);
   const [distributeApprovalReleaseDate, setDistributeApprovalReleaseDate] =
-    useState(todayThaiDate)
-  const [distributeStatus, setDistributeStatus] = useState('')
-  const [distributionNote, setDistributionNote] = useState('')
+    useState(todayThaiDate);
+  const [distributeStatus, setDistributeStatus] = useState("");
+  const [distributionNote, setDistributionNote] = useState("");
 
   //Show Modal
-  const [showViewImageModal, setShowViewImageModal] = useState(false)
-  const [showDepreciationModal, setDepreciationShowModal] = useState(false)
+  const [showViewImageModal, setShowViewImageModal] = useState(false);
+  const [showDepreciationModal, setDepreciationShowModal] = useState(false);
   const [showAccumulateDepreciationModal, setAccumulateDepreciationShowModal] =
-    useState(false)
-  const [scanBarcodeModal, setScanBarcodeModal] = useState(false)
-  const [scanQRCodeModal, setScanQRCodeModal] = useState(false)
+    useState(false);
+  const [scanBarcodeModal, setScanBarcodeModal] = useState(false);
+  const [scanQRCodeModal, setScanQRCodeModal] = useState(false);
 
   //Modal ค่าเสื่อมราคา
-  const [depreciationStartDate, setDepreciationStartDate] = useState(new Date())
+  const [depreciationStartDate, setDepreciationStartDate] = useState(
+    new Date()
+  );
   const [depreciationRegisterDate, setDepreciationRegisterDate] = useState(
     new Date()
-  )
+  );
   const [depreciationReceivedDate, setDepreciationReceivedDate] = useState(
     new Date()
-  )
-  const [depreciationPrice, setDepreciationPrice] = useState(0)
-  const [depreciationYearUsed, setDepreciationYearUsed] = useState(0)
-  const [depreciationCarcassPrice, setDepreciationCarcassPrice] = useState(0)
-  const [depreciationProcess, setDepreciationProcess] = useState(0)
-  const [depreciationPresentMonth, setDepreciationPresentMonth] = useState(0)
+  );
+  const [depreciationPrice, setDepreciationPrice] = useState(0);
+  const [depreciationYearUsed, setDepreciationYearUsed] = useState(0);
+  const [depreciationCarcassPrice, setDepreciationCarcassPrice] = useState(0);
+  const [depreciationProcess, setDepreciationProcess] = useState(0);
+  const [depreciationPresentMonth, setDepreciationPresentMonth] = useState(0);
   const [depreciationCumulativePrice, setDepreciationCumulativePrice] =
-    useState(0)
-  const [depreciationYearPrice, setDepreciationYearPrice] = useState(0)
-  const [depreciationRemainPrice, setDepreciationRemainPrice] = useState(0)
-  const [depreciationBookValue, setDepreciationBookValue] = useState(0)
+    useState(0);
+  const [depreciationYearPrice, setDepreciationYearPrice] = useState(0);
+  const [depreciationRemainPrice, setDepreciationRemainPrice] = useState(0);
+  const [depreciationBookValue, setDepreciationBookValue] = useState(0);
 
   //Modal ค่าเสื่อมราคา(ผลรวมจำนวนปี)
   const [accumulateDepreciationStartDate, setAccumulateDepreciationStartDate] =
-    useState(new Date())
+    useState(new Date());
   const [
     accumulateDepreciationRegisterDate,
     setAccumulateDepreciationRegisterDate,
-  ] = useState(new Date())
+  ] = useState(new Date());
   const [
     accumulateDepreciationReceivedDate,
     setAccumulateDepreciationReceivedDate,
-  ] = useState(new Date())
+  ] = useState(new Date());
   const [accumulateDepreciationPrice, setAccumulateDepreciationPrice] =
-    useState(0)
+    useState(0);
   const [accumulateDepreciationYearUsed, setAccumulateDepreciationYearUsed] =
-    useState(0)
+    useState(0);
   const [
     accumulateDepreciationCarcassPrice,
     setAccumulateDepreciationCarcassPrice,
-  ] = useState(0)
+  ] = useState(0);
   const [accumulateDepreciationProcess, setAccumulateDepreciationProcess] =
-    useState(0)
+    useState(0);
   const [
     accumulateDepreciationPresentMonth,
     setAccumulateDepreciationPresentMonth,
-  ] = useState(0)
+  ] = useState(0);
   const [
     accumulateDepreciationCumulativePrice,
     setAccumulateDepreciationCumulativePrice,
-  ] = useState(0)
+  ] = useState(0);
   const [accumulateDepreciationYearPrice, setAccumulateDepreciationYearPrice] =
-    useState(0)
+    useState(0);
   const [
     accumulateDepreciationRemainPrice,
     setAccumulateDepreciationRemainPrice,
-  ] = useState(0)
+  ] = useState(0);
   const [accumulateDepreciationBookValue, setAccumulateDepreciationBookValue] =
-    useState(0)
+    useState(0);
 
   //Main Date
-  const [insuranceStartDate, setInsuranceStartDate] = useState(todayThaiDate)
+  const [insuranceStartDate, setInsuranceStartDate] = useState(todayThaiDate);
   const [insuranceExpiredDate, setInsuranceExpiredDate] =
-    useState(todayThaiDate)
+    useState(todayThaiDate);
 
   // handle
   const handleChangeRealAssetId = (e) => {
-    const clone = { ...input }
-    clone.realAssetId = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.realAssetId = e.target.value;
+    setInput(clone);
+  };
   const handleChangeAssetNumber = (e) => {
-    const clone = { ...input }
-    clone.assetNumber = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.assetNumber = e.target.value;
+    setInput(clone);
+  };
   const handleChangeEngProductName = (e) => {
-    const clone = { ...input }
-    clone.engProductName = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.engProductName = e.target.value;
+    setInput(clone);
+  };
   const handleChangeProductName = (e) => {
-    const clone = { ...input }
-    clone.productName = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.productName = e.target.value;
+    setInput(clone);
+  };
   const handleChangeModel = (e) => {
-    const clone = { ...input }
-    clone.model = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.model = e.target.value;
+    setInput(clone);
+  };
   const handleChangeSize = (e) => {
-    const clone = { ...input }
-    clone.size = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.size = e.target.value;
+    setInput(clone);
+  };
   const handleChangeQuantity = (e) => {
-    const clone = { ...input }
-    clone.quantity = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.quantity = e.target.value;
+    setInput(clone);
+  };
   const handleChangePricePerUnit = (e) => {
-    const clone = { ...input }
-    clone.pricePerUnit = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.pricePerUnit = e.target.value;
+    setInput(clone);
+  };
   const handleChangeSource = (e) => {
-    const clone = { ...input }
-    clone.source = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.source = e.target.value;
+    setInput(clone);
+  };
   const handleChangeAllSector = (e) => {
-    const clone = { ...input }
-    clone.allSector = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.allSector = e.target.value;
+    setInput(clone);
+  };
   const handleChangeGuaranteedMonth = (e) => {
-    const clone = { ...input }
-    clone.guaranteedMonth = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.guaranteedMonth = e.target.value;
+    setInput(clone);
+  };
 
   //upload image
   // validate size 2mb = 2,000,000 byte
   const handleImageChange = (e) => {
-    const fileList = e.target.files
-    console.log(fileList)
-    const cloneFile = [...arrayImage]
+    const fileList = e.target.files;
+    console.log(fileList);
+    const cloneFile = [...arrayImage];
     for (let i = 0; i < fileList.length; i++) {
       if (!imageTypes.includes(fileList[i].type)) {
         toast.warn(`${fileList[i].name} is wrong file type!`, {
-          position: 'top-right',
+          position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: 'light',
-        })
+          theme: "light",
+        });
       } else if (fileList[i].size > 2000000) {
         toast.warn(`${fileList[i].name} has more than 2mb!`, {
-          position: 'top-right',
+          position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: 'light',
-        })
+          theme: "light",
+        });
       } else if (cloneFile.length >= 8) {
         toast.warn(`Your images are more than 8!`, {
-          position: 'top-right',
+          position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: 'light',
-        })
+          theme: "light",
+        });
       } else {
-        cloneFile.push({ image: fileList[i] })
+        cloneFile.push({ image: fileList[i] });
       }
     }
 
-    setArrayImage(cloneFile)
-  }
+    setArrayImage(cloneFile);
+  };
 
   const deleteImg = (idx) => {
-    let clone = [...arrayImage]
-    clone.splice(idx, 1)
-    setArrayImage(clone)
-  }
+    let clone = [...arrayImage];
+    clone.splice(idx, 1);
+    setArrayImage(clone);
+  };
 
   //คู่มือและเอกสารแนบ
   const handleFileChange = (e) => {
-    const fileList = e.target.files
-    console.log(fileList)
-    const cloneFile = [...arrayDocument]
+    const fileList = e.target.files;
+    console.log(fileList);
+    const cloneFile = [...arrayDocument];
     for (let i = 0; i < fileList.length; i++) {
       if (fileTypes.includes(fileList[i].type)) {
-        cloneFile.push({ document: fileList[i] })
+        cloneFile.push({ document: fileList[i] });
       } else {
         toast.warn(
           `${fileList[i].name} is wrong file type or size is more than 2mb.!`,
           {
-            position: 'top-right',
+            position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: 'light',
+            theme: "light",
           }
-        )
+        );
       }
     }
-    setArrayDocument(cloneFile)
-  }
+    setArrayDocument(cloneFile);
+  };
 
   const deleteDoc = (idx) => {
-    let clone = [...arrayDocument]
-    clone.splice(idx, 1)
-    setArrayDocument(clone)
-  }
+    let clone = [...arrayDocument];
+    clone.splice(idx, 1);
+    setArrayDocument(clone);
+  };
 
-  const handleGenData = (e) => {}
+  const handleGenData = (e) => {};
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const inputJSON = JSON.stringify(input)
-    const genDataJSON = JSON.stringify(genData)
-    const formData = new FormData()
-    formData.append('input', inputJSON)
-    formData.append('insuranceStartDate', insuranceStartDate)
-    formData.append('insuranceExpiredDate', insuranceExpiredDate)
+    e.preventDefault();
+    const inputJSON = JSON.stringify(input);
+    const genDataJSON = JSON.stringify(genData);
+    const formData = new FormData();
+    formData.append("input", inputJSON);
+    formData.append("insuranceStartDate", insuranceStartDate);
+    formData.append("insuranceExpiredDate", insuranceExpiredDate);
     arrayImage.forEach((file) => {
-      formData.append('arrayImage', file.image)
-    })
+      formData.append("arrayImage", file.image);
+    });
     arrayDocument.forEach((file) => {
-      formData.append('arrayDocument', file.document)
-    })
-    formData.append('genDataJSON', genDataJSON)
-    formData.append('depreciationStartDate', depreciationStartDate)
-    formData.append('depreciationRegisterDate', depreciationRegisterDate)
-    formData.append('depreciationReceivedDate', depreciationReceivedDate)
-    formData.append('depreciationPrice', depreciationPrice)
-    formData.append('depreciationYearUsed', depreciationYearUsed)
-    formData.append('depreciationCarcassPrice', depreciationCarcassPrice)
-    formData.append('depreciationProcess', depreciationProcess)
-    formData.append('depreciationPresentMonth', depreciationPresentMonth)
-    formData.append('depreciationCumulativePrice', depreciationCumulativePrice)
-    formData.append('depreciationYearPrice', depreciationYearPrice)
-    formData.append('depreciationRemainPrice', depreciationRemainPrice)
-    formData.append('depreciationBookValue', depreciationBookValue)
+      formData.append("arrayDocument", file.document);
+    });
+    formData.append("genDataJSON", genDataJSON);
+    formData.append("depreciationStartDate", depreciationStartDate);
+    formData.append("depreciationRegisterDate", depreciationRegisterDate);
+    formData.append("depreciationReceivedDate", depreciationReceivedDate);
+    formData.append("depreciationPrice", depreciationPrice);
+    formData.append("depreciationYearUsed", depreciationYearUsed);
+    formData.append("depreciationCarcassPrice", depreciationCarcassPrice);
+    formData.append("depreciationProcess", depreciationProcess);
+    formData.append("depreciationPresentMonth", depreciationPresentMonth);
+    formData.append("depreciationCumulativePrice", depreciationCumulativePrice);
+    formData.append("depreciationYearPrice", depreciationYearPrice);
+    formData.append("depreciationRemainPrice", depreciationRemainPrice);
+    formData.append("depreciationBookValue", depreciationBookValue);
 
     //Modal ค่าเสื่อมราคา(ผลรวมจำนวนปี)
     formData.append(
-      'accumulateDepreciationStartDate',
+      "accumulateDepreciationStartDate",
       accumulateDepreciationStartDate
-    )
+    );
     formData.append(
-      'accumulateDepreciationRegisterDate',
+      "accumulateDepreciationRegisterDate",
       accumulateDepreciationRegisterDate
-    )
+    );
     formData.append(
-      'accumulateDepreciationReceivedDate',
+      "accumulateDepreciationReceivedDate",
       accumulateDepreciationReceivedDate
-    )
-    formData.append('accumulateDepreciationPrice', accumulateDepreciationPrice)
+    );
+    formData.append("accumulateDepreciationPrice", accumulateDepreciationPrice);
     formData.append(
-      'accumulateDepreciationYearUsed',
+      "accumulateDepreciationYearUsed",
       accumulateDepreciationYearUsed
-    )
+    );
     formData.append(
-      'accumulateDepreciationCarcassPrice',
+      "accumulateDepreciationCarcassPrice",
       accumulateDepreciationCarcassPrice
-    )
+    );
     formData.append(
-      'accumulateDepreciationProcess',
+      "accumulateDepreciationProcess",
       accumulateDepreciationProcess
-    )
+    );
     formData.append(
-      'accumulateDepreciationPresentMonth',
+      "accumulateDepreciationPresentMonth",
       accumulateDepreciationPresentMonth
-    )
+    );
     formData.append(
-      'accumulateDepreciationCumulativePrice',
+      "accumulateDepreciationCumulativePrice",
       accumulateDepreciationCumulativePrice
-    )
+    );
     formData.append(
-      'accumulateDepreciationYearPrice',
+      "accumulateDepreciationYearPrice",
       accumulateDepreciationYearPrice
-    )
+    );
     formData.append(
-      'accumulateDepreciationRemainPrice',
+      "accumulateDepreciationRemainPrice",
       accumulateDepreciationRemainPrice
-    )
+    );
     formData.append(
-      'accumulateDepreciationBookValue',
+      "accumulateDepreciationBookValue",
       accumulateDepreciationBookValue
-    )
+    );
 
     //ข้อมูลผู้รับผิดชอบ
-    formData.append('name', name)
-    formData.append('email', email)
-    formData.append('phoneNumber', phoneNumber)
-    formData.append('responsibleSector', responsibleSector)
-    formData.append('building', building)
-    formData.append('floor', floor)
-    formData.append('room', room)
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("responsibleSector", responsibleSector);
+    formData.append("building", building);
+    formData.append("floor", floor);
+    formData.append("room", room);
 
     //สัญญาจัดซื้อ
-    formData.append('acquisitionMethod', acquisitionMethod)
-    formData.append('moneyType', moneyType)
-    formData.append('deliveryDocument', deliveryDocument)
-    formData.append('contractNumber', contractNumber)
-    formData.append('receivedDate', receivedDate)
-    formData.append('seller', seller)
-    formData.append('price', price)
-    formData.append('billNumber', billNumber)
-    formData.append('purchaseYear', purchaseYear)
-    formData.append('purchaseDate', purchaseDate)
-    formData.append('documentDate', documentDate)
+    formData.append("acquisitionMethod", acquisitionMethod);
+    formData.append("moneyType", moneyType);
+    formData.append("deliveryDocument", deliveryDocument);
+    formData.append("contractNumber", contractNumber);
+    formData.append("receivedDate", receivedDate);
+    formData.append("seller", seller);
+    formData.append("price", price);
+    formData.append("billNumber", billNumber);
+    formData.append("purchaseYear", purchaseYear);
+    formData.append("purchaseDate", purchaseDate);
+    formData.append("documentDate", documentDate);
 
     //การจำหน่าย
-    formData.append('salesDocument', salesDocument)
-    formData.append('distributeDocumentDate', distributeDocumentDate)
+    formData.append("salesDocument", salesDocument);
+    formData.append("distributeDocumentDate", distributeDocumentDate);
     formData.append(
-      'distributeApprovalReleaseDate',
+      "distributeApprovalReleaseDate",
       distributeApprovalReleaseDate
-    )
-    formData.append('distributeStatus', distributeStatus)
-    formData.append('distributionNote', distributionNote)
+    );
+    formData.append("distributeStatus", distributeStatus);
+    formData.append("distributionNote", distributionNote);
 
-    await createAsset(formData)
-  }
+    await createAsset(formData);
+  };
 
   useEffect(() => {
-    if (arrayImage.length < 1) return
-    const newImageUrls = []
+    if (arrayImage.length < 1) return;
+    const newImageUrls = [];
     // console.log(arrayImage);
     arrayImage.forEach(
       (img) => newImageUrls.push(URL.createObjectURL(img.image))
       // console.log(img)
-    )
-    setArrayImageURL(newImageUrls)
-  }, [arrayImage])
+    );
+    setArrayImageURL(newImageUrls);
+  }, [arrayImage]);
+
+  useEffect(() => {
+    const newGenData = [...genData];
+    newGenData.forEach((el, idx) => (el.sector = input.allSector));
+    setGenData(newGenData);
+  }, [input.allSector]);
 
   // data
   return (
@@ -533,10 +533,10 @@ const AssetInformation = () => {
               <div className="mb-1">ประเภทครุภัณฑ์</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={input}
                   setState={setInput}
-                  id={'ประเภทครุภัณฑ์'}
+                  id={"ประเภทครุภัณฑ์"}
                 />
               </div>
             </div>
@@ -545,10 +545,10 @@ const AssetInformation = () => {
               <div className="mb-1">ชนิดครุภัณฑ์</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={input}
                   setState={setInput}
-                  id={'ชนิดครุภัณฑ์'}
+                  id={"ชนิดครุภัณฑ์"}
                 />
               </div>
             </div>
@@ -584,10 +584,10 @@ const AssetInformation = () => {
                 <div className="mb-1">หน่วยนับ</div>
                 <div className="flex h-[38px] ">
                   <Selector
-                    placeholder={'Select'}
+                    placeholder={"Select"}
                     state={input}
                     setState={setInput}
-                    id={'หน่วยนับ'}
+                    id={"หน่วยนับ"}
                   />
                 </div>
               </div>
@@ -598,10 +598,10 @@ const AssetInformation = () => {
               <div className="mb-1">ยี่ห้อ</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={input}
                   setState={setInput}
-                  id={'ยี่ห้อ'}
+                  id={"ยี่ห้อ"}
                 />
               </div>
             </div>
@@ -635,10 +635,10 @@ const AssetInformation = () => {
               <div className="mb-1">หมวดหมู่ครุภัณฑ์</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={input}
                   setState={setInput}
-                  id={'หมวดหมู่ครุภัณฑ์'}
+                  id={"หมวดหมู่ครุภัณฑ์"}
                 />
               </div>
             </div>
@@ -647,10 +647,10 @@ const AssetInformation = () => {
               <div className="mb-1">กลุ่ม</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={input}
                   setState={setInput}
-                  id={'กลุ่ม'}
+                  id={"กลุ่ม"}
                 />
               </div>
             </div>
@@ -659,34 +659,34 @@ const AssetInformation = () => {
               <div className="mb-1">ประเภทที่ได้มา</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={input}
                   setState={setInput}
-                  id={'ประเภทที่ได้มา'}
+                  id={"ประเภทที่ได้มา"}
                 />
               </div>
             </div>
             {/* แหล่งที่ได้มา */}
             <div>
               <div className="mb-1">แหล่งที่ได้มา</div>
-              <input
-                type="text"
-                name="source"
-                id="source"
-                onChange={handleChangeSource}
-                value={input.source}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+              <div className="flex h-[38px] ">
+                <Selector
+                  placeholder={"Select"}
+                  state={input}
+                  setState={setInput}
+                  id={"แหล่งที่ได้มา"}
+                />
+              </div>
             </div>
             {/* วัตถุประสงค์ในการใช้งาน */}
             <div>
               <div className="mb-1">วัตถุประสงค์ในการใช้งาน</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={input}
                   setState={setInput}
-                  id={'วัตถุประสงค์ในการใช้งาน'}
+                  id={"วัตถุประสงค์ในการใช้งาน"}
                 />
               </div>
             </div>
@@ -740,10 +740,10 @@ const AssetInformation = () => {
               <div className="mb-1">การจ่ายครุภัณฑ์ให้หน่วยงาน</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
-                  state={genData}
-                  setState={setGenData}
-                  id={'การจ่ายครุภัณฑ์ให้หน่วยงาน'}
+                  placeholder={"Select"}
+                  state={input}
+                  setState={setInput}
+                  id={"การจ่ายครุภัณฑ์ให้หน่วยงาน"}
                 />
               </div>
               {/* <input
@@ -812,7 +812,7 @@ const AssetInformation = () => {
                       qr={qr}
                       setQr={setQr}
                     />
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -906,7 +906,7 @@ const AssetInformation = () => {
                   onChange={handleFileChange}
                 />
                 <div className="text-text-gray text-sm">
-                  (DOCX , PDF , XLSX){' '}
+                  (DOCX , PDF , XLSX){" "}
                 </div>
               </div>
               {/* file upload คู่มือและเอกสารแนบ*/}
@@ -944,104 +944,6 @@ const AssetInformation = () => {
           </div>
         </div>
 
-        {/* ข้อมูลผู้รับผิดชอบ */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-          <div>ข้อมูลผู้รับผิดชอบ</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-            {/* ชื่อ - นามสกุล */}
-            <div>
-              <div className="mb-1">ชื่อ - นามสกุล</div>
-
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={'Select'}
-                  state={name}
-                  setState={setName}
-                  id={'ชื่อ - นามสกุล'}
-                />
-              </div>
-            </div>
-            {/* อีเมล */}
-            <div>
-              <div className="mb-1">อีเมล</div>
-              <input
-                type="text"
-                name="email"
-                id="email"
-                disabled
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  bg-gray-200 border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* เบอร์โทรศัพท์ */}
-            <div>
-              <div className="mb-1">เบอร์โทรศัพท์</div>
-              <input
-                type="text"
-                name="phoneNumber"
-                id="phoneNumber"
-                disabled
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                value={phoneNumber}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  bg-gray-200 border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* หน่วยงาน */}
-            <div>
-              <div className="mb-1">หน่วยงาน</div>
-              <input
-                type="text"
-                name="responsibleSector"
-                id="responsibleSector"
-                // disabled
-                onChange={(e) => setResponsibleSector(e.target.value)}
-                value={responsibleSector}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* อาคาร */}
-            <div>
-              <div className="mb-1">อาคาร</div>
-              <input
-                type="text"
-                name="building"
-                id="building"
-                // disabled
-                onChange={(e) => setBuilding(e.target.value)}
-                value={building}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* ชั้น */}
-            <div>
-              <div className="mb-1">ชั้น</div>
-              <input
-                type="text"
-                name="floor"
-                id="floor"
-                // disabled
-                onChange={(e) => setFloor(e.target.value)}
-                value={floor}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* ห้อง */}
-            <div>
-              <div className="mb-1">ห้อง</div>
-              <input
-                type="text"
-                name="room"
-                id="room"
-                // disabled
-                onChange={(e) => setRoom(e.target.value)}
-                value={room}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-        </div>
-
         {/* สัญญาจัดซื้อ */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
           <div>สัญญาจัดซื้อ</div>
@@ -1051,10 +953,10 @@ const AssetInformation = () => {
               <div className="mb-1">วิธีการได้มา</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={acquisitionMethod}
                   setState={setAcquisitionMethod}
-                  id={'วิธีการได้มา'}
+                  id={"วิธีการได้มา"}
                 />
               </div>
             </div>
@@ -1063,10 +965,10 @@ const AssetInformation = () => {
               <div className="mb-1">ประเภทเงิน</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={moneyType}
                   setState={setMoneyType}
-                  id={'ประเภทเงิน'}
+                  id={"ประเภทเงิน"}
                 />
               </div>
             </div>
@@ -1106,10 +1008,10 @@ const AssetInformation = () => {
               <div className="mb-1">ผู้ขาย</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={seller}
                   setState={setSeller}
-                  id={'ผู้ขาย'}
+                  id={"ผู้ขาย"}
                 />
               </div>
             </div>
@@ -1203,10 +1105,10 @@ const AssetInformation = () => {
               <div className="mb-1">สถานะ</div>
               <div className="flex h-[38px] ">
                 <Selector
-                  placeholder={'Select'}
+                  placeholder={"Select"}
                   state={distributeStatus}
                   setState={setDistributeStatus}
-                  id={'สถานะ'}
+                  id={"สถานะ"}
                 />
               </div>
             </div>
@@ -1229,9 +1131,9 @@ const AssetInformation = () => {
         <Modal
           id="ค่าเสื่อมราคา"
           isVisible={showDepreciationModal}
-          width={'[800px]'}
+          width={"[800px]"}
           onClose={() => setDepreciationShowModal(false)}
-          header={'เพิ่มค่าเสื่อมราคา'}
+          header={"เพิ่มค่าเสื่อมราคา"}
           showDepreciationModal={showDepreciationModal}
           depreciationPrice={depreciationPrice}
           depreciationYearUsed={depreciationYearUsed}
@@ -1326,8 +1228,8 @@ const AssetInformation = () => {
                         name="depreciationReceivedDate"
                         id="depreciationReceivedDate"
                         onChange={(e) => {
-                          setDepreciationReceivedDate(e.target.value)
-                          monthDiff(e.target.value)
+                          setDepreciationReceivedDate(e.target.value);
+                          monthDiff(e.target.value);
                         }}
                         value={depreciationReceivedDate}
                         // autoComplete="given-name"
@@ -1540,9 +1442,9 @@ const AssetInformation = () => {
         <Modal
           id="ค่าเสื่อมราคา(รายปี)"
           isVisible={showAccumulateDepreciationModal}
-          width={'[800px]'}
+          width={"[800px]"}
           onClose={() => setAccumulateDepreciationShowModal(false)}
-          header={'เพิ่มค่าเสื่อมราคา(รายปี)'}
+          header={"เพิ่มค่าเสื่อมราคา(รายปี)"}
           showAccumulateDepreciationModal={showAccumulateDepreciationModal}
           accumulateDepreciationStartDate={accumulateDepreciationStartDate}
           accumulateDepreciationRegisterDate={
@@ -1650,8 +1552,8 @@ const AssetInformation = () => {
                         name="accumulateDepreciationReceivedDate"
                         id="accumulateDepreciationReceivedDate"
                         onChange={(e) => {
-                          setAccumulateDepreciationReceivedDate(e.target.value)
-                          accMonthDiff(e.target.value)
+                          setAccumulateDepreciationReceivedDate(e.target.value);
+                          accMonthDiff(e.target.value);
                         }}
                         value={accumulateDepreciationReceivedDate}
                         // autoComplete="given-name"
@@ -1867,9 +1769,9 @@ const AssetInformation = () => {
         <Modal
           id="scanBarcodeModal"
           isVisible={scanBarcodeModal}
-          width={'[800px]'}
+          width={"[800px]"}
           onClose={() => setScanBarcodeModal(false)}
-          header={'Scan Barcode'}
+          header={"Scan Barcode"}
           scanBarcodeModal={scanBarcodeModal}
         >
           <div className=" px-10 pt-2 pb-10">
@@ -1890,9 +1792,9 @@ const AssetInformation = () => {
         <Modal
           id="scanQRCodeModal"
           isVisible={scanQRCodeModal}
-          width={'[800px]'}
+          width={"[800px]"}
           onClose={() => setScanQRCodeModal(false)}
-          header={'Scan QRrcode'}
+          header={"Scan QRrcode"}
           scanQRCodeModal={scanQRCodeModal}
         >
           <div className=" px-10 pt-2 pb-10">
@@ -1913,9 +1815,9 @@ const AssetInformation = () => {
         <Modal
           id="showViewImageModal"
           isVisible={showViewImageModal}
-          width={'[800px]'}
+          width={"[800px]"}
           onClose={() => setShowViewImageModal(false)}
-          header={'รูปภาพครุภัณฑ์'}
+          header={"รูปภาพครุภัณฑ์"}
           showViewImageModal={showViewImageModal}
         >
           <div className=" px-10 pt-2 pb-10">
@@ -1953,7 +1855,7 @@ const AssetInformation = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default AssetInformation
+export default AssetInformation;

@@ -134,7 +134,7 @@ function RowOfTableAssetInformation({
           className="flex justify-center relative"
           onClick={() => {
             setIndexGenData(index)
-            setShowPrintModal(true)
+            // setShowPrintModal(true)
             // console.log(index)
           }}
         >

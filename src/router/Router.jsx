@@ -37,7 +37,8 @@ import {
   MerchantIndex,
   UserInformationIndex,
   AddUserInformation,
-  ViewAssetInformation
+  ViewAssetInformation,
+  EditAssetInformation
 } from '../pages'
 
 // import {
@@ -95,6 +96,10 @@ const Router = () => {
             <Route
               path="/viewAssetInformation"
               element={<ViewAssetInformation />}
+            />
+            <Route
+              path="/editAssetInformation"
+              element={<EditAssetInformation />}
             />
           {/* </Route> */}
           <Route
