@@ -16,16 +16,16 @@ const SubMenu = ({ item }) => {
         onClick={item.subNav && showSubnav}
         className={({ isActive }) =>
           [
-            'flex items-center p-4 h-[60px] rounded-lg hover:bg-sidebar-green',
-            isActive ? 'bg-sidebar-green' : null,
+            'flex items-center p-4 h-[60px] rounded-3xl hover:bg-sidebar-green',
+            isActive ? 'bg-sidebar-green text-text-green' : 'text-text-gray',
           ]
             .filter(Boolean)
             .join(' ')
         }
       >
-        <div className="flex w-full text-text-sidebar hover:text-text-green">
+        <div className="flex w-full hover:text-text-green gap-5">
           <div className="">{item.icon}</div>
-          <div className="ml-3 focus:text-black ">{item.title}</div>
+          <div className="">{item.title}</div>
         </div>
         <div className="">
           {item.subNav && subnav
@@ -45,14 +45,18 @@ const SubMenu = ({ item }) => {
               className={({ isActive }) =>
                 [
                   'flex items-center gap-2 p-3 px-6 rounded-lg hover:bg-sidebar-green',
-                  isActive ? 'bg-sidebar-green' : null,
+                  isActive
+                    ? 'bg-sidebar-green text-text-green'
+                    : 'text-text-gray',
                 ]
                   .filter(Boolean)
                   .join(' ')
               }
             >
-              <div className="">{item.icon}</div>
-              <div className=" ml-3">{item.title}</div>
+              <div className="flex w-full hover:text-text-green gap-5">
+                <div className="flex items-center">{item.icon}</div>
+                <div className="">{item.title}</div>
+              </div>
             </NavLink>
           )
         })}
