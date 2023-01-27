@@ -23,7 +23,30 @@ const RepairIndex = () => {
       repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
       agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
       repairSender: 'ศรีตรัง',
-      repairStatus: 'waitTechnicianConfirm',
+      repairStatus: 'waitApprove',
+      repairCostList: [
+        {
+          list: 'รางไฟ',
+          quannity: '1',
+          unit: '-',
+          pricePerUnit: '3000',
+          totalPrice: '3000',
+        },
+        {
+          list: 'สายไฟ 220v outside wire 2.5sqm',
+          quannity: '10',
+          unit: 'เมตร',
+          pricePerUnit: '200',
+          totalPrice: '2000',
+        },
+        {
+          list: 'switch relay 220v to 12v for sn.7103671688',
+          quannity: '1',
+          unit: 'ตัว',
+          pricePerUnit: '6300',
+          totalPrice: '6300',
+        },
+      ],
     },
     {
       informRepairDate: '12/09/2565 14:36 น.',
@@ -334,6 +357,7 @@ const TableRepairIndex = (props) => {
                   <div className="flex gap-1">
                     <Link
                       to="repairDetail"
+                      state={{ data: item }}
                       className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
                     >
                       <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
@@ -375,7 +399,8 @@ const TableRepairIndex = (props) => {
                 ) : item.repairStatus === 'waitApprove' ? (
                   <div className="flex gap-3">
                     <Link
-                      to="borrowDetail"
+                      to="repairDetail"
+                      state={{ data: item }}
                       className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
                     >
                       <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />

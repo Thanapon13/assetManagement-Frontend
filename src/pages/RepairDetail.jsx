@@ -1,8 +1,12 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { FaArrowLeft } from 'react-icons/fa'
+import { BsFillCheckCircleFill } from 'react-icons/bs'
 
 const RepairDetail = () => {
+  const location = useLocation()
+  const item = location.state.data
+
   const tableData = [
     {
       ID: '1',
@@ -88,15 +92,29 @@ const RepairDetail = () => {
           </div>
           {/* status */}
           <div className="flex justify-end gap-5">
-            <button className="px-6 py-2 bg-red-500 hover:bg-red-700  text-white rounded-md">
-              ยกเลิก
-            </button>
-            <div className="flex items-center gap-2">
-              <h1>สถานะใบแจ้งซ่อม</h1>
-              <div className="bg-sky-200 text-blue-700 py-1 px-4 rounded-2xl">
-                {'รอช่างรับงาน'}
-              </div>
-            </div>
+            {item.repairStatus === 'waitApprove' ? (
+              <>
+                <ModalApproveDone />
+                <div className="flex items-center gap-2">
+                  <h1>สถานะใบแจ้งซ่อม</h1>
+                  <div className="bg-purple-600 text-white text-sm py-2 px-4 rounded-2xl">
+                    {'รอตรวจรับ'}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <button className="px-6 py-2 bg-red-500 hover:bg-red-700  text-white rounded-md">
+                  ยกเลิก
+                </button>
+                <div className="flex items-center gap-2">
+                  <h1>สถานะใบแจ้งซ่อม</h1>
+                  <div className="bg-sky-200 text-blue-600 text-sm py-2 px-4 rounded-2xl">
+                    {'รอช่างรับงาน'}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
         {/* Body 1 */}
@@ -252,7 +270,146 @@ const RepairDetail = () => {
             </div>
           </div>
         </div>
+        {item.repairStatus === 'waitApprove' ? (
+          <>
+            <TableRepairCost data={item.repairCostList} />
+            {/* ผลการซ่อม */}
+            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
+              {/* รายละเอียดการซ่อม */}
+              <div>
+                <div className="text-xl">ผลการซ่อม</div>
+                {/* row 1 ผลการซ่อม */}
+                <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
+                  <div className="text-text-gray flex items-center ">
+                    ผลการซ่อม
+                  </div>
+                  <div className="flex items-center ">
+                    {'เปลี่ยนสายไฟเรียบร้อย'}
+                  </div>
+                </div>
+                {/* row 2 ความเห็นช่าง*/}
+                <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
+                  <div className="text-text-gray flex items-center">
+                    ความเห็นช่าง
+                  </div>
+                  <div className="flex items-center">
+                    {'ระวังหนูกัดสายไฟซ้ำ'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : null}
       </div>
+      {/* footer */}
+      {item.repairStatus === 'waitApprove' ? (
+        <>
+          {/* footer */}
+          <div className="flex justify-between p-3 border-t-[1px] bg-white">
+            <div className="text-text-gray text-sm flex items-center">
+              ยกเลิก
+            </div>
+            <button className="px-4 py-2 rounded-md text-sm bg-blue-500 text-white hover:bg-blue-600">
+              ตรวจรับ
+            </button>
+          </div>
+        </>
+      ) : null}
+    </>
+  )
+}
+
+const TableRepairCost = (props) => {
+  //   waitTechnicianConfirm , inProgress , draftRepair, waitApprove, done , cancel
+  return (
+    <>
+      {/* table */}
+      <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar border-[1px]">
+        <div className="text-xl">ค่าใช้จ่ายในการซ่อม</div>
+        <div className="w-[1200px] lg:w-full lg:h-full h-[500px]">
+          <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
+            {/* header table */}
+            <div className="grid grid-cols-8 gap-2 h-12 items-center text-center">
+              <div className="col-span-1">ลำดับ</div>
+              <div className="col-span-3">รายการ</div>
+              <div className="col-span-1">จำนวน</div>
+              <div className="col-span-1">หน่วย</div>
+              <div className="col-span-1">ราคา / หน่วย (บาท)</div>
+              <div className="col-span-1">รวมทั้งหมด(บาท)</div>
+            </div>
+          </div>
+          {props?.data?.map((item, idx) => {
+            return (
+              <div
+                key={idx}
+                className={`grid grid-cols-8 gap-2 h-12 pt-2 text-xs text-center items-center bg-white`}
+              >
+                <div className="col-span-1  text-center flex justify-center items-center ">
+                  <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+                    {idx + 1}
+                  </div>
+                </div>
+                <div className="col-span-3 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+                  {item.list}
+                </div>
+                <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+                  {item.quannity}
+                </div>
+                <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
+                  {item.unit}
+                </div>
+                <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+                  {item.pricePerUnit}
+                </div>
+                <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
+                  {item.totalPrice}
+                </div>
+              </div>
+            )
+          })}
+          <div className="bg-table-data h-[40px] p-6 flex justify-between items-center mt-10">
+            <div className="text-sm  font-semibold">รวมจำนวนเงินทั้งหมด</div>
+            <div className="text-sm font-semibold">{'11300.00'} บาท</div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+const ModalApproveDone = () => {
+  const [showModal, setShowModal] = useState(false)
+
+  const callback = (payload) => {
+    setAllReject(payload)
+  }
+  return (
+    <>
+      <button
+        className=" px-6 py-2 rounded-md text-sm bg-blue-500 text-white hover:bg-blue-600"
+        type="button"
+        onClick={() => setShowModal(true)}
+      >
+        ตรวจรับ
+      </button>
+      {showModal ? (
+        <>
+          <div className="fixed inset-0 -left-10 bg-black opacity-50" />
+          <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
+            <div className="w-10/12 md:w-3/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
+              <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
+                {/* ตรวจรับครุภัณฑ์สำเร็จ */}
+                <div className="flex flex-col justify-center items-center gap-5 p-5 ">
+                  <BsFillCheckCircleFill className="text-text-green w-[150px] h-[150px]" />
+                  <h1 className="text-2xl text-text-green">
+                    ตรวจรับครุภัณฑ์สำเร็จ
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null}
     </>
   )
 }
