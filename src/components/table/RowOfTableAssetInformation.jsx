@@ -1,12 +1,12 @@
-import Selector from '../selector/Selector'
-import ScanDropdown from '../dropdown/ScanDropdown'
-import Modal from '../../components/modal/Modal'
-import { useBarcode } from '@createnextapp/react-barcode'
-import QRcode from 'qrcode.react'
-import ReactToPrint from 'react-to-print'
-import { useRef } from 'react'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import Selector from "../selector/Selector";
+import ScanDropdown from "../dropdown/ScanDropdown";
+import Modal from "../../components/modal/Modal";
+import { useBarcode } from "@createnextapp/react-barcode";
+import QRcode from "qrcode.react";
+import ReactToPrint from "react-to-print";
+import { useRef } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
 
 function RowOfTableAssetInformation({
   index,
@@ -28,51 +28,51 @@ function RowOfTableAssetInformation({
   const { inputRef } = useBarcode({
     value: barcode,
     options: {
-      background: '#ffffff',
+      background: "#ffffff",
     },
-  })
+  });
 
-  const printRef = useRef()
+  const printRef = useRef();
 
   //Show Modal
-  const [showPrintModal, setShowPrintModal] = useState(false)
+  const [showPrintModal, setShowPrintModal] = useState(false);
 
   const handleChangeInventoryNumber = (e) => {
-    const clone = [...genData]
+    const clone = [...genData];
     // console.log(clone);
-    clone[index].inventoryNumber = e.target.value
-    setGenData(clone)
-  }
+    clone[index].inventoryNumber = e.target.value;
+    setGenData(clone);
+  };
   const handleChangeProductName = (e) => {
-    const clone = [...genData]
+    const clone = [...genData];
     // console.log(clone);
-    clone[index].productName = e.target.value
-    setGenData(clone)
-  }
+    clone[index].productName = e.target.value;
+    setGenData(clone);
+  };
   const handleChangeBrand = (e) => {
-    const clone = [...genData]
+    const clone = [...genData];
     // console.log(clone);
-    clone[index].brand = e.target.value
-    setGenData(clone)
-  }
+    clone[index].brand = e.target.value;
+    setGenData(clone);
+  };
   const handleChangeSerialNumber = (e) => {
-    const clone = [...genData]
+    const clone = [...genData];
     // console.log(clone);
-    clone[index].serialNumber = e.target.value
-    setGenData(clone)
-    setBarcode(e.target.value)
-  }
+    clone[index].serialNumber = e.target.value;
+    setGenData(clone);
+    setBarcode(e.target.value);
+  };
   const handleChangeAsset01 = (e) => {
-    const clone = [...genData]
+    const clone = [...genData];
     // console.log(clone);
-    clone[index].asset01 = e.target.value
-    setGenData(clone)
-  }
+    clone[index].asset01 = e.target.value;
+    setGenData(clone);
+  };
 
   useEffect(() => {
-    setBarcode(genData[indexGenData]?.serialNumber)
-    setQr(genData[indexGenData]?.serialNumber)
-  }, [indexGenData])
+    setBarcode(genData[indexGenData]?.serialNumber);
+    setQr(genData[indexGenData]?.serialNumber);
+  }, [indexGenData]);
 
   return (
     <div>
@@ -90,11 +90,7 @@ function RowOfTableAssetInformation({
           disabled
           value={genData && genData[index]?.inventoryNumber}
         />
-        <input
-          className="col-span-2 bg-gray-200 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
-          disabled
-          value={genData && genData[index]?.productName}
-        />
+
         <div className="flex relative col-span-2">
           <input
             className="w-full text-left pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
@@ -115,11 +111,11 @@ function RowOfTableAssetInformation({
         <div className="col-span-2">
           <div className="flex h-[38px] ">
             <Selector
-              placeholder={'Select'}
+              placeholder={"Select"}
               index={index}
               state={genData}
               setState={setGenData}
-              id={'หน่วยงาน'}
+              id={"หน่วยงาน"}
             />
           </div>
         </div>
@@ -129,11 +125,27 @@ function RowOfTableAssetInformation({
           onChange={handleChangeAsset01}
           value={genData && genData[index]?.asset01}
         />
+        {/* <input
+          className="col-span-2 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          value={genData && genData[index]?.productName}
+        /> */}
+         <div className="col-span-2">
+          <div className="flex h-[38px] ">
+            <Selector
+              placeholder={"Select"}
+              index={index}
+              state={genData}
+              setState={setGenData}
+              id={"แทนครุภัณฑ์ที่ถูกแทงจำหน่าย"}
+            />
+          </div>
+        </div>
+
 
         <div
           className="flex justify-center relative"
           onClick={() => {
-            setIndexGenData(index)
+            setIndexGenData(index);
             // setShowPrintModal(true)
             // console.log(index)
           }}
@@ -158,17 +170,17 @@ function RowOfTableAssetInformation({
                     />
                   </svg>
                 </button>
-              )
+              );
             }}
             content={() => printRef.current}
             // documentTitle="kiminoto doc"
             // pageStyle="print"
-            onAfterPrint={() => console.log('print')}
+            onAfterPrint={() => console.log("print")}
           />
         </div>
 
         <div ref={printRef} className="absolute -z-10">
-          {barcode !== '' ? (
+          {barcode !== "" ? (
             <canvas id="mybarcode" ref={inputRef} className="w-full" />
           ) : (
             <p>No barcode preview</p>
@@ -183,7 +195,7 @@ function RowOfTableAssetInformation({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default RowOfTableAssetInformation
+export default RowOfTableAssetInformation;

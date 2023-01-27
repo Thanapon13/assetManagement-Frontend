@@ -79,17 +79,17 @@ const AssetInformation = () => {
     {
       // index: 0,
       realAssetId: "123",
-      productName: "aaa",
       serialNumber: "a12b12",
       sector: "",
       asset01: "66071032",
+      replacedAssetNumber: "aaa",
     },
     {
       realAssetId: "222",
-      productName: "bbb",
       serialNumber: "dfg234htjn",
       sector: "",
       asset01: "66071032",
+      replacedAssetNumber: "bbb",
     },
   ]);
 
@@ -787,10 +787,12 @@ const AssetInformation = () => {
                   <div className="grid grid-cols-12 gap-2 text-center">
                     <div className="ml-2">ลำดับ</div>
                     <div className="col-span-2">ID เลขครุภัณฑ์</div>
-                    <div className="col-span-2">ชื่อครุภัณฑ์</div>
                     <div className="col-span-2">Serial Number</div>
                     <div className="col-span-2">หน่วยงาน</div>
                     <div className="col-span-2">สท.01</div>
+                    <div className="col-span-2">
+                      แทนครุภัณฑ์ที่ ถูกแทงจำหน่าย
+                    </div>
                     <div className="">สติกเกอร์</div>
                   </div>
                 </div>
