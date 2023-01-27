@@ -1774,6 +1774,7 @@ const EditAssetInformation = () => {
         <ToastContainer />
       </div>
 
+
       {/* footer */}
       <div className="bg-white">
         <div className=" flex justify-between items-center gap-10 p-5 text-sm mr-12">
