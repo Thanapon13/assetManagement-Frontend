@@ -7,52 +7,6 @@ const RepairDetail = () => {
   const location = useLocation()
   const item = location.state.data
 
-  const tableData = [
-    {
-      ID: '1',
-      assetId: '7440-001-001',
-      assetName: 'พัดลม hatari แบบ',
-      assetOwner: 'สำนักบริหารศาสตร์มืด',
-      quantity: '3',
-      serialNumber: 'MRVG981F2JHZ13B',
-      status: 'ปกติ',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-    {
-      ID: '2',
-      assetId: '6301-018-0131',
-      assetName: 'พัดลม hatari แบบ',
-      assetOwner: 'สำนักบริหารศาสตร์มืด',
-      quantity: '5',
-      serialNumber: 'MRVG981F2JHZ13B',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-      status: 'ปกติ',
-    },
-    {
-      ID: '3',
-      assetId: '1314-013-1331',
-      assetName: 'พัดลม hatari แบบ',
-      assetOwner: 'สำนักบริหารศาสตร์มืด',
-      quantity: '7',
-      serialNumber: 'MRVG981F2JHZ13B',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-      status: 'ปกติ',
-    },
-    {
-      ID: '4',
-      assetId: '1314-013-1331',
-      assetName: 'พัดลม hatari แบบ',
-      assetOwner: 'สำนักบริหารศาสตร์มืด',
-      quantity: '7',
-      serialNumber: 'MRVG981F2JHZ13B',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-      status: 'ปกติ',
-    },
-  ]
   const borrowData = {
     borrowID: 'br.6602/1677',
     pricePerDay: '1300.00',

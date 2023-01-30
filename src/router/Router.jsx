@@ -31,6 +31,7 @@ import {
   TransferAsset,
   RepairIndex,
   RepairDetail,
+  RepairEdit,
   RepairRecord,
   LoginPage,
   ForgotPassword,
@@ -131,6 +132,7 @@ const Router = () => {
         <Route path="transferAsset" element={<TransferAsset />} />
         <Route path="repairIndex" element={<RepairIndex />} />
         <Route path="repairIndex/repairDetail" element={<RepairDetail />} />
+        <Route path="repairIndex/repairEdit" element={<RepairEdit />} />
         <Route path="repairRecord" element={<RepairRecord />} />
         <Route path="/defaultData" element={<DefaultData />} />
         <Route path="/merchantIndex" element={<MerchantIndex />} />

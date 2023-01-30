@@ -363,7 +363,8 @@ const TableRepairIndex = (props) => {
                       <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
                     </Link>
                     <Link
-                      to="borrowEdit"
+                      to="repairEdit"
+                      state={{ data: item }}
                       className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
                     >
                       <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
@@ -373,7 +374,8 @@ const TableRepairIndex = (props) => {
                 ) : item.repairStatus === 'inProgress' ? (
                   <div className="flex gap-1">
                     <Link
-                      to="borrowDetail"
+                      to="repairDetail"
+                      state={{ data: item }}
                       className="border-[1px] gap-2 border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[120px] flex justify-center items-center rounded-md"
                     >
                       <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
@@ -383,13 +385,15 @@ const TableRepairIndex = (props) => {
                 ) : item.repairStatus === 'draftRepair' ? (
                   <div className="flex gap-1">
                     <Link
-                      to="borrowDetail"
+                      to="repairDetail"
+                      state={{ data: item }}
                       className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
                     >
                       <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
                     </Link>
                     <Link
-                      to="borrowEdit"
+                      to="repairEdit"
+                      state={{ data: item }}
                       className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
                     >
                       <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
