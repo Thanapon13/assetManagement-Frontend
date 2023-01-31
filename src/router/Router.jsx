@@ -33,6 +33,7 @@ import {
   RepairDetail,
   RepairEdit,
   RepairRecord,
+  RepairTechnicianIndex,
   LoginPage,
   ForgotPassword,
   EmailConfirmation,
@@ -134,6 +135,11 @@ const Router = () => {
         <Route path="repairIndex/repairDetail" element={<RepairDetail />} />
         <Route path="repairIndex/repairEdit" element={<RepairEdit />} />
         <Route path="repairRecord" element={<RepairRecord />} />
+        <Route
+          path="repairTechnicianIndex"
+          element={<RepairTechnicianIndex />}
+        />
+
         <Route path="/defaultData" element={<DefaultData />} />
         <Route path="/merchantIndex" element={<MerchantIndex />} />
         <Route

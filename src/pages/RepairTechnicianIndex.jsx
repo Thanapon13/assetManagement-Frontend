@@ -6,7 +6,7 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import { BsFillPencilFill, BsFillEyeFill } from 'react-icons/bs'
 import DateInput from '../components/date/DateInput'
 
-const RepairIndex = () => {
+const RepairTechnicianIndex = () => {
   // useState
   const [perPage, setPerPage] = useState(10)
   const [totalRow, setTotalRow] = useState(25)
@@ -24,6 +24,8 @@ const RepairIndex = () => {
       agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
       repairSender: 'ศรีตรัง',
       repairStatus: 'waitApprove',
+      technicianStatus: 'waitTechnicianConfirm',
+      emerygencyStatus: 'normal',
       repairCostList: [
         {
           list: 'รางไฟ',
@@ -56,6 +58,41 @@ const RepairIndex = () => {
       agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
       repairSender: 'ศรีตรัง',
       repairStatus: 'waitTechnicianConfirm',
+      technicianStatus: 'waitTechnicianConfirm',
+      emerygencyStatus: 'normal',
+    },
+    {
+      informRepairDate: '12/09/2565 14:36 น.',
+      informRepairIdDoc: '20212334512',
+      assetIdCode: '7440-0036-032/1512',
+      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
+      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
+      repairSender: 'ศรีตรัง',
+      repairStatus: 'waitTechnicianConfirm',
+      technicianStatus: 'waitRecord',
+      emerygencyStatus: 'emergency',
+    },
+    {
+      informRepairDate: '12/09/2565 14:36 น.',
+      informRepairIdDoc: '20212334512',
+      assetIdCode: '7440-0036-032/1512',
+      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
+      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
+      repairSender: 'ศรีตรัง',
+      repairStatus: 'waitTechnicianConfirm',
+      technicianStatus: 'waitRecord',
+      emerygencyStatus: 'emergency',
+    },
+    {
+      informRepairDate: '12/09/2565 14:36 น.',
+      informRepairIdDoc: '20212334512',
+      assetIdCode: '7440-0036-032/1512',
+      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
+      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
+      repairSender: 'ศรีตรัง',
+      repairStatus: 'waitTechnicianConfirm',
+      technicianStatus: 'waitRecord',
+      emerygencyStatus: 'emergency',
     },
     {
       informRepairDate: '12/09/2565 14:36 น.',
@@ -65,6 +102,8 @@ const RepairIndex = () => {
       agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
       repairSender: 'ศรีตรัง',
       repairStatus: 'inProgress',
+      technicianStatus: 'inProgress',
+      emerygencyStatus: 'rushing',
     },
     {
       informRepairDate: '12/09/2565 14:36 น.',
@@ -74,6 +113,8 @@ const RepairIndex = () => {
       agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
       repairSender: 'ศรีตรัง',
       repairStatus: 'inProgress',
+      technicianStatus: 'waitApprove',
+      emerygencyStatus: 'rushing',
     },
     {
       informRepairDate: '12/09/2565 14:36 น.',
@@ -82,7 +123,9 @@ const RepairIndex = () => {
       repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
       agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
       repairSender: 'ศรีตรัง',
-      repairStatus: 'draftRepair',
+      repairStatus: 'inProgress',
+      technicianStatus: 'waitRecord',
+      emerygencyStatus: 'rushing',
     },
     {
       informRepairDate: '12/09/2565 14:36 น.',
@@ -91,51 +134,19 @@ const RepairIndex = () => {
       repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
       agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
       repairSender: 'ศรีตรัง',
-      repairStatus: 'waitApprove',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'waitApprove',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'done',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'done',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'cancel',
+      repairStatus: 'inProgress',
+      technicianStatus: 'done',
+      emerygencyStatus: 'normal',
     },
   ]
 
   return (
     <div className="bg-background-page px-5 pt-5 pb-36 ">
       {/* Header */}
-      <div className="text-2xl text-text-green ">รายการแจ้งซ่อม</div>
-      <div className="flex justify-between items-center">
+      <div className="text-2xl text-text-green ">
+        รายการรอลงรายละเอียดแจ้งซ่อม
+      </div>
+      <div className="flex justify-between items-center mt-5">
         <div className="flex text-xs">
           <Link
             to="/"
@@ -144,33 +155,9 @@ const RepairIndex = () => {
             Home
           </Link>
           <div className="text-text-gray">/</div>
-          <div className="text-text-gray ml-2">รายการแจ้งซ่อม</div>
-        </div>
-        <div className="md:flex gap-5 space-y-2 md:space-y-0">
-          <button
-            type="button"
-            className="bg-background-page px-4 py-2  flex items-center gap-3 text-text-green border border-text-green rounded hover:bg-green-800"
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 22 27"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5.08203 7.79252C4.95093 7.66187 4.84691 7.50663 4.77593 7.3357C4.70496 7.16477 4.66842 6.9815 4.66842 6.79642C4.66842 6.61134 4.70496 6.42808 4.77593 6.25715C4.84691 6.08621 4.95093 5.93097 5.08203 5.80033L10.0039 0.878453C10.1346 0.747353 10.2898 0.643332 10.4607 0.572356C10.6317 0.501379 10.8149 0.464844 11 0.464844C11.1851 0.464844 11.3683 0.501379 11.5393 0.572356C11.7102 0.643332 11.8654 0.747353 11.9961 0.878453L16.918 5.80033C17.0491 5.93097 17.1531 6.08621 17.2241 6.25715C17.295 6.42808 17.3316 6.61134 17.3316 6.79642C17.3316 6.9815 17.295 7.16477 17.2241 7.3357C17.1531 7.50663 17.0491 7.66187 16.918 7.79252C16.6526 8.05445 16.2947 8.20131 15.9219 8.20131C15.549 8.20131 15.1912 8.05445 14.9258 7.79252L12.4062 5.27298V14.9995C12.4062 15.3725 12.2581 15.7302 11.9944 15.9939C11.7306 16.2576 11.373 16.4058 11 16.4058C10.627 16.4058 10.2694 16.2576 10.0056 15.9939C9.74191 15.7302 9.59375 15.3725 9.59375 14.9995V5.27298L7.07422 7.79252C6.94357 7.92362 6.78833 8.02764 6.6174 8.09861C6.44647 8.16959 6.26321 8.20612 6.07812 8.20612C5.89304 8.20612 5.70978 8.16959 5.53885 8.09861C5.36792 8.02764 5.21268 7.92362 5.08203 7.79252ZM19.4375 10.312H16.625C16.252 10.312 15.8944 10.4602 15.6306 10.7239C15.3669 10.9877 15.2188 11.3453 15.2188 11.7183C15.2188 12.0913 15.3669 12.4489 15.6306 12.7127C15.8944 12.9764 16.252 13.1245 16.625 13.1245H18.9688V23.9058H3.03125V13.1245H5.375C5.74796 13.1245 6.10565 12.9764 6.36937 12.7127C6.63309 12.4489 6.78125 12.0913 6.78125 11.7183C6.78125 11.3453 6.63309 10.9877 6.36937 10.7239C6.10565 10.4602 5.74796 10.312 5.375 10.312H2.5625C1.94185 10.3151 1.34749 10.563 0.908622 11.0019C0.469749 11.4408 0.22183 12.0351 0.21875 12.6558V24.3745C0.22183 24.9952 0.469749 25.5896 0.908622 26.0284C1.34749 26.4673 1.94185 26.7152 2.5625 26.7183H19.4375C20.0582 26.7152 20.6525 26.4673 21.0914 26.0284C21.5303 25.5896 21.7782 24.9952 21.7812 24.3745V12.6558C21.7782 12.0351 21.5303 11.4408 21.0914 11.0019C20.6525 10.563 20.0582 10.3151 19.4375 10.312Z"
-                fill="#38821D"
-              />
-            </svg>
-            Export
-          </button>
-          <Link
-            to="/repairRecord"
-            className="bg-text-green text-white px-4 py-2 rounded hover:bg-green-800"
-          >
-            + เพิ่มการซ่อมบำรุง
-          </Link>
+          <div className="text-text-gray ml-2">
+            รายการรอลงรายละเอียดแจ้งซ่อม
+          </div>
         </div>
       </div>
       {/* search bar */}
@@ -245,12 +232,12 @@ const RepairIndex = () => {
               <div className="col-span-1">รหัสครุภัณฑ์</div>
               <div className="col-span-3">รายละเอียด</div>
               <div className="col-span-1">หน่วยงานที่ส่งซ่อม</div>
-              <div className="col-span-1">ผู้ส่งซ่อม</div>
+              <div className="col-span-1">สถานะความเร่งด่วน</div>
               <div className="col-span-1">สถานะ</div>
               <div className="col-span-2">Action</div>
             </div>
           </div>
-          <TableRepairIndex data={tableData} />
+          <TableRepairTechnicianIndex data={tableData} />
 
           <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
             <div className="flex mr-10 items-center">
@@ -290,7 +277,7 @@ const RepairIndex = () => {
   )
 }
 
-const TableRepairIndex = (props) => {
+const TableRepairTechnicianIndex = (props) => {
   const [isClick, setIsClick] = useState(false)
 
   let navigate = useNavigate()
@@ -303,6 +290,7 @@ const TableRepairIndex = (props) => {
     }
   }
   //   waitTechnicianConfirm , inProgress , draftRepair, waitApprove, done , cancel
+  // emerygencyStatus , normal , emergency, rushing
   return (
     <>
       {props.data.map((item, idx) => {
@@ -316,114 +304,82 @@ const TableRepairIndex = (props) => {
             <div className="col-span-1 ">{item.assetIdCode}</div>
             <div className="col-span-3">{item.repairDetail}</div>
             <div className="col-span-1">{item.agencySendRepair}</div>
-            <div className="col-span-1 ">{item.repairSender}</div>
-            <div className="col-span-1">
-              <div className="flex justify-center">
-                <div
-                  //   type="button"
-                  // to={`/borrowSaving/${ID}`}
-                  onClick={() => handleClick(item.repairStatus)}
-                  className={`${
-                    item.repairStatus === 'waitTechnicianConfirm'
-                      ? 'bg-sky-200 text-blue-600 rounded-full border-sky-200'
-                      : item.repairStatus === 'inProgress'
-                      ? 'bg-yellow-300 text-yellow-700 border-yellow-300 rounded-full'
-                      : item.repairStatus === 'waitApprove'
-                      ? ' bg-purple-600 border-purple-600 text-white rounded-full'
-                      : item.repairStatus === 'draftRepair'
-                      ? ' bg-gray-300 border-gray-300 text-black rounded-full'
-                      : item.repairStatus === 'done'
-                      ? 'bg-sidebar-green text-text-green  rounded-full border-sidebar-green '
-                      : 'bg-red-200 text-red-600 rounded-full border-red-200'
-                  } border border-spacing-5 p-2 w-full`}
-                >
-                  {item.repairStatus === 'waitTechnicianConfirm'
-                    ? 'รอช่างรับงาน'
-                    : item.repairStatus === 'inProgress'
-                    ? 'ดำเนินการ'
-                    : item.repairStatus === 'waitApprove'
-                    ? 'รอตรวจรับ'
-                    : item.repairStatus === 'draftRepair'
-                    ? 'แบบร่าง'
-                    : item.repairStatus === 'done'
-                    ? 'เสร็จสิ้น'
-                    : 'ยกเลิก'}
-                </div>
+            <div className="col-span-1 flex justify-center">
+              <div
+                //   type="button"
+                // to={`/borrowSaving/${ID}`}
+                onClick={() => handleClick(item.emerygencyStatus)}
+                className={`${
+                  item.emerygencyStatus === 'normal'
+                    ? 'bg-blue-600 text-white rounded-full '
+                    : item.emerygencyStatus === 'rushing'
+                    ? 'bg-[#F2994A] text-white  rounded-full'
+                    : item.emerygencyStatus === 'emergency'
+                    ? 'bg-red-700 text-white  rounded-full'
+                    : 'bg-red-200 text-red-600 rounded-full '
+                } border border-spacing-5 p-2 w-[80px]`}
+              >
+                {item.emerygencyStatus === 'normal'
+                  ? 'ปกติ'
+                  : item.emerygencyStatus === 'rushing'
+                  ? 'เร่งด่วน'
+                  : item.emerygencyStatus === 'emergency'
+                  ? 'ฉุกเฉิน'
+                  : 'ยกเลิก'}
               </div>
             </div>
-            <div className="col-span-2 grid grid-cols-2 items-center">
-              <div className="flex justify-center col-span-2">
-                {item.repairStatus === 'waitTechnicianConfirm' ? (
-                  <div className="flex gap-1">
-                    <Link
-                      to="repairDetail"
-                      state={{ data: item }}
-                      className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
-                    >
-                      <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
-                    </Link>
-                    <Link
-                      to="repairEdit"
-                      state={{ data: item }}
-                      className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
-                    >
-                      <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
-                    </Link>
-                    <ModalCancel />
-                  </div>
-                ) : item.repairStatus === 'inProgress' ? (
-                  <div className="flex gap-1">
-                    <Link
-                      to="repairDetail"
-                      state={{ data: item }}
-                      className="border-[1px] gap-2 border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[120px] flex justify-center items-center rounded-md"
-                    >
-                      <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
-                      <h1>ดูรายละเอียด</h1>
-                    </Link>
-                  </div>
-                ) : item.repairStatus === 'draftRepair' ? (
-                  <div className="flex gap-1">
-                    <Link
-                      to="repairDetail"
-                      state={{ data: item }}
-                      className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
-                    >
-                      <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
-                    </Link>
-                    <Link
-                      to="repairEdit"
-                      state={{ data: item }}
-                      className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
-                    >
-                      <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
-                    </Link>
-                    <ModalCancel />
-                  </div>
-                ) : item.repairStatus === 'waitApprove' ? (
-                  <div className="flex gap-3">
-                    <Link
-                      to="repairDetail"
-                      state={{ data: item }}
-                      className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
-                    >
-                      <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
-                    </Link>
-                    <button className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-lg">
-                      ตรวจรับ
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex gap-1">
-                    <Link
-                      to="borrowDetail"
-                      className="border-[1px] gap-2 border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[120px] flex justify-center items-center rounded-md"
-                    >
-                      <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
-                      <h1>ดูรายละเอียด</h1>
-                    </Link>
-                  </div>
-                )}
+            <div className="col-span-1 flex justify-center">
+              <div
+                //   type="button"
+                // to={`/borrowSaving/${ID}`}
+                onClick={() => handleClick(item.technicianStatus)}
+                className={`${
+                  item.technicianStatus === 'waitTechnicianConfirm'
+                    ? 'bg-[#245BD826] text-blue-600 rounded-full '
+                    : item.technicianStatus === 'inProgress'
+                    ? 'bg-purple-600  text-white rounded-full'
+                    : item.technicianStatus === 'waitApprove'
+                    ? ' bg-[#F2C94C]  rounded-full'
+                    : item.technicianStatus === 'waitRecord'
+                    ? ' bg-[#F2994A26] text-[#F2994A] rounded-full'
+                    : item.technicianStatus === 'done'
+                    ? 'bg-sidebar-green text-text-green  rounded-full  '
+                    : 'bg-red-200 text-red-600 rounded-full '
+                }  border p-2 w-[100px]`}
+              >
+                {item.technicianStatus === 'waitTechnicianConfirm'
+                  ? 'รอช่างรับงาน'
+                  : item.technicianStatus === 'inProgress'
+                  ? 'ดำเนินการ'
+                  : item.technicianStatus === 'waitApprove'
+                  ? 'รออนุมัติ'
+                  : item.technicianStatus === 'waitRecord'
+                  ? 'รอลงบันทึก'
+                  : item.technicianStatus === 'done'
+                  ? 'เสร็จสิ้น'
+                  : 'ยกเลิก'}
+              </div>
+            </div>
+            <div className="col-span-2 flex justify-center gap-5">
+              <button
+                type="button"
+                className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg w-[100px]"
+              >
+                รับงาน
+              </button>
+              <div className=" border-[1px] border-text-green hover:bg-green-800 flex items-center p-2 rounded-lg">
+                <svg
+                  width="16"
+                  height="12"
+                  viewBox="0 0 16 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7.99967 9.1569C8.83787 9.1569 9.54915 8.86471 10.1335 8.28034C10.7179 7.69596 11.0101 6.98468 11.0101 6.14648C11.0101 5.30829 10.7179 4.59701 10.1335 4.01263C9.54915 3.42826 8.83787 3.13607 7.99967 3.13607C7.16148 3.13607 6.4502 3.42826 5.86582 4.01263C5.28145 4.59701 4.98926 5.30829 4.98926 6.14648C4.98926 6.98468 5.28145 7.69596 5.86582 8.28034C6.4502 8.86471 7.16148 9.1569 7.99967 9.1569ZM7.99967 8.12982C7.44481 8.12982 6.97554 7.93798 6.59186 7.5543C6.20818 7.17062 6.01634 6.70135 6.01634 6.14648C6.01634 5.59162 6.20818 5.12235 6.59186 4.73867C6.97554 4.35499 7.44481 4.16315 7.99967 4.16315C8.55453 4.16315 9.02381 4.35499 9.40749 4.73867C9.79117 5.12235 9.98301 5.59162 9.98301 6.14648C9.98301 6.70135 9.79117 7.17062 9.40749 7.5543C9.02381 7.93798 8.55453 8.12982 7.99967 8.12982ZM7.99967 11.459C6.27606 11.459 4.71773 10.9691 3.32467 9.98919C1.93162 9.00933 0.89273 7.72843 0.208008 6.14648C0.89273 4.56454 1.93162 3.28364 3.32467 2.30378C4.71773 1.32391 6.27606 0.833984 7.99967 0.833984C9.72329 0.833984 11.2816 1.32391 12.6747 2.30378C14.0677 3.28364 15.1066 4.56454 15.7913 6.14648C15.1066 7.72843 14.0677 9.00933 12.6747 9.98919C11.2816 10.9691 9.72329 11.459 7.99967 11.459Z"
+                    fill="#38821D"
+                  />
+                </svg>
               </div>
             </div>
           </div>
@@ -552,4 +508,4 @@ const ModalCancel = () => {
   )
 }
 
-export default RepairIndex
+export default RepairTechnicianIndex

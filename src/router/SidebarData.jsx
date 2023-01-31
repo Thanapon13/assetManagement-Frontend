@@ -536,7 +536,7 @@ export const SidebarData = [
       },
       {
         title: 'ลงบันทึกรายละเอียด',
-        path: '/',
+        path: '/repairTechnicianIndex',
         icon: (
           <svg
             width="20"
