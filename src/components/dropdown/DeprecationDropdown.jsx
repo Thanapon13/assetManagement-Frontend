@@ -11,10 +11,11 @@ function DeprecationDropdown({
     <>
       <Menu as="div" className="relative inline-block text-left">
         <div>
-          {location.pathname === "/viewAssetInformation" ? (
+          {location.pathname === "/viewAssetInformation" ||
+          location.pathname === "/viewPackageAssetInformation" ? (
             <Menu.Button className="inline-flex  justify-center items-center py-1 px-4 border-2 border-orange-400  shadow-sm font-medium rounded-md text-orange-400   hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-800 ">
               <button type="button" className="">
-              ดูค่าเสื่อมราคา
+                ดูค่าเสื่อมราคา
               </button>
             </Menu.Button>
           ) : (

@@ -4,7 +4,6 @@ import RowOfTableDefaultDataBox from "../table/RowOfTableDefaultDataBox";
 function DefaultDataBox({header}) {
   const [rowArray, setRowArray] = useState([
     {
-      index: 0,
       name: "",
     },
   ]);

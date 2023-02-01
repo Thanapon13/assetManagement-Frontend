@@ -1,17 +1,17 @@
 import Selector from "../selector/Selector";
 import ScanDropdown from "../dropdown/ScanDropdown";
-import Modal from "../../components/modal/Modal";
 import { useBarcode } from "@createnextapp/react-barcode";
 import QRcode from "qrcode.react";
 import ReactToPrint from "react-to-print";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
 
-function RowOfTableAssetInformation({
+function RowOfTableBottomSubcomponentPackageAssetInformation({
   index,
-  genData,
-  setGenData,
+  bottomSubComponentData,
+  setBottomSubComponentData,
+  // genData,
+  // setGenData,
   setScanBarcodeModal,
   setScanQRCodeModal,
   setIndexGenData,
@@ -21,8 +21,6 @@ function RowOfTableAssetInformation({
   qr,
   setQr,
 }) {
-  // console.log(barcode, "barcode");
-
   const { inputRef } = useBarcode({
     value: barcode,
     options: {
@@ -32,50 +30,69 @@ function RowOfTableAssetInformation({
 
   const printRef = useRef();
 
-  //Show Modal
-  const [showPrintModal, setShowPrintModal] = useState(false);
+  const onChange = (e) => {
+    setBottomSubComponentData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const handleChangeSerialNumber = (e) => {
-    const clone = [...genData];
+    const clone = [...bottomSubComponentData];
     // console.log(clone);
     clone[index].serialNumber = e.target.value;
-    setGenData(clone);
+    setBottomSubComponentData(clone);
     setBarcode(e.target.value);
+    setQr(e.target.value)
+  };
+  const handleChangePrice = (e) => {
+    const clone = [...bottomSubComponentData];
+    clone[index].price = e.target.value;
+    setBottomSubComponentData(clone);
   };
   const handleChangeAsset01 = (e) => {
-    const clone = [...genData];
-    // console.log(clone);
+    const clone = [...bottomSubComponentData];
     clone[index].asset01 = e.target.value;
-    setGenData(clone);
+    setBottomSubComponentData(clone);
   };
 
   useEffect(() => {
-    setBarcode(genData[indexGenData]?.serialNumber);
-    setQr(genData[indexGenData]?.serialNumber);
+    setBarcode(bottomSubComponentData[indexGenData]?.serialNumber);
+    setQr(bottomSubComponentData[indexGenData]?.serialNumber);
   }, [indexGenData]);
-
   return (
     <div>
       <div
-        className={`grid grid-cols-12 justify-center items-center gap-4 h-16 py-1 text-xs bg-white`}
+        className={`grid grid-cols-19 justify-center items-center gap-4 h-16  text-xs bg-white border-b-[1px]`}
       >
         <div className="ml-2 text-center flex justify-center items-center ">
-          <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+          <div className=" flex justify-center items-center text-gray-500">
             {index + 1}
           </div>
         </div>
-
         <input
-          className="col-span-2 bg-gray-200 text-center flex justify-center items-center  py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          type="text"
+          name="assetNumber"
+          id="assetNumber"
           disabled
-          value={genData && genData[index]?.inventoryNumber}
+          value={bottomSubComponentData[index]?.assetNumber}
+          className="col-span-4 w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
         />
-
-        <div className="flex relative col-span-2">
+        <input
+          type="text"
+          name="productName"
+          id="productName"
+          disabled
+          value={bottomSubComponentData[index]?.productName}
+          className="col-span-4 w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+        />
+         <div className="flex relative col-span-4">
           <input
-            className="w-full text-left  pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+           type="text"
+           name="serialNumber"
+            className="w-full text-left text-xs pl-3 flex justify-center items-center py-2 border-[1px] border-gray-300 rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             onChange={handleChangeSerialNumber}
-            value={genData && genData[index]?.serialNumber}
+            value={bottomSubComponentData[index]?.serialNumber}
           />
           <div
             className="z-20 absolute top-1/2 right-0 transform -translate-x-1/2 -translate-y-1/2"
@@ -87,43 +104,25 @@ function RowOfTableAssetInformation({
             />
           </div>
         </div>
-
-        <div className="col-span-2">
-          <div className="flex h-[38px] ">
-            <Selector
-              placeholder={"Select"}
-              index={index}
-              state={genData}
-              setState={setGenData}
-              id={"หน่วยงาน"}
-            />
-          </div>
-        </div>
-
         <input
-          className="col-span-2 text-center flex justify-center items-center  py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
-          onChange={handleChangeAsset01}
-          value={genData && genData[index]?.asset01}
+          type="text"
+          name="price"
+          id="price"
+          onChange={handleChangePrice}
+          value={bottomSubComponentData[index]?.price}
+          className="col-span-2 w-full h-[38px]  border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
         />
-        {/* <input
-          className="col-span-2 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
-          value={genData && genData[index]?.productName}
-        /> */}
-         <div className="col-span-2">
-          <div className="flex h-[38px] ">
-            <Selector
-              placeholder={"Select"}
-              index={index}
-              state={genData}
-              setState={setGenData}
-              id={"แทนครุภัณฑ์ที่ถูกแทงจำหน่าย"}
-            />
-          </div>
-        </div>
-
+        <input
+          type="text"
+          name="asset01"
+          id="asset01"
+          onChange={handleChangeAsset01}
+          value={bottomSubComponentData[index]?.asset01}
+          className="col-span-2 w-full h-[38px]  border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+        />
 
         <div
-          className="flex justify-center relative"
+          className="col-span-2 flex justify-center relative"
           onClick={() => {
             setIndexGenData(index);
             // setShowPrintModal(true)
@@ -159,15 +158,15 @@ function RowOfTableAssetInformation({
           />
         </div>
 
-        <div ref={printRef} className="absolute -z-10">
+        <div ref={printRef} className="absolute -z-10 top-40">
           {barcode !== "" ? (
-            <canvas id="mybarcode" ref={inputRef} className="w-full" />
+            <canvas id="mybarcode" ref={inputRef} className="w-[300px]" />
           ) : (
             <p>No barcode preview</p>
           )}
           <div>
             {qr ? (
-              <QRcode id="myqr" value={qr} size={320} includeMargin={true} />
+              <QRcode id="myqr" value={qr} size={300} includeMargin={true} />
             ) : (
               <p>No QR code preview</p>
             )}
@@ -178,4 +177,4 @@ function RowOfTableAssetInformation({
   );
 }
 
-export default RowOfTableAssetInformation;
+export default RowOfTableBottomSubcomponentPackageAssetInformation;

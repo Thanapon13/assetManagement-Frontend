@@ -24,8 +24,11 @@ import ReactToPrint from "react-to-print";
 import QRcode from "qrcode.react";
 import RowOfTableBorrowHistory from "../components/table/RowOfTableBorrowHistory";
 import RowOfTableBuildingHistory from "../components/table/RowOfTableBuildingHistory";
+import RowOfTablePackageAssetInformation from "../components/table/RowOfTablePackageAssetInformation";
+import RowOfTableBottomSubcomponentPackageAssetInformation from "../components/table/RowOfTableBottomSubcomponentPackageAssetInformation";
+import RowOfTableViewSubcomponentPackageAssetInformation from "../components/table/RowOfTableViewSubcomponentPackageAssetInformation";
 
-const ViewAssetInformation = () => {
+const ViewPackageAssetInformation = () => {
   const inputImg = useRef();
   const inputDoc = useRef();
   const printRef = useRef();
@@ -48,17 +51,16 @@ const ViewAssetInformation = () => {
   const [input, setInput] = useState({
     // ID: "",
     // serialNumber: "",
-    engProductName: "คอมพิวเตอร์ตั้งโต๊ะ Hp AIO 24",
-    productName: "HP DESKTOP AIO 24-cb1005d",
+    productName: "คอมพิวเตอร์ตั้งโต๊ะ Hp AIO 24",
+    engProductName: "HP DESKTOP AIO 24-cb1005d",
     type: "อุปกรณ์อิเล็กทรอนิกส์",
     kind: "คอมพิวเตอร์",
     realAssetId: "179",
-    unit: "",
+    unit: "เครื่อง",
     brand: "HP",
     model: "AIO 24-cb1005d",
     size: "",
     quantity: 0,
-    serialNumberMachine: "",
     source: "เสนอราคาจากจัดซื้อ",
     category: "คอมพิวเตอร์",
     acquiredType: "จัดซื้อ",
@@ -68,12 +70,14 @@ const ViewAssetInformation = () => {
     purposeOfUse: "เครื่องคอมสำนักงาน",
     allSector: "",
     assetNumber: "7440-001-0001 2013(1)-65",
-    asset01: "01.6503/071",
+    sector: "สำนักบริหารงานเภสัช",
     selfSector: "สำนักบริหารงานเภสัช",
     serialNumber: "MRV1632HJBC1669",
-    sector: "",
     replacedAssetNumber: "",
-    price:"22000",
+    type4: "6554",
+    type8: "6550-1003",
+    type13: "6554-1003-0001-5",
+    assetGroupNumber: "7440-001-0001 2013(1)-65",
 
     status: "not approve",
   });
@@ -98,6 +102,30 @@ const ViewAssetInformation = () => {
     "po_2565/0173612.pdf",
   ]);
 
+  // subcomponent
+  const [bottomSubComponentData, setBottomSubComponentData] = useState([
+    {
+      assetNumber: "6300-0127-305/001 (01)",
+      productName: "โต๊ะรับแขกอเนกประสงค์",
+      serialNumber: "HDO12PIAZN13",
+      price: "1000",
+      asset01: "66071032",
+    },
+    {
+      assetNumber: "6300-0127-305/001 (02)",
+      productName: "เก้าอี้รับแขกสุขภาพประหยัด",
+      serialNumber: "ABO12PIAZN13",
+      price: "1000",
+      asset01: "66071032",
+    },
+    {
+      assetNumber: "6300-0127-305/001 (03)",
+      productName: "โต๊ะรับแขกอเนกประสงค์",
+      serialNumber: "CDO12PIAZN13",
+      price: "1000",
+      asset01: "66071032",
+    },
+  ]);
 
   // ประวัติการยืม
   const [borrowData, setBorrowData] = useState([
@@ -108,7 +136,7 @@ const ViewAssetInformation = () => {
       borrowDate: "19/11/2565",
       realReturnDate: "19/12/2565",
       offerBorrowApproveDate: "19/12/2565",
-      borrowStatus:"done"
+      borrowStatus: "done",
     },
     {
       borrowIdDoc: "65/0322171",
@@ -117,11 +145,10 @@ const ViewAssetInformation = () => {
       borrowDate: "19/11/2565",
       realReturnDate: "19/12/2565",
       offerBorrowApproveDate: "19/12/2565",
-      borrowStatus:"done"
+      borrowStatus: "done",
     },
   ]);
 
-  
   // ประวัติสถานที่ตั้ง
   const [buildingData, setBuildingData] = useState([
     {
@@ -300,7 +327,6 @@ const ViewAssetInformation = () => {
     setInput(clone);
   };
 
-
   const { inputRef } = useBarcode({
     value: barcode,
     options: {
@@ -320,7 +346,9 @@ const ViewAssetInformation = () => {
           >
             <BsArrowLeft className="text-lg" />
           </Link>
-          <div className="text-xl text-text-green ">รายละเอียดครุภัณฑ์</div>
+          <div className="text-xl text-text-green ">
+            รายละเอียดครุภัณฑ์เป็นชุด
+          </div>
         </div>
         <div className="flex justify-between items-center mr-10">
           {/* left home */}
@@ -340,46 +368,9 @@ const ViewAssetInformation = () => {
               ข้อมูลครุภัณฑ์
             </Link>
             <div className="text-text-gray">/</div>
-            <div className="text-text-gray ml-2">รายละเอียดครุภัณฑ์</div>
+            <div className="text-text-gray ml-2">รายละเอียดครุภัณฑ์เป็นชุด</div>
           </div>
 
-          <div
-            className="flex justify-center relative"
-            onClick={() => {
-              setIndexGenData(index);
-            }}
-          >
-            <ReactToPrint
-              trigger={() => {
-                return (
-                  <button
-                    type="button"
-                    className="-ml-2 flex justify-center items-center text-white bg-blue-500 hover:bg-focus-blue rounded-lg focus:border-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-focus-blue focus:border-focus-blue  px-3 py-2 "
-                  >
-                    <div className="flex justify-center items-center">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 18 18"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M14.4 4H3.6V1C3.6 0.716667 3.6861 0.479 3.8583 0.287C4.0311 0.0956666 4.245 0 4.5 0H13.5C13.755 0 13.9686 0.0956666 14.1408 0.287C14.3136 0.479 14.4 0.716667 14.4 1V4ZM14.4 9.5C14.655 9.5 14.8686 9.404 15.0408 9.212C15.2136 9.02067 15.3 8.78333 15.3 8.5C15.3 8.21667 15.2136 7.979 15.0408 7.787C14.8686 7.59567 14.655 7.5 14.4 7.5C14.145 7.5 13.9314 7.59567 13.7592 7.787C13.5864 7.979 13.5 8.21667 13.5 8.5C13.5 8.78333 13.5864 9.02067 13.7592 9.212C13.9314 9.404 14.145 9.5 14.4 9.5ZM5.4 16H12.6V12H5.4V16ZM5.4 18C4.905 18 4.4814 17.8043 4.1292 17.413C3.7764 17.021 3.6 16.55 3.6 16V14H0.9C0.645 14 0.4314 13.904 0.2592 13.712C0.0864001 13.5207 0 13.2833 0 13V8C0 7.15 0.2625 6.43767 0.7875 5.863C1.3125 5.28767 1.95 5 2.7 5H15.3C16.065 5 16.7064 5.28767 17.2242 5.863C17.7414 6.43767 18 7.15 18 8V13C18 13.2833 17.9136 13.5207 17.7408 13.712C17.5686 13.904 17.355 14 17.1 14H14.4V16C14.4 16.55 14.2239 17.021 13.8717 17.413C13.5189 17.8043 13.095 18 12.6 18H5.4Z"
-                          fill="white"
-                        />
-                      </svg>
-                      <div className="ml-2 text-sm">พิมพ์สติกเกอร์</div>
-                    </div>
-                  </button>
-                );
-              }}
-              content={() => printRef.current}
-              // documentTitle="kiminoto doc"
-              // pageStyle="print"
-              onAfterPrint={() => console.log("print")}
-            />
-          </div>
 
           <div ref={printRef} className="absolute -z-10">
             {barcode !== "" ? (
@@ -397,60 +388,54 @@ const ViewAssetInformation = () => {
           </div>
         </div>
 
-        {/* block white top */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+          {/* block white top */}
           <div>ข้อมูลครุภัณฑ์</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3 text-xs">
+            {/* ชื่อครุภัณฑ์ภาษาไทย */}
+            <div className="text-gray-500">ชื่อครุภัณฑ์ภาษาไทย</div>
+            <div>{input?.productName !== "" ? input?.productName : "-"}</div>
             {/* ชื่อครุภัณฑ์ภาษาอังกฤษ */}
             <div className="text-gray-500">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
             <div>
               {input?.engProductName !== "" ? input?.engProductName : "-"}
             </div>
-            {/* ชื่อครุภัณฑ์ภาษาไทย */}
-            <div className="text-gray-500">ชื่อครุภัณฑ์ภาษาไทย</div>
-            <div>{input?.productName !== "" ? input?.productName : "-"}</div>
             {/* ประเภทครุภัณฑ์ */}
             <div className="text-gray-500">ประเภทครุภัณฑ์</div>
             <div>{input?.type !== "" ? input?.type : "-"}</div>
             {/* ชนิดครุภัณฑ์ */}
             <div className="text-gray-500">ชนิดครุภัณฑ์</div>
             <div>{input?.kind !== "" ? input?.kind : "-"}</div>
-            {/* กลุ่ม */}
-            <div className="text-gray-500">กลุ่ม</div>
-            <div>{input?.group !== "" ? input?.group : "-"}</div>
-            {/* หมวด */}
-            <div className="text-gray-500">หมวด</div>
-            <div>{input?.category !== "" ? input?.category : "-"}</div>
-            {/* ราคาต่อหน่วย (บาท) */}
-            <div className="text-gray-500">ราคาต่อหน่วย (บาท)</div>
-            <div>{input?.price !== "" ? input?.price : "-"}</div>
-            {/* ลำดับครุภัณฑ์ */}
-            <div className="text-gray-500">ลำดับครุภัณฑ์</div>
-            <div>{input?.realAssetId !== "" ? input?.realAssetId : "-"}</div>
             {/* ยี่ห้อ */}
             <div className="text-gray-500">ยี่ห้อ</div>
             <div>{input?.brand !== "" ? input?.brand : "-"}</div>
             {/* รุ่น */}
             <div className="text-gray-500">รุ่น</div>
             <div>{input?.model !== "" ? input?.model : "-"}</div>
-            {/* เลขครุภัณฑ์ */}
-            <div className="text-gray-500">เลขครุภัณฑ์</div>
-            <div>{input?.assetNumber !== "" ? input?.assetNumber : "-"}</div>
-            {/* Serial Number */}
-            <div className="text-gray-500">Serial Number</div>
-            <div>{input?.serialNumber !== "" ? input?.serialNumber : "-"}</div>
             {/* ขนาด */}
             <div className="text-gray-500">ขนาด</div>
             <div>{input?.size !== "" ? input?.size : "-"}</div>
-            {/* หน่วยงานเจ้าของครุภัณฑ์ */}
-            <div className="text-gray-500">หน่วยงานเจ้าของครุภัณฑ์</div>
-            <div>{input?.selfSector !== "" ? input?.selfSector : "-"}</div>
+            {/* หน่วยนับ */}
+            <div className="text-gray-500">หน่วยนับ</div>
+            <div>{input?.unit !== "" ? input?.unit : "-"}</div>
+            {/* กลุ่ม */}
+            <div className="text-gray-500">กลุ่ม</div>
+            <div>{input?.group !== "" ? input?.group : "-"}</div>
+            {/* หมวด */}
+            <div className="text-gray-500">หมวด</div>
+            <div>{input?.category !== "" ? input?.category : "-"}</div>
+            {/* หน่วยงาน */}
+            <div className="text-gray-500">หน่วยงาน</div>
+            <div>{input?.sector !== "" ? input?.sector : "-"}</div>
             {/* ประเภทที่ได้มา */}
             <div className="text-gray-500">ประเภทที่ได้มา</div>
             <div>{input?.acquiredType !== "" ? input?.acquiredType : "-"}</div>
             {/* แหล่งที่ได้มา */}
             <div className="text-gray-500">แหล่งที่ได้มา</div>
             <div>{input?.source !== "" ? input?.source : "-"}</div>
+            {/* วัตถุประสงค์การใช้งาน */}
+            <div className="text-gray-500">วัตถุประสงค์การใช้งาน</div>
+            <div>{input?.purposeOfUse !== "" ? input?.purposeOfUse : "-"}</div>
             {/* วันที่เริ่มรับประกัน */}
             <div className="text-gray-500">วันที่เริ่มรับประกัน</div>
             <div>{insuranceStartDate !== "" ? insuranceStartDate : "-"}</div>
@@ -459,23 +444,73 @@ const ViewAssetInformation = () => {
             <div>
               {insuranceExpiredDate !== "" ? insuranceExpiredDate : "-"}
             </div>
+
             {/* ระยะเวลารับประกัน(เดือน) */}
             <div className="text-gray-500">ระยะเวลารับประกัน(เดือน)</div>
             <div>
               {input?.guaranteedMonth !== "" ? input?.guaranteedMonth : "-"}
             </div>
-            {/* วัตถุประสงค์การใช้งาน */}
-            <div className="text-gray-500">วัตถุประสงค์การใช้งาน</div>
-            <div>{input?.purposeOfUse !== "" ? input?.purposeOfUse : "-"}</div>
-            {/* สท.01 */}
-            <div className="text-gray-500">สท.01</div>
-            <div>{input?.asset01 !== "" ? input?.asset01 : "-"}</div>
-            {/* แทนครุภัณฑ์ */}
-            <div className="text-gray-500">แทนครุภัณฑ์</div>
+            {/* ประเภทครุภัณฑ์ 4 หลัก */}
+            <div className="text-gray-500">ประเภทครุภัณฑ์ 4 หลัก</div>
+            <div>{input?.type4 !== "" ? input?.type4 : "-"}</div>
+            {/* ประเภทครุภัณฑ์ 8 หลัก */}
+            <div className="text-gray-500">ประเภทครุภัณฑ์ 8 หลัก</div>
+            <div>{input?.type8 !== "" ? input?.type8 : "-"}</div>
+            {/* ประเภทครุภัณฑ์ 13 หลัก */}
+            <div className="text-gray-500">ประเภทครุภัณฑ์ 13 หลัก</div>
+            <div>{input?.type13 !== "" ? input?.type13 : "-"}</div>
+            {/* แทนครุภัณฑ์ที่ถูกแทงจำหน่าย */}
+            <div className="text-gray-500">แทนครุภัณฑ์ที่ถูกแทงจำหน่าย</div>
             <div>
               {input?.replacedAssetNumber !== ""
                 ? input?.replacedAssetNumber
                 : "-"}
+            </div>
+            {/* รหัสกลุ่มครุภัณฑ์ */}
+            <div className="text-gray-500">รหัสกลุ่มครุภัณฑ์</div>
+            <div>
+              {input?.assetGroupNumber !== "" ? input?.assetGroupNumber : "-"}
+            </div>
+          </div>
+
+          {/* block white bottom */}
+          {/* bottom */}
+          <div className=" my-3 p-3">
+            <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
+              <div className="w-[1000px] xl:w-full h-[300px] ">
+                <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-md">
+                  <div className="grid grid-cols-19 gap-2 text-center">
+                    <div className="ml-2">ลำดับ</div>
+                    <div className="col-span-4">เลขครุภัณฑ์</div>
+                    <div className="col-span-4">ชื่อครุภัณฑ์</div>
+                    <div className="col-span-4">Serial Number</div>
+                    <div className="col-span-2">ราคา</div>
+                    <div className="col-span-2">สท.01</div>
+                    <div className="col-span-2">สติกเกอร์</div>
+                  </div>
+                </div>
+
+                {bottomSubComponentData?.map((el, idx) => {
+                  return (
+                    <RowOfTableViewSubcomponentPackageAssetInformation
+                      key={idx}
+                      index={idx}
+                      bottomSubComponentData={bottomSubComponentData}
+                      setBottomSubComponentData={setBottomSubComponentData}
+                      scanBarcodeModal={scanBarcodeModal}
+                      scanQRCodeModal={scanQRCodeModal}
+                      setScanBarcodeModal={setScanBarcodeModal}
+                      setScanQRCodeModal={setScanQRCodeModal}
+                      setIndexGenData={setIndexGenData}
+                      indexGenData={indexGenData}
+                      barcode={barcode}
+                      setBarcode={setBarcode}
+                      qr={qr}
+                      setQr={setQr}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -556,7 +591,6 @@ const ViewAssetInformation = () => {
                   setAccumulateDepreciationShowModal={
                     setAccumulateDepreciationShowModal
                   }
-                  
                 />
               </div>
             </div>
@@ -633,8 +667,8 @@ const ViewAssetInformation = () => {
 
         {/* ประวัติการยืม */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-        <div className=" my-3 p-3">
-        <div className="font-semibold mb-3">ประวัติการยืม</div>
+          <div className=" my-3 p-3">
+            <div className="font-semibold mb-3">ประวัติการยืม</div>
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
               <div className="w-[1000px] xl:w-full h-[400px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
@@ -660,10 +694,12 @@ const ViewAssetInformation = () => {
                       agencyName={borrowData[idx]?.agencyName}
                       borrowDate={borrowData[idx]?.borrowDate}
                       realReturnDate={borrowData[idx]?.realReturnDate}
-                      offerBorrowApproveDate={borrowData[idx]?.offerBorrowApproveDate}
+                      offerBorrowApproveDate={
+                        borrowData[idx]?.offerBorrowApproveDate
+                      }
                       borrowStatus={borrowData[idx]?.borrowStatus}
                     />
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -672,8 +708,8 @@ const ViewAssetInformation = () => {
 
         {/* ประวัติสถานที่ตั้ง */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-        <div className=" my-3 p-3">
-        <div className="font-semibold mb-3">ประวัติสถานที่ตั้ง</div>
+          <div className=" my-3 p-3">
+            <div className="font-semibold mb-3">ประวัติสถานที่ตั้ง</div>
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
               <div className="w-[1000px] xl:w-full h-[400px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
@@ -697,7 +733,7 @@ const ViewAssetInformation = () => {
                       moveInDate={buildingData[idx]?.moveInDate}
                       moveOutDate={buildingData[idx]?.moveOutDate}
                     />
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -1360,9 +1396,8 @@ const ViewAssetInformation = () => {
 
         <ToastContainer />
       </div>
-
     </>
   );
 };
 
-export default ViewAssetInformation;
+export default ViewPackageAssetInformation;

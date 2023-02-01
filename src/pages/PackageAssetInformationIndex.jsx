@@ -7,6 +7,7 @@ import { HiChevronRight } from 'react-icons/hi'
 import { AiOutlineSearch } from 'react-icons/ai'
 import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
 import DateInput from '../components/date/DateInput'
+import RowOfTablePackageIndex from '../components/table/RowOfTablePackageIndex'
 
 const PackageAssetInformationIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
@@ -192,7 +193,7 @@ const PackageAssetInformationIndex = () => {
           </div>
           {dashboardTableArray?.map((el, idx) => {
             return (
-              <RowOfTableArray
+              <RowOfTablePackageIndex
                 key={idx}
                 index={idx}
                 ID={el.ID}

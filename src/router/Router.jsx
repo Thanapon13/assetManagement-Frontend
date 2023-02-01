@@ -39,6 +39,10 @@ import {
   AddUserInformation,
   ViewAssetInformation,
   EditAssetInformation,
+  ViewPackageAssetInformation,
+  EditPackageAssetInformation,
+  TransferIndex,
+  SaveTransferAsset
 } from "../pages";
 
 // import {
@@ -110,6 +114,14 @@ const Router = () => {
           path="packageAssetInformation"
           element={<PackageAssetInformation />}
         />
+        <Route
+          path="viewPackageAssetInformation"
+          element={<ViewPackageAssetInformation />}
+        />
+        <Route
+          path="editPackageAssetInformation"
+          element={<EditPackageAssetInformation />}
+        />
         <Route path="assetWithdraw" element={<AssetWithdraw />} />
         <Route path="saveAssetWithdraw" element={<SaveAssetWithdraw />} />
         <Route
@@ -141,7 +153,9 @@ const Router = () => {
           element={<BorrowHistoryDetail />}
         />
 
-        <Route path="transferAsset" element={<TransferAsset />} />
+        <Route path="transferIndex" element={<TransferIndex />} />
+        <Route path="saveTransferAsset" element={<SaveTransferAsset />} />
+        
         <Route path="repairDashboard" element={<RepairDashboard />} />
         <Route path="/defaultData" element={<DefaultData />} />
         <Route path="/merchantIndex" element={<MerchantIndex />} />

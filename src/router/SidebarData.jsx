@@ -404,7 +404,7 @@ export const SidebarData = [
   },
   {
     title: 'โอน-ย้าย ครุภัณฑ์',
-    path: '/',
+    path: '/transferIndex',
     icon: (
       <svg
         width="21"
@@ -424,7 +424,7 @@ export const SidebarData = [
     subNav: [
       {
         title: 'รายงานโอน-ย้าย',
-        path: '/',
+        path: '/transferIndex',
         icon: (
           <svg
             width="18"

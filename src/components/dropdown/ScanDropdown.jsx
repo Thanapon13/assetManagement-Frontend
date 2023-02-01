@@ -12,7 +12,7 @@ function ScanDropdown({
     <>
       <Menu as="div" className="relative inline-block text-left ">
         <div>
-          <Menu.Button className="inline-flex  justify-center items-center  font-medium rounded-md text-text-gray rouned-full p-1  hover:bg-gray-100 ">
+          <Menu.Button className="inline-flex  justify-center items-center  font-medium  text-text-gray rouned-full p-1  hover:bg-gray-100 ">
             <button type="button" className="z-10">
               <BsThreeDotsVertical size={16} className="z-10" />
             </button>

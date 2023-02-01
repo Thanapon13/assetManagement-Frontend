@@ -91,15 +91,14 @@ const Selector = ({
     clone.source = value;
     setState(clone);
   };
-  // แทนครุภัณฑ์ที่ถูกแทงจำหน่าย
+  // แทนครุภัณฑ์ที่ถูกแทงจำหน่าย object
   const handleChangeReplacedAssetNumberInEditInfo = (value) => {
     const clone = { ...state };
     clone.replacedAssetNumber = value;
     setState(clone);
   };
-  // แทนครุภัณฑ์ที่ถูกแทงจำหน่าย assetInformation
+  // แทนครุภัณฑ์ที่ถูกแทงจำหน่าย array assetInformation
   const handleChangeReplacedAssetNumber = (value) => {
-    console.log(2)
     const clone = [ ...state ];
     clone[index].replacedAssetNumber = value;
     setState(clone);
@@ -113,11 +112,7 @@ const Selector = ({
   };
   // หน่วยงาน assetInformation
   const handleChangeSectorInAssetInfo = (value) => {
-    // console.log(index)
-    // console.log(state)
-    // console.log(value)
     const clone = [...state];
-    // console.log(clone)
     clone[index].sector = value;
     // console.log(clone)
     setState(clone);
@@ -125,6 +120,21 @@ const Selector = ({
   const handleChangeAllSector = (value) => {
     const clone = { ...state };
     clone.allSector = value;
+    setState(clone);
+  };
+  const handleChangeType4 = (value) => {
+    const clone = { ...state };
+    clone.type4 = value;
+    setState(clone);
+  };
+  const handleChangeType8 = (value) => {
+    const clone = { ...state };
+    clone.type8 = value;
+    setState(clone);
+  };
+  const handleChangeType13 = (value) => {
+    const clone = { ...state };
+    clone.type13 = value;
     setState(clone);
   };
 
@@ -167,16 +177,22 @@ const Selector = ({
               ? state?.source
               : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
               ? state?.allSector
+              : id === "ประเภทครุภัณฑ์ 4 หลัก"
+              ? state?.type4
+              : id === "ประเภทครุภัณฑ์ 8 หลัก"
+              ? state?.type8
+              : id === "ประเภทครุภัณฑ์ 13 หลัก"
+              ? state?.type13
               : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                location.pathname === "/assetInformation"
+               ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
               ? state[index]?.replacedAssetNumber
               : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                location.pathname === "/editAssetInformation"
+                (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
               ? state?.replacedAssetNumber
               : id === "หน่วยงานเจ้าของครุภัณฑ์" &&
-                location.pathname === "/editAssetInformation"
+              (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
               ? state?.sector
-              : id === "หน่วยงาน" && location.pathname === "/assetInformation"
+              : id === "หน่วยงาน" && ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
               ? state[index]?.sector
               : id === "วิธีการได้มา" ||
                 id === "ประเภทเงิน" ||
@@ -211,17 +227,23 @@ const Selector = ({
             ? state?.source
             : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
             ? state?.allSector
+            : id === "ประเภทครุภัณฑ์ 4 หลัก"
+            ? state?.type4
+            : id === "ประเภทครุภัณฑ์ 8 หลัก"
+            ? state?.type8
+            : id === "ประเภทครุภัณฑ์ 13 หลัก"
+            ? state?.type13
             : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-              location.pathname === "/assetInformation"
-            ? state[index]?.replacedAssetNumber
-            : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-              location.pathname === "/editAssetInformation"
-            ? state?.replacedAssetNumber
+            ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
+           ? state[index]?.replacedAssetNumber
+           : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
+             (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
+           ? state?.replacedAssetNumber
             : id === "หน่วยงานเจ้าของครุภัณฑ์" &&
-              location.pathname === "/editAssetInformation"
-            ? state?.sector
-            : id === "หน่วยงาน" && location.pathname === "/assetInformation"
-            ? state[index]?.sector
+              (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
+              ? state?.sector
+              : id === "หน่วยงาน" && ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
+              ? state[index]?.sector
             : id === "วิธีการได้มา" ||
               id === "ประเภทเงิน" ||
               id === "ผู้ขาย" ||
@@ -250,16 +272,22 @@ const Selector = ({
               ? state?.source
               : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
               ? state?.allSector
+              : id === "ประเภทครุภัณฑ์ 4 หลัก"
+              ? state?.type4
+              : id === "ประเภทครุภัณฑ์ 8 หลัก"
+              ? state?.type8
+              : id === "ประเภทครุภัณฑ์ 13 หลัก"
+              ? state?.type13
               : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                location.pathname === "/assetInformation"
+               ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
               ? state[index]?.replacedAssetNumber
               : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                location.pathname === "/editAssetInformation"
+                (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
               ? state?.replacedAssetNumber
               : id === "หน่วยงานเจ้าของครุภัณฑ์" &&
-                location.pathname === "/editAssetInformation"
+              (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
               ? state?.sector
-              : id === "หน่วยงาน" && location.pathname === "/assetInformation"
+              : id === "หน่วยงาน" && ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
               ? state[index]?.sector
               : id === "วิธีการได้มา" ||
                 id === "ประเภทเงิน" ||
@@ -289,17 +317,23 @@ const Selector = ({
                 ? state?.source
                 : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
                 ? state?.allSector
+                : id === "ประเภทครุภัณฑ์ 4 หลัก"
+                ? state?.type4
+                : id === "ประเภทครุภัณฑ์ 8 หลัก"
+                ? state?.type8
+                : id === "ประเภทครุภัณฑ์ 13 หลัก"
+                ? state?.type13
                 : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                  location.pathname === "/assetInformation"
-                ? state[index]?.replacedAssetNumber
-                : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                  location.pathname === "/editAssetInformation"
-                ? state?.replacedAssetNumber
+                ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
+               ? state[index]?.replacedAssetNumber
+               : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
+                 (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
+               ? state?.replacedAssetNumber
                 : id === "หน่วยงานเจ้าของครุภัณฑ์" &&
-                  location.pathname === "/editAssetInformation"
-                ? state?.sector
-                : id === "หน่วยงาน" && location.pathname === "/assetInformation"
-                ? state[index]?.sector
+              (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
+              ? state?.sector
+              : id === "หน่วยงาน" && ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
+              ? state[index]?.sector
                 : id === "วิธีการได้มา" ||
                   id === "ประเภทเงิน" ||
                   id === "ผู้ขาย" ||
@@ -328,17 +362,23 @@ const Selector = ({
             ? state?.source
             : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
             ? state?.allSector
+            : id === "ประเภทครุภัณฑ์ 4 หลัก"
+            ? state?.type4
+            : id === "ประเภทครุภัณฑ์ 8 หลัก"
+            ? state?.type8
+            : id === "ประเภทครุภัณฑ์ 13 หลัก"
+            ? state?.type13
             : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-              location.pathname === "/assetInformation"
-            ? state[index]?.replacedAssetNumber
-            : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-              location.pathname === "/editAssetInformation"
-            ? state?.replacedAssetNumber
+            ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
+           ? state[index]?.replacedAssetNumber
+           : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
+             (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
+           ? state?.replacedAssetNumber
             : id === "หน่วยงานเจ้าของครุภัณฑ์" &&
-              location.pathname === "/editAssetInformation"
-            ? state?.sector
-            : id === "หน่วยงาน" && location.pathname === "/assetInformation"
-            ? state[index]?.sector
+              (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
+              ? state?.sector
+              : id === "หน่วยงาน" && ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
+              ? state[index]?.sector
             : id === "วิธีการได้มา" ||
               id === "ประเภทเงิน" ||
               id === "ผู้ขาย" ||
@@ -395,18 +435,23 @@ const Selector = ({
                   ? state?.source
                   : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
                   ? state?.allSector
+                  : id === "ประเภทครุภัณฑ์ 4 หลัก"
+                  ? state?.type4
+                  : id === "ประเภทครุภัณฑ์ 8 หลัก"
+                  ? state?.type8
+                  : id === "ประเภทครุภัณฑ์ 13 หลัก"
+                  ? state?.type13
                   : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                    location.pathname === "/assetInformation"
+                  ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
                   ? state[index]?.replacedAssetNumber
                   : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                    location.pathname === "/editAssetInformation"
+                  (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
                   ? state?.replacedAssetNumber
                   : id === "หน่วยงานเจ้าของครุภัณฑ์" &&
-                    location.pathname === "/editAssetInformation"
-                  ? state?.sector
-                  : id === "หน่วยงาน" &&
-                    location.pathname === "/assetInformation"
-                  ? state[index]?.sector
+              (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
+              ? state?.sector
+              : id === "หน่วยงาน" && ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
+              ? state[index]?.sector
                   : ""
                 )?.toLowerCase() && "bg-sky-600 text-white"
             }
@@ -438,17 +483,22 @@ const Selector = ({
                   ? state?.source
                   : id === "การจ่ายครุภัณฑ์ให้หน่วยงาน"
                   ? state?.allSector
+                  : id === "ประเภทครุภัณฑ์ 4 หลัก"
+                  ? state?.type4
+                  : id === "ประเภทครุภัณฑ์ 8 หลัก"
+                  ? state?.type8
+                  : id === "ประเภทครุภัณฑ์ 13 หลัก"
+                  ? state?.type13
                   : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                    location.pathname === "/assetInformation"
+                  ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
                   ? state[index]?.replacedAssetNumber
                   : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                    location.pathname === "/editAssetInformation"
+                  (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
                   ? state?.replacedAssetNumber
                   : id === "หน่วยงานเจ้าของครุภัณฑ์" &&
-                    location.pathname === "/editAssetInformation"
+                  (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
                   ? state?.sector
-                  : id === "หน่วยงาน" &&
-                    location.pathname === "/assetInformation"
+                  : id === "หน่วยงาน" && ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
                   ? state[index]?.sector
                   : ""
                 )?.toLowerCase()
@@ -473,24 +523,30 @@ const Selector = ({
                   handleChangePurposeOfUse(data?.name);
                 } else if (id === "แหล่งที่ได้มา") {
                   handleChangeSource(data?.name);
+                } else if (id === "ประเภทครุภัณฑ์ 4 หลัก") {
+                  handleChangeType4(data?.name);
+                } else if (id === "ประเภทครุภัณฑ์ 8 หลัก") {
+                  handleChangeType8(data?.name);
+                } else if (id === "ประเภทครุภัณฑ์ 13 หลัก") {
+                  handleChangeType13(data?.name);
                 } else if (
                   id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                  location.pathname === "/assetInformation"
+                  ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
                 ) {
                   handleChangeReplacedAssetNumber(data?.name);
                 } else if (
                   id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
-                  location.pathname === "/editAssetInformation"
+                  (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
                 ) {
                   handleChangeReplacedAssetNumberInEditInfo(data?.name);
                 } else if (
                   id === "หน่วยงาน" &&
-                  location.pathname === "/assetInformation"
+                  ( location.pathname === "/assetInformation" ||  location.pathname === "/packageAssetInformation")
                 ) {
                   handleChangeSectorInAssetInfo(data?.name);
                 } else if (
                   id === "หน่วยงานเจ้าของครุภัณฑ์" &&
-                  location.pathname === "/editAssetInformation"
+                  (location.pathname === "/editAssetInformation" || location.pathname === "/editAssetInformation")
                 ) {
                   handleChangeSectorInEditAssetInfo(data?.name);
                 } else if (id === "การจ่ายครุภัณฑ์ให้หน่วยงาน") {
