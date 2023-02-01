@@ -525,12 +525,12 @@ const ActionWaitTechnicalConfirm = () => {
   return (
     <>
       <div className="col-span-2 flex justify-center gap-2">
-        <button
-          type="button"
+        <Link
+          to="repairTechnicianDetail"
           className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg w-[100px]"
         >
           รับงาน
-        </button>
+        </Link>
         <div className=" border-[1px] border-text-green hover:bg-green-800 flex items-center p-2 rounded-lg">
           <svg
             width="16"

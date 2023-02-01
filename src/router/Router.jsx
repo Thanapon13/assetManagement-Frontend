@@ -35,6 +35,7 @@ import {
   RepairRecord,
   RepairTechnicianIndex,
   RepairTechnicianRecord,
+  RepairTechnicianDetail,
   LoginPage,
   ForgotPassword,
   EmailConfirmation,
@@ -143,6 +144,10 @@ const Router = () => {
         <Route
           path="repairTechnicianIndex/repairTechnicianRecord"
           element={<RepairTechnicianRecord />}
+        />
+        <Route
+          path="repairTechnicianIndex/repairTechnicianDetail"
+          element={<RepairTechnicianDetail />}
         />
 
         <Route path="/defaultData" element={<DefaultData />} />
