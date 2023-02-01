@@ -590,12 +590,12 @@ const ActionWaitApprove = () => {
   return (
     <>
       <div className="col-span-2 flex justify-center gap-2">
-        <button
-          type="button"
+        <Link
+          to="repairTechnicianRecord"
           className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg w-[100px]"
         >
           ลงบันทึก
-        </button>
+        </Link>
         <button
           type="button"
           className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg w-[100px]"

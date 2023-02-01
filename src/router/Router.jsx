@@ -34,6 +34,7 @@ import {
   RepairEdit,
   RepairRecord,
   RepairTechnicianIndex,
+  RepairTechnicianRecord,
   LoginPage,
   ForgotPassword,
   EmailConfirmation,
@@ -138,6 +139,10 @@ const Router = () => {
         <Route
           path="repairTechnicianIndex"
           element={<RepairTechnicianIndex />}
+        />
+        <Route
+          path="repairTechnicianIndex/repairTechnicianRecord"
+          element={<RepairTechnicianRecord />}
         />
 
         <Route path="/defaultData" element={<DefaultData />} />
