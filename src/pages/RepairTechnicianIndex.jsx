@@ -138,6 +138,28 @@ const RepairTechnicianIndex = () => {
       technicianStatus: 'done',
       emerygencyStatus: 'normal',
     },
+    {
+      informRepairDate: '12/09/2565 14:36 น.',
+      informRepairIdDoc: '20212334512',
+      assetIdCode: '7440-0036-032/1512',
+      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
+      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
+      repairSender: 'ศรีตรัง',
+      repairStatus: 'inProgress',
+      technicianStatus: 'done',
+      emerygencyStatus: 'normal',
+    },
+    {
+      informRepairDate: '12/09/2565 14:36 น.',
+      informRepairIdDoc: '20212334512',
+      assetIdCode: '7440-0036-032/1512',
+      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
+      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
+      repairSender: 'ศรีตรัง',
+      repairStatus: 'inProgress',
+      technicianStatus: 'cancel',
+      emerygencyStatus: 'normal',
+    },
   ]
 
   return (
@@ -360,28 +382,19 @@ const TableRepairTechnicianIndex = (props) => {
                   : 'ยกเลิก'}
               </div>
             </div>
-            <div className="col-span-2 flex justify-center gap-5">
-              <button
-                type="button"
-                className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg w-[100px]"
-              >
-                รับงาน
-              </button>
-              <div className=" border-[1px] border-text-green hover:bg-green-800 flex items-center p-2 rounded-lg">
-                <svg
-                  width="16"
-                  height="12"
-                  viewBox="0 0 16 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7.99967 9.1569C8.83787 9.1569 9.54915 8.86471 10.1335 8.28034C10.7179 7.69596 11.0101 6.98468 11.0101 6.14648C11.0101 5.30829 10.7179 4.59701 10.1335 4.01263C9.54915 3.42826 8.83787 3.13607 7.99967 3.13607C7.16148 3.13607 6.4502 3.42826 5.86582 4.01263C5.28145 4.59701 4.98926 5.30829 4.98926 6.14648C4.98926 6.98468 5.28145 7.69596 5.86582 8.28034C6.4502 8.86471 7.16148 9.1569 7.99967 9.1569ZM7.99967 8.12982C7.44481 8.12982 6.97554 7.93798 6.59186 7.5543C6.20818 7.17062 6.01634 6.70135 6.01634 6.14648C6.01634 5.59162 6.20818 5.12235 6.59186 4.73867C6.97554 4.35499 7.44481 4.16315 7.99967 4.16315C8.55453 4.16315 9.02381 4.35499 9.40749 4.73867C9.79117 5.12235 9.98301 5.59162 9.98301 6.14648C9.98301 6.70135 9.79117 7.17062 9.40749 7.5543C9.02381 7.93798 8.55453 8.12982 7.99967 8.12982ZM7.99967 11.459C6.27606 11.459 4.71773 10.9691 3.32467 9.98919C1.93162 9.00933 0.89273 7.72843 0.208008 6.14648C0.89273 4.56454 1.93162 3.28364 3.32467 2.30378C4.71773 1.32391 6.27606 0.833984 7.99967 0.833984C9.72329 0.833984 11.2816 1.32391 12.6747 2.30378C14.0677 3.28364 15.1066 4.56454 15.7913 6.14648C15.1066 7.72843 14.0677 9.00933 12.6747 9.98919C11.2816 10.9691 9.72329 11.459 7.99967 11.459Z"
-                    fill="#38821D"
-                  />
-                </svg>
-              </div>
-            </div>
+            {item.technicianStatus === 'waitTechnicianConfirm' ? (
+              <ActionWaitTechnicalConfirm />
+            ) : item.technicianStatus === 'waitRecord' ? (
+              <ActionWaitRecord />
+            ) : item.technicianStatus === 'inProgress' ? (
+              <ActionInProgress />
+            ) : item.technicianStatus === 'waitApprove' ? (
+              <ActionWaitApprove />
+            ) : item.technicianStatus === 'done' ? (
+              <ActionDone />
+            ) : (
+              <ActionCancel />
+            )}
           </div>
         )
       })}
@@ -508,4 +521,143 @@ const ModalCancel = () => {
   )
 }
 
+const ActionWaitTechnicalConfirm = () => {
+  return (
+    <>
+      <div className="col-span-2 flex justify-center gap-2">
+        <button
+          type="button"
+          className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg w-[100px]"
+        >
+          รับงาน
+        </button>
+        <div className=" border-[1px] border-text-green hover:bg-green-800 flex items-center p-2 rounded-lg">
+          <svg
+            width="16"
+            height="12"
+            viewBox="0 0 16 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.99967 9.1569C8.83787 9.1569 9.54915 8.86471 10.1335 8.28034C10.7179 7.69596 11.0101 6.98468 11.0101 6.14648C11.0101 5.30829 10.7179 4.59701 10.1335 4.01263C9.54915 3.42826 8.83787 3.13607 7.99967 3.13607C7.16148 3.13607 6.4502 3.42826 5.86582 4.01263C5.28145 4.59701 4.98926 5.30829 4.98926 6.14648C4.98926 6.98468 5.28145 7.69596 5.86582 8.28034C6.4502 8.86471 7.16148 9.1569 7.99967 9.1569ZM7.99967 8.12982C7.44481 8.12982 6.97554 7.93798 6.59186 7.5543C6.20818 7.17062 6.01634 6.70135 6.01634 6.14648C6.01634 5.59162 6.20818 5.12235 6.59186 4.73867C6.97554 4.35499 7.44481 4.16315 7.99967 4.16315C8.55453 4.16315 9.02381 4.35499 9.40749 4.73867C9.79117 5.12235 9.98301 5.59162 9.98301 6.14648C9.98301 6.70135 9.79117 7.17062 9.40749 7.5543C9.02381 7.93798 8.55453 8.12982 7.99967 8.12982ZM7.99967 11.459C6.27606 11.459 4.71773 10.9691 3.32467 9.98919C1.93162 9.00933 0.89273 7.72843 0.208008 6.14648C0.89273 4.56454 1.93162 3.28364 3.32467 2.30378C4.71773 1.32391 6.27606 0.833984 7.99967 0.833984C9.72329 0.833984 11.2816 1.32391 12.6747 2.30378C14.0677 3.28364 15.1066 4.56454 15.7913 6.14648C15.1066 7.72843 14.0677 9.00933 12.6747 9.98919C11.2816 10.9691 9.72329 11.459 7.99967 11.459Z"
+              fill="#38821D"
+            />
+          </svg>
+        </div>
+      </div>
+    </>
+  )
+}
+
+const ActionWaitRecord = () => {
+  return (
+    <>
+      <div className="col-span-2 flex justify-center gap-2">
+        <button
+          type="button"
+          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg w-[100px]"
+        >
+          ลงบันทึก
+        </button>
+        <button
+          type="button"
+          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg w-[100px]"
+        >
+          จ้างซ่อมภายนอก
+        </button>
+      </div>
+    </>
+  )
+}
+
+const ActionInProgress = () => {
+  return (
+    <>
+      <div className="col-span-2 flex justify-center gap-2">
+        <button
+          type="button"
+          className="border hover:bg-[#245BD826]  border-[#2F80ED] text-[#2F80ED] p-2 rounded-lg w-[120px]"
+        >
+          ปิดงาน
+        </button>
+      </div>
+    </>
+  )
+}
+
+const ActionWaitApprove = () => {
+  return (
+    <>
+      <div className="col-span-2 flex justify-center gap-2">
+        <button
+          type="button"
+          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg w-[100px]"
+        >
+          ลงบันทึก
+        </button>
+        <button
+          type="button"
+          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg w-[100px]"
+        >
+          จ้างซ่อมภายนอก
+        </button>
+      </div>
+    </>
+  )
+}
+
+const ActionDone = () => {
+  return (
+    <>
+      <div className="col-span-2 flex justify-center gap-2">
+        <button
+          type="button"
+          className="flex gap-2 items-center hover:bg-green-100 border border-text-green text-text-green p-2 rounded-lg w-[120px]"
+        >
+          <svg
+            width="16"
+            height="12"
+            viewBox="0 0 16 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.99967 9.1569C8.83787 9.1569 9.54915 8.86471 10.1335 8.28034C10.7179 7.69596 11.0101 6.98468 11.0101 6.14648C11.0101 5.30829 10.7179 4.59701 10.1335 4.01263C9.54915 3.42826 8.83787 3.13607 7.99967 3.13607C7.16148 3.13607 6.4502 3.42826 5.86582 4.01263C5.28145 4.59701 4.98926 5.30829 4.98926 6.14648C4.98926 6.98468 5.28145 7.69596 5.86582 8.28034C6.4502 8.86471 7.16148 9.1569 7.99967 9.1569ZM7.99967 8.12982C7.44481 8.12982 6.97554 7.93798 6.59186 7.5543C6.20818 7.17062 6.01634 6.70135 6.01634 6.14648C6.01634 5.59162 6.20818 5.12235 6.59186 4.73867C6.97554 4.35499 7.44481 4.16315 7.99967 4.16315C8.55453 4.16315 9.02381 4.35499 9.40749 4.73867C9.79117 5.12235 9.98301 5.59162 9.98301 6.14648C9.98301 6.70135 9.79117 7.17062 9.40749 7.5543C9.02381 7.93798 8.55453 8.12982 7.99967 8.12982ZM7.99967 11.459C6.27606 11.459 4.71773 10.9691 3.32467 9.98919C1.93162 9.00933 0.89273 7.72843 0.208008 6.14648C0.89273 4.56454 1.93162 3.28364 3.32467 2.30378C4.71773 1.32391 6.27606 0.833984 7.99967 0.833984C9.72329 0.833984 11.2816 1.32391 12.6747 2.30378C14.0677 3.28364 15.1066 4.56454 15.7913 6.14648C15.1066 7.72843 14.0677 9.00933 12.6747 9.98919C11.2816 10.9691 9.72329 11.459 7.99967 11.459Z"
+              fill="#38821D"
+            />
+          </svg>
+          ดูรายละเอียด
+        </button>
+      </div>
+    </>
+  )
+}
+
+const ActionCancel = () => {
+  return (
+    <>
+      <div className="col-span-2 flex justify-center gap-2">
+        <button
+          type="button"
+          className="flex gap-2 items-center hover:bg-green-100 border border-text-green text-text-green p-2 rounded-lg w-[120px]"
+        >
+          <svg
+            width="16"
+            height="12"
+            viewBox="0 0 16 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.99967 9.1569C8.83787 9.1569 9.54915 8.86471 10.1335 8.28034C10.7179 7.69596 11.0101 6.98468 11.0101 6.14648C11.0101 5.30829 10.7179 4.59701 10.1335 4.01263C9.54915 3.42826 8.83787 3.13607 7.99967 3.13607C7.16148 3.13607 6.4502 3.42826 5.86582 4.01263C5.28145 4.59701 4.98926 5.30829 4.98926 6.14648C4.98926 6.98468 5.28145 7.69596 5.86582 8.28034C6.4502 8.86471 7.16148 9.1569 7.99967 9.1569ZM7.99967 8.12982C7.44481 8.12982 6.97554 7.93798 6.59186 7.5543C6.20818 7.17062 6.01634 6.70135 6.01634 6.14648C6.01634 5.59162 6.20818 5.12235 6.59186 4.73867C6.97554 4.35499 7.44481 4.16315 7.99967 4.16315C8.55453 4.16315 9.02381 4.35499 9.40749 4.73867C9.79117 5.12235 9.98301 5.59162 9.98301 6.14648C9.98301 6.70135 9.79117 7.17062 9.40749 7.5543C9.02381 7.93798 8.55453 8.12982 7.99967 8.12982ZM7.99967 11.459C6.27606 11.459 4.71773 10.9691 3.32467 9.98919C1.93162 9.00933 0.89273 7.72843 0.208008 6.14648C0.89273 4.56454 1.93162 3.28364 3.32467 2.30378C4.71773 1.32391 6.27606 0.833984 7.99967 0.833984C9.72329 0.833984 11.2816 1.32391 12.6747 2.30378C14.0677 3.28364 15.1066 4.56454 15.7913 6.14648C15.1066 7.72843 14.0677 9.00933 12.6747 9.98919C11.2816 10.9691 9.72329 11.459 7.99967 11.459Z"
+              fill="#38821D"
+            />
+          </svg>
+          ดูรายละเอียด
+        </button>
+      </div>
+    </>
+  )
+}
 export default RepairTechnicianIndex
