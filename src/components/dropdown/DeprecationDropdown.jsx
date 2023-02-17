@@ -6,7 +6,7 @@ function DeprecationDropdown({
   setAccumulateDepreciationShowModal,
 }) {
   const location = useLocation();
-  console.log(location.pathname);
+  // console.log(location.pathname);
   return (
     <>
       <Menu as="div" className="relative inline-block text-left">

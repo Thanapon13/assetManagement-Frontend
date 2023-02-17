@@ -442,7 +442,7 @@ export const SidebarData = [
       },
       {
         title: 'บันทึกโอน-ย้าย',
-        path: '/',
+        path: '/saveTransferAsset',
         icon: (
           <svg
             width="20"
@@ -460,7 +460,7 @@ export const SidebarData = [
       },
       {
         title: 'อนุมัติโอน-ย้าย',
-        path: '/',
+        path: '/approvalTransferAsset',
         icon: (
           <svg
             width="22"

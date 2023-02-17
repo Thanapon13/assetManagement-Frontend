@@ -1,7 +1,9 @@
 import { useState } from 'react'
 
-const DropdownModalBorrowApprove = ({ callback, header }) => {
+const DropdownModalBorrowApprove = ({ callback, header ,isDisable }) => {
   const [isOpen, setOpen] = useState(false)
+
+  
 
   const handleDropDown = () => {
     setOpen(!isOpen)
@@ -11,6 +13,7 @@ const DropdownModalBorrowApprove = ({ callback, header }) => {
     <div className="relative">
       <button
         className=" text-text-gray border-[1px] rounded-md text-xs px-6 py-2.5 text-center inline-flex items-center"
+        disabled={isDisable}
         onClick={handleDropDown}
       >
         {header}

@@ -6,7 +6,7 @@ import TableLocationHistory from "../components/table/TableLocationHistory";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import RowofTableSaveTransfer from "../components/table/RowofTableSaveTransfer";
 
-const SaveTransferAsset = () => {
+const EditTransferAsset = () => {
   const todayThaiDate = ChangeDateToBuddhist(
     new Date().toLocaleString("th-TH")
   );
@@ -46,65 +46,6 @@ const SaveTransferAsset = () => {
     },
   ]);
 
-  const tableData = [
-    {
-      ID: "1",
-      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
-      floor: "12",
-      room: "ห้องรับห้องพิเศษ",
-      moveInDate: "19/04/2565",
-      moveOutDate: "22/12/2565",
-    },
-    {
-      ID: "2",
-      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
-      floor: "12",
-      room: "ห้องรับห้องพิเศษ",
-      moveInDate: "19/04/2565",
-      moveOutDate: "22/12/2565",
-    },
-    {
-      ID: "3",
-      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
-      floor: "12",
-      room: "ห้องรับห้องพิเศษ",
-      moveInDate: "19/04/2565",
-      moveOutDate: "22/12/2565",
-    },
-  ];
-
-  // handle
-  const handleChangeID = (e) => {
-    const clone = { ...input };
-    clone.ID = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeBillNumber = (e) => {
-    const clone = { ...input };
-    clone.billNumber = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeDocumentRegistration = (e) => {
-    const clone = { ...input };
-    clone.documentRegistration = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeSector = (e) => {
-    const clone = { ...input };
-    clone.sector = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeEligiblePerson = (e) => {
-    const clone = { ...input };
-    clone.eligiblePerson = e.target.value;
-    setInput(clone);
-  };
-
-  const handleChangeAllPrice = (e) => {
-    const clone = { ...input };
-    clone.allPrice = e.target.value;
-    setInput(clone);
-  };
 
   //handle bottom table
   const handleClickIncrease = (e) => {
@@ -329,4 +270,4 @@ const SaveTransferAsset = () => {
   );
 };
 
-export default SaveTransferAsset;
+export default EditTransferAsset;

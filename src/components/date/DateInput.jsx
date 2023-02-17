@@ -3,8 +3,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
 import th from "date-fns/locale/th";
+import { useLocation } from "react-router-dom";
 
-function DateInput({ state, setState , lable }) {
+function DateInput({ state, setState, lable,id }) {
+  const location = useLocation()
   setDefaultLocale("th", th);
   registerLocale("th", th);
 
@@ -37,7 +39,9 @@ function DateInput({ state, setState , lable }) {
   return (
     <>
       <div className="relative">
-        <div className="text-xs font-semibold w-20 absolute -top-2 z-10 left-2">{lable}</div>
+        <div className="text-xs font-semibold w-20 absolute -top-2 z-10 left-2">
+          {lable}
+        </div>
       </div>
       <DatePicker
         locale="th"
@@ -120,10 +124,14 @@ function DateInput({ state, setState , lable }) {
         dateFormat="Pp"
         timeIntervals={1}
         className="  w-full h-[38px] shadow-sm focus:border-2 focus:outline-none  focus:border-focus-blue  sm:text-xs border-[1px] border-gray-300 rounded-md pl-2"
-        selected={state}
+        selected={location.pathname === "/assetInformationIndex"?state[id]:state}
         onChange={(date) => {
-          setState(date);
-          console.log(date);
+          if (location.pathname === "/assetInformationIndex") {
+            setState((prevState) => ({ ...prevState, [id]: date }));
+          } else {
+            setState(date);
+          }
+          // console.log(date);
         }}
       />
       <div className="items-center relative">

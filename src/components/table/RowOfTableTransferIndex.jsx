@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 function RowOfTableTransferIndex({
   index,
+  id,
   transferPendingDateTime,
   transferDocumentNumber,
   transferSector,
@@ -48,17 +49,17 @@ function RowOfTableTransferIndex({
       </div>
       <div className="col-span-2 flex justify-center gap-2 mr-2">
         {status === "waiting" ||
-        status === "reject" ||
+       
         status === "saveDraft" ? (
           <>
             <Link
-              to="/viewAssetInformation"
+              to={`/viewWaitingTransferAsset/${id}`}
               className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
             >
               <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
             </Link>
             <Link
-              to="/editAssetInformation"
+             to={`/editTransferAsset/${id}`}
               className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
             >
               <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />

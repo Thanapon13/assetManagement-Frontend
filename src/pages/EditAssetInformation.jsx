@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Selector from "../components/selector/Selector";
 import RowOfTableArray from "../components/table/RowOfTableArray";
 import { BsArrowLeft } from "react-icons/bs";
@@ -16,12 +16,20 @@ import docIcon from "../public/pics/docIcon.png";
 import Modal from "../components/modal/Modal";
 import DeprecationDropdown from "../components/dropdown/DeprecationDropdown";
 import { ToastContainer, toast } from "react-toastify";
-import { createAsset } from "../api/assetApi";
+import {
+  createAsset,
+  getAssetById,
+  getImageById,
+  updateAsset,
+} from "../api/assetApi";
 import BarcodeScanner from "../components/scanner/BarcodeScanner";
 import QRscanner from "../components/scanner/QRscanner";
 import { useEffect } from "react";
+import OnlyDateInput from "../components/date/onlyDateInput";
 
 const EditAssetInformation = () => {
+  const { assetId } = useParams();
+
   const inputImg = useRef();
   const inputDoc = useRef();
 
@@ -53,7 +61,6 @@ const EditAssetInformation = () => {
     model: "",
     size: "",
     quantity: 0,
-    serialNumberMachine: "",
     source: "",
     category: "",
     acquiredType: "",
@@ -67,8 +74,6 @@ const EditAssetInformation = () => {
     asset01: "",
     serialNumber: "",
     replacedAssetNumber: "",
-
-    status: "not approve",
   });
 
   // upload image
@@ -78,7 +83,6 @@ const EditAssetInformation = () => {
   // คู่มือและเอกสารแนบ
   const [arrayDocument, setArrayDocument] = useState([]);
 
-  const [indexGenData, setIndexGenData] = useState(0);
   const [barcode, setBarcode] = useState(input?.serialNumber);
   const [qr, setQr] = useState(input?.serialNumber);
 
@@ -125,8 +129,8 @@ const EditAssetInformation = () => {
   const [depreciationPrice, setDepreciationPrice] = useState(0);
   const [depreciationYearUsed, setDepreciationYearUsed] = useState(0);
   const [depreciationCarcassPrice, setDepreciationCarcassPrice] = useState(0);
-  const [depreciationProcess, setDepreciationProcess] = useState(0);
-  const [depreciationPresentMonth, setDepreciationPresentMonth] = useState(0);
+  const [depreciationProcess, setDepreciationProcess] = useState(new Date());
+  const [depreciationPresentMonth, setDepreciationPresentMonth] = useState();
   const [depreciationCumulativePrice, setDepreciationCumulativePrice] =
     useState(0);
   const [depreciationYearPrice, setDepreciationYearPrice] = useState(0);
@@ -153,7 +157,7 @@ const EditAssetInformation = () => {
     setAccumulateDepreciationCarcassPrice,
   ] = useState(0);
   const [accumulateDepreciationProcess, setAccumulateDepreciationProcess] =
-    useState(0);
+    useState(new Date());
   const [
     accumulateDepreciationPresentMonth,
     setAccumulateDepreciationPresentMonth,
@@ -253,11 +257,13 @@ const EditAssetInformation = () => {
     setInput(clone);
   };
 
+  const [img, setImg] = useState();
+
   //upload image
   // validate size 2mb = 2,000,000 byte
   const handleImageChange = (e) => {
     const fileList = e.target.files;
-    console.log(fileList);
+    // console.log(fileList);
     const cloneFile = [...arrayImage];
     for (let i = 0; i < fileList.length; i++) {
       if (!imageTypes.includes(fileList[i].type)) {
@@ -295,6 +301,7 @@ const EditAssetInformation = () => {
         });
       } else {
         cloneFile.push({ image: fileList[i] });
+        console.log(cloneFile);
       }
     }
 
@@ -331,6 +338,7 @@ const EditAssetInformation = () => {
         );
       }
     }
+    console.log(cloneFile)
     setArrayDocument(cloneFile);
   };
 
@@ -340,23 +348,38 @@ const EditAssetInformation = () => {
     setArrayDocument(clone);
   };
 
-  const handleGenData = (e) => {};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const inputJSON = JSON.stringify(input);
-    const genDataJSON = JSON.stringify(genData);
+    // const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
     formData.append("input", inputJSON);
     formData.append("insuranceStartDate", insuranceStartDate);
     formData.append("insuranceExpiredDate", insuranceExpiredDate);
-    arrayImage.forEach((file) => {
-      formData.append("arrayImage", file.image);
+
+    // image file
+    const existArrayImage = [];
+    arrayImage.forEach((el) => {
+      if (el.image._id) {
+        existArrayImage.push(el.image);
+      } else {
+        formData.append("arrayImage", el.image);
+      }
     });
-    arrayDocument.forEach((file) => {
-      formData.append("arrayDocument", file.document);
+    formData.append("existArrayImage", JSON.stringify(existArrayImage));
+
+    // document file
+    const existArrayDocument = [];
+    arrayDocument.forEach((el) => {
+      if (el.document._id) {
+        existArrayDocument.push(el.document);
+      } else {
+        formData.append("arrayDocument", el.document);
+      }
     });
-    formData.append("genDataJSON", genDataJSON);
+    formData.append("existArrayDocument", JSON.stringify(existArrayDocument));
+
     formData.append("depreciationStartDate", depreciationStartDate);
     formData.append("depreciationRegisterDate", depreciationRegisterDate);
     formData.append("depreciationReceivedDate", depreciationReceivedDate);
@@ -417,15 +440,6 @@ const EditAssetInformation = () => {
       accumulateDepreciationBookValue
     );
 
-    //ข้อมูลผู้รับผิดชอบ
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("phoneNumber", phoneNumber);
-    formData.append("responsibleSector", responsibleSector);
-    formData.append("building", building);
-    formData.append("floor", floor);
-    formData.append("room", room);
-
     //สัญญาจัดซื้อ
     formData.append("acquisitionMethod", acquisitionMethod);
     formData.append("moneyType", moneyType);
@@ -449,26 +463,170 @@ const EditAssetInformation = () => {
     formData.append("distributeStatus", distributeStatus);
     formData.append("distributionNote", distributionNote);
 
-    await createAsset(formData);
+    await updateAsset(formData, assetId);
   };
 
   useEffect(() => {
+    const fetchAssetById = async () => {
+      try {
+        const res = await getAssetById(assetId);
+        console.log(res.data.asset);
+        const asset = res.data.asset;
+
+        setImg(asset.imageArray[0].image);
+
+        setInput({
+          ...input,
+          engProductName: asset.engProductName,
+          productName: asset.productName,
+          type: asset.type,
+          kind: asset.kind,
+          realAssetId: asset.realAssetId,
+          unit: asset.unit,
+          brand: asset.brand,
+          model: asset.model,
+          size: asset.size,
+          quantity: asset.quantity,
+          source: asset.source,
+          category: asset.category,
+          acquiredType: asset.acquiredType,
+          group: asset.group,
+          pricePerUnit: asset.pricePerUnit,
+          guaranteedMonth: asset.guaranteedMonth,
+          purposeOfUse: asset.purposeOfUse,
+          allSector: asset.allSector,
+          assetNumber: asset.assetNumber,
+          sector: asset.sector,
+          asset01: asset.asset01,
+          serialNumber: asset.serialNumber,
+          replacedAssetNumber: asset.replacedAssetNumber,
+        });
+
+        const fetchImages = asset.imageArray;
+        const clone = [...arrayImage];
+        for (let el of fetchImages) {
+          clone.push({ image: { name: el.image, _id: el._id } });
+        }
+        setArrayImage(clone);
+
+        console.log(asset.documentArray)
+        const fetchDocuments = asset.documentArray;
+        const cloneDoc = [...arrayDocument];
+        for (let el of fetchDocuments) {
+          cloneDoc.push({ document: { name: el.document, _id: el._id } });
+        }
+        console.log(cloneDoc);
+        
+        setArrayDocument(cloneDoc);
+
+        //Modal ค่าเสื่อมราคา
+        setDepreciationStartDate(new Date(asset.depreciationStartDate));
+        setDepreciationRegisterDate(new Date(asset.depreciationRegisterDate));
+        setDepreciationReceivedDate(new Date(asset.depreciationReceivedDate));
+        setDepreciationPrice(asset.depreciationPrice);
+        setDepreciationYearUsed(asset.depreciationYearUsed);
+        setDepreciationCarcassPrice(asset.depreciationCarcassPrice);
+        setDepreciationProcess(asset.depreciationProcess);
+        setDepreciationPresentMonth(asset.depreciationPresentMonth);
+        setDepreciationCumulativePrice(asset.depreciationCumulativePrice);
+        setDepreciationYearPrice(asset.depreciationYearPrice);
+        setDepreciationRemainPrice(asset.depreciationRemainPrice);
+        setDepreciationBookValue(asset.depreciationBookValue);
+
+        //Modal ค่าเสื่อมราคา(ผลรวมจำนวนปี)
+        setAccumulateDepreciationStartDate(
+          new Date(asset.accumulateDepreciationStartDate)
+        );
+        setAccumulateDepreciationRegisterDate(
+          new Date(asset.accumulateDepreciationRegisterDate)
+        );
+        setAccumulateDepreciationReceivedDate(
+          new Date(asset.accumulateDepreciationReceivedDate)
+        );
+        setAccumulateDepreciationPrice(asset.accumulateDepreciationPrice);
+        setAccumulateDepreciationYearUsed(asset.accumulateDepreciationYearUsed);
+        setAccumulateDepreciationCarcassPrice(
+          asset.accumulateDepreciationCarcassPrice
+        );
+        setAccumulateDepreciationProcess(asset.accumulateDepreciationProcess);
+        setAccumulateDepreciationPresentMonth(
+          asset.accumulateDepreciationPresentMonth
+        );
+        setAccumulateDepreciationCumulativePrice(
+          asset.accumulateDepreciationCumulativePrice
+        );
+        setAccumulateDepreciationYearPrice(
+          asset.accumulateDepreciationYearPrice
+        );
+        setAccumulateDepreciationRemainPrice(
+          asset.accumulateDepreciationRemainPrice
+        );
+        setAccumulateDepreciationBookValue(
+          asset.accumulateDepreciationBookValue
+        );
+
+        // สัญญาจัดซื้อ
+        setAcquisitionMethod(asset.purchaseContract.acquisitionMethod);
+        setMoneyType(asset.purchaseContract.moneyType);
+        setDeliveryDocument(asset.purchaseContract.deliveryDocument);
+        setContractNumber(asset.purchaseContract.contractNumber);
+        setReceivedDate(new Date(asset.purchaseContract.receivedDate));
+        setSeller(asset.purchaseContract.seller);
+        setPrice(asset.purchaseContract.price);
+        setBillNumber(asset.purchaseContract.billNumber);
+        setPurchaseYear(new Date(asset.purchaseContract.purchaseYear));
+        setPurchaseDate(new Date(asset.purchaseContract.purchaseDate));
+        setDocumentDate(new Date(asset.purchaseContract.documentDate));
+        // การจำหน่าย
+        setSalesDocument(asset.distribution.salesDocument);
+        setDistributeStatus(asset.distribution.distributeStatus);
+        setDistributionNote(asset.distribution.distributionNote);
+        setSalesDocument(asset.distribution.salesDocument);
+        setDistributeDocumentDate(
+          new Date(asset.distribution.distributeDocumentDate)
+        );
+        setDistributeApprovalReleaseDate(
+          new Date(asset.distribution.distributeApprovalReleaseDate)
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchAssetById();
+  }, []);
+
+  useEffect(() => {
+    console.log(2);
     if (arrayImage.length < 1) return;
     const newImageUrls = [];
-    // console.log(arrayImage);
-    arrayImage.forEach(
-      (img) => newImageUrls.push(URL.createObjectURL(img.image))
-      // console.log(img)
-    );
+    arrayImage.forEach((img) => {
+      if (img.image._id) {
+        newImageUrls.push(`http://localhost:4000/images/${img.image.name}`);
+      } else {
+        newImageUrls.push(URL.createObjectURL(img.image));
+      }
+    });
     setArrayImageURL(newImageUrls);
   }, [arrayImage]);
+
+  useEffect(() => {
+    // console.log(arrayImageURL);
+    // console.log(depreciationStartDate);
+  }, []);
 
   // data
   return (
     <>
       <div className="bg-background-page px-5 pt-10 pb-10">
+        {/* {img && (
+          <img
+            crossorigin="true"
+            src={`http://localhost:4000/images/${img}`}
+            className="w-[640px]"
+          />
+        )} */}
         {/* Header */}
-        <div className="flex items-center">
+        <div className="flex items-center mx-10">
           <Link
             to="/assetInformationIndex"
             className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
@@ -477,7 +635,7 @@ const EditAssetInformation = () => {
           </Link>
           <div className="text-xl text-text-green ">แก้ไขข้อมูลครุภัณฑ์</div>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mx-10">
           {/* left home */}
           <div className="flex text-xs">
             <Link
@@ -497,6 +655,26 @@ const EditAssetInformation = () => {
             <div className="text-text-gray">/</div>
             <div className="text-text-gray ml-2">แก้ไขข้อมูลครุภัณฑ์</div>
           </div>
+          <button
+            type="button"
+            className=" flex justify-center items-center text-white bg-blue-500 hover:bg-focus-blue rounded-lg focus:border-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-focus-blue focus:border-focus-blue  px-8 py-2 "
+          >
+            <div className="flex justify-center items-center">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.4 4H3.6V1C3.6 0.716667 3.6861 0.479 3.8583 0.287C4.0311 0.0956666 4.245 0 4.5 0H13.5C13.755 0 13.9686 0.0956666 14.1408 0.287C14.3136 0.479 14.4 0.716667 14.4 1V4ZM14.4 9.5C14.655 9.5 14.8686 9.404 15.0408 9.212C15.2136 9.02067 15.3 8.78333 15.3 8.5C15.3 8.21667 15.2136 7.979 15.0408 7.787C14.8686 7.59567 14.655 7.5 14.4 7.5C14.145 7.5 13.9314 7.59567 13.7592 7.787C13.5864 7.979 13.5 8.21667 13.5 8.5C13.5 8.78333 13.5864 9.02067 13.7592 9.212C13.9314 9.404 14.145 9.5 14.4 9.5ZM5.4 16H12.6V12H5.4V16ZM5.4 18C4.905 18 4.4814 17.8043 4.1292 17.413C3.7764 17.021 3.6 16.55 3.6 16V14H0.9C0.645 14 0.4314 13.904 0.2592 13.712C0.0864001 13.5207 0 13.2833 0 13V8C0 7.15 0.2625 6.43767 0.7875 5.863C1.3125 5.28767 1.95 5 2.7 5H15.3C16.065 5 16.7064 5.28767 17.2242 5.863C17.7414 6.43767 18 7.15 18 8V13C18 13.2833 17.9136 13.5207 17.7408 13.712C17.5686 13.904 17.355 14 17.1 14H14.4V16C14.4 16.55 14.2239 17.021 13.8717 17.413C13.5189 17.8043 13.095 18 12.6 18H5.4Z"
+                  fill="white"
+                />
+              </svg>
+              <div className="ml-2 text-sm">พิมพ์สติกเกอร์</div>
+            </div>
+          </button>
         </div>
 
         {/* block white top */}
@@ -709,15 +887,15 @@ const EditAssetInformation = () => {
               </div>
             </div>
 
-            {/* หน่วยงานเจ้าของครุภัณฑ์ */}
+            {/* หน่วยงาน */}
             <div>
-              <div className="mb-1">หน่วยงานเจ้าของครุภัณฑ์</div>
+              <div className="mb-1">หน่วยงาน</div>
               <div className="flex h-[38px] ">
                 <Selector
                   placeholder={"Select"}
                   state={input}
                   setState={setInput}
-                  id={"หน่วยงานเจ้าของครุภัณฑ์"}
+                  id={"หน่วยงาน"}
                 />
               </div>
             </div>
@@ -1135,50 +1313,34 @@ const EditAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationStartDate"
-                        id="depreciationStartDate"
-                        onChange={(e) =>
-                          setDepreciationStartDate(e.target.value)
-                        }
-                        value={depreciationStartDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                      <div className="flex h-[38px]">
+                        <OnlyDateInput
+                          state={depreciationStartDate}
+                          setState={setDepreciationStartDate}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationRegisterDate"
-                        id="depreciationRegisterDate"
-                        onChange={(e) =>
-                          setDepreciationRegisterDate(e.target.value)
-                        }
-                        value={depreciationRegisterDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                      <div className="flex h-[38px]">
+                        <OnlyDateInput
+                          state={depreciationRegisterDate}
+                          setState={setDepreciationRegisterDate}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationReceivedDate"
-                        id="depreciationReceivedDate"
-                        onChange={(e) => {
-                          setDepreciationReceivedDate(e.target.value);
-                          monthDiff(e.target.value);
-                        }}
-                        value={depreciationReceivedDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                      <div className="flex h-[38px]">
+                        <OnlyDateInput
+                          state={depreciationReceivedDate}
+                          setState={setDepreciationReceivedDate}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1240,12 +1402,6 @@ const EditAssetInformation = () => {
                   </div>
                 </div>
               </div>
-
-              {/* <div className="col-span-3 flex justify-end ">
-              <button className="text-sm text-gray-700 border-[1px] border-gray-400 py-2 px-4 rounded-md hover:bg-gray-100">
-                คำนวนค่าเสื่อม
-              </button>
-            </div> */}
 
               {/* ราคาค่าเสื่อม */}
               <div className="col-span-3">
@@ -1366,15 +1522,13 @@ const EditAssetInformation = () => {
                       เดือน/ปี ที่ทำการประมวลผล
                     </div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="เดือน/ปี ที่ทำการประมวลผล"
-                        id="เดือน/ปี ที่ทำการประมวลผล"
-                        disabled="true"
-                        onChange={(e) => setDepreciationProcess(e.target.value)}
-                        value={depreciationProcess}
-                        className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
-                      />
+                      <div className="flex h-[38px]">
+                        <OnlyDateInput
+                          disabled={true}
+                          state={depreciationProcess}
+                          setState={setDepreciationProcess}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1459,50 +1613,34 @@ const EditAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationStartDate"
-                        id="accumulateDepreciationStartDate"
-                        onChange={(e) =>
-                          setAccumulateDepreciationStartDate(e.target.value)
-                        }
-                        value={accumulateDepreciationStartDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                      <div className="flex h-[38px]">
+                        <OnlyDateInput
+                          state={accumulateDepreciationStartDate}
+                          setState={setAccumulateDepreciationStartDate}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationRegisterDate"
-                        id="accumulateDepreciationRegisterDate"
-                        onChange={(e) =>
-                          setAccumulateDepreciationRegisterDate(e.target.value)
-                        }
-                        value={accumulateDepreciationRegisterDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                      <div className="flex h-[38px]">
+                        <OnlyDateInput
+                          state={accumulateDepreciationRegisterDate}
+                          setState={setAccumulateDepreciationRegisterDate}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationReceivedDate"
-                        id="accumulateDepreciationReceivedDate"
-                        onChange={(e) => {
-                          setAccumulateDepreciationReceivedDate(e.target.value);
-                          accMonthDiff(e.target.value);
-                        }}
-                        value={accumulateDepreciationReceivedDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                      <div className="flex h-[38px]">
+                        <OnlyDateInput
+                          state={accumulateDepreciationReceivedDate}
+                          setState={setAccumulateDepreciationReceivedDate}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1692,15 +1830,13 @@ const EditAssetInformation = () => {
                       เดือน/ปี ที่ทำการประมวลผล
                     </div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="เดือน/ปี ที่ทำการประมวลผล"
-                        id="เดือน/ปี ที่ทำการประมวลผล"
-                        disabled="true"
-                        // onChange={(e) => setDepreciationProcess(e.target.value)}
-                        value={accumulateDepreciationProcess}
-                        className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
-                      />
+                      <div className="flex h-[38px]">
+                        <OnlyDateInput
+                          disabled={true}
+                          state={accumulateDepreciationProcess}
+                          setState={setAccumulateDepreciationProcess}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1766,14 +1902,15 @@ const EditAssetInformation = () => {
         >
           <div className=" px-10 pt-2 pb-10">
             {arrayImageURL.map((el, idx) => (
-              <img src={el} className="w-[640px] mb-5" />
+              // console.log(el)
+
+              <img crossorigin="true" src={el} className="w-[640px] mb-5" />
             ))}
           </div>
         </Modal>
 
         <ToastContainer />
       </div>
-
 
       {/* footer */}
       <div className="bg-white">

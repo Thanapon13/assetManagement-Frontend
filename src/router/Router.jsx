@@ -42,7 +42,12 @@ import {
   ViewPackageAssetInformation,
   EditPackageAssetInformation,
   TransferIndex,
-  SaveTransferAsset
+  SaveTransferAsset,
+  ApprovalTransferAsset,
+  ApprovalTransferAssetDetail,
+  ViewApprovalTransferAssetDetail,
+  ViewWaitingTransferAsset,
+  EditTransferAsset
 } from "../pages";
 
 // import {
@@ -98,11 +103,11 @@ const Router = () => {
           element={<AssetInformationIndex />}
         />
         <Route
-          path="/viewAssetInformation"
+          path="/viewAssetInformation/:assetId"
           element={<ViewAssetInformation />}
         />
         <Route
-          path="/editAssetInformation"
+          path="/editAssetInformation/:assetId"
           element={<EditAssetInformation />}
         />
         {/* </Route> */}
@@ -155,6 +160,11 @@ const Router = () => {
 
         <Route path="transferIndex" element={<TransferIndex />} />
         <Route path="saveTransferAsset" element={<SaveTransferAsset />} />
+        <Route path="approvalTransferAsset" element={<ApprovalTransferAsset />} />
+        <Route path="approvalTransferAssetDetail/:transferId" element={<ApprovalTransferAssetDetail />} />
+        <Route path="viewApprovalTransferAssetDetail/:transferId" element={<ViewApprovalTransferAssetDetail />} />
+        <Route path="viewWaitingTransferAsset/:transferId" element={<ViewWaitingTransferAsset />} />
+        <Route path="editTransferAsset/:transferId" element={<EditTransferAsset />} />
         
         <Route path="repairDashboard" element={<RepairDashboard />} />
         <Route path="/defaultData" element={<DefaultData />} />

@@ -68,7 +68,7 @@ function RowOfTableAssetInformation({
         <input
           className="col-span-2 bg-gray-200 text-center flex justify-center items-center  py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
           disabled
-          value={genData && genData[index]?.inventoryNumber}
+          value={genData && genData[index]?.assetNumber}
         />
 
         <div className="flex relative col-span-2">

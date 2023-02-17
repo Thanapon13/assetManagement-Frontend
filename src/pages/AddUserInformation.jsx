@@ -125,8 +125,8 @@ function AddUserInformation() {
 
   // main input date state
   const [birthDate, setBirthDate] = useState(new Date());
-  const [passwordStartDate, setPasswordStartDate] = useState(todayThaiDate);
-  const [passwordEndDate, setPasswordEndDate] = useState(todayThaiDate);
+  const [passwordStartDate, setPasswordStartDate] = useState(new Date());
+  const [passwordEndDate, setPasswordEndDate] = useState(new Date());
   const [dateTimeRecord, setDateTimeRecord] = useState(todayThaiDate);
   const [dateTimeModify, setDateTimeModify] = useState(todayThaiDate);
   const [dateTimeUpdatePassword, setDateTimeUpdatePassword] =

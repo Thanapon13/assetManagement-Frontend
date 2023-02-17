@@ -16,7 +16,7 @@ import docIcon from "../public/pics/docIcon.png";
 import Modal from "../components/modal/Modal";
 import DeprecationDropdown from "../components/dropdown/DeprecationDropdown";
 import { ToastContainer, toast } from "react-toastify";
-import { createAsset } from "../api/assetApi";
+import { createPackageAsset } from "../api/packageAssetApi";
 import BarcodeScanner from "../components/scanner/BarcodeScanner";
 import QRscanner from "../components/scanner/QRscanner";
 import { useEffect } from "react";
@@ -64,11 +64,11 @@ const PackageAssetInformation = () => {
     pricePerUnit: 0,
     guaranteedMonth: "",
     purposeOfUse: "",
-    allSector: "",
     assetGroupNumber: "แมม",
     type4: "type4",
     type8: "type8",
     type13: "type13",
+    distributeToSector:"",
 
     status: "not approve",
   });
@@ -85,14 +85,14 @@ const PackageAssetInformation = () => {
     {
       assetNumber: "6300-0127-305/001",
       productName: "aaa",
-      sector: "",
-      replacedAssetNumber: "",
+      sector: "asd",
+      replacedAssetNumber: "dfg",
     },
     {
       assetNumber: "6300-0127-305/002",
       productName: "aaa",
-      sector: "",
-      replacedAssetNumber: "",
+      sector: "qwe",
+      replacedAssetNumber: "gjhkg",
     },
   ]);
 
@@ -310,6 +310,7 @@ const PackageAssetInformation = () => {
         }
       });
     });
+    console.log(bottomArray)
 
     setBottomSubComponentData(bottomArray)
   };
@@ -407,6 +408,7 @@ const PackageAssetInformation = () => {
     e.preventDefault();
     const inputJSON = JSON.stringify(input);
     const genDataJSON = JSON.stringify(genData);
+    const bottomSubComponentDataJSON = JSON.stringify(bottomSubComponentData);
     const formData = new FormData();
     formData.append("input", inputJSON);
     formData.append("insuranceStartDate", insuranceStartDate);
@@ -418,6 +420,7 @@ const PackageAssetInformation = () => {
       formData.append("arrayDocument", file.document);
     });
     formData.append("genDataJSON", genDataJSON);
+    formData.append("bottomSubComponentDataJSON", bottomSubComponentDataJSON);
     formData.append("depreciationStartDate", depreciationStartDate);
     formData.append("depreciationRegisterDate", depreciationRegisterDate);
     formData.append("depreciationReceivedDate", depreciationReceivedDate);
@@ -478,14 +481,6 @@ const PackageAssetInformation = () => {
       accumulateDepreciationBookValue
     );
 
-    //ข้อมูลผู้รับผิดชอบ
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("phoneNumber", phoneNumber);
-    formData.append("responsibleSector", responsibleSector);
-    formData.append("building", building);
-    formData.append("floor", floor);
-    formData.append("room", room);
 
     //สัญญาจัดซื้อ
     formData.append("acquisitionMethod", acquisitionMethod);
@@ -510,7 +505,7 @@ const PackageAssetInformation = () => {
     formData.append("distributeStatus", distributeStatus);
     formData.append("distributionNote", distributionNote);
 
-    await createAsset(formData);
+    await createPackageAsset(formData);
   };
 
   useEffect(() => {
@@ -838,8 +833,8 @@ const PackageAssetInformation = () => {
               <div className="flex h-[38px] ">
                 <Selector
                   placeholder={"Select"}
-                  state={genData}
-                  setState={setGenData}
+                  state={input}
+                  setState={setInput}
                   id={"การจ่ายครุภัณฑ์ให้หน่วยงาน"}
                 />
               </div>

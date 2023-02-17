@@ -33,3 +33,8 @@ export { default as ViewPackageAssetInformation } from './ViewPackageAssetInform
 export { default as EditPackageAssetInformation } from './EditPackageAssetInformation'
 export { default as TransferIndex } from './TransferIndex'
 export { default as SaveTransferAsset } from './SaveTransferAsset'
+export { default as ApprovalTransferAsset } from './ApprovalTransferAsset'
+export { default as ApprovalTransferAssetDetail } from './ApprovalTransferAssetDetail'
+export { default as ViewApprovalTransferAssetDetail } from './ViewApprovalTransferAssetDetail'
+export { default as ViewWaitingTransferAsset } from './ViewWaitingTransferAsset'
+export { default as EditTransferAsset } from './EditTransferAsset'

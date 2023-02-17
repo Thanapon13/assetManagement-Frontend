@@ -23,6 +23,7 @@ const TransferIndex = () => {
   // data
   let dashboardTableTransferArrayIndex = [
     {
+      id:"100",
       transferPendingDateTime: "12/09/2565 14.36 น.",
       transferDocumentNumber: "202207135",
       transferSector: "สำนักเทคโนโลยีสารสนเทศ",
@@ -210,6 +211,7 @@ const TransferIndex = () => {
                 <RowOfTableTransferIndex
                   key={idx}
                   index={idx}
+                  id={el.id}
                   transferPendingDateTime={el.transferPendingDateTime}
                   transferDocumentNumber={el.transferDocumentNumber}
                   transferSector={el.transferSector}

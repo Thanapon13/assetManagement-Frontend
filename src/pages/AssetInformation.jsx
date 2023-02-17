@@ -61,8 +61,8 @@ const AssetInformation = () => {
     pricePerUnit: 0,
     guaranteedMonth: "",
     purposeOfUse: "",
-    allSector: "",
-    assetNumber: "แมม",
+    assetGroupNumber: "แมม",
+    distributeToSector: "",
 
     status: "not approve",
   });
@@ -70,6 +70,7 @@ const AssetInformation = () => {
   // upload image
   const [arrayImage, setArrayImage] = useState([]);
   const [arrayImageURL, setArrayImageURL] = useState([]);
+  const [sendArrayImage, setSendArrayImage] = useState([]);
 
   // คู่มือและเอกสารแนบ
   const [arrayDocument, setArrayDocument] = useState([]);
@@ -78,14 +79,14 @@ const AssetInformation = () => {
   const [genData, setGenData] = useState([
     {
       // index: 0,
-      realAssetId: "123",
+      assetNumber: "sfer123",
       serialNumber: "a12b12",
       sector: "",
       asset01: "66071032",
       replacedAssetNumber: "aaa",
     },
     {
-      realAssetId: "222",
+      assetNumber: "jykuh222",
       serialNumber: "dfg234htjn",
       sector: "",
       asset01: "66071032",
@@ -197,9 +198,9 @@ const AssetInformation = () => {
     clone.realAssetId = e.target.value;
     setInput(clone);
   };
-  const handleChangeAssetNumber = (e) => {
+  const handleChangeAssetGroupNumber = (e) => {
     const clone = { ...input };
-    clone.assetNumber = e.target.value;
+    clone.assetGroupNumber = e.target.value;
     setInput(clone);
   };
   const handleChangeEngProductName = (e) => {
@@ -345,12 +346,93 @@ const AssetInformation = () => {
     formData.append("input", inputJSON);
     formData.append("insuranceStartDate", insuranceStartDate);
     formData.append("insuranceExpiredDate", insuranceExpiredDate);
-    arrayImage.forEach((file) => {
-      formData.append("arrayImage", file.image);
-    });
-    arrayDocument.forEach((file) => {
-      formData.append("arrayDocument", file.document);
-    });
+
+    const baseArrayImage = [];
+    if (arrayImage?.length > 0) {
+      arrayImage.forEach((file) => {
+        // console.log(file.image.name);
+        baseArrayImage.push({
+          image: file.image.name
+        });
+      });
+    }
+    const baseArrayImageJSON = JSON.stringify(baseArrayImage);
+    formData.append("baseArrayImage", baseArrayImageJSON);
+    // console.log(baseArrayImageJSON)
+
+    // const duplicatedArrayImage = [];
+    if (arrayImage?.length > 0) {
+      // for duplicate image file if create asset as too many
+      arrayImage.forEach((file) => {
+        formData.append("arrayImage", file.image);
+        for (let i = 2; i <= input.quantity; i++) {
+          const duplicatedFile = new File(
+            [file.image],
+            `${file.image.name.split(".")[0]}_(${i - 1}).${
+              file.image.name.split(".")[1]
+            }`,
+            { type: file.type }
+          );
+          formData.append("arrayImage", duplicatedFile);
+          // duplicatedArrayImage.push({
+          //   ...file,
+          //   image: duplicatedFile.name,
+          // });
+        }
+      });
+      // console.log("duplicatedArrayImage", duplicatedArrayImage);
+
+      // console.log("allArrayImage",[...arrayImage,...duplicatedArrayImage])
+    }
+
+   
+    // if (duplicatedArrayImage.length > 0) {
+    //   const duplicatedArrayImageJSON = JSON.stringify(duplicatedArrayImage);
+    //   formData.append("duplicatedArrayImage", duplicatedArrayImageJSON);
+    // }
+
+    // document
+    const baseArrayDocument = [];
+    if (arrayDocument?.length > 0) {
+      arrayDocument.forEach((file) => {
+        // console.log(file.image.name);
+        baseArrayDocument.push({
+          document: file.document.name
+        });
+      });
+    }
+    const baseArrayDocumentJSON = JSON.stringify(baseArrayDocument);
+    formData.append("baseArrayDocument", baseArrayDocumentJSON);
+    // for duplicate document file if create asset as too many
+    // const duplicatedArrayDocument = [];
+    if (arrayDocument?.length > 0) {
+      arrayDocument.forEach((file) => {
+        formData.append("arrayDocument", file.document);
+        for (let i = 2; i <= input.quantity; i++) {
+          const duplicatedFile = new File(
+            [file.document],
+            `${file.document.name.split(".")[0]}_(${i - 1}).${
+              file.document.name.split(".")[1]
+            }`,
+            { type: file.type }
+          );
+          formData.append("arrayDocument", duplicatedFile);
+          // duplicatedArrayDocument.push({
+          //   ...file,
+          //   document: duplicatedFile.name,
+          // });
+        }
+      });
+      // console.log("duplicatedArrayDocument", duplicatedArrayDocument);
+
+      // console.log("allArrayDocument",[...arrayDocument,...duplicatedArrayDocument])
+    }
+
+    // if (duplicatedArrayDocument.length > 0) {
+    //   const duplicatedArrayDocumentJSON = JSON.stringify(duplicatedArrayDocument);
+    //   formData.append("duplicatedArrayDocument", duplicatedArrayDocumentJSON);
+    // }
+
     formData.append("genDataJSON", genDataJSON);
     formData.append("depreciationStartDate", depreciationStartDate);
     formData.append("depreciationRegisterDate", depreciationRegisterDate);
@@ -411,15 +493,6 @@ const AssetInformation = () => {
       "accumulateDepreciationBookValue",
       accumulateDepreciationBookValue
     );
-
-    //ข้อมูลผู้รับผิดชอบ
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("phoneNumber", phoneNumber);
-    formData.append("responsibleSector", responsibleSector);
-    formData.append("building", building);
-    formData.append("floor", floor);
-    formData.append("room", room);
 
     //สัญญาจัดซื้อ
     formData.append("acquisitionMethod", acquisitionMethod);
@@ -761,11 +834,11 @@ const AssetInformation = () => {
               <div className="mb-1">รหัสกลุ่มครุภัณฑ์</div>
               <input
                 type="text"
-                name="assetNumber"
-                id="assetNumber"
+                name="assetGroupNumber"
+                id="assetGroupNumber"
                 disabled
-                onChange={handleChangeAssetNumber}
-                value={input.assetNumber}
+                onChange={handleChangeAssetGroupNumber}
+                value={input.assetGroupNumber}
                 className="w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
@@ -786,7 +859,7 @@ const AssetInformation = () => {
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
                   <div className="grid grid-cols-12 gap-2 text-center">
                     <div className="ml-2">ลำดับ</div>
-                    <div className="col-span-2">ID เลขครุภัณฑ์</div>
+                    <div className="col-span-2">เลขครุภัณฑ์</div>
                     <div className="col-span-2">Serial Number</div>
                     <div className="col-span-2">หน่วยงาน</div>
                     <div className="col-span-2">สท.01</div>
