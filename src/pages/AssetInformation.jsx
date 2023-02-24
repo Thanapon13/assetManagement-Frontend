@@ -1,13 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Selector from "../components/selector/Selector";
-import RowOfTableArray from "../components/table/RowOfTableArray";
 import { BsArrowLeft } from "react-icons/bs";
 import { BsFillEyeFill } from "react-icons/bs";
-import { HiChevronLeft } from "react-icons/hi";
-import { HiChevronRight } from "react-icons/hi";
-import { AiOutlineSearch } from "react-icons/ai";
-import { GrDocument } from "react-icons/gr";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
 import RowOfTableAssetInformation from "../components/table/RowOfTableAssetInformation";
@@ -20,6 +15,7 @@ import { createAsset } from "../api/assetApi";
 import BarcodeScanner from "../components/scanner/BarcodeScanner";
 import QRscanner from "../components/scanner/QRscanner";
 import { useEffect } from "react";
+import OnlyDateInput from "../components/date/onlyDateInput";
 
 const AssetInformation = () => {
   const inputImg = useRef();
@@ -374,6 +370,7 @@ const AssetInformation = () => {
             { type: file.type }
           );
           formData.append("arrayImage", duplicatedFile);
+          // console.log(duplicatedFile)
           // duplicatedArrayImage.push({
           //   ...file,
           //   image: duplicatedFile.name,
@@ -1266,50 +1263,28 @@ const AssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationStartDate"
-                        id="depreciationStartDate"
-                        onChange={(e) =>
-                          setDepreciationStartDate(e.target.value)
-                        }
-                        value={depreciationStartDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={depreciationStartDate}
+                          setState={setDepreciationStartDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationRegisterDate"
-                        id="depreciationRegisterDate"
-                        onChange={(e) =>
-                          setDepreciationRegisterDate(e.target.value)
-                        }
-                        value={depreciationRegisterDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={depreciationRegisterDate}
+                          setState={setDepreciationRegisterDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationReceivedDate"
-                        id="depreciationReceivedDate"
-                        onChange={(e) => {
-                          setDepreciationReceivedDate(e.target.value);
-                          monthDiff(e.target.value);
-                        }}
-                        value={depreciationReceivedDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={depreciationReceivedDate}
+                          setState={setDepreciationReceivedDate}
+                        />
                     </div>
                   </div>
                 </div>
@@ -1497,15 +1472,11 @@ const AssetInformation = () => {
                       เดือน/ปี ที่ทำการประมวลผล
                     </div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="เดือน/ปี ที่ทำการประมวลผล"
-                        id="เดือน/ปี ที่ทำการประมวลผล"
-                        disabled="true"
-                        onChange={(e) => setDepreciationProcess(e.target.value)}
-                        value={depreciationProcess}
-                        className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
-                      />
+                    <OnlyDateInput
+                          disabled={true}
+                          state={depreciationProcess}
+                          setState={setDepreciationProcess}
+                        />
                     </div>
                   </div>
                 </div>
@@ -1590,50 +1561,28 @@ const AssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationStartDate"
-                        id="accumulateDepreciationStartDate"
-                        onChange={(e) =>
-                          setAccumulateDepreciationStartDate(e.target.value)
-                        }
-                        value={accumulateDepreciationStartDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={accumulateDepreciationStartDate}
+                          setState={setAccumulateDepreciationStartDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationRegisterDate"
-                        id="accumulateDepreciationRegisterDate"
-                        onChange={(e) =>
-                          setAccumulateDepreciationRegisterDate(e.target.value)
-                        }
-                        value={accumulateDepreciationRegisterDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={accumulateDepreciationRegisterDate}
+                          setState={setAccumulateDepreciationRegisterDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationReceivedDate"
-                        id="accumulateDepreciationReceivedDate"
-                        onChange={(e) => {
-                          setAccumulateDepreciationReceivedDate(e.target.value);
-                          accMonthDiff(e.target.value);
-                        }}
-                        value={accumulateDepreciationReceivedDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={accumulateDepreciationReceivedDate}
+                          setState={setAccumulateDepreciationReceivedDate}
+                        />
                     </div>
                   </div>
                 </div>
@@ -1823,15 +1772,11 @@ const AssetInformation = () => {
                       เดือน/ปี ที่ทำการประมวลผล
                     </div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="เดือน/ปี ที่ทำการประมวลผล"
-                        id="เดือน/ปี ที่ทำการประมวลผล"
-                        disabled="true"
-                        // onChange={(e) => setDepreciationProcess(e.target.value)}
-                        value={accumulateDepreciationProcess}
-                        className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
-                      />
+                    <OnlyDateInput
+                          disabled={true}
+                          state={accumulateDepreciationProcess}
+                          setState={setAccumulateDepreciationProcess}
+                        />
                     </div>
                   </div>
                 </div>

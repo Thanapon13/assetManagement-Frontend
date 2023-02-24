@@ -21,6 +21,8 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
   setBarcode,
   qr,
   setQr,
+  // disabled,
+  packageAssetId
 }) {
   const locaiton = useLocation();
   const { inputRef } = useBarcode({
@@ -47,9 +49,9 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
     setBarcode(e.target.value);
     setQr(e.target.value);
   };
-  const handleChangePrice = (e) => {
+  const handleChangePricePerUnit = (e) => {
     const clone = [...bottomSubComponentData];
-    clone[index].price = e.target.value;
+    clone[index].pricePerUnit = e.target.value;
     setBottomSubComponentData(clone);
   };
   const handleChangeAsset01 = (e) => {
@@ -93,12 +95,12 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
             type="text"
             name="serialNumber"
             disabled={
-              locaiton.pathname === "/viewPackageAssetInformation"
+              locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
                 ? true
                 : false
             }
             className={`w-full text-left text-xs pl-3 ${
-              locaiton.pathname === "/viewPackageAssetInformation"
+               locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
                 ? "bg-gray-200"
                 : ""
             }  flex justify-center items-center py-2 border-[1px] border-gray-300 rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
@@ -121,15 +123,15 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
         </div>
         <input
           type="text"
-          name="price"
-          id="price"
+          name="pricePerUnit"
+          id="pricePerUnit"
           disabled={
-            locaiton.pathname === "/viewPackageAssetInformation" ? true : false
+             locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}` ? true : false
           }
-          onChange={handleChangePrice}
-          value={bottomSubComponentData[index]?.price}
+          onChange={handleChangePricePerUnit}
+          value={bottomSubComponentData[index]?.pricePerUnit}
           className={`col-span-2 w-full h-[38px] ${
-            locaiton.pathname === "/viewPackageAssetInformation"
+             locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
               ? "bg-gray-200"
               : ""
           } border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
@@ -139,12 +141,12 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
           name="asset01"
           id="asset01"
           disabled={
-            locaiton.pathname === "/viewPackageAssetInformation" ? true : false
+             locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}` ? true : false
           }
           onChange={handleChangeAsset01}
           value={bottomSubComponentData[index]?.asset01}
           className={`col-span-2 w-full h-[38px] ${
-            locaiton.pathname === "/viewPackageAssetInformation"
+             locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
               ? "bg-gray-200"
               : ""
           }  border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}

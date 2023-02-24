@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import RowOfTablePackageAssetInformation from "../components/table/RowOfTablePackageAssetInformation";
 import RowOfTableTopSubcomponentPackageAssetInformation from "../components/table/RowOfTableTopSubcomponentPackageAssetInformation";
 import RowOfTableBottomSubcomponentPackageAssetInformation from "../components/table/RowOfTableBottomSubcomponentPackageAssetInformation";
+import OnlyDateInput from "../components/date/onlyDateInput";
 
 const PackageAssetInformation = () => {
   const inputImg = useRef();
@@ -68,7 +69,7 @@ const PackageAssetInformation = () => {
     type4: "type4",
     type8: "type8",
     type13: "type13",
-    distributeToSector:"",
+    allSector:"",
 
     status: "not approve",
   });
@@ -206,7 +207,7 @@ const PackageAssetInformation = () => {
       assetNumber: "",
       productName: "",
       serialNumber: "serialNumber",
-      price: "",
+      pricePerUnit: "",
       asset01: "",
     },
   ]);
@@ -413,12 +414,114 @@ const PackageAssetInformation = () => {
     formData.append("input", inputJSON);
     formData.append("insuranceStartDate", insuranceStartDate);
     formData.append("insuranceExpiredDate", insuranceExpiredDate);
-    arrayImage.forEach((file) => {
-      formData.append("arrayImage", file.image);
-    });
-    arrayDocument.forEach((file) => {
-      formData.append("arrayDocument", file.document);
-    });
+
+    // image
+    const baseArrayImage = [];
+    if (arrayImage?.length > 0) {
+      arrayImage.forEach((file) => {
+        // console.log(file.image.name);
+        baseArrayImage.push({
+          image: file.image.name
+        });
+      });
+    }
+    const baseArrayImageJSON = JSON.stringify(baseArrayImage);
+    formData.append("baseArrayImage", baseArrayImageJSON);
+    console.log(baseArrayImageJSON)
+
+    // const duplicatedArrayImage = [];
+    if (arrayImage?.length > 0) {
+      // for duplicate image file if create asset as too many
+      arrayImage.forEach((file) => {
+        formData.append("arrayImage", file.image);
+        for (let i = 2; i <= input.quantity; i++) {
+          const duplicatedFile = new File(
+            [file.image],
+            `${file.image.name.split(".")[0]}_(${i - 1}).${
+              file.image.name.split(".")[1]
+            }`,
+            { type: file.type }
+          );
+          formData.append("arrayImage", duplicatedFile);
+          console.log(duplicatedFile)
+          console.log(bottomSubComponentData.length)
+          for(let j=1;j<=bottomSubComponentData.length;j++){
+            const duplicatedSubFile = new File(
+              [file.image],
+              `${file.image.name.split(".")[0]}_(${i - 1})_(${j}).${
+                file.image.name.split(".")[1]
+              }`,
+              { type: file.type }
+            );
+            formData.append("arrayImage", duplicatedSubFile);
+            console.log(duplicatedSubFile)
+          }
+          // duplicatedArrayImage.push({
+          //   ...file,
+          //   image: duplicatedFile.name,
+          // });
+        }
+      });
+      // console.log("duplicatedArrayImage", duplicatedArrayImage);
+
+      // console.log("allArrayImage",[...arrayImage,...duplicatedArrayImage])
+    }
+
+     // document
+     const baseArrayDocument = [];
+     if (arrayDocument?.length > 0) {
+       arrayDocument.forEach((file) => {
+         // console.log(file.image.name);
+         baseArrayDocument.push({
+           document: file.document.name
+         });
+       });
+     }
+     const baseArrayDocumentJSON = JSON.stringify(baseArrayDocument);
+     formData.append("baseArrayDocument", baseArrayDocumentJSON);
+     // for duplicate document file if create asset as too many
+     // const duplicatedArrayDocument = [];
+     if (arrayDocument?.length > 0) {
+       arrayDocument.forEach((file) => {
+         formData.append("arrayDocument", file.document);
+         for (let i = 2; i <= input.quantity; i++) {
+           const duplicatedFile = new File(
+             [file.document],
+             `${file.document.name.split(".")[0]}_(${i - 1}).${
+               file.document.name.split(".")[1]
+             }`,
+             { type: file.type }
+           );
+           formData.append("arrayDocument", duplicatedFile);
+
+           for(let j=1;j<=bottomSubComponentData.length;j++){
+            const duplicatedSubFile = new File(
+              [file.document],
+              `${file.document.name.split(".")[0]}_(${i - 1})_(${j}).${
+                file.document.name.split(".")[1]
+              }`,
+              { type: file.type }
+            );
+            formData.append("arrayDocument", duplicatedSubFile);
+            console.log(duplicatedSubFile)
+          }
+           // duplicatedArrayDocument.push({
+           //   ...file,
+           //   document: duplicatedFile.name,
+           // });
+         }
+       });
+       // console.log("duplicatedArrayDocument", duplicatedArrayDocument);
+ 
+       // console.log("allArrayDocument",[...arrayDocument,...duplicatedArrayDocument])
+     }
+
+    // arrayImage.forEach((file) => {
+    //   formData.append("arrayImage", file.image);
+    // });
+    // arrayDocument.forEach((file) => {
+    //   formData.append("arrayDocument", file.document);
+    // });
     formData.append("genDataJSON", genDataJSON);
     formData.append("bottomSubComponentDataJSON", bottomSubComponentDataJSON);
     formData.append("depreciationStartDate", depreciationStartDate);
@@ -1289,50 +1392,28 @@ const PackageAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationStartDate"
-                        id="depreciationStartDate"
-                        onChange={(e) =>
-                          setDepreciationStartDate(e.target.value)
-                        }
-                        value={depreciationStartDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={depreciationStartDate}
+                          setState={setDepreciationStartDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationRegisterDate"
-                        id="depreciationRegisterDate"
-                        onChange={(e) =>
-                          setDepreciationRegisterDate(e.target.value)
-                        }
-                        value={depreciationRegisterDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={depreciationRegisterDate}
+                          setState={setDepreciationRegisterDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationReceivedDate"
-                        id="depreciationReceivedDate"
-                        onChange={(e) => {
-                          setDepreciationReceivedDate(e.target.value);
-                          monthDiff(e.target.value);
-                        }}
-                        value={depreciationReceivedDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={depreciationReceivedDate}
+                          setState={setDepreciationReceivedDate}
+                        />
                     </div>
                   </div>
                 </div>
@@ -1520,6 +1601,7 @@ const PackageAssetInformation = () => {
                       เดือน/ปี ที่ทำการประมวลผล
                     </div>
                     <div className="inline-block relative w-full h-[41px]">
+                      
                       <input
                         type="date"
                         name="เดือน/ปี ที่ทำการประมวลผล"
@@ -1613,50 +1695,28 @@ const PackageAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationStartDate"
-                        id="accumulateDepreciationStartDate"
-                        onChange={(e) =>
-                          setAccumulateDepreciationStartDate(e.target.value)
-                        }
-                        value={accumulateDepreciationStartDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={accumulateDepreciationStartDate}
+                          setState={setAccumulateDepreciationStartDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationRegisterDate"
-                        id="accumulateDepreciationRegisterDate"
-                        onChange={(e) =>
-                          setAccumulateDepreciationRegisterDate(e.target.value)
-                        }
-                        value={accumulateDepreciationRegisterDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={accumulateDepreciationRegisterDate}
+                          setState={setAccumulateDepreciationRegisterDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationReceivedDate"
-                        id="accumulateDepreciationReceivedDate"
-                        onChange={(e) => {
-                          setAccumulateDepreciationReceivedDate(e.target.value);
-                          accMonthDiff(e.target.value);
-                        }}
-                        value={accumulateDepreciationReceivedDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={accumulateDepreciationReceivedDate}
+                          setState={setAccumulateDepreciationReceivedDate}
+                        />
                     </div>
                   </div>
                 </div>
@@ -2019,7 +2079,7 @@ const PackageAssetInformation = () => {
         >
           <div className=" px-10 pt-2 pb-10">
             {arrayImageURL.map((el, idx) => (
-              <img src={el} className="w-[640px] mb-5" />
+              <img crossorigin="true" src={el} className="w-[640px] mb-5" />
             ))}
           </div>
         </Modal>

@@ -5,9 +5,11 @@ import RowOfTableArray from "../components/table/RowOfTableArray";
 import { HiChevronLeft } from "react-icons/hi";
 import { HiChevronRight } from "react-icons/hi";
 import { AiOutlineSearch } from "react-icons/ai";
+import { CgPushChevronLeft } from "react-icons/cg";
+import { CgPushChevronRight } from "react-icons/cg";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
-import { getAllAsset, getBySearch } from "../api/assetApi";
+import { deleteAsset, getAllAsset, getBySearch } from "../api/assetApi";
 
 const AssetInformationIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(
@@ -15,7 +17,7 @@ const AssetInformationIndex = () => {
   );
 
   // useState
-  const [perPage, setPerPage] = useState(10);
+  const [amountPage, setAmountPage] = useState(1);
 
   // search
   const [search, setSearch] = useState({
@@ -33,14 +35,53 @@ const AssetInformationIndex = () => {
   const [assetList, setAssetList] = useState([]);
 
   // handle
-  function handleChange(e) {
+  const handleChange = (e) => {
     setSearch({ ...search, [e.target.name]: e.target.value });
-  }
+  };
+
+  const handleFirstPage = () => {
+    if (search.page === 1) {
+      // window.alert("You are already on the first page.");
+    } else {
+      setSearch({ ...search, page: 1 });
+      fetchSearchAssetList({ ...search, page: 1 });
+    }
+  };
+  const handleLastPage = () => {
+    if (search.page === amountPage) {
+      // window.alert("You are already on the last page.");
+    } else {
+      setSearch({ ...search, page: amountPage });
+      fetchSearchAssetList({ ...search, page: amountPage });
+    }
+  };
+  const handlePageDecrease = () => {
+    // console.log(search.page)
+    if (search.page > 1) {
+      let newPage = search.page - 1;
+      setSearch({ ...search, page: newPage });
+      fetchSearchAssetList({ ...search, page: newPage });
+    } else {
+      // window.alert("You are already on the first page.");
+    }
+  };
+  const handlePageIncrease = () => {
+    // console.log(search.page)
+    // console.log(amountPage)
+    if (search.page < amountPage) {
+      let newPage = search.page + 1;
+      setSearch({ ...search, page: newPage });
+      fetchSearchAssetList({ ...search, page: newPage });
+    } else {
+      // window.alert("You are already on the last page.");
+    }
+  };
 
   const fetchSearchAssetList = async (paginationSearchObj) => {
     try {
+      
       let res = [];
-      // console.log(paginationSearchObj)
+      // console.log(paginationSearchObj);
       if (paginationSearchObj) {
         res = await getBySearch(paginationSearchObj);
       } else {
@@ -56,38 +97,7 @@ const AssetInformationIndex = () => {
         limit: res.data.limit,
         total: res.data.total,
       });
-
-      console.log([
-        ...Array(
-          Math.ceil(
-            search.total < search.limit
-              ? search.total / search?.total
-              : search.limit / search?.total
-          )
-        ).keys(),
-      ]);
-      console.log([
-        ...Array(
-          Math.ceil(
-           search.limit / search?.total
-          )
-        ).keys(),
-      ]);
-      console.log([
-        ...Array(
-          Math.ceil(
-            search.total / search?.total
-              
-          )
-        ).keys(),
-      ]);
-
-      console.log({
-        ...search,
-        page: res.data.page,
-        limit: res.data.limit,
-        total: res.data.total,
-      });
+      setAmountPage(Math.ceil(res.data.total / res.data.limit));
     } catch (err) {
       console.log(err);
     }
@@ -102,25 +112,43 @@ const AssetInformationIndex = () => {
     fetchSearchAssetList({ ...search, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    const fetchAssetList = async () => {
-      try {
-        const res = await getAllAsset();
-        console.log(res.data.asset);
-        setAssetList(res.data.asset);
-        setSearch({
-          ...search,
-          page: res.data.page,
-          limit: res.data.limit,
-          total: res.data.total,
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    };
+ 
 
+  // fetch all data
+  const fetchAssetList = async () => {
+    try {
+      const res = await getAllAsset();
+      console.log(res.data.asset);
+      setAssetList(res.data.asset);
+      setSearch({
+        ...search,
+        page: res.data.page,
+        limit: res.data.limit,
+        total: res.data.total,
+      });
+      setAmountPage(Math.ceil(res.data.total / res.data.limit));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteAsset(id);
+
+      fetchAssetList()
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
     fetchAssetList();
   }, []);
+
+  // useEffect(() => {
+  //   fetchAssetList();
+  // }, [handleDelete]);
 
   return (
     <div className="bg-background-page px-5 pt-10 pb-36">
@@ -146,7 +174,7 @@ const AssetInformationIndex = () => {
           type="button"
           className=" text-white px-4 py-2 rounded  bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
         >
-          + เพิ่มใบเบิกครุภัณฑ์
+          + เพิ่มใบครุภัณฑ์
         </Link>
       </div>
 
@@ -249,7 +277,7 @@ const AssetInformationIndex = () => {
 
       {/* table */}
       <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
-        <div className="w-[1000px] lg:w-full h-[500px] ">
+        <div className="w-[1000px] lg:w-full h-[550px] ">
           <div>
             <div className="flex p-4">
               <div className=" text-sm text-text-gray">ผลการค้นหา </div>
@@ -287,6 +315,7 @@ const AssetInformationIndex = () => {
                 // room={el.room}
                 status={el.status}
                 price={el.pricePerUnit}
+                handleDelete={handleDelete}
               />
             );
           })}
@@ -318,45 +347,33 @@ const AssetInformationIndex = () => {
             </div>
 
             <div>
-              1-{search.total < search.limit ? search.total : search.limit} of{" "}
+              {search.limit*(search.page -1) +1}-{search.limit*(search.page -1) +assetList.length} of
               {search.total}
             </div>
 
             <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-              // onClick={() => {
-              //   deleteRow(index)
-              // }}
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={handleFirstPage}
+            >
+              <CgPushChevronLeft className="text-lg" />
+            </button>
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={handlePageDecrease}
             >
               <HiChevronLeft className="text-lg" />
             </button>
-            {/* {[...Array(Math.ceil(search.limit/search.total)).keys()].map((idx)=> idx+1 )} */}
-            {search?.total > 0 &&
-              [
-                ...Array(
-                  Math.ceil(
-                    search.total / search?.limit
-                  )
-                ).keys(),
-              ]?.map((idx) => (
-                
-                <button
-                  key={idx + 1}
-                  name="page"
-                  value={idx + 1}
-                  className="flex justify-center items-center hover:bg-gray-200 text-black w-8 h-8 px-1 py-1"
-                  onClick={handlePaginationSearch}
-                >
-                  {idx + 1}
-                </button>
-              ))}
             <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-              // onClick={() => {
-              //   deleteRow(index)
-              // }}
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={handlePageIncrease}
             >
               <HiChevronRight className="text-lg" />
+            </button>
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={handleLastPage}
+            >
+              <CgPushChevronRight className="text-lg font-bold" />
             </button>
           </div>
         </div>

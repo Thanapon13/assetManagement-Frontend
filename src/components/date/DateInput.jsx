@@ -5,8 +5,8 @@ import { registerLocale, setDefaultLocale } from "react-datepicker";
 import th from "date-fns/locale/th";
 import { useLocation } from "react-router-dom";
 
-function DateInput({ state, setState, lable,id }) {
-  const location = useLocation()
+function DateInput({ state, setState, lable, id }) {
+  const location = useLocation();
   setDefaultLocale("th", th);
   registerLocale("th", th);
 
@@ -124,9 +124,17 @@ function DateInput({ state, setState, lable,id }) {
         dateFormat="Pp"
         timeIntervals={1}
         className="  w-full h-[38px] shadow-sm focus:border-2 focus:outline-none  focus:border-focus-blue  sm:text-xs border-[1px] border-gray-300 rounded-md pl-2"
-        selected={location.pathname === "/assetInformationIndex"?state[id]:state}
+        selected={
+          location.pathname === "/assetInformationIndex" ||
+          location.pathname === "/packageAssetInformationIndex"
+            ? state[id]
+            : state
+        }
         onChange={(date) => {
-          if (location.pathname === "/assetInformationIndex") {
+          if (
+            location.pathname === "/assetInformationIndex" ||
+            location.pathname === "/packageAssetInformationIndex"
+          ) {
             setState((prevState) => ({ ...prevState, [id]: date }));
           } else {
             setState(date);

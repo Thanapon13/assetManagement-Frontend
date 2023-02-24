@@ -317,7 +317,7 @@ const EditAssetInformation = () => {
   //คู่มือและเอกสารแนบ
   const handleFileChange = (e) => {
     const fileList = e.target.files;
-    console.log(fileList);
+    // console.log(fileList);
     const cloneFile = [...arrayDocument];
     for (let i = 0; i < fileList.length; i++) {
       if (fileTypes.includes(fileList[i].type)) {
@@ -338,7 +338,7 @@ const EditAssetInformation = () => {
         );
       }
     }
-    console.log(cloneFile)
+    // console.log(cloneFile)
     setArrayDocument(cloneFile);
   };
 
@@ -472,6 +472,7 @@ const EditAssetInformation = () => {
         const res = await getAssetById(assetId);
         console.log(res.data.asset);
         const asset = res.data.asset;
+        console.log( asset.allSector)
 
         setImg(asset.imageArray[0].image);
 
@@ -501,6 +502,8 @@ const EditAssetInformation = () => {
           serialNumber: asset.serialNumber,
           replacedAssetNumber: asset.replacedAssetNumber,
         });
+        setInsuranceStartDate(new Date(asset.insuranceStartDate))
+        setInsuranceExpiredDate(new Date(asset.insuranceExpiredDate))
 
         const fetchImages = asset.imageArray;
         const clone = [...arrayImage];
@@ -509,13 +512,13 @@ const EditAssetInformation = () => {
         }
         setArrayImage(clone);
 
-        console.log(asset.documentArray)
+        // console.log(asset.documentArray)
         const fetchDocuments = asset.documentArray;
         const cloneDoc = [...arrayDocument];
         for (let el of fetchDocuments) {
           cloneDoc.push({ document: { name: el.document, _id: el._id } });
         }
-        console.log(cloneDoc);
+        // console.log(cloneDoc);
         
         setArrayDocument(cloneDoc);
 
@@ -596,7 +599,7 @@ const EditAssetInformation = () => {
   }, []);
 
   useEffect(() => {
-    console.log(2);
+    // console.log(2);
     if (arrayImage.length < 1) return;
     const newImageUrls = [];
     arrayImage.forEach((img) => {
@@ -609,10 +612,6 @@ const EditAssetInformation = () => {
     setArrayImageURL(newImageUrls);
   }, [arrayImage]);
 
-  useEffect(() => {
-    // console.log(arrayImageURL);
-    // console.log(depreciationStartDate);
-  }, []);
 
   // data
   return (

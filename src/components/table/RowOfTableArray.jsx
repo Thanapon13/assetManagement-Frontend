@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BsFillEyeFill } from "react-icons/bs";
 import { BsFillPencilFill } from "react-icons/bs";
 import { IoMdTrash } from "react-icons/io";
@@ -10,11 +11,14 @@ function RowOfTableArray({
   assetNumber,
   productName,
   price,
-  // department,
   sector,
-  // building,
   status,
+  handleDelete,
 }) {
+  
+
+ 
+
   return (
     <div
       className={`grid grid-cols-16 gap-5 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
@@ -64,12 +68,18 @@ function RowOfTableArray({
         >
           <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
         </Link>
-        <Link
+        {/* <Link
           to="/viewAssetInformation"
           className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
         >
           <IoMdTrash className="w-[20px] h-[20px] text-text-green" />
-        </Link>
+        </Link> */}
+        <button
+          className="flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 "
+          onClick={()=>handleDelete(_id)}
+        >
+          <IoMdTrash className="text-lg" />
+        </button>
       </div>
     </div>
   );

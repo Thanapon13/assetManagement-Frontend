@@ -1,31 +1,22 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Selector from "../components/selector/Selector";
 import RowOfTableArray from "../components/table/RowOfTableArray";
 import { BsArrowLeft } from "react-icons/bs";
-import { BsFillEyeFill } from "react-icons/bs";
-import { HiChevronLeft } from "react-icons/hi";
-import { HiChevronRight } from "react-icons/hi";
-import { AiOutlineSearch } from "react-icons/ai";
-import { GrDocument } from "react-icons/gr";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import DateInput from "../components/date/DateInput";
-import RowOfTableAssetInformation from "../components/table/RowOfTableAssetInformation";
-import boxIcon from "../public/pics/boxIcon.png";
-import docIcon from "../public/pics/docIcon.png";
 import Modal from "../components/modal/Modal";
 import DeprecationDropdown from "../components/dropdown/DeprecationDropdown";
 import { ToastContainer, toast } from "react-toastify";
-import { createAsset } from "../api/assetApi";
-import BarcodeScanner from "../components/scanner/BarcodeScanner";
-import QRscanner from "../components/scanner/QRscanner";
+import { createAsset, getAssetById } from "../api/assetApi";
 import { useBarcode } from "@createnextapp/react-barcode";
 import ReactToPrint from "react-to-print";
 import QRcode from "qrcode.react";
 import RowOfTableBorrowHistory from "../components/table/RowOfTableBorrowHistory";
 import RowOfTableBuildingHistory from "../components/table/RowOfTableBuildingHistory";
+import OnlyDateInput from "../components/date/onlyDateInput";
 
 const ViewAssetInformation = () => {
+  const { assetId } = useParams();
   const inputImg = useRef();
   const inputDoc = useRef();
   const printRef = useRef();
@@ -41,6 +32,8 @@ const ViewAssetInformation = () => {
   const todayThaiDate = ChangeDateToBuddhist(
     new Date().toLocaleString("th-TH")
   );
+
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
 
   // useState
   const [perPage, setPerPage] = useState(10);
@@ -73,31 +66,18 @@ const ViewAssetInformation = () => {
     serialNumber: "MRV1632HJBC1669",
     sector: "",
     replacedAssetNumber: "",
-    price:"22000",
+    price: "22000",
 
     status: "not approve",
   });
 
   // upload image
-  const [arrayImageURL, setArrayImageURL] = useState([
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
-    "https://imgv3.fotor.com/images/blog-richtext-image/part-blurry-image.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
-    "https://imgv3.fotor.com/images/blog-richtext-image/part-blurry-image.jpg",
-  ]);
+  const [arrayImage, setArrayImage] = useState([]);
+  const [arrayImageURL, setArrayImageURL] = useState([]);
+  const [img, setImg] = useState();
 
   // คู่มือและเอกสารแนบ
-  const [arrayDocument, setArrayDocument] = useState([
-    "คู่มือการใช้งาน_ภาษาไทย.pdf",
-    "user’s manual_eng.pdf",
-    "po_2565/0173612.pdf",
-    "po_2565/0173612.pdf",
-    "po_2565/0173612.pdf",
-    "po_2565/0173612.pdf",
-    "po_2565/0173612.pdf",
-    "po_2565/0173612.pdf",
-  ]);
-
+  const [arrayDocument, setArrayDocument] = useState([]);
 
   // ประวัติการยืม
   const [borrowData, setBorrowData] = useState([
@@ -108,7 +88,7 @@ const ViewAssetInformation = () => {
       borrowDate: "19/11/2565",
       realReturnDate: "19/12/2565",
       offerBorrowApproveDate: "19/12/2565",
-      borrowStatus:"done"
+      borrowStatus: "done",
     },
     {
       borrowIdDoc: "65/0322171",
@@ -117,11 +97,10 @@ const ViewAssetInformation = () => {
       borrowDate: "19/11/2565",
       realReturnDate: "19/12/2565",
       offerBorrowApproveDate: "19/12/2565",
-      borrowStatus:"done"
+      borrowStatus: "done",
     },
   ]);
 
-  
   // ประวัติสถานที่ตั้ง
   const [buildingData, setBuildingData] = useState([
     {
@@ -147,28 +126,25 @@ const ViewAssetInformation = () => {
   // console.log(barcode,"barcode")
 
   // สัญญาจัดซื้อ
-  const [acquisitionMethod, setAcquisitionMethod] = useState(
-    "เสนอราคาฝ่ายจัดซื้อ"
-  );
-  const [moneyType, setMoneyType] = useState("เงินสด");
-  const [deliveryDocument, setDeliveryDocument] =
-    useState("65-390113(2)/10824");
-  const [contractNumber, setContractNumber] = useState("เอกสาร");
-  const [receivedDate, setReceivedDate] = useState("27/12/2565");
-  const [seller, setSeller] = useState("Banana It");
-  const [price, setPrice] = useState("22,000.00");
-  const [billNumber, setBillNumber] = useState("จ.ค 651213082");
-  const [purchaseYear, setPurchaseYear] = useState("27/12/2565");
-  const [purchaseDate, setPurchaseDate] = useState("27/12/2565");
-  const [documentDate, setDocumentDate] = useState("27/12/2565");
+  const [acquisitionMethod, setAcquisitionMethod] = useState("");
+  const [moneyType, setMoneyType] = useState("");
+  const [deliveryDocument, setDeliveryDocument] = useState("");
+  const [contractNumber, setContractNumber] = useState("");
+  const [receivedDate, setReceivedDate] = useState(todayThaiDate);
+  const [seller, setSeller] = useState("");
+  const [price, setPrice] = useState("");
+  const [billNumber, setBillNumber] = useState("");
+  const [purchaseYear, setPurchaseYear] = useState(todayThaiDate);
+  const [purchaseDate, setPurchaseDate] = useState(todayThaiDate);
+  const [documentDate, setDocumentDate] = useState(todayThaiDate);
 
   // การจำหน่าย
   const [salesDocument, setSalesDocument] = useState("");
   const [distributeDocumentDate, setDistributeDocumentDate] =
-    useState("27/12/2565");
+    useState(todayThaiDate);
   const [distributeApprovalReleaseDate, setDistributeApprovalReleaseDate] =
-    useState("27/12/2565");
-  const [distributeStatus, setDistributeStatus] = useState("ใช้งานได้");
+    useState(todayThaiDate);
+  const [distributeStatus, setDistributeStatus] = useState("");
   const [distributionNote, setDistributionNote] = useState("");
 
   //Show Modal
@@ -192,8 +168,8 @@ const ViewAssetInformation = () => {
   const [depreciationPrice, setDepreciationPrice] = useState(0);
   const [depreciationYearUsed, setDepreciationYearUsed] = useState(0);
   const [depreciationCarcassPrice, setDepreciationCarcassPrice] = useState(0);
-  const [depreciationProcess, setDepreciationProcess] = useState(0);
-  const [depreciationPresentMonth, setDepreciationPresentMonth] = useState(0);
+  const [depreciationProcess, setDepreciationProcess] = useState(new Date());
+  const [depreciationPresentMonth, setDepreciationPresentMonth] = useState();
   const [depreciationCumulativePrice, setDepreciationCumulativePrice] =
     useState(0);
   const [depreciationYearPrice, setDepreciationYearPrice] = useState(0);
@@ -220,7 +196,7 @@ const ViewAssetInformation = () => {
     setAccumulateDepreciationCarcassPrice,
   ] = useState(0);
   const [accumulateDepreciationProcess, setAccumulateDepreciationProcess] =
-    useState(0);
+    useState(new Date());
   const [
     accumulateDepreciationPresentMonth,
     setAccumulateDepreciationPresentMonth,
@@ -239,67 +215,9 @@ const ViewAssetInformation = () => {
     useState(0);
 
   //Main Date
-  const [insuranceStartDate, setInsuranceStartDate] = useState("27/12/2565");
+  const [insuranceStartDate, setInsuranceStartDate] = useState(todayThaiDate);
   const [insuranceExpiredDate, setInsuranceExpiredDate] =
-    useState("27/12/2565");
-
-  // handle
-  const handleChangeRealAssetId = (e) => {
-    const clone = { ...input };
-    clone.realAssetId = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeAssetNumber = (e) => {
-    const clone = { ...input };
-    clone.assetNumber = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeEngProductName = (e) => {
-    const clone = { ...input };
-    clone.engProductName = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeProductName = (e) => {
-    const clone = { ...input };
-    clone.productName = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeModel = (e) => {
-    const clone = { ...input };
-    clone.model = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeSize = (e) => {
-    const clone = { ...input };
-    clone.size = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeQuantity = (e) => {
-    const clone = { ...input };
-    clone.quantity = e.target.value;
-    setInput(clone);
-  };
-  const handleChangePricePerUnit = (e) => {
-    const clone = { ...input };
-    clone.pricePerUnit = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeSource = (e) => {
-    const clone = { ...input };
-    clone.source = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeAllSector = (e) => {
-    const clone = { ...input };
-    clone.allSector = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeGuaranteedMonth = (e) => {
-    const clone = { ...input };
-    clone.guaranteedMonth = e.target.value;
-    setInput(clone);
-  };
-
+    useState(todayThaiDate);
 
   const { inputRef } = useBarcode({
     value: barcode,
@@ -307,6 +225,155 @@ const ViewAssetInformation = () => {
       background: "#ffffff",
     },
   });
+
+  useEffect(() => {
+    const fetchAssetById = async () => {
+      try {
+        const res = await getAssetById(assetId);
+        console.log(res.data.asset);
+        const asset = res.data.asset;
+
+        setImg(asset.imageArray[0].image);
+
+        setInput({
+          ...input,
+          engProductName: asset.engProductName,
+          productName: asset.productName,
+          type: asset.type,
+          kind: asset.kind,
+          realAssetId: asset.realAssetId,
+          unit: asset.unit,
+          brand: asset.brand,
+          model: asset.model,
+          size: asset.size,
+          quantity: asset.quantity,
+          source: asset.source,
+          category: asset.category,
+          acquiredType: asset.acquiredType,
+          group: asset.group,
+          pricePerUnit: asset.pricePerUnit,
+          guaranteedMonth: asset.guaranteedMonth,
+          purposeOfUse: asset.purposeOfUse,
+          allSector: asset.allSector,
+          assetNumber: asset.assetNumber,
+          sector: asset.sector,
+          asset01: asset.asset01,
+          serialNumber: asset.serialNumber,
+          replacedAssetNumber: asset.replacedAssetNumber,
+        });
+        setInsuranceStartDate(new Date(asset.insuranceStartDate));
+        setInsuranceExpiredDate(new Date(asset.insuranceExpiredDate));
+
+        setQr(asset.serialNumber);
+        setBarcode(asset.serialNumber);
+
+        const fetchImages = asset.imageArray;
+        const clone = [...arrayImage];
+        for (let el of fetchImages) {
+          clone.push({ image: { name: el.image, _id: el._id } });
+        }
+        setArrayImage(clone);
+
+        console.log(asset.documentArray);
+        const fetchDocuments = asset.documentArray;
+        const cloneDoc = [...arrayDocument];
+        for (let el of fetchDocuments) {
+          cloneDoc.push({ document: { name: el.document, _id: el._id } });
+        }
+        // console.log(cloneDoc);
+
+        setArrayDocument(cloneDoc);
+
+        //Modal ค่าเสื่อมราคา
+        setDepreciationStartDate(new Date(asset.depreciationStartDate));
+        setDepreciationRegisterDate(new Date(asset.depreciationRegisterDate));
+        setDepreciationReceivedDate(new Date(asset.depreciationReceivedDate));
+        setDepreciationPrice(asset.depreciationPrice);
+        setDepreciationYearUsed(asset.depreciationYearUsed);
+        setDepreciationCarcassPrice(asset.depreciationCarcassPrice);
+        setDepreciationProcess(asset.depreciationProcess);
+        setDepreciationPresentMonth(asset.depreciationPresentMonth);
+        setDepreciationCumulativePrice(asset.depreciationCumulativePrice);
+        setDepreciationYearPrice(asset.depreciationYearPrice);
+        setDepreciationRemainPrice(asset.depreciationRemainPrice);
+        setDepreciationBookValue(asset.depreciationBookValue);
+
+        // console.log(new Date(asset.depreciationStartDate));
+        //Modal ค่าเสื่อมราคา(ผลรวมจำนวนปี)
+        setAccumulateDepreciationStartDate(
+          new Date(asset.accumulateDepreciationStartDate)
+        );
+        setAccumulateDepreciationRegisterDate(
+          new Date(asset.accumulateDepreciationRegisterDate)
+        );
+        setAccumulateDepreciationReceivedDate(
+          new Date(asset.accumulateDepreciationReceivedDate)
+        );
+        setAccumulateDepreciationPrice(asset.accumulateDepreciationPrice);
+        setAccumulateDepreciationYearUsed(asset.accumulateDepreciationYearUsed);
+        setAccumulateDepreciationCarcassPrice(
+          asset.accumulateDepreciationCarcassPrice
+        );
+        setAccumulateDepreciationProcess(asset.accumulateDepreciationProcess);
+        setAccumulateDepreciationPresentMonth(
+          asset.accumulateDepreciationPresentMonth
+        );
+        setAccumulateDepreciationCumulativePrice(
+          asset.accumulateDepreciationCumulativePrice
+        );
+        setAccumulateDepreciationYearPrice(
+          asset.accumulateDepreciationYearPrice
+        );
+        setAccumulateDepreciationRemainPrice(
+          asset.accumulateDepreciationRemainPrice
+        );
+        setAccumulateDepreciationBookValue(
+          asset.accumulateDepreciationBookValue
+        );
+
+        // สัญญาจัดซื้อ
+        setAcquisitionMethod(asset.purchaseContract.acquisitionMethod);
+        setMoneyType(asset.purchaseContract.moneyType);
+        setDeliveryDocument(asset.purchaseContract.deliveryDocument);
+        setContractNumber(asset.purchaseContract.contractNumber);
+        setReceivedDate(new Date(asset.purchaseContract.receivedDate));
+        setSeller(asset.purchaseContract.seller);
+        setPrice(asset.purchaseContract.price);
+        setBillNumber(asset.purchaseContract.billNumber);
+        setPurchaseYear(new Date(asset.purchaseContract.purchaseYear));
+        setPurchaseDate(new Date(asset.purchaseContract.purchaseDate));
+        setDocumentDate(new Date(asset.purchaseContract.documentDate));
+        // การจำหน่าย
+        setSalesDocument(asset.distribution.salesDocument);
+        setDistributeStatus(asset.distribution.distributeStatus);
+        setDistributionNote(asset.distribution.distributionNote);
+        setSalesDocument(asset.distribution.salesDocument);
+        setDistributeDocumentDate(
+          new Date(asset.distribution.distributeDocumentDate)
+        );
+        setDistributeApprovalReleaseDate(
+          new Date(asset.distribution.distributeApprovalReleaseDate)
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchAssetById();
+  }, []);
+
+  useEffect(() => {
+    // console.log(2);
+    if (arrayImage.length < 1) return;
+    const newImageUrls = [];
+    arrayImage.forEach((img) => {
+      if (img.image._id) {
+        newImageUrls.push(`http://localhost:4000/images/${img.image.name}`);
+      } else {
+        newImageUrls.push(URL.createObjectURL(img.image));
+      }
+    });
+    setArrayImageURL(newImageUrls);
+  }, [arrayImage]);
 
   // data
   return (
@@ -453,11 +520,17 @@ const ViewAssetInformation = () => {
             <div>{input?.source !== "" ? input?.source : "-"}</div>
             {/* วันที่เริ่มรับประกัน */}
             <div className="text-gray-500">วันที่เริ่มรับประกัน</div>
-            <div>{insuranceStartDate !== "" ? insuranceStartDate : "-"}</div>
+            <div>
+              {insuranceStartDate !== ""
+                ? insuranceStartDate.toLocaleDateString("en-GB", options)
+                : "-"}
+            </div>
             {/* วันที่สิ้นสุดการรับประกัน */}
             <div className="text-gray-500">วันที่สิ้นสุดการรับประกัน</div>
             <div>
-              {insuranceExpiredDate !== "" ? insuranceExpiredDate : "-"}
+              {insuranceExpiredDate !== ""
+                ? insuranceExpiredDate.toLocaleDateString("en-GB", options)
+                : "-"}
             </div>
             {/* ระยะเวลารับประกัน(เดือน) */}
             <div className="text-gray-500">ระยะเวลารับประกัน(เดือน)</div>
@@ -490,8 +563,13 @@ const ViewAssetInformation = () => {
               <div className="overflow-y-auto scrollbar ">
                 <div className="h-[550px]">
                   <div className=" px-5 pt-5  pb-10">
-                    {arrayImageURL.map((el, idx) => (
-                      <img src={el} className="w-[640px] mb-5" />
+                    {arrayImageURL?.map((el, idx) => (
+                      <img
+                      key={idx}
+                        crossOrigin="true"
+                        src={el}
+                        className="w-[640px] mb-5"
+                      />
                     ))}
                   </div>
                 </div>
@@ -504,7 +582,7 @@ const ViewAssetInformation = () => {
                 <div className=" font-semibold text-center mb-3">
                   คู่มือและเอกสารแนบ
                 </div>
-                {arrayDocument.map((el, idx) => (
+                {arrayDocument?.map((el, idx) => (
                   <div
                     key={idx}
                     className="flex justify-between items-center mb-2 text-gray-400"
@@ -541,7 +619,7 @@ const ViewAssetInformation = () => {
                         </defs>
                       </svg>
 
-                      <div className="ml-2 text-sm">{el}</div>
+                      <div className="ml-2 text-sm">{el.document.name}</div>
                     </div>
                   </div>
                 ))}
@@ -556,7 +634,6 @@ const ViewAssetInformation = () => {
                   setAccumulateDepreciationShowModal={
                     setAccumulateDepreciationShowModal
                   }
-                  
                 />
               </div>
             </div>
@@ -587,19 +664,35 @@ const ViewAssetInformation = () => {
             <div>{billNumber !== "" ? billNumber : "-"}</div>
             {/* วันที่ซื้อ */}
             <div className="text-gray-500">วันที่ซื้อ</div>
-            <div>{purchaseDate !== "" ? purchaseDate : "-"}</div>
+            <div>
+              {purchaseDate !== ""
+                ? purchaseDate.toLocaleDateString("en-GB", options)
+                : "-"}
+            </div>
             {/* วันที่รับมอบ */}
             <div className="text-gray-500">วันที่รับมอบ</div>
-            <div>{receivedDate !== "" ? receivedDate : "-"}</div>
+            <div>
+              {receivedDate !== ""
+                ? receivedDate.toLocaleDateString("en-GB", options)
+                : "-"}
+            </div>
             {/* ราคาซื้อ (บาท) */}
             <div className="text-gray-500">ราคาซื้อ (บาท)</div>
             <div>{price !== "" ? price : "-"}</div>
             {/* ปีงบประมาณที่ซื้อ */}
             <div className="text-gray-500">ปีงบประมาณที่ซื้อ</div>
-            <div>{purchaseYear !== "" ? purchaseYear : "-"}</div>
+            <div>
+              {purchaseYear !== ""
+                ? purchaseYear.toLocaleDateString("en-GB", options)
+                : "-"}
+            </div>
             {/* วันที่ลงเอกสาร */}
             <div className="text-gray-500">วันที่ลงเอกสาร</div>
-            <div>{documentDate !== "" ? documentDate : "-"}</div>
+            <div>
+              {documentDate !== ""
+                ? documentDate.toLocaleDateString("en-GB", options)
+                : "-"}
+            </div>
           </div>
         </div>
 
@@ -613,13 +706,18 @@ const ViewAssetInformation = () => {
             {/* เอกสารลงวันที่ */}
             <div className="text-gray-500">เอกสารลงวันที่</div>
             <div>
-              {distributeDocumentDate !== "" ? distributeDocumentDate : "-"}
+              {distributeDocumentDate !== ""
+                ? distributeDocumentDate.toLocaleDateString("en-GB", options)
+                : "-"}
             </div>
             {/* วันอนุมัติจำหน่าย */}
             <div className="text-gray-500">วันอนุมัติจำหน่าย</div>
             <div>
               {distributeApprovalReleaseDate !== ""
-                ? distributeApprovalReleaseDate
+                ? distributeApprovalReleaseDate.toLocaleDateString(
+                    "en-GB",
+                    options
+                  )
                 : "-"}
             </div>
             {/* สถานะ */}
@@ -633,8 +731,8 @@ const ViewAssetInformation = () => {
 
         {/* ประวัติการยืม */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-        <div className=" my-3 p-3">
-        <div className="font-semibold mb-3">ประวัติการยืม</div>
+          <div className=" my-3 p-3">
+            <div className="font-semibold mb-3">ประวัติการยืม</div>
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
               <div className="w-[1000px] xl:w-full h-[400px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
@@ -660,10 +758,12 @@ const ViewAssetInformation = () => {
                       agencyName={borrowData[idx]?.agencyName}
                       borrowDate={borrowData[idx]?.borrowDate}
                       realReturnDate={borrowData[idx]?.realReturnDate}
-                      offerBorrowApproveDate={borrowData[idx]?.offerBorrowApproveDate}
+                      offerBorrowApproveDate={
+                        borrowData[idx]?.offerBorrowApproveDate
+                      }
                       borrowStatus={borrowData[idx]?.borrowStatus}
                     />
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -672,8 +772,8 @@ const ViewAssetInformation = () => {
 
         {/* ประวัติสถานที่ตั้ง */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-        <div className=" my-3 p-3">
-        <div className="font-semibold mb-3">ประวัติสถานที่ตั้ง</div>
+          <div className=" my-3 p-3">
+            <div className="font-semibold mb-3">ประวัติสถานที่ตั้ง</div>
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
               <div className="w-[1000px] xl:w-full h-[400px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
@@ -697,7 +797,7 @@ const ViewAssetInformation = () => {
                       moveInDate={buildingData[idx]?.moveInDate}
                       moveOutDate={buildingData[idx]?.moveOutDate}
                     />
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -768,49 +868,32 @@ const ViewAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationStartDate"
-                        id="depreciationStartDate"
-                        onChange={(e) =>
-                          setDepreciationStartDate(e.target.value)
-                        }
-                        value={depreciationStartDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                      <div className="flex h-[38px]">
+                        <OnlyDateInput
+                          state={depreciationStartDate}
+                          setState={setDepreciationStartDate}
+                          disabled={true}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationRegisterDate"
-                        id="depreciationRegisterDate"
-                        onChange={(e) =>
-                          setDepreciationRegisterDate(e.target.value)
-                        }
-                        value={depreciationRegisterDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
+                      <OnlyDateInput
+                        state={depreciationRegisterDate}
+                        setState={setDepreciationRegisterDate}
+                        disabled={true}
                       />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationReceivedDate"
-                        id="depreciationReceivedDate"
-                        onChange={(e) => {
-                          setDepreciationReceivedDate(e.target.value);
-                          monthDiff(e.target.value);
-                        }}
-                        value={depreciationReceivedDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
+                      <OnlyDateInput
+                        state={depreciationReceivedDate}
+                        setState={setDepreciationReceivedDate}
+                        disabled={true}
                       />
                     </div>
                   </div>
@@ -999,14 +1082,10 @@ const ViewAssetInformation = () => {
                       เดือน/ปี ที่ทำการประมวลผล
                     </div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="เดือน/ปี ที่ทำการประมวลผล"
-                        id="เดือน/ปี ที่ทำการประมวลผล"
-                        disabled="true"
-                        onChange={(e) => setDepreciationProcess(e.target.value)}
-                        value={depreciationProcess}
-                        className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
+                      <OnlyDateInput
+                        disabled={true}
+                        state={depreciationProcess}
+                        setState={setDepreciationProcess}
                       />
                     </div>
                   </div>
@@ -1092,49 +1171,30 @@ const ViewAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationStartDate"
-                        id="accumulateDepreciationStartDate"
-                        onChange={(e) =>
-                          setAccumulateDepreciationStartDate(e.target.value)
-                        }
-                        value={accumulateDepreciationStartDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
+                      <OnlyDateInput
+                        state={accumulateDepreciationStartDate}
+                        setState={setAccumulateDepreciationStartDate}
+                        disabled={true}
                       />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationRegisterDate"
-                        id="accumulateDepreciationRegisterDate"
-                        onChange={(e) =>
-                          setAccumulateDepreciationRegisterDate(e.target.value)
-                        }
-                        value={accumulateDepreciationRegisterDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
+                      <OnlyDateInput
+                        state={accumulateDepreciationRegisterDate}
+                        setState={setAccumulateDepreciationRegisterDate}
+                        disabled={true}
                       />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationReceivedDate"
-                        id="accumulateDepreciationReceivedDate"
-                        onChange={(e) => {
-                          setAccumulateDepreciationReceivedDate(e.target.value);
-                          accMonthDiff(e.target.value);
-                        }}
-                        value={accumulateDepreciationReceivedDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
+                      <OnlyDateInput
+                        state={accumulateDepreciationReceivedDate}
+                        setState={setAccumulateDepreciationReceivedDate}
+                        disabled={true}
                       />
                     </div>
                   </div>
@@ -1325,14 +1385,10 @@ const ViewAssetInformation = () => {
                       เดือน/ปี ที่ทำการประมวลผล
                     </div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="เดือน/ปี ที่ทำการประมวลผล"
-                        id="เดือน/ปี ที่ทำการประมวลผล"
-                        disabled="true"
-                        // onChange={(e) => setDepreciationProcess(e.target.value)}
-                        value={accumulateDepreciationProcess}
-                        className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
+                      <OnlyDateInput
+                        disabled={true}
+                        state={accumulateDepreciationProcess}
+                        setState={setAccumulateDepreciationProcess}
                       />
                     </div>
                   </div>
@@ -1353,14 +1409,13 @@ const ViewAssetInformation = () => {
         >
           <div className=" px-10 pt-2 pb-10">
             {arrayImageURL.map((el, idx) => (
-              <img src={el} className="w-[640px] mb-5" />
+              <img crossorigin="true" src={el} className="w-[640px] mb-5" />
             ))}
           </div>
         </Modal>
 
         <ToastContainer />
       </div>
-
     </>
   );
 };

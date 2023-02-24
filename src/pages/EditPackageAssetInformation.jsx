@@ -1,24 +1,24 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Selector from "../components/selector/Selector";
-import RowOfTableArray from "../components/table/RowOfTableArray";
 import { BsArrowLeft } from "react-icons/bs";
 import { BsFillEyeFill } from "react-icons/bs";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
-import RowOfTableAssetInformation from "../components/table/RowOfTableAssetInformation";
 import boxIcon from "../public/pics/boxIcon.png";
 import docIcon from "../public/pics/docIcon.png";
 import Modal from "../components/modal/Modal";
 import DeprecationDropdown from "../components/dropdown/DeprecationDropdown";
 import { ToastContainer, toast } from "react-toastify";
-import { createAsset } from "../api/assetApi";
 import BarcodeScanner from "../components/scanner/BarcodeScanner";
 import QRscanner from "../components/scanner/QRscanner";
 import { useEffect } from "react";
 import RowOfTableViewSubcomponentPackageAssetInformation from "../components/table/RowOfTableViewSubcomponentPackageAssetInformation";
+import { getPackageAssetById, updatePackageAsset } from "../api/packageAssetApi";
+import OnlyDateInput from "../components/date/onlyDateInput";
 
 const EditPackageAssetInformation = () => {
+  const { packageAssetId } = useParams();
   const inputImg = useRef();
   const inputDoc = useRef();
 
@@ -68,29 +68,7 @@ const EditPackageAssetInformation = () => {
   });
 
   // subcomponent
-  const [bottomSubComponentData, setBottomSubComponentData] = useState([
-    {
-      assetNumber: "6300-0127-305/001 (01)",
-      productName: "โต๊ะรับแขกอเนกประสงค์",
-      serialNumber: "HDO12PIAZN13",
-      price: "1000",
-      asset01: "66071032",
-    },
-    {
-      assetNumber: "6300-0127-305/001 (02)",
-      productName: "เก้าอี้รับแขกสุขภาพประหยัด",
-      serialNumber: "ABO12PIAZN13",
-      price: "1000",
-      asset01: "66071032",
-    },
-    {
-      assetNumber: "6300-0127-305/001 (03)",
-      productName: "โต๊ะรับแขกอเนกประสงค์",
-      serialNumber: "CDO12PIAZN13",
-      price: "1000",
-      asset01: "66071032",
-    },
-  ]);
+  const [bottomSubComponentData, setBottomSubComponentData] = useState([]);
 
   // upload image
   const [arrayImage, setArrayImage] = useState([]);
@@ -254,6 +232,8 @@ const EditPackageAssetInformation = () => {
     setInput(clone);
   };
 
+  const [img, setImg] = useState();
+
   //upload image
   // validate size 2mb = 2,000,000 byte
   const handleImageChange = (e) => {
@@ -346,18 +326,36 @@ const EditPackageAssetInformation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const inputJSON = JSON.stringify(input);
-    const genDataJSON = JSON.stringify(genData);
+    // const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
     formData.append("input", inputJSON);
     formData.append("insuranceStartDate", insuranceStartDate);
     formData.append("insuranceExpiredDate", insuranceExpiredDate);
-    arrayImage.forEach((file) => {
-      formData.append("arrayImage", file.image);
-    });
-    arrayDocument.forEach((file) => {
-      formData.append("arrayDocument", file.document);
-    });
-    formData.append("genDataJSON", genDataJSON);
+
+   // image file
+   const existArrayImage = [];
+   arrayImage.forEach((el) => {
+     if (el.image._id) {
+       existArrayImage.push(el.image);
+     } else {
+       formData.append("arrayImage", el.image);
+     }
+   });
+   console.log("existArrayImage",existArrayImage)
+   formData.append("existArrayImage", JSON.stringify(existArrayImage));
+
+   // document file
+   const existArrayDocument = [];
+   arrayDocument.forEach((el) => {
+     if (el.document._id) {
+       existArrayDocument.push(el.document);
+     } else {
+       formData.append("arrayDocument", el.document);
+     }
+   });
+   formData.append("existArrayDocument", JSON.stringify(existArrayDocument));
+
+    // formData.append("genDataJSON", genDataJSON);
     formData.append("depreciationStartDate", depreciationStartDate);
     formData.append("depreciationRegisterDate", depreciationRegisterDate);
     formData.append("depreciationReceivedDate", depreciationReceivedDate);
@@ -418,14 +416,6 @@ const EditPackageAssetInformation = () => {
       accumulateDepreciationBookValue
     );
 
-    //ข้อมูลผู้รับผิดชอบ
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("phoneNumber", phoneNumber);
-    formData.append("responsibleSector", responsibleSector);
-    formData.append("building", building);
-    formData.append("floor", floor);
-    formData.append("room", room);
 
     //สัญญาจัดซื้อ
     formData.append("acquisitionMethod", acquisitionMethod);
@@ -450,17 +440,169 @@ const EditPackageAssetInformation = () => {
     formData.append("distributeStatus", distributeStatus);
     formData.append("distributionNote", distributionNote);
 
-    await createAsset(formData);
+    //for subComponent
+    const bottomSubComponentDataJSON = JSON.stringify(bottomSubComponentData);
+    formData.append("bottomSubComponentDataJSON", bottomSubComponentDataJSON);
+
+    await updatePackageAsset(formData,packageAssetId);
   };
 
   useEffect(() => {
+    const fetchPackageAssetById = async () => {
+      try {
+        const res = await getPackageAssetById(packageAssetId);
+        console.log(res.data.packageAsset[0]);
+        const packageAsset = res.data.packageAsset[0];
+
+        setImg(packageAsset.imageArray[0].image);
+
+        setInput({
+          ...input,
+          engProductName: packageAsset.engProductName,
+          productName: packageAsset.productName,
+          type: packageAsset.type,
+          kind: packageAsset.kind,
+          realAssetId: packageAsset.realAssetId,
+          unit: packageAsset.unit,
+          brand: packageAsset.brand,
+          model: packageAsset.model,
+          size: packageAsset.size,
+          quantity: packageAsset.quantity,
+          source: packageAsset.source,
+          category: packageAsset.category,
+          acquiredType: packageAsset.acquiredType,
+          group: packageAsset.group,
+          pricePerUnit: packageAsset.pricePerUnit,
+          guaranteedMonth: packageAsset.guaranteedMonth,
+          purposeOfUse: packageAsset.purposeOfUse,
+          allSector: packageAsset.allSector,
+          assetNumber: packageAsset.assetNumber,
+          sector: packageAsset.sector,
+          asset01: packageAsset.asset01,
+          serialNumber: packageAsset.serialNumber,
+          replacedAssetNumber: packageAsset.replacedAssetNumber,
+        });
+        setInsuranceStartDate(new Date(packageAsset.insuranceStartDate));
+        setInsuranceExpiredDate(new Date(packageAsset.insuranceExpiredDate));
+
+        setBottomSubComponentData(packageAsset.asset)
+
+        const fetchImages = packageAsset.imageArray;
+        const clone = [...arrayImage];
+        for (let el of fetchImages) {
+          clone.push({ image: { name: el.image, _id: el._id } });
+        }
+        setArrayImage(clone);
+
+        // console.log(packageAsset.documentArray)
+        const fetchDocuments = packageAsset.documentArray;
+        const cloneDoc = [...arrayDocument];
+        for (let el of fetchDocuments) {
+          cloneDoc.push({ document: { name: el.document, _id: el._id } });
+        }
+        // console.log(cloneDoc);
+
+        setArrayDocument(cloneDoc);
+
+        //Modal ค่าเสื่อมราคา
+        setDepreciationStartDate(new Date(packageAsset.depreciationStartDate));
+        setDepreciationRegisterDate(
+          new Date(packageAsset.depreciationRegisterDate)
+        );
+        setDepreciationReceivedDate(
+          new Date(packageAsset.depreciationReceivedDate)
+        );
+        setDepreciationPrice(packageAsset.depreciationPrice);
+        setDepreciationYearUsed(packageAsset.depreciationYearUsed);
+        setDepreciationCarcassPrice(packageAsset.depreciationCarcassPrice);
+        setDepreciationProcess(packageAsset.depreciationProcess);
+        setDepreciationPresentMonth(packageAsset.depreciationPresentMonth);
+        setDepreciationCumulativePrice(
+          packageAsset.depreciationCumulativePrice
+        );
+        setDepreciationYearPrice(packageAsset.depreciationYearPrice);
+        setDepreciationRemainPrice(packageAsset.depreciationRemainPrice);
+        setDepreciationBookValue(packageAsset.depreciationBookValue);
+
+        //Modal ค่าเสื่อมราคา(ผลรวมจำนวนปี)
+        setAccumulateDepreciationStartDate(
+          new Date(packageAsset.accumulateDepreciationStartDate)
+        );
+        setAccumulateDepreciationRegisterDate(
+          new Date(packageAsset.accumulateDepreciationRegisterDate)
+        );
+        setAccumulateDepreciationReceivedDate(
+          new Date(packageAsset.accumulateDepreciationReceivedDate)
+        );
+        setAccumulateDepreciationPrice(
+          packageAsset.accumulateDepreciationPrice
+        );
+        setAccumulateDepreciationYearUsed(
+          packageAsset.accumulateDepreciationYearUsed
+        );
+        setAccumulateDepreciationCarcassPrice(
+          packageAsset.accumulateDepreciationCarcassPrice
+        );
+        setAccumulateDepreciationProcess(
+          packageAsset.accumulateDepreciationProcess
+        );
+        setAccumulateDepreciationPresentMonth(
+          packageAsset.accumulateDepreciationPresentMonth
+        );
+        setAccumulateDepreciationCumulativePrice(
+          packageAsset.accumulateDepreciationCumulativePrice
+        );
+        setAccumulateDepreciationYearPrice(
+          packageAsset.accumulateDepreciationYearPrice
+        );
+        setAccumulateDepreciationRemainPrice(
+          packageAsset.accumulateDepreciationRemainPrice
+        );
+        setAccumulateDepreciationBookValue(
+          packageAsset.accumulateDepreciationBookValue
+        );
+
+        // สัญญาจัดซื้อ
+        setAcquisitionMethod(packageAsset.purchaseContract.acquisitionMethod);
+        setMoneyType(packageAsset.purchaseContract.moneyType);
+        setDeliveryDocument(packageAsset.purchaseContract.deliveryDocument);
+        setContractNumber(packageAsset.purchaseContract.contractNumber);
+        setReceivedDate(new Date(packageAsset.purchaseContract.receivedDate));
+        setSeller(packageAsset.purchaseContract.seller);
+        setPrice(packageAsset.purchaseContract.price);
+        setBillNumber(packageAsset.purchaseContract.billNumber);
+        setPurchaseYear(new Date(packageAsset.purchaseContract.purchaseYear));
+        setPurchaseDate(new Date(packageAsset.purchaseContract.purchaseDate));
+        setDocumentDate(new Date(packageAsset.purchaseContract.documentDate));
+        // การจำหน่าย
+        setSalesDocument(packageAsset.distribution.salesDocument);
+        setDistributeStatus(packageAsset.distribution.distributeStatus);
+        setDistributionNote(packageAsset.distribution.distributionNote);
+        setSalesDocument(packageAsset.distribution.salesDocument);
+        setDistributeDocumentDate(
+          new Date(packageAsset.distribution.distributeDocumentDate)
+        );
+        setDistributeApprovalReleaseDate(
+          new Date(packageAsset.distribution.distributeApprovalReleaseDate)
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchPackageAssetById();
+  }, []);
+
+  useEffect(() => {
+    // console.log(2);
     if (arrayImage.length < 1) return;
     const newImageUrls = [];
-    // console.log(arrayImage);
-    arrayImage.forEach(
-      (img) => newImageUrls.push(URL.createObjectURL(img.image))
-      // console.log(img)
-    );
+    arrayImage.forEach((img) => {
+      if (img.image._id) {
+        newImageUrls.push(`http://localhost:4000/images/${img.image.name}`);
+      } else {
+        newImageUrls.push(URL.createObjectURL(img.image));
+      }
+    });
     setArrayImageURL(newImageUrls);
   }, [arrayImage]);
 
@@ -790,6 +932,18 @@ const EditPackageAssetInformation = () => {
               </div>
             </div>
 
+            {/* เลขครุภัณฑ์ */}
+            <div>
+              <div className="mb-1">เลขครุภัณฑ์</div>
+              <input
+                type="text"
+                name="assetNumber"
+                id="assetNumber"
+                disabled
+                value={input.assetNumber}
+                className="w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              />
+            </div>
             {/* รหัสกลุ่มครุภัณฑ์ */}
             <div>
               <div className="mb-1">รหัสกลุ่มครุภัณฑ์</div>
@@ -1227,50 +1381,28 @@ const EditPackageAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationStartDate"
-                        id="depreciationStartDate"
-                        onChange={(e) =>
-                          setDepreciationStartDate(e.target.value)
-                        }
-                        value={depreciationStartDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={depreciationStartDate}
+                          setState={setDepreciationStartDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationRegisterDate"
-                        id="depreciationRegisterDate"
-                        onChange={(e) =>
-                          setDepreciationRegisterDate(e.target.value)
-                        }
-                        value={depreciationRegisterDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={depreciationRegisterDate}
+                          setState={setDepreciationRegisterDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="depreciationReceivedDate"
-                        id="depreciationReceivedDate"
-                        onChange={(e) => {
-                          setDepreciationReceivedDate(e.target.value);
-                          monthDiff(e.target.value);
-                        }}
-                        value={depreciationReceivedDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={depreciationReceivedDate}
+                          setState={setDepreciationReceivedDate}
+                        />
                     </div>
                   </div>
                 </div>
@@ -1551,50 +1683,28 @@ const EditPackageAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationStartDate"
-                        id="accumulateDepreciationStartDate"
-                        onChange={(e) =>
-                          setAccumulateDepreciationStartDate(e.target.value)
-                        }
-                        value={accumulateDepreciationStartDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={accumulateDepreciationStartDate}
+                          setState={setAccumulateDepreciationStartDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationRegisterDate"
-                        id="accumulateDepreciationRegisterDate"
-                        onChange={(e) =>
-                          setAccumulateDepreciationRegisterDate(e.target.value)
-                        }
-                        value={accumulateDepreciationRegisterDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={accumulateDepreciationRegisterDate}
+                          setState={setAccumulateDepreciationRegisterDate}
+                        />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                      <input
-                        type="date"
-                        name="accumulateDepreciationReceivedDate"
-                        id="accumulateDepreciationReceivedDate"
-                        onChange={(e) => {
-                          setAccumulateDepreciationReceivedDate(e.target.value);
-                          accMonthDiff(e.target.value);
-                        }}
-                        value={accumulateDepreciationReceivedDate}
-                        // autoComplete="given-name"
-                        className=" block w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
-                      />
+                    <OnlyDateInput
+                          state={accumulateDepreciationReceivedDate}
+                          setState={setAccumulateDepreciationReceivedDate}
+                        />
                     </div>
                   </div>
                 </div>
@@ -1858,7 +1968,7 @@ const EditPackageAssetInformation = () => {
         >
           <div className=" px-10 pt-2 pb-10">
             {arrayImageURL.map((el, idx) => (
-              <img src={el} className="w-[640px] mb-5" />
+              <img crossorigin="true" src={el} className="w-[640px] mb-5" />
             ))}
           </div>
         </Modal>

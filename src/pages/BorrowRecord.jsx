@@ -1,136 +1,141 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import TableBorrowRecord from '../components/table/TableBorrowRecord'
-import Selector from '../components/selector/Selector'
-import TableLocationHistory from '../components/table/TableLocationHistory'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import TableBorrowRecord from "../components/table/TableBorrowRecord";
+import Selector from "../components/selector/Selector";
+import TableLocationHistory from "../components/table/TableLocationHistory";
+import OnlyDateInput from "../components/date/onlyDateInput";
 
 const BorrowRecord = () => {
-  const [countRow, setCountRow] = useState(1)
+  const [countRow, setCountRow] = useState(1);
 
   const [input, setInput] = useState({
-    ID: '',
-    billNumber: '',
-    documentRegistration: '',
-    sector: '',
-    eligiblePerson: '',
-    selfSector: '',
+    // ข้อมูลการยืม
+    borrowIdDoc: "",
     allPrice: 0,
-    firstName_recorder: '',
-    lastName_recorder: '',
-    dateTime_recorder: '',
-    firstName_courier: '',
-    lastName_courier: '',
-    dateTime_courier: '',
-    firstName_approver: '',
-    lastName_approver: '',
-    dateTime_approver: '',
-    status: 'not approve',
-  })
-  const [countIndexArray, setCountIndexArray] = useState([0])
+    borrowDate: new Date(),
+    borrowSetReturnDate: "",
+    // รายละเอียดผู้ยืม
+    sector: "",
+    selfSector: "",
+    // สถานที่ตั้งใหม่
+    firstName_recorder: "",
+    lastName_recorder: "",
+    dateTime_recorder: "",
+    firstName_courier: "",
+    lastName_courier: "",
+    dateTime_courier: "",
+    firstName_approver: "",
+    lastName_approver: "",
+    dateTime_approver: "",
+    status: "not approve",
+  });
+  console.log(input.borrowDate)
+
+  const [countIndexArray, setCountIndexArray] = useState([0]);
 
   const [saveAssetWithdrawTableArray, setSaveAssetWithdrawTableArray] =
     useState([
       {
         index: 0,
-        inventoryNumber: '',
-        productName: '',
-        brand: '',
-        serialNumber: '',
-        supplier: '',
-        amount: '',
-        price: '',
+        inventoryNumber: "",
+        productName: "",
+        brand: "",
+        serialNumber: "",
+        supplier: "",
+        amount: "",
+        price: "",
       },
-    ])
+    ]);
 
   const tableData = [
     {
-      ID: '1',
-      building: 'อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ',
-      floor: '12',
-      room: 'ห้องรับห้องพิเศษ',
-      moveInDate: '19/04/2565',
-      moveOutDate: '22/12/2565',
+      ID: "1",
+      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
+      floor: "12",
+      room: "ห้องรับห้องพิเศษ",
+      moveInDate: "19/04/2565",
+      moveOutDate: "22/12/2565",
     },
     {
-      ID: '2',
-      building: 'อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ',
-      floor: '12',
-      room: 'ห้องรับห้องพิเศษ',
-      moveInDate: '19/04/2565',
-      moveOutDate: '22/12/2565',
+      ID: "2",
+      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
+      floor: "12",
+      room: "ห้องรับห้องพิเศษ",
+      moveInDate: "19/04/2565",
+      moveOutDate: "22/12/2565",
     },
     {
-      ID: '3',
-      building: 'อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ',
-      floor: '12',
-      room: 'ห้องรับห้องพิเศษ',
-      moveInDate: '19/04/2565',
-      moveOutDate: '22/12/2565',
+      ID: "3",
+      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
+      floor: "12",
+      room: "ห้องรับห้องพิเศษ",
+      moveInDate: "19/04/2565",
+      moveOutDate: "22/12/2565",
     },
-  ]
+  ];
 
   // handle
   const handleChangeID = (e) => {
-    const clone = { ...input }
-    clone.ID = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.ID = e.target.value;
+    setInput(clone);
+  };
   const handleChangeBillNumber = (e) => {
-    const clone = { ...input }
-    clone.billNumber = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.billNumber = e.target.value;
+    setInput(clone);
+  };
   const handleChangeDocumentRegistration = (e) => {
-    const clone = { ...input }
-    clone.documentRegistration = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.documentRegistration = e.target.value;
+    setInput(clone);
+  };
   const handleChangeSector = (e) => {
-    const clone = { ...input }
-    clone.sector = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.sector = e.target.value;
+    setInput(clone);
+  };
   const handleChangeEligiblePerson = (e) => {
-    const clone = { ...input }
-    clone.eligiblePerson = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.eligiblePerson = e.target.value;
+    setInput(clone);
+  };
 
   const handleChangeAllPrice = (e) => {
-    const clone = { ...input }
-    clone.allPrice = e.target.value
-    setInput(clone)
-  }
+    const clone = { ...input };
+    clone.allPrice = e.target.value;
+    setInput(clone);
+  };
 
   //handle bottom table
   const handleClickIncrease = (e) => {
-    e.preventDefault()
-    setCountRow(countRow + 1)
-    setCountIndexArray([...countIndexArray, countRow])
+    e.preventDefault();
+    setCountRow(countRow + 1);
+    setCountIndexArray([...countIndexArray, countRow]);
 
-    let clone = [...saveAssetWithdrawTableArray]
+    let clone = [...saveAssetWithdrawTableArray];
     const newCloneArray = {
       index: countRow,
-      inventoryNumber: '',
-      productName: '',
-      brand: '',
-      serialNumber: '',
-      supplier: '',
-      amount: '',
-      price: '',
-    }
-    setSaveAssetWithdrawTableArray([...clone, newCloneArray])
-  }
+      inventoryNumber: "",
+      productName: "",
+      brand: "",
+      serialNumber: "",
+      supplier: "",
+      amount: "",
+      price: "",
+    };
+    setSaveAssetWithdrawTableArray([...clone, newCloneArray]);
+  };
 
   const deleteRow = (index) => {
     if (countRow > 0) {
-      setCountRow(countRow - 1)
+      setCountRow(countRow - 1);
     }
 
-    let clone = [...saveAssetWithdrawTableArray]
-    clone.splice(index, 1)
-    setSaveAssetWithdrawTableArray(clone)
-  }
+    let clone = [...saveAssetWithdrawTableArray];
+    clone.splice(index, 1);
+    setSaveAssetWithdrawTableArray(clone);
+  };
 
   return (
     <>
@@ -182,19 +187,19 @@ const BorrowRecord = () => {
           <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className=" text-text-gray">วันที่ยืม</label>
-              <input
-                type="date"
-                placeholder="Example"
-                readOnly
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              <OnlyDateInput
+                id={"borrowDate"}
+                state={input}
+                setState={setInput}
+                disabled={true}
               />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className="text-text-gray">กำหนดส่งคืน</label>
-              <input
-                type="date"
-                placeholder="Example"
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              <OnlyDateInput
+                id={"borrowSetReturnDate"}
+                state={input}
+                setState={setInput}
               />
             </div>
           </div>
@@ -229,7 +234,7 @@ const BorrowRecord = () => {
                     }
                     deleteRow={deleteRow}
                   />
-                )
+                );
               })}
               <button
                 type="button"
@@ -255,18 +260,18 @@ const BorrowRecord = () => {
                   <h1 className="text-red-500 ml-2 font-bold">*</h1>
                 </label>
               </div>
-              <Selector placeholder={'Select'} />
+              <Selector placeholder={"Select"} />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className="text-text-gray">ภาควิชา</label>
-              <Selector placeholder={'Select'} />
+              <Selector placeholder={"Select"} />
             </div>
           </div>
           {/* Row 2 วัตถุประสงค์การขอยืม */}
           <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className=" text-text-gray">วัตถุประสงค์การขอยืม</label>
-              <Selector placeholder={'Select'} />
+              <Selector placeholder={"Select"} />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className=" text-text-gray">ผู้ดำเนินการ</label>
@@ -288,7 +293,7 @@ const BorrowRecord = () => {
                 อาคาร
                 <h1 className="text-red-500 ml-2 font-bold">*</h1>
               </label>
-              <Selector placeholder={'Select'} />
+              <Selector placeholder={"Select"} />
             </div>
             <div className="flex flex-col gap-y-2 col-span-1">
               <label className="text-text-gray">ชั้น</label>
@@ -345,7 +350,7 @@ const BorrowRecord = () => {
         </button>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default BorrowRecord
+export default BorrowRecord;

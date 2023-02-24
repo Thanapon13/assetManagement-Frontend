@@ -38,10 +38,13 @@ export function getBySearch(search) {
     return params;
   }
 
-
   const queryString = getQueryString(search);
 
-  console.log(queryString)
+  // console.log(queryString)
 
   return axios.get(`/asset/search?${queryString}`);
+}
+
+export function deleteAsset(input) {
+  return axios.delete(`/asset/deleteAsset/${input}`);
 }

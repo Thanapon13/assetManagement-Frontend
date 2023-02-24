@@ -120,11 +120,11 @@ const Router = () => {
           element={<PackageAssetInformation />}
         />
         <Route
-          path="viewPackageAssetInformation"
+          path="viewPackageAssetInformation/:packageAssetId"
           element={<ViewPackageAssetInformation />}
         />
         <Route
-          path="editPackageAssetInformation"
+          path="editPackageAssetInformation/:packageAssetId"
           element={<EditPackageAssetInformation />}
         />
         <Route path="assetWithdraw" element={<AssetWithdraw />} />

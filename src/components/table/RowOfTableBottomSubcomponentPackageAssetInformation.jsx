@@ -45,9 +45,9 @@ function RowOfTableBottomSubcomponentPackageAssetInformation({
     setBarcode(e.target.value);
     setQr(e.target.value)
   };
-  const handleChangePrice = (e) => {
+  const handleChangePricePerUnit = (e) => {
     const clone = [...bottomSubComponentData];
-    clone[index].price = e.target.value;
+    clone[index].pricePerUnit = e.target.value;
     setBottomSubComponentData(clone);
   };
   const handleChangeAsset01 = (e) => {
@@ -106,10 +106,10 @@ function RowOfTableBottomSubcomponentPackageAssetInformation({
         </div>
         <input
           type="text"
-          name="price"
-          id="price"
-          onChange={handleChangePrice}
-          value={bottomSubComponentData[index]?.price}
+          name="pricePerUnit"
+          id="pricePerUnit"
+          onChange={handleChangePricePerUnit}
+          value={bottomSubComponentData[index]?.pricePerUnit}
           className="col-span-2 w-full h-[38px]  border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
         />
         <input
