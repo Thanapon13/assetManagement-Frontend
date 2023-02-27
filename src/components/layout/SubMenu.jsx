@@ -44,7 +44,7 @@ const SubMenu = ({ item }) => {
               key={index}
               className={({ isActive }) =>
                 [
-                  'flex items-center gap-2 p-3 px-6 rounded-lg hover:bg-sidebar-green',
+                  'flex items-center gap-2 p-3 px-6 rounded-3xl hover:bg-sidebar-green',
                   isActive
                     ? 'bg-sidebar-green text-text-green'
                     : 'text-text-gray',
