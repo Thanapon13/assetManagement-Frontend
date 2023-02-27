@@ -14,6 +14,7 @@ const Selector = ({
   index,
 }) => {
   let location = useLocation();
+  console.log(location.pathname)
   const refDropdown = useRef(null);
 
   const [data, setData] = useState(null);
@@ -104,7 +105,7 @@ const Selector = ({
     setState(clone);
   };
 
-  // หน่วยงาน editAssetInformation ,index search
+  // หน่วยงาน editAssetInformation ,index search ,borrowRecord
   const handleChangeSectorInEditAssetInfo = (value) => {
     console.log(2)
     const clone = { ...state };
@@ -153,7 +154,7 @@ const Selector = ({
     // console.log(clone)
     setState(clone);
   };
-  // ภาควิชาผู้โอน
+  // ภาควิชาผู้โอน, ภาควิชา
   const handleChangeSubSector = (value) => {
     const clone = { ...state };
     clone.subSector = value;
@@ -195,6 +196,7 @@ const Selector = ({
     // console.log(clone)
     setState(clone);
   };
+
   // เลขครุภัณฑ์ saveTransferAsset
   const handleChangeAssetNumberSaveTransfer = (value) => {
     const clone = [...state];
@@ -269,6 +271,8 @@ const Selector = ({
               ? state?.floor
               : id === "ห้อง"
               ? state?.room
+              : id === "ภาควิชา"
+              ? state?.subSector
               : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                 (location.pathname === "/assetInformation" ||
                   location.pathname === "/packageAssetInformation")
@@ -279,7 +283,9 @@ const Selector = ({
               ? state?.allSector
               : id === "หน่วยงาน" &&
                 (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                  location.pathname === "/assetInformationIndex")
+                  location.pathname === "/assetInformationIndex" ||
+                  location.pathname === "/borrowRecord" 
+                  )
               ? state?.sector
               : id === "หน่วยงาน" &&
                 (location.pathname === "/assetInformation" ||
@@ -346,6 +352,8 @@ const Selector = ({
             ? state?.floor
             : id === "ห้อง"
             ? state?.room
+            : id === "ภาควิชา"
+            ? state?.subSector
             : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
               (location.pathname === "/assetInformation" ||
                 location.pathname === "/packageAssetInformation")
@@ -355,9 +363,11 @@ const Selector = ({
             : id === "หน่วยงานเจ้าของครุภัณฑ์"
             ? state?.allSector
             : id === "หน่วยงาน" &&
-              (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                location.pathname === "/assetInformationIndex")
-            ? state?.sector
+            (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
+              location.pathname === "/assetInformationIndex" ||
+              location.pathname === "/borrowRecord" 
+              )
+          ? state?.sector
             : id === "หน่วยงาน" &&
               (location.pathname === "/assetInformation" ||
                 location.pathname === "/packageAssetInformation")
@@ -418,6 +428,8 @@ const Selector = ({
               ? state?.floor
               : id === "ห้อง"
               ? state?.room
+              : id === "ภาควิชา"
+              ? state?.subSector
               : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                 (location.pathname === "/assetInformation" ||
                   location.pathname === "/packageAssetInformation")
@@ -427,9 +439,11 @@ const Selector = ({
               : id === "หน่วยงานเจ้าของครุภัณฑ์"
               ? state?.allSector
               : id === "หน่วยงาน" &&
-                (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                  location.pathname === "/assetInformationIndex")
-              ? state?.sector
+              (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
+                location.pathname === "/assetInformationIndex" ||
+                location.pathname === "/borrowRecord" 
+                )
+            ? state?.sector
               : id === "หน่วยงาน" &&
                 (location.pathname === "/assetInformation" ||
                   location.pathname === "/packageAssetInformation")
@@ -490,6 +504,8 @@ const Selector = ({
                 ? state?.floor
                 : id === "ห้อง"
                 ? state?.room
+                : id === "ภาควิชา"
+                ? state?.subSector
                 : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                   (location.pathname === "/assetInformation" ||
                     location.pathname === "/packageAssetInformation")
@@ -499,9 +515,11 @@ const Selector = ({
                 : id === "หน่วยงานเจ้าของครุภัณฑ์"
                 ? state?.allSector
                 : id === "หน่วยงาน" &&
-                  (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                    location.pathname === "/assetInformationIndex")
-                ? state?.sector
+                (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
+                  location.pathname === "/assetInformationIndex" ||
+                  location.pathname === "/borrowRecord" 
+                  )
+              ? state?.sector
                 : id === "หน่วยงาน" &&
                   (location.pathname === "/assetInformation" ||
                     location.pathname === "/packageAssetInformation")
@@ -562,6 +580,8 @@ const Selector = ({
             ? state?.floor
             : id === "ห้อง"
             ? state?.room
+            : id === "ภาควิชา"
+            ? state?.subSector
             : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
               (location.pathname === "/assetInformation" ||
                 location.pathname === "/packageAssetInformation")
@@ -571,9 +591,11 @@ const Selector = ({
             : id === "หน่วยงานเจ้าของครุภัณฑ์"
             ? state?.allSector
             : id === "หน่วยงาน" &&
-              (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                location.pathname === "/assetInformationIndex")
-            ? state?.sector
+            (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
+              location.pathname === "/assetInformationIndex" ||
+              location.pathname === "/borrowRecord" 
+              )
+          ? state?.sector
             : id === "หน่วยงาน" &&
               (location.pathname === "/assetInformation" ||
                 location.pathname === "/packageAssetInformation")
@@ -662,6 +684,8 @@ const Selector = ({
                   ? state?.floor
                   : id === "ห้อง"
                   ? state?.room
+                  : id === "ภาควิชา"
+                  ? state?.subSector
                   : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                     (location.pathname === "/assetInformation" ||
                       location.pathname === "/packageAssetInformation")
@@ -671,9 +695,11 @@ const Selector = ({
                   : id === "หน่วยงานเจ้าของครุภัณฑ์"
                   ? state?.allSector
                   : id === "หน่วยงาน" &&
-                    (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                      location.pathname === "/assetInformationIndex")
-                  ? state?.sector
+                (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
+                  location.pathname === "/assetInformationIndex" ||
+                  location.pathname === "/borrowRecord" 
+                  )
+              ? state?.sector
                   : id === "หน่วยงาน" &&
                     (location.pathname === "/assetInformation" ||
                       location.pathname === "/packageAssetInformation")
@@ -737,6 +763,8 @@ const Selector = ({
                   ? state?.floor
                   : id === "ห้อง"
                   ? state?.room
+                  : id === "ภาควิชา"
+                  ? state?.subSector
                   : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                     (location.pathname === "/assetInformation" ||
                       location.pathname === "/packageAssetInformation")
@@ -746,9 +774,11 @@ const Selector = ({
                   : id === "หน่วยงานเจ้าของครุภัณฑ์"
                   ? state?.allSector
                   : id === "หน่วยงาน" &&
-                    (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                      location.pathname === "/assetInformationIndex")
-                  ? state?.sector
+                  (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
+                    location.pathname === "/assetInformationIndex" ||
+                    location.pathname === "/borrowRecord" 
+                    )
+                ? state?.sector
                   : id === "หน่วยงาน" &&
                     (location.pathname === "/assetInformation" ||
                       location.pathname === "/packageAssetInformation")
@@ -808,6 +838,8 @@ const Selector = ({
                   handleChangeFloor(data?.name);
                 } else if (id === "ห้อง") {
                   handleChangeRoom(data?.name);
+                } else if (id === "ภาควิชา") {
+                  handleChangeSubSector(data?.name);
                 } else if (
                   id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                   (location.pathname === "/assetInformation" ||
@@ -819,7 +851,9 @@ const Selector = ({
                 } else if (
                   id === "หน่วยงาน" &&
                   (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                    location.pathname === "/assetInformationIndex")
+                    location.pathname === "/assetInformationIndex" ||
+                    location.pathname === "/borrowRecord" 
+                    )
                 ) {
                   handleChangeSectorInEditAssetInfo(data?.name);
                 } else if (

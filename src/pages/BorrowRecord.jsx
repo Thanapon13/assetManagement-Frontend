@@ -16,8 +16,13 @@ const BorrowRecord = () => {
     borrowSetReturnDate: "",
     // รายละเอียดผู้ยืม
     sector: "",
+    subSector: "",
     selfSector: "",
     // สถานที่ตั้งใหม่
+    building: "",
+    floor: "",
+    room: "",
+
     firstName_recorder: "",
     lastName_recorder: "",
     dateTime_recorder: "",
@@ -29,7 +34,6 @@ const BorrowRecord = () => {
     dateTime_approver: "",
     status: "not approve",
   });
-  console.log(input.borrowDate)
 
   const [countIndexArray, setCountIndexArray] = useState([0]);
 
@@ -46,33 +50,6 @@ const BorrowRecord = () => {
         price: "",
       },
     ]);
-
-  const tableData = [
-    {
-      ID: "1",
-      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
-      floor: "12",
-      room: "ห้องรับห้องพิเศษ",
-      moveInDate: "19/04/2565",
-      moveOutDate: "22/12/2565",
-    },
-    {
-      ID: "2",
-      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
-      floor: "12",
-      room: "ห้องรับห้องพิเศษ",
-      moveInDate: "19/04/2565",
-      moveOutDate: "22/12/2565",
-    },
-    {
-      ID: "3",
-      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
-      floor: "12",
-      room: "ห้องรับห้องพิเศษ",
-      moveInDate: "19/04/2565",
-      moveOutDate: "22/12/2565",
-    },
-  ];
 
   // handle
   const handleChangeID = (e) => {
@@ -260,11 +237,21 @@ const BorrowRecord = () => {
                   <h1 className="text-red-500 ml-2 font-bold">*</h1>
                 </label>
               </div>
-              <Selector placeholder={"Select"} />
+              <Selector
+                placeholder={"Select"}
+                state={input}
+                setState={setInput}
+                id={"หน่วยงาน"}
+              />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className="text-text-gray">ภาควิชา</label>
-              <Selector placeholder={"Select"} />
+              <Selector
+                placeholder={"Select"}
+                state={input}
+                setState={setInput}
+                id={"ภาควิชา"}
+              />
             </div>
           </div>
           {/* Row 2 วัตถุประสงค์การขอยืม */}
@@ -310,26 +297,6 @@ const BorrowRecord = () => {
                 placeholder="00000000"
                 className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
-            </div>
-          </div>
-        </div>
-        {/* ประวัติสถานที่ตั้ง */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-xl">ประวัติสถานที่ตั้ง</div>
-          {/* table */}
-          <div className="overflow-x-auto scrollbar pt-4">
-            <div className="w-[1000px] lg:w-full p-2 ">
-              <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                <div className="grid grid-cols-11 gap-2 text-center">
-                  <div className="ml-2 col-span-1 ">ลำดับ</div>
-                  <div className="col-span-3">อาคาร</div>
-                  <div className="col-span-1">ชั้น</div>
-                  <div className="col-span-2">ห้อง</div>
-                  <div className="col-span-2">วันที่ย้ายเข้า</div>
-                  <div className="col-span-2">วันที่ย้ายออก</div>
-                </div>
-              </div>
-              <TableLocationHistory data={tableData} />
             </div>
           </div>
         </div>
