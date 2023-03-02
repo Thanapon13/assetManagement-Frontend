@@ -1,11 +1,7 @@
 import axios from "../config/axios";
 
-export function createAsset(input) {
-  return axios.post("/asset/create", input, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+export function createBorrow(input) {
+  return axios.post("/borrow/create", input);
 }
 
 export function updateAsset(input,id) {

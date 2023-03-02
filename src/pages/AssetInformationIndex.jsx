@@ -146,9 +146,6 @@ const AssetInformationIndex = () => {
     fetchAssetList();
   }, []);
 
-  // useEffect(() => {
-  //   fetchAssetList();
-  // }, [handleDelete]);
 
   return (
     <div className="bg-background-page px-5 pt-10 pb-36">

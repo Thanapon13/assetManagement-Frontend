@@ -12,9 +12,10 @@ const Selector = ({
   setState,
   id,
   index,
+  api
 }) => {
   let location = useLocation();
-  console.log(location.pathname)
+  // console.log(location.pathname)
   const refDropdown = useRef(null);
 
   const [data, setData] = useState(null);
@@ -22,13 +23,13 @@ const Selector = ({
   const [selected, setSelected] = useState("");
   const [open, setOpen] = useState(false);
 
-  const fetchApi = async () => {
-    const dataApi = await axios.get(
-      "https://restcountries.com/v2/all?fields=name"
-    );
-    console.log(dataApi);
-    setData(dataApi);
-  };
+  // const fetchApi = async () => {
+  //   const dataApi = await axios.get(
+  //     "https://restcountries.com/v2/all?fields=name"
+  //   );
+  //   console.log(dataApi);
+  //   setData(dataApi);
+  // };
 
   const handleClickOutSide = (e) => {
     if (!refDropdown?.current?.contains(e.target)) {
@@ -161,6 +162,13 @@ const Selector = ({
     // console.log(clone)
     setState(clone);
   };
+  // วัตถุประสงค์การขอยืม
+  const handleChangeBorrowPurpose = (value) => {
+    const clone = { ...state };
+    clone.borrowPurpose = value;
+    // console.log(clone)
+    setState(clone);
+  };
   // ผู้ดำเนินการ
   const handleChangeHandler = (value) => {
     const clone = { ...state };
@@ -220,6 +228,7 @@ const Selector = ({
       .then((data) => {
         setData(data);
       });
+
 
     // fetchApi()
   }, []);
@@ -354,6 +363,8 @@ const Selector = ({
             ? state?.room
             : id === "ภาควิชา"
             ? state?.subSector
+            : id === "วัตถุประสงค์การขอยืม"
+            ? state?.borrowPurpose
             : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
               (location.pathname === "/assetInformation" ||
                 location.pathname === "/packageAssetInformation")
@@ -430,6 +441,8 @@ const Selector = ({
               ? state?.room
               : id === "ภาควิชา"
               ? state?.subSector
+              : id === "วัตถุประสงค์การขอยืม"
+              ? state?.borrowPurpose
               : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                 (location.pathname === "/assetInformation" ||
                   location.pathname === "/packageAssetInformation")
@@ -506,6 +519,8 @@ const Selector = ({
                 ? state?.room
                 : id === "ภาควิชา"
                 ? state?.subSector
+                : id === "วัตถุประสงค์การขอยืม"
+                ? state?.borrowPurpose
                 : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                   (location.pathname === "/assetInformation" ||
                     location.pathname === "/packageAssetInformation")
@@ -582,6 +597,8 @@ const Selector = ({
             ? state?.room
             : id === "ภาควิชา"
             ? state?.subSector
+            : id === "วัตถุประสงค์การขอยืม"
+            ? state?.borrowPurpose
             : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
               (location.pathname === "/assetInformation" ||
                 location.pathname === "/packageAssetInformation")
@@ -686,6 +703,8 @@ const Selector = ({
                   ? state?.room
                   : id === "ภาควิชา"
                   ? state?.subSector
+                  : id === "วัตถุประสงค์การขอยืม"
+                  ? state?.borrowPurpose
                   : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                     (location.pathname === "/assetInformation" ||
                       location.pathname === "/packageAssetInformation")
@@ -765,6 +784,8 @@ const Selector = ({
                   ? state?.room
                   : id === "ภาควิชา"
                   ? state?.subSector
+                  : id === "วัตถุประสงค์การขอยืม"
+                  ? state?.borrowPurpose
                   : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                     (location.pathname === "/assetInformation" ||
                       location.pathname === "/packageAssetInformation")
@@ -840,6 +861,8 @@ const Selector = ({
                   handleChangeRoom(data?.name);
                 } else if (id === "ภาควิชา") {
                   handleChangeSubSector(data?.name);
+                } else if (id === "วัตถุประสงค์การขอยืม") {
+                  handleChangeBorrowPurpose(data?.name);
                 } else if (
                   id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                   (location.pathname === "/assetInformation" ||

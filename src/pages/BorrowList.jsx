@@ -8,8 +8,23 @@ import DateInput from '../components/date/DateInput'
 
 const BorrowList = () => {
   // useState
-  const [perPage, setPerPage] = useState(10)
-  const [totalRow, setTotalRow] = useState(25)
+  // useState
+  const [amountPage, setAmountPage] = useState(1);
+
+  // search
+  const [search, setSearch] = useState({
+    typeTextSearch: "assetNumber",
+    textSearch: "",
+    status: "",
+    dateFrom: "",
+    dateTo: todayThaiDate,
+    sector: "",
+    page: "",
+    limit: 10,
+    total: "",
+  });
+
+  const [borrowList, setBorrowList] = useState([]);
 
   //Main Date
   const [withdrawDate, setWithdrawDate] = useState()

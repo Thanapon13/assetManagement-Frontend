@@ -1,54 +1,152 @@
-import { HiTrash } from 'react-icons/hi'
-import Selector from '../selector/Selector'
+import { useEffect, useState } from "react";
+import { HiTrash } from "react-icons/hi";
+import {
+  getByProductSelector,
+  getByAssetNumberSelector,
+} from "../../api/assetApi";
+import AssetNumberSelector from "../selector/AssetNumberSelector";
+import ProductNameSelector from "../selector/ProductNameSelector";
+import { ToastContainer, toast } from "react-toastify";
 
 function TableBorrowRecord({
   index,
   saveAssetWithdrawTableArray,
   setSaveAssetWithdrawTableArray,
+
   deleteRow,
 }) {
-  const handleChangeInventoryNumber = (e) => {
-    const clone = [...saveAssetWithdrawTableArray]
-    // console.log(clone);
-    clone[index].inventoryNumber = e.target.value
-    setSaveAssetWithdrawTableArray(clone)
+  const [dataProductName, setDataProductName] = useState([]);
+  const [dataAssetNumber, setDataAssetNumber] = useState([]);
+
+  const [search, setSearch] = useState({
+    assetNumber: "",
+    productName: "",
+  });
+
+  function filterAssetByProductName(productName) {
+    let filtered = {};
+    console.log(productName);
+    for (let i = 0; i < dataProductName.length; i++) {
+      if (dataProductName[i]._id === productName) {
+        console.log(dataProductName[i]);
+        return dataProductName[i];
+      }
+    }
+    // return null; // if no matching object is found
   }
-  const handleChangeProductName = (e) => {
-    const clone = [...saveAssetWithdrawTableArray]
-    // console.log(clone);
-    clone[index].productName = e.target.value
-    setSaveAssetWithdrawTableArray(clone)
+
+  function filterAssetByAssetNumber(assetNumber) {
+    let filtered = {};
+    console.log(assetNumber);
+    for (let i = 0; i < dataAssetNumber.length; i++) {
+      console.log(dataAssetNumber[i].assetNumber);
+      if (dataAssetNumber[i].assetNumber === assetNumber) {
+        console.log(dataAssetNumber[i]);
+        return dataAssetNumber[i];
+      }
+    }
+    // return null; // if no matching object is found
   }
-  const handleChangeBrand = (e) => {
-    const clone = [...saveAssetWithdrawTableArray]
+
+  const checkMaxQuantity = (productName, maxQuantity) => {
+    let sumAmounts = 0;
+    saveAssetWithdrawTableArray.forEach((item) => {
+      if (item.productName === productName) {
+        sumAmounts += parseInt(item.amount);
+      }
+    });
+console.log(sumAmounts);
+console.log(maxQuantity)
+    if (sumAmounts > maxQuantity) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const handleChange = (e) => {
+    const clone = [...saveAssetWithdrawTableArray];
     // console.log(clone);
-    clone[index].brand = e.target.value
-    setSaveAssetWithdrawTableArray(clone)
-  }
-  const handleChangeSerialNumber = (e) => {
-    const clone = [...saveAssetWithdrawTableArray]
-    // console.log(clone);
-    clone[index].serialNumber = e.target.value
-    setSaveAssetWithdrawTableArray(clone)
-  }
-  const handleChangeSupplier = (e) => {
-    const clone = [...saveAssetWithdrawTableArray]
-    // console.log(clone);
-    clone[index].supplier = e.target.value
-    setSaveAssetWithdrawTableArray(clone)
-  }
-  const handleChangeAmount = (e) => {
-    const clone = [...saveAssetWithdrawTableArray]
-    // console.log(clone);
-    clone[index].amount = e.target.value
-    setSaveAssetWithdrawTableArray(clone)
-  }
-  const handleChangePrice = (e) => {
-    const clone = [...saveAssetWithdrawTableArray]
-    // console.log(clone);
-    clone[index].price = e.target.value
-    setSaveAssetWithdrawTableArray(clone)
-  }
+    clone[index][e.target.name] = e.target.value;
+    // console.log(e.target.value)
+    // console.log(saveAssetWithdrawTableArray[index].maxQuantity)
+
+    const invalid = checkMaxQuantity(
+      clone[index].productName,
+      clone[index].maxQuantity
+    );
+    console.log(invalid,"invalid");
+
+    if (
+      e.target.name === "amount" &&
+      e.target.value > saveAssetWithdrawTableArray[index].maxQuantity
+    ) {
+      toast.warn(
+        `Cannot set quantity of ${saveAssetWithdrawTableArray[index].productName} more than ${saveAssetWithdrawTableArray[index].maxQuantity} !`,
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      );
+      clone[index].amount = "";
+    }
+     else if (invalid) {
+      toast.warn(
+        `Cannot set quantity of ${saveAssetWithdrawTableArray[index].productName} more than ${saveAssetWithdrawTableArray[index].maxQuantity} !`,
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      );
+      clone[index].amount = "";
+    }
+
+    setSaveAssetWithdrawTableArray(clone);
+  };
+
+  // fetch all data asset
+  const fetchAssetListByProductName = async () => {
+    try {
+      const resAssetNumber = await getByAssetNumberSelector(search);
+      // console.log(resAssetNumber.data.asset);
+      setDataAssetNumber(resAssetNumber.data.asset);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // fetch all data asset
+  const fetchAssetList = async () => {
+    try {
+      const res = await getByProductSelector(search);
+      console.log(res.data.asset);
+      setDataProductName(res.data.asset);
+      const resAssetNumber = await getByAssetNumberSelector(search);
+      console.log(resAssetNumber.data.asset);
+      setDataAssetNumber(resAssetNumber.data.asset);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    fetchAssetList();
+  }, []);
+
+  useEffect(() => {
+    fetchAssetListByProductName(search);
+  }, [search.productName]);
 
   return (
     <div
@@ -61,14 +159,39 @@ function TableBorrowRecord({
       </div>
 
       <div className="col-span-2 ">
-        <Selector placeholder={'เลขครุภัณฑ์'} />
+        <AssetNumberSelector
+          placeholder={"Select"}
+          state={saveAssetWithdrawTableArray}
+          setState={setSaveAssetWithdrawTableArray}
+          data={dataAssetNumber}
+          id={"assetNumber"}
+          index={index}
+          filterAssetByAssetNumber={filterAssetByAssetNumber}
+          disabled={
+            saveAssetWithdrawTableArray[index].amount > 1 ? false : true
+          }
+          search={search}
+          setSearch={setSearch}
+        />
       </div>
       <div className="col-span-3 ">
-        <Selector placeholder={'ชื่อครุภัณฑ์'} />
+        <ProductNameSelector
+          placeholder={"Select"}
+          state={saveAssetWithdrawTableArray}
+          setState={setSaveAssetWithdrawTableArray}
+          id={"productName"}
+          data={dataProductName}
+          index={index}
+          filterAssetByProductName={filterAssetByProductName}
+          disabled={search.assetNumber !== "" ? false : true}
+          search={search}
+          setSearch={setSearch}
+        />
       </div>
       <input
         className="col-span-2 bg-table-gray text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
-        onChange={handleChangeBrand}
+        id="brand"
+        disabled
         value={
           saveAssetWithdrawTableArray &&
           saveAssetWithdrawTableArray[index]?.brand
@@ -77,34 +200,47 @@ function TableBorrowRecord({
       <div className="col-span-3 grid grid-cols-4 gap-5">
         <input
           className="col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
-          onChange={handleChangeSerialNumber}
+          name="amount"
+          required
+          disabled={search.assetNumber === "" ? false : true}
+          onChange={handleChange}
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.serialNumber
+            saveAssetWithdrawTableArray[index]?.amount
           }
+          placeholder={saveAssetWithdrawTableArray[index]?.maxQuantity}
         />
         <input
           className="col-span-1 bg-table-gray text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
-          onChange={handleChangeSupplier}
+          id="unit"
+          disabled
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.supplier
+            saveAssetWithdrawTableArray[index]?.unit
           }
         />
-        <input className=" bg-table-gray col-span-2 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue" />
+        <input
+          className="col-span-2 bg-table-gray text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          disabled
+          value={
+            saveAssetWithdrawTableArray &&
+            saveAssetWithdrawTableArray[index]?.pricePerUnit
+          }
+        />
       </div>
       <div className="flex justify-center items-center">
         <button
           className="flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 "
           onClick={() => {
-            deleteRow(index)
+            deleteRow(index);
           }}
         >
           <HiTrash className="text-lg" />
         </button>
       </div>
+      <ToastContainer />
     </div>
-  )
+  );
 }
 
-export default TableBorrowRecord
+export default TableBorrowRecord;
