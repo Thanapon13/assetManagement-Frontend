@@ -126,14 +126,16 @@ function DateInput({ state, setState, lable, id }) {
         className="  w-full h-[38px] shadow-sm focus:border-2 focus:outline-none  focus:border-focus-blue  sm:text-xs border-[1px] border-gray-300 rounded-md pl-2"
         selected={
           location.pathname === "/assetInformationIndex" ||
-          location.pathname === "/packageAssetInformationIndex"
+          location.pathname === "/packageAssetInformationIndex" ||
+          location.pathname === "/borrowList"
             ? state[id]
             : state
         }
         onChange={(date) => {
           if (
             location.pathname === "/assetInformationIndex" ||
-            location.pathname === "/packageAssetInformationIndex"
+            location.pathname === "/packageAssetInformationIndex" ||
+            location.pathname === "/borrowList"
           ) {
             setState((prevState) => ({ ...prevState, [id]: date }));
           } else {

@@ -1,19 +1,21 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { BsFillPencilFill, BsFillEyeFill } from 'react-icons/bs'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { BsFillPencilFill, BsFillEyeFill } from "react-icons/bs";
 
 const TableBorrowList = (props) => {
-  const [isClick, setIsClick] = useState(false)
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
 
-  let navigate = useNavigate()
+  const [isClick, setIsClick] = useState(false);
+
+  let navigate = useNavigate();
 
   const handleClick = (status) => {
-    setIsClick(!isClick)
+    setIsClick(!isClick);
 
-    if (status === 'waitToReturn') {
-      navigate('/borrowList/borrowSaving')
+    if (status === "waitToReturn") {
+      navigate("/borrowList/borrowSaving");
     }
-  }
+  };
 
   return (
     <>
@@ -21,15 +23,15 @@ const TableBorrowList = (props) => {
         return (
           <div
             key={idx}
-            className={`grid grid-cols-12 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
+            className={`grid grid-cols-12 gap-2 h-12 pt-2  text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
-            <div className="col-span-1">{item.borrowDocId}</div>
-            <div className="col-span-2">{item.assetId}</div>
-            <div className="col-span-3 ">{item.assetName}</div>
-            <div className="col-span-1">{item.borrowerName}</div>
-            <div className="col-span-1">{item.borrowDateAt}</div>
-            <div className="col-span-1 ">{item.borrowSetDateReturn}</div>
-            <div className="col-span-1">{item.borrowReturnDate}</div>
+            <div className="col-span-1">{props.search.page >1 ?props.search.limit + idx +1 : idx+1}</div>
+            <div className="col-span-3">{item.borrowIdDoc}</div>
+            <div className="col-span-3 ">{item.sector}</div>
+            <div className="col-span-1">{new Date(item.borrowDate).toLocaleDateString("th-TH", options)}</div>
+            {/* insuranceStartDate.toLocaleDateString("en-GB", options) */}
+            <div className="col-span-1 ">{new Date(item.borrowSetReturnDate).toLocaleDateString("th-TH", options)}</div>
+            <div className="col-span-1">{item.borrowReturnDate? new Date(item.borrowReturnDate).toLocaleDateString("th-TH", options):"-" }</div>
             <div className="col-span-2 grid grid-cols-2 items-center">
               <div className="flex justify-center">
                 <button
@@ -37,26 +39,30 @@ const TableBorrowList = (props) => {
                   // to={`/borrowSaving/${ID}`}
                   onClick={() => handleClick(item.borrowStatus)}
                   className={`${
-                    item.borrowStatus === 'waitApprove'
-                      ? 'bg-sky-200 text-blue-600 rounded-xl border-sky-200'
-                      : item.borrowStatus === 'done'
-                      ? ' bg-sidebar-green text-text-green  rounded-xl border-sidebar-green '
-                      : item.borrowStatus === 'waitCheckReturn'
-                      ? 'bg-orange-100 text-orange-400 border-orange-100 rounded-xl'
-                      : 'bg-text-green text-white rounded-md hover:bg-green-800'
+                    item.status === "waiting"
+                      ? " bg-background-light-blue text-text-blue  rounded-xl "
+                      : item.status === "approve"
+                      ? " bg-sidebar-green text-text-green  rounded-xl  "
+                      : item.status === "watingReturnApprove"
+                      ? "bg-orange-100 text-orange-400 rounded-xl"
+                      : item.status === "cancel"
+                      ? "bg-red-200 text-red-600  rounded-xl"
+                      : "bg-text-green text-white rounded-md hover:bg-green-800"
                   } border border-spacing-5 p-2 w-full`}
                 >
-                  {item.borrowStatus === 'waitApprove'
-                    ? 'รออนุมัติ'
-                    : item.borrowStatus === 'done'
-                    ? 'คืนสำเร็จ'
-                    : item.borrowStatus === 'waitCheckReturn'
-                    ? 'รอตรวจรับ'
-                    : 'บันทึกคืน'}
+                  {item.status === "waiting"
+                    ? "รออนุมัติ"
+                    : item.status === "done"
+                    ? "คืนสำเร็จ"
+                    : item.status === "waitCheckReturn"
+                    ? "รอตรวจรับ"
+                    : item.status === "cancel"
+                    ? "ยกเลิก"
+                    : "บันทึกคืน"}
                 </button>
               </div>
               <div className="flex justify-center">
-                {item.borrowStatus === 'waitApprove' ? (
+                {item.status === "waiting" ? (
                   <div className="flex gap-1">
                     <Link
                       to="borrowEdit"
@@ -77,18 +83,18 @@ const TableBorrowList = (props) => {
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
 const ModalCancel = () => {
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
 
   const callback = (payload) => {
-    setAllReject(payload)
-  }
+    setAllReject(payload);
+  };
   return (
     <>
       <button
@@ -159,7 +165,7 @@ const ModalCancel = () => {
         </>
       ) : null}
     </>
-  )
-}
+  );
+};
 
-export default TableBorrowList
+export default TableBorrowList;

@@ -29,7 +29,7 @@ const AssetInformationIndex = () => {
     sector: "",
     page: "",
     limit: 10,
-    total: "",
+    total: 0,
   });
 
   const [assetList, setAssetList] = useState([]);

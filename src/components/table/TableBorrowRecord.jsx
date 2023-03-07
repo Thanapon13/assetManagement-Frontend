@@ -55,8 +55,8 @@ function TableBorrowRecord({
         sumAmounts += parseInt(item.amount);
       }
     });
-console.log(sumAmounts);
-console.log(maxQuantity)
+// console.log(sumAmounts);
+// console.log(maxQuantity)
     if (sumAmounts > maxQuantity) {
       return true;
     } else {
@@ -75,7 +75,7 @@ console.log(maxQuantity)
       clone[index].productName,
       clone[index].maxQuantity
     );
-    console.log(invalid,"invalid");
+    // console.log(invalid,"invalid");
 
     if (
       e.target.name === "amount" &&
