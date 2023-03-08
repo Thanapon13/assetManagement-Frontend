@@ -1,59 +1,119 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import ModalBorrowRejectAllApprove from '../components/modal/ModalBorrowRejectAllApprove'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import ModalBorrowRejectAllApprove from "../components/modal/ModalBorrowRejectAllApprove";
+import OnlyDateInput from "../components/date/onlyDateInput";
+import { AiOutlineSearch } from "react-icons/ai";
+import { useEffect } from "react";
+import { getAllSectorFromBorrow } from "../api/borrowApi";
+import ApproveSectorSelector from "../components/selector/ApproveSectorSelector";
 
 const BorrowApprove = () => {
-  const dataApproveList = [
-    {
-      id: '1271',
-      agencyName: 'ภาควิชาอายุรศาสตร์',
-      date: '29/12/2565',
-      time: '18:00',
-    },
-    {
-      id: '1272',
-      agencyName: 'ภาควิชาเวทมนต์ศาสตร์มืด',
-      date: '30/12/2565',
-      time: '19:00',
-    },
-    {
-      id: '1273',
-      agencyName: 'ภาควิชาปรุงยาแมนเดรก',
-      date: '31/12/2565',
-      time: '20:10',
-    },
-  ]
+  const [search, setSearch] = useState({
+    dateFrom: "",
+    dateTo: new Date(),
+    sector: "",
+    listStatus: "",
+  });
 
-  const dataApprovedList = [
+  const [sectorList, setSectorList] = useState([]);
+
+  const dataTopApproveList = [
     {
-      id: '1271',
-      agencyName: 'ภาควิชาศาสตร์มืด',
-      date: '29/12/2565',
-      time: '18:00',
-      offerDate: '9/03/2565',
-      offerTime: '9:31',
+      id: "1271",
+      agencyName: "ภาควิชาอายุรศาสตร์",
+      date: "29/12/2565",
+      time: "18:00",
     },
     {
-      id: '1272',
-      agencyName: 'ภาควิชาศาสตร์มืดมิด',
-      date: '30/12/2565',
-      time: '19:00',
-      offerDate: '12/03/2565',
-      offerTime: '20:22',
+      id: "1272",
+      agencyName: "ภาควิชาเวทมนต์ศาสตร์มืด",
+      date: "30/12/2565",
+      time: "19:00",
     },
     {
-      id: '1273',
-      agencyName: 'ภาควิชาศาสตร์มืดมน',
-      date: '23/11/2565',
-      time: '12:00',
-      offerDate: '22/05/2565',
-      offerTime: '8:22',
+      id: "1273",
+      agencyName: "ภาควิชาปรุงยาแมนเดรก",
+      date: "31/12/2565",
+      time: "20:10",
     },
-  ]
+  ];
+
+  const dataBottomApprovedList = [
+    {
+      id: "1271",
+      agencyName: "ภาควิชาศาสตร์มืด",
+      date: "29/12/2565",
+      time: "18:00",
+      offerDate: "9/03/2565",
+      offerTime: "9:31",
+    },
+    {
+      id: "1272",
+      agencyName: "ภาควิชาศาสตร์มืดมิด",
+      date: "30/12/2565",
+      time: "19:00",
+      offerDate: "12/03/2565",
+      offerTime: "20:22",
+    },
+    {
+      id: "1273",
+      agencyName: "ภาควิชาศาสตร์มืดมน",
+      date: "23/11/2565",
+      time: "12:00",
+      offerDate: "22/05/2565",
+      offerTime: "8:22",
+    },
+  ];
 
   const boxStyle = {
     boxStatus: `p-2 rounded-md flex flex-col items-center border-[2px] shadow-md`,
-  }
+  };
+
+  const [topApproveList, setTopApproveList] = useState(dataTopApproveList);
+  const [bottomApprovedList, setBottomApprovedList] = useState(
+    dataBottomApprovedList
+  );
+
+  // toggle check all
+  const [isChecked, setIsChecked] = useState(false);
+
+  // handle
+  const handleAllCheckboxChange = (list) => {
+    setIsChecked(!isChecked);
+    const newCheck = !isChecked;
+    const newList = list.map((item) => {
+      return { ...item, checked: newCheck };
+    });
+    setTopApproveList(newList);
+  };
+
+  const handleCheckboxChange = (list, id) => {
+    const newList = list.map((item) => {
+      if (item.id === id) {
+        return { ...item, checked: !item.checked };
+      }
+      return item;
+    });
+    setTopApproveList(newList);
+  };
+
+  const handleSearch = () => {
+    // fetchSearchAssetList();
+  };
+
+  const fetchApproveSectorSelector = async () => {
+    try {
+      const res = await getAllSectorFromBorrow();
+      console.log(res.data.sectors);
+      setSectorList(res.data.sectors);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchApproveSectorSelector();
+  }, []);
 
   return (
     <>
@@ -77,38 +137,71 @@ const BorrowApprove = () => {
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
           <div className="text-lg ">รายการเสนออนุมัติประจำวัน</div>
           {/* วันที่ */}
-          <div className="grid md:grid-cols-3 pt-4 gap-5 md:gap-10">
-            <div className="flex flex-col gap-y-2">
-              <label className=" text-text-gray flex">วันที่</label>
-              <input
-                type="date"
-                placeholder="Example"
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+          <div className="grid md:grid-cols-7 xl:grid-cols-13 pt-4 gap-5 md:gap-x-5">
+            <div className=" md:col-span-3 flex flex-col gap-y-2">
+              <label className=" text-text-gray flex">วันที่เริ่มต้น</label>
+              <div className="flex h-[38px]">
+                <OnlyDateInput
+                  id="dateFrom"
+                  state={search}
+                  setState={setSearch}
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-y-2">
+            <div className="md:col-span-3 flex flex-col gap-y-2">
+              <label className=" text-text-gray flex">วันที่สิ้นสุด</label>
+              <div className="flex h-[38px]">
+                <OnlyDateInput
+                  id="dateTo"
+                  state={search}
+                  setState={setSearch}
+                />
+              </div>
+            </div>
+            <div className="md:col-span-3 flex flex-col gap-y-2">
               <label className="text-text-gray">
                 หน่วยงานที่เสนอ(รหัส P4P)
               </label>
-              <select className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md">
+              {/* <select className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md">
                 <option className="">select</option>
                 <option>select</option>
                 <option>select</option>
                 <option>select</option>
-              </select>
+              </select> */}
+              <ApproveSectorSelector
+                placeholder={"Select"}
+                state={search}
+                setState={setSearch}
+                search={search}
+                setSearch={setSearch}
+                id={"sector"}
+                data={sectorList}
+              />
             </div>
-            <div className="flex flex-col gap-y-2">
+            <div className=" md:col-span-3 flex flex-col gap-y-2">
               <label className="text-text-gray">รายการ</label>
               <select className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md">
                 <option defaultValue>ดูทั้งหมด</option>
-                <option>all</option>
-                <option>all</option>
-                <option>all</option>
+                <option>รออนุมัติ</option>
+                <option>อนุมัติ</option>
+                <option>ไม่อนุมัติ</option>
               </select>
+            </div>
+
+            <div className="flex justify-end items-end">
+              <button
+                type="button"
+                className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+                onClick={handleSearch}
+              >
+                <div className="text-xl text-white">
+                  <AiOutlineSearch />
+                </div>
+              </button>
             </div>
           </div>
           {/* status */}
-          <div className="grid md:grid-cols-4 pt-5 gap-5 md:gap-20 p-2">
+          <div className="grid md:grid-cols-4 pt-5 gap-5 md:gap-10 p-2">
             <div className={`${boxStyle.boxStatus} border-blue-500`}>
               <h1>ทั้งหมด (รายการ)</h1>
               <div className="text-2xl font-semibold pt-3 text-blue-500">
@@ -138,6 +231,7 @@ const BorrowApprove = () => {
               <div className="flex">
                 <input
                   type="checkbox"
+                  onChange={() => handleAllCheckboxChange(topApproveList)}
                   className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
                 />
                 <h1 className="ml-2">เลือกทั้งหมด</h1>
@@ -150,7 +244,11 @@ const BorrowApprove = () => {
             </div>
           </div>
           {/* approve list item */}
-          <BorrowApproveListItem data={dataApproveList} />
+          <BorrowApproveListItem
+            state={topApproveList}
+            setState={setTopApproveList}
+            handle={handleCheckboxChange}
+          />
         </div>
         {/* รายการคำขอที่จัดการแล้ว */}
         <div className="bg-white border-[1px] mb-5 p-4 rounded-lg shadow-sm text-sm mt-3">
@@ -212,7 +310,7 @@ const BorrowApprove = () => {
             </div>
           </div>
           {/* approved list item */}
-          <BorrowApprovedListItem data={dataApprovedList} />
+          <BorrowApprovedListItem data={dataBottomApprovedList} />
         </div>
       </div>
       {/* footer */}
@@ -232,17 +330,19 @@ const BorrowApprove = () => {
         </button> */}
       </div>
     </>
-  )
-}
+  );
+};
 
 const BorrowApproveListItem = (props) => {
   return (
     <>
-      {props.data.map((item, idx) => {
+      {props.state.map((item, idx) => {
         return (
           <div key={idx} className="flex items-center space-x-3">
             <input
               type="checkbox"
+              checked={item.checked}
+              onChange={() => props.handle(props.state, item.id)}
               className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
             />
             <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
@@ -274,11 +374,11 @@ const BorrowApproveListItem = (props) => {
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
 const BorrowApprovedListItem = (props) => {
   return (
@@ -319,32 +419,32 @@ const BorrowApprovedListItem = (props) => {
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
 const ModalApproveAll = () => {
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
 
   const tableData = [
     {
-      borrowIdDoc: 'br.2314530087',
-      agencyBorrowerName: 'พัดลม hatari แบบ',
-      borrowDate: '27/05/2132',
+      borrowIdDoc: "br.2314530087",
+      agencyBorrowerName: "พัดลม hatari แบบ",
+      borrowDate: "27/05/2132",
     },
     {
-      borrowIdDoc: 'br.2314530087',
-      agencyBorrowerName: 'พัดลม hatari แบบ',
-      borrowDate: '27/05/2132',
+      borrowIdDoc: "br.2314530087",
+      agencyBorrowerName: "พัดลม hatari แบบ",
+      borrowDate: "27/05/2132",
     },
     {
-      borrowIdDoc: 'br.2314530087',
-      agencyBorrowerName: 'พัดลม hatari แบบ',
-      borrowDate: '27/05/2132',
+      borrowIdDoc: "br.2314530087",
+      agencyBorrowerName: "พัดลม hatari แบบ",
+      borrowDate: "27/05/2132",
     },
-  ]
+  ];
 
   return (
     <>
@@ -414,12 +514,12 @@ const ModalApproveAll = () => {
         </>
       ) : null}
     </>
-  )
-}
+  );
+};
 
 const ModalIndividualReject = (props) => {
-  const [showModal, setShowModal] = useState(false)
-  const item = props.data
+  const [showModal, setShowModal] = useState(false);
+  const item = props.data;
 
   return (
     <>
@@ -505,15 +605,15 @@ const ModalIndividualReject = (props) => {
         </>
       ) : null}
     </>
-  )
-}
+  );
+};
 
 const TableSummaryApprove = (props) => {
-  const [isClick, setIsClick] = useState(false)
+  const [isClick, setIsClick] = useState(false);
 
   const handleClick = () => {
-    setIsClick(!isClick)
-  }
+    setIsClick(!isClick);
+  };
 
   return (
     <>
@@ -535,10 +635,10 @@ const TableSummaryApprove = (props) => {
               {item.borrowDate}
             </div>
           </div>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
-export default BorrowApprove
+export default BorrowApprove;

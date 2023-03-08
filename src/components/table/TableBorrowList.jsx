@@ -65,7 +65,7 @@ const TableBorrowList = (props) => {
                 {item.status === "waiting" ? (
                   <div className="flex gap-1">
                     <Link
-                      to="borrowEdit"
+                      to={`/borrowEdit/${item._id}`}
                       className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
                     >
                       <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
@@ -74,7 +74,7 @@ const TableBorrowList = (props) => {
                   </div>
                 ) : (
                   <Link
-                    to="borrowDetail"
+                    to={`/borrowDetail/${item._id}`}
                     className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
                   >
                     <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />

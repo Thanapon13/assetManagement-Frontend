@@ -51,12 +51,12 @@ function TableBorrowRecord({
   const checkMaxQuantity = (productName, maxQuantity) => {
     let sumAmounts = 0;
     saveAssetWithdrawTableArray.forEach((item) => {
-      if (item.productName === productName) {
+      if (item.productName === productName && item.isFetching === false) {
         sumAmounts += parseInt(item.amount);
       }
     });
-// console.log(sumAmounts);
-// console.log(maxQuantity)
+    // console.log(sumAmounts);
+    // console.log(maxQuantity)
     if (sumAmounts > maxQuantity) {
       return true;
     } else {
@@ -95,8 +95,7 @@ function TableBorrowRecord({
         }
       );
       clone[index].amount = "";
-    }
-     else if (invalid) {
+    } else if (invalid) {
       toast.warn(
         `Cannot set quantity of ${saveAssetWithdrawTableArray[index].productName} more than ${saveAssetWithdrawTableArray[index].maxQuantity} !`,
         {
@@ -168,7 +167,11 @@ function TableBorrowRecord({
           index={index}
           filterAssetByAssetNumber={filterAssetByAssetNumber}
           disabled={
-            saveAssetWithdrawTableArray[index].amount > 1 ? false : true
+            saveAssetWithdrawTableArray[index].amount > 1
+              ? false
+              : saveAssetWithdrawTableArray[index].isFetching
+              ? false
+              : true
           }
           search={search}
           setSearch={setSearch}
@@ -183,7 +186,13 @@ function TableBorrowRecord({
           data={dataProductName}
           index={index}
           filterAssetByProductName={filterAssetByProductName}
-          disabled={search.assetNumber !== "" ? false : true}
+          disabled={
+            search.assetNumber !== ""
+              ? false
+              : saveAssetWithdrawTableArray[index].isFetching
+              ? false
+              : true
+          }
           search={search}
           setSearch={setSearch}
         />
@@ -202,7 +211,13 @@ function TableBorrowRecord({
           className="col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
           name="amount"
           required
-          disabled={search.assetNumber === "" ? false : true}
+          disabled={
+            saveAssetWithdrawTableArray[index]?.isFetching === true
+              ? true
+              : search.assetNumber === ""
+              ? false
+              : true
+          }
           onChange={handleChange}
           value={
             saveAssetWithdrawTableArray &&
@@ -231,7 +246,8 @@ function TableBorrowRecord({
       <div className="flex justify-center items-center">
         <button
           className="flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 "
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             deleteRow(index);
           }}
         >

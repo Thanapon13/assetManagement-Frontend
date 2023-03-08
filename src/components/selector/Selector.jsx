@@ -295,7 +295,8 @@ const Selector = ({
                 (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
                   location.pathname === "/assetInformationIndex" ||
                     location.pathname === "/borrowList" ||
-                  location.pathname === "/borrowRecord" 
+                  location.pathname === "/borrowRecord" ||
+                  `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
                   )
               ? state?.sector
               : id === "หน่วยงาน" &&
@@ -379,7 +380,8 @@ const Selector = ({
             (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
               location.pathname === "/assetInformationIndex" ||
               location.pathname === "/borrowList" ||
-              location.pathname === "/borrowRecord" 
+              location.pathname === "/borrowRecord" ||
+              `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
               )
           ? state?.sector
             : id === "หน่วยงาน" &&
@@ -458,7 +460,8 @@ const Selector = ({
               (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
                 location.pathname === "/assetInformationIndex" ||
                 location.pathname === "/borrowList" ||
-                location.pathname === "/borrowRecord" 
+                location.pathname === "/borrowRecord" ||
+                `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
                 )
             ? state?.sector
               : id === "หน่วยงาน" &&
@@ -537,7 +540,8 @@ const Selector = ({
                 (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
                   location.pathname === "/assetInformationIndex" ||
                     location.pathname === "/borrowList" ||
-                  location.pathname === "/borrowRecord" 
+                    location.pathname === "/borrowRecord" ||
+                    `/${location.pathname.split('/')[1]}` === "/borrowEdit"  
                   )
               ? state?.sector
                 : id === "หน่วยงาน" &&
@@ -616,7 +620,8 @@ const Selector = ({
             (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
               location.pathname === "/assetInformationIndex" ||
               location.pathname === "/borrowList" ||
-              location.pathname === "/borrowRecord" 
+              location.pathname === "/borrowRecord" ||
+              `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
               )
           ? state?.sector
             : id === "หน่วยงาน" &&
@@ -723,7 +728,8 @@ const Selector = ({
                 (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
                   location.pathname === "/assetInformationIndex" ||
                     location.pathname === "/borrowList" ||
-                  location.pathname === "/borrowRecord" 
+                    location.pathname === "/borrowRecord" ||
+              `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
                   )
               ? state?.sector
                   : id === "หน่วยงาน" &&
@@ -805,7 +811,8 @@ const Selector = ({
                   (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
                     location.pathname === "/assetInformationIndex" ||
                     location.pathname === "/borrowList" ||
-                    location.pathname === "/borrowRecord" 
+                    location.pathname === "/borrowRecord" ||
+              `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
                     )
                 ? state?.sector
                   : id === "หน่วยงาน" &&
@@ -884,7 +891,8 @@ const Selector = ({
                   (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
                     location.pathname === "/assetInformationIndex" ||
                     location.pathname === "/borrowList" ||
-                    location.pathname === "/borrowRecord" 
+                    location.pathname === "/borrowRecord" ||
+                    `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
                     )
                 ) {
                   handleChangeSectorInEditAssetInfo(data?.name);

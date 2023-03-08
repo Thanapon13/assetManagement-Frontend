@@ -8,7 +8,11 @@ const onlyDateInput = ({ state, setState, disabled, id }) => {
 
   const handleWatDatePickerChange = (christDate) => {
     // setSelectedDate(christDate);
-    if (location.pathname === "/borrowRecord") {
+    if (
+      location.pathname === "/borrowRecord" ||
+      `/${location.pathname.split("/")[1]}` === "/borrowEdit" ||
+      location.pathname === "/borrowApprove"
+    ) {
       setState((prevState) => ({ ...prevState, [id]: christDate }));
     } else {
       setState(christDate);
@@ -20,7 +24,13 @@ const onlyDateInput = ({ state, setState, disabled, id }) => {
       <WatDatePicker
         // value={selectedDate} // Can be replace with string or dayjs object (e.g. "2020-12-31" or `dayjs()`)
         // onChange={handleWatDatePickerChange}
-        value={location.pathname === "/borrowRecord" ? state[id] : state} // Can be replace with string or dayjs object (e.g. "2020-12-31" or `dayjs()`)
+        value={
+          location.pathname === "/borrowRecord" ||
+          `/${location.pathname.split("/")[1]}` === "/borrowEdit" ||
+          location.pathname === "/borrowApprove"
+            ? state[id]
+            : state
+        } // Can be replace with string or dayjs object (e.g. "2020-12-31" or `dayjs()`)
         onChange={handleWatDatePickerChange}
         dateFormat={"yyyy-MM-dd"} // for set data purpose [using date-fns format](https://date-fns.org/v2.12.0/docs/format)
         displayFormat={"DD/MM/YYYY"} // for display purpose (using dayjs format)[https://day.js.org/docs/en/display/format]

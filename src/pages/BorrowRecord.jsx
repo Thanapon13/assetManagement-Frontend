@@ -88,25 +88,31 @@ const BorrowRecord = () => {
   const handleChange = (e) => {
     const clone = { ...input };
     clone[e.target.name] = e.target.value;
-    setInput(clone)
+    setInput(clone);
   };
 
   function sortArray(dataArray) {
     // Filter objects with assetNumber !== ""
-    const objectsWithAssetNumber = dataArray.filter(obj => obj.assetNumber !== "");
-  
+    const objectsWithAssetNumber = dataArray.filter(
+      (obj) => obj.assetNumber !== ""
+    );
+
     // Sort objectsWithAssetNumber by index
     objectsWithAssetNumber.sort((a, b) => a.index - b.index);
-  
+
     // Filter objects with assetNumber === ""
-    const objectsWithoutAssetNumber = dataArray.filter(obj => obj.assetNumber === "");
-  
+    const objectsWithoutAssetNumber = dataArray.filter(
+      (obj) => obj.assetNumber === ""
+    );
+
     // Sort objectsWithoutAssetNumber by index
     objectsWithoutAssetNumber.sort((a, b) => a.index - b.index);
-  
+
     // Concatenate the two arrays
-    const sortedDataArray = objectsWithAssetNumber.concat(objectsWithoutAssetNumber);
-  
+    const sortedDataArray = objectsWithAssetNumber.concat(
+      objectsWithoutAssetNumber
+    );
+
     // Return the sorted array
     return sortedDataArray;
   }
@@ -114,8 +120,10 @@ const BorrowRecord = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const inputJSON = JSON.stringify(input);
-    console.log(saveAssetWithdrawTableArray)
-    const sortsaveAssetWithdrawTableArray = sortArray(saveAssetWithdrawTableArray)
+    console.log(saveAssetWithdrawTableArray);
+    const sortsaveAssetWithdrawTableArray = sortArray(
+      saveAssetWithdrawTableArray
+    );
     const saveAssetWithdrawTableArrayJSON = JSON.stringify(
       sortsaveAssetWithdrawTableArray
     );

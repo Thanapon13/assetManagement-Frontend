@@ -16,7 +16,7 @@ export function getBorrowById(id) {
   return axios.get(`/borrow/${id}`);
 }
 
-export function getImageById(name) {
+export function getBorrowImageById(name) {
   return axios.get(`/images/${name}`);
 }
 
@@ -90,4 +90,10 @@ export function getQuantitySelector(search) {
 
 export function deleteAsset(input) {
   return axios.delete(`/borrow/deleteAsset/${input}`);
+}
+
+
+export function getAllSectorFromBorrow() {
+
+  return axios.get(`/borrow/dropdownAllSectorFromBorrow`);
 }
