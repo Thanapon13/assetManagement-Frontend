@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import DropdownStatus from '../dropdown/DropdownStatus'
 
-const TableBorrowApprove = (props) => {
+const TableBorrowApprove = ({assetList,handleCheckboxChange}) => {
   const [isClick, setIsClick] = useState(false)
 
   const handleClick = () => {
@@ -10,13 +10,15 @@ const TableBorrowApprove = (props) => {
 
   return (
     <>
-      {props.data.map((item, idx) => {
+      {assetList.map((item, idx) => {
         return (
           <div className="grid grid-cols-12 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
             <div className="col-span-1">
               <input
                 type="checkbox"
                 className=" text-text-green placeholder-text-green focus:ring-0"
+                checked={item.checked}
+                onChange={() => handleCheckboxChange(assetList, item._id)}
               />
             </div>
             <div className="col-span-1  text-center flex justify-center items-center ">
@@ -25,13 +27,13 @@ const TableBorrowApprove = (props) => {
               </div>
             </div>
             <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetId}
+              {item.assetNumber}
             </div>
             <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetName}
+              {item.productName}
             </div>
             <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetModelDetail}
+              {item.brand}
             </div>
             <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
               {item.quantity}
@@ -40,7 +42,7 @@ const TableBorrowApprove = (props) => {
               {item.unit}
             </div>
             <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
-              {item.totalPrice}
+              {item.pricePerUnit}
             </div>
           </div>
         )

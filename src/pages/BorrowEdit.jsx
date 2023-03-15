@@ -27,14 +27,11 @@ const BorrowEdit = () => {
     floor: "",
     room: "",
 
-    firstName_recorder: "paruj lab",
-    lastName_recorder: "paruj lab",
+    name_recorder: "paruj lab",
     dateTime_recorder: "",
-    firstName_courier: "",
-    lastName_courier: "",
+    name_courier: "",
     dateTime_courier: "",
-    firstName_approver: "",
-    lastName_approver: "",
+    name_approver: "",
     dateTime_approver: "",
     status: "not approve",
   });
@@ -167,21 +164,13 @@ const BorrowEdit = () => {
           floor: borrow.floor,
           room: borrow.room,
 
-          firstName_recorder: borrow.firstName_recorder,
-          lastName_recorder: borrow.lastName_recorder,
+          name_recorder: borrow.name_recorder,
           dateTime_recorder: new Date(borrow.dateTime_recorder),
-          firstName_courier: borrow.firstName_courier,
-          lastName_courier: borrow.lastName_courier,
-          dateTime_courier:
-            borrow.dateTime_courier === ""
-              ? new Date()
-              : new Date(borrow.dateTime_courier),
-          firstName_approver: borrow.firstName_approver,
-          lastName_approver: borrow.lastName_approver,
-          dateTime_approver:
-            borrow.dateTime_approver === ""
-              ? new Date()
-              : new Date(borrow.dateTime_approver),
+          name_courier: borrow.name_courier,
+          dateTime_courier: new Date(borrow.dateTime_courier),
+          name_approver: borrow.name_approver,
+          dateTime_approver: new Date(borrow.dateTime_approver),
+
           status: borrow.status,
         });
 
@@ -288,6 +277,7 @@ const BorrowEdit = () => {
               </label>
               <input
                 type="text"
+                value={input.borrowIdDoc}
                 placeholder="Example"
                 readOnly
                 className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"

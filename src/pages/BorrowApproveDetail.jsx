@@ -1,37 +1,137 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import TableBorrowApprove from '../components/table/TableBorrowApprove'
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { getBorrowById, partiallyApproveBorrowApproveDetail, rejectAllBorrowApproveDetail } from "../api/borrowApi";
+import TableBorrowApprove from "../components/table/TableBorrowApprove";
+import OnlyDateInput from "../components/date/onlyDateInput";
 
 const BorrowApproveDetail = () => {
-  const tableData = [
-    {
-      ID: '1',
-      assetId: '7440-001-001',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '3',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-    {
-      ID: '2',
-      assetId: '6301-018-0131',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '5',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-    {
-      ID: '3',
-      assetId: '1314-013-1331',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '7',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-  ]
+  const { borrowId } = useParams();
+
+  const [input, setInput] = useState({
+    // ข้อมูลการยืม
+    borrowIdDoc: 1,
+    pricePerDay: 0,
+    borrowDate: new Date(),
+    borrowReturnDate: "",
+    borrowSetReturnDate: "",
+    dateDiff: 0,
+    totalPrice: 0,
+    // รายละเอียดผู้ยืม
+    sector: "",
+    subSector: "",
+    borrowPurpose: "",
+    handler: "",
+    // สถานที่ตั้งใหม่
+    building: "",
+    floor: "",
+    room: "",
+
+    note: "",
+    reason: "",
+
+    name_recorder: "paruj lab",
+    dateTime_recorder: "",
+    name_courier: "",
+    dateTime_courier: "",
+    name_approver: "",
+    dateTime_approver: "",
+    status: "not approve",
+
+    assetIdArray: [],
+    packageAssetIdArray: [],
+  });
+
+  const [assetList, setAssetList] = useState([]);
+  // toggle check all
+  const [isChecked, setIsChecked] = useState(false);
+
+  // handle checkbox
+  const handleAllCheckboxChange = (list) => {
+    setIsChecked(!isChecked);
+    const newCheck = !isChecked;
+    const newList = list.map((item) => {
+      return { ...item, checked: newCheck };
+    });
+    console.log(newList);
+    setAssetList(newList);
+  };
+
+  const handleCheckboxChange = (list, id) => {
+    const newList = list.map((item) => {
+      if (item._id === id) {
+        return { ...item, checked: !item.checked };
+      }
+      return item;
+    });
+    console.log(newList);
+    setAssetList(newList);
+  };
+
+  // handle change value
+  const handleChange = (e) => {
+    const clone = { ...input };
+    clone[e.target.name] = e.target.value;
+    setInput(clone);
+  };
+
+  useEffect(() => {
+    const fetchAssetById = async () => {
+      try {
+        const res = await getBorrowById(borrowId);
+        console.log(res.data.borrow);
+        const borrow = res.data.borrow;
+        const assets = borrow.assets;
+        const packageAssets = borrow.packageAssets;
+        // setImg(asset.imageArray[0].image);
+        const dateDiff = Math.ceil(
+          (new Date(res.data.borrow.borrowSetReturnDate) -
+            new Date(res.data.borrow.borrowDate)) /
+            (1000 * 60 * 60 * 24)
+        );
+        const totalPrice = dateDiff * res.data.borrow.pricePerDay;
+
+        setInput({
+          ...input,
+          borrowIdDoc: borrow.borrowIdDoc,
+          pricePerDay: borrow.pricePerDay,
+          borrowDate: borrow.borrowDate,
+          borrowSetReturnDate: borrow.borrowSetReturnDate,
+          sector: borrow.sector,
+          subSector: borrow.subSector,
+          borrowPurpose: borrow.borrowPurpose,
+          dateDiff: dateDiff,
+          totalPrice: totalPrice,
+          handler: borrow.handler,
+          building: borrow.building,
+          floor: borrow.floor,
+          room: borrow.room,
+          reason: borrow.reason,
+          name_recorder: borrow.name_recorder,
+          dateTime_recorder: borrow.dateTime_recorder,
+          name_courier: borrow.name_courier,
+          dateTime_courier: borrow.dateTime_courier,
+          name_approver: borrow.name_approver,
+          dateTime_approver: borrow.dateTime_approver,
+          assetIdArray: borrow.assetIdArray,
+          packageAssetIdArray: borrow.packageAssetIdArray,
+          _id:borrow._id
+        });
+
+        let totalAssetAndPackageArray = [];
+        for (let el of assets) {
+          totalAssetAndPackageArray.push(el);
+        }
+        for (let el of packageAssets) {
+          totalAssetAndPackageArray.push(el);
+        }
+        setAssetList(totalAssetAndPackageArray);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchAssetById();
+  }, []);
+
   return (
     <>
       <div className="bg-background-page pt-5 p-3">
@@ -59,6 +159,7 @@ const BorrowApproveDetail = () => {
             <div className="text-text-gray ml-2">รายละเอียดการขออนุมัติ</div>
           </div>
         </div>
+
         {/* ข้อมูลการยืมครุภัณฑ์ */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
           <div className="flex justify-between">
@@ -67,89 +168,101 @@ const BorrowApproveDetail = () => {
               พิมพ์
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-5 md:gap-10">
-            {/* col 1 เลขที่เอกสารการยืม */}
-            <div className="grid grid-rows-3 md:col-span-2 pt-4 md:gap-10 gap-1">
-              <div className="flex flex-col gap-y-2 col-span-2 ">
-                <label className=" text-text-gray flex">
-                  เลขที่เอกสารการยืม
-                </label>
-                <input
-                  type="text"
-                  placeholder="Example"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                />
-              </div>
-              <div className="flex flex-col gap-y-2 col-span-1">
-                <label className="text-text-gray">วันที่ยืม</label>
-                <input
-                  type="date"
-                  placeholder="12/05/10"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                />
-              </div>
-              <div className="flex flex-col gap-y-2 col-span-1">
-                <label className="text-text-gray">วันที่คืน</label>
-                <input
-                  type="date"
-                  placeholder="12/05/10"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                />
-              </div>
-              <div className="flex flex-col gap-y-2 col-span-2">
-                <label className="text-text-gray">วัตถุประสงค์การขอยืม</label>
-                <input
-                  type="text"
-                  placeholder="Example"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                />
-              </div>
+          {/* Row 1 เลขที่เอกสารการยืม */}
+          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+            <div className="flex flex-col gap-y-2 col-span-2">
+              <label className=" text-text-gray flex">
+                เลขที่เอกสารการยืม
+                <h1 className="text-red-500 ml-2 font-bold">*</h1>
+              </label>
+              <input
+                type="text"
+                placeholder="Example"
+                readOnly
+                value={input.borrowIdDoc}
+                className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              />
             </div>
-            {/* col 2 ราคายืม */}
-            <div className="grid grid-rows-3 md:col-span-2 pt-4 md:gap-10 gap-1">
-              <div className="flex flex-col gap-y-2 col-span-1">
-                <label className=" text-text-gray flex">ราคายืม (ต่อวัน)</label>
-                <input
-                  type="number"
-                  placeholder="Example"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                />
-              </div>
-              <div className="flex flex-col gap-y-2 col-span-1">
-                <label className="text-text-gray">จำนวนวันที่ยืม (วัน) </label>
-                <input
-                  type="number"
-                  placeholder="5"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                />
-              </div>
-              <div className="flex flex-col gap-y-2 col-span-2">
-                <label className="text-text-gray">กำหนดส่งคืน</label>
-                <input
-                  type="date"
-                  placeholder="12/05/10"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                />
-              </div>
-              <div className="flex flex-col gap-y-2 col-span-2">
-                <label className="text-text-gray">มูลค่าการยืม (บาท)</label>
-                <input
-                  type="number"
-                  placeholder="400.00"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                />
-              </div>
+            <div className="flex flex-col gap-y-2 col-span-2">
+              <label className="text-text-gray">ราคายืม (ต่อวัน)</label>
+              <input
+                type="text"
+                placeholder="Example"
+                readOnly
+                value={input.pricePerDay.toFixed(2)}
+                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              />
+            </div>
+          </div>
+          {/* Row 2 วันที่ยืม */}
+          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+            <div className="flex flex-col gap-y-2 col-span-2">
+              <label className=" text-text-gray">วันที่ยืม</label>
+              <OnlyDateInput
+                id={"borrowDate"}
+                state={input}
+                setAssetList={setInput}
+                disabled={true}
+              />
+            </div>
+            <div className="flex flex-col gap-y-2 col-span-2">
+              <label className="text-text-gray">วันที่คืน</label>
+              <OnlyDateInput
+                id={"borrowReturnDate"}
+                state={input}
+                setAssetList={setInput}
+                disabled={true}
+              />
+            </div>
+          </div>
+          {/* Row 3 กำหนดส่งคืน */}
+          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+            <div className="flex flex-col gap-y-2 col-span-2">
+              <label className=" text-text-gray">กำหนดส่งคืน</label>
+              <OnlyDateInput
+                id={"borrowSetReturnDate"}
+                state={input}
+                setAssetList={setInput}
+                disabled={true}
+              />
+            </div>
+            <div className="flex flex-col gap-y-2 col-span-2">
+              <label className="text-text-gray">จำนวนวันที่ยืม (วัน) </label>
+              <input
+                type="number"
+                placeholder="5"
+                readOnly
+                value={input.dateDiff}
+                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              />
+            </div>
+          </div>
+
+          {/* Row 4 กำหนดส่งคืน */}
+          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+            <div className="flex flex-col gap-y-2 col-span-2">
+              <label className="text-text-gray">วัตถุประสงค์การขอยืม</label>
+              <input
+                type="text"
+                placeholder="Example"
+                readOnly
+                value={input.borrowPurpose}
+                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              />
+            </div>
+            <div className="flex flex-col gap-y-2 col-span-2">
+              <label className="text-text-gray">มูลค่าการยืม (บาท)</label>
+              <input
+                type="number"
+                placeholder="0.00"
+                readOnly
+                value={input.totalPrice.toFixed(2)}
+                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+              />
             </div>
           </div>
         </div>
+
         {/* รายการครุภัณฑ์ที่ยืม */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
           <div className="text-xl">รายการครุภัณฑ์ที่ยืม</div>
@@ -160,6 +273,7 @@ const BorrowApproveDetail = () => {
                 <div className="col-span-1">
                   <input
                     type="checkbox"
+                    onChange={() => handleAllCheckboxChange(assetList)}
                     className=" text-text-green placeholder-text-green focus:ring-0"
                   />
                 </div>
@@ -171,7 +285,10 @@ const BorrowApproveDetail = () => {
                 <div className="col-span-1">หน่วยนับ</div>
                 <div className="col-span-1">จำนวน(บาท)</div>
               </div>
-              <TableBorrowApprove data={tableData} />
+              <TableBorrowApprove
+                assetList={assetList}
+                handleCheckboxChange={handleCheckboxChange}
+              />
             </div>
           </div>
         </div>
@@ -186,6 +303,7 @@ const BorrowApproveDetail = () => {
                 type="text"
                 placeholder="Example"
                 readOnly
+                value={input.handler}
                 className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
@@ -228,6 +346,7 @@ const BorrowApproveDetail = () => {
                 type="text"
                 placeholder="ไอ่สองงงงงงง"
                 readOnly
+                value={input.sector}
                 className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
@@ -237,6 +356,7 @@ const BorrowApproveDetail = () => {
                 type="text"
                 placeholder="Example"
                 readOnly
+                value={input.subSector}
                 className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
@@ -247,19 +367,28 @@ const BorrowApproveDetail = () => {
           <div className="text-lg ">หมายเหตุ</div>
           <textarea
             maxLength=""
+            name="note"
+            value={input.note}
+            onChange={(e) => handleChange(e)}
             className="h-[250px] border-[1px] mt-5  rounded-md w-full focus:border-sky-300"
           ></textarea>
         </div>
-        {/* footer */}
+        {/* footer button */}
         <div className="flex justify-between items-center gap-5 p-3 text-sm ">
-          <Link
-            to="/borrowApprove"
-            className="border-[1px] border-red-400 px-7 hover:bg-gray-100 text-red-600 text-sm rounded-md p-2"
-          >
-            ไม่อนุมัติ
-          </Link>
-          <ModalSummary />
+          <ModalIndividualReject
+            input={input}
+            setInput={setInput}
+            assetList={assetList}
+            setAssetList={setAssetList}
+            // fetchFirstBorrowApproveData={props.fetchFirstBorrowApproveData}
+          />
+          <ModalSummary
+            assetList={assetList}
+            input={input}
+            setInput={setInput}
+          />
         </div>
+
         {/* user log progress */}
         <div className="bg-white border-[1px] p-4 mb-5 rounded-lg shadow-sm text-sm mt-3 md:flex items-center gap-5">
           {/* ผู้บันทึก */}
@@ -328,66 +457,21 @@ const BorrowApproveDetail = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-const ModalSummary = () => {
-  const [showModal, setShowModal] = useState(false)
-  const [isAllReject, setAllReject] = useState('สาเหตุแบบหลายรายการ')
-
-  const tableData = [
-    {
-      ID: '1',
-      assetId: '7440-001-001',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '3',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-    {
-      ID: '2',
-      assetId: '6301-018-0131',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '5',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-    {
-      ID: '3',
-      assetId: '1314-013-1331',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '7',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-  ]
-
-  const tableDataReject = [
-    {
-      ID: '1',
-      assetId: '7440-001-001',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '3',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-    {
-      ID: '2',
-      assetId: '6301-018-0131',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '5',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-  ]
+const ModalSummary = ({ assetList, input, setInput }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [isAllReject, setAllReject] = useState("สาเหตุแบบหลายรายการ");
 
   const callback = (payload) => {
-    setAllReject(payload)
+    setAllReject(payload);
+  };
+
+  const handleSubmit =async(e)=>{
+    e.preventDefault()
+    const inputJSON = JSON.stringify(input)
+    await partiallyApproveBorrowApproveDetail(input._id,{input:inputJSON})
   }
   return (
     <>
@@ -431,7 +515,7 @@ const ModalSummary = () => {
                         <div className="col-span-1">จำนวน</div>
                         <div className="col-span-1">จำนวน(บาท)</div>
                       </div>
-                      <TableSummaryApprove data={tableData} />
+                      <TableSummaryApprove assetList={assetList} />
                     </div>
                   </div>
                 </div>
@@ -450,10 +534,18 @@ const ModalSummary = () => {
                       />
                     </div>
                   </div>
-                  {isAllReject === 'สาเหตุแบบหลายรายการ' ? (
-                    <AllReject tableDataReject={tableDataReject} />
+                  {isAllReject === "สาเหตุแบบหลายรายการ" ? (
+                    <AllReject
+                      assetList={assetList}
+                      input={input}
+                      setInput={setInput}
+                    />
                   ) : (
-                    <EachReject tableDataReject={tableDataReject} />
+                    <EachReject
+                      assetList={assetList}
+                      input={input}
+                      setInput={setInput}
+                    />
                   )}
                 </div>
                 {/* footer */}
@@ -466,10 +558,11 @@ const ModalSummary = () => {
                     ยกเลิก
                   </button>
                   <Link
-                    to="/borrowApprove"
+                    // to="/borrowApprove"
                     className="text-white bg-text-green px-10 py-2 border rounded-md "
                     // type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={(e) => {setShowModal(false)
+                    handleSubmit(e)}}
                   >
                     ยืนยัน
                   </Link>
@@ -480,10 +573,10 @@ const ModalSummary = () => {
         </>
       ) : null}
     </>
-  )
-}
+  );
+};
 
-const EachReject = ({ tableDataReject }) => {
+const EachReject = ({ assetList, input, setInput }) => {
   return (
     <div>
       {/* table */}
@@ -498,14 +591,56 @@ const EachReject = ({ tableDataReject }) => {
             <div className="col-span-1">จำนวน(บาท)</div>
             <div className="col-span-2">สาเหตุที่ไม่อนุมัติ</div>
           </div>
-          <TableSummaryEachReject data={tableDataReject} />
+          <TableSummaryEachReject
+            assetList={assetList}
+            input={input}
+            setInput={setInput}
+          />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-const AllReject = ({ tableDataReject }) => {
+const AllReject = ({ assetList, input, setInput }) => {
+  const [allReason, setAllReason] = useState("");
+
+  const handleChangeAllReject = (e) => {
+    setAllReason(e.target.value);
+    const clone = { ...input };
+    clone[e.target.name] = e.target.value;
+
+    const updatedInput = {
+      ...input,
+      assetIdArray: input.assetIdArray.map((asset) => {
+        const checked = assetList.find(
+          (item) => item._id === asset.assetId
+        )?.checked;
+        return {
+          ...asset,
+          reason:
+            checked === false || checked === undefined
+              ? e.target.value
+              : asset.reason,
+        };
+      }),
+      packageAssetIdArray: input.packageAssetIdArray.map((packageAsset) => {
+        const checked = assetList.find(
+          (item) => item._id === packageAsset.packageAssetId
+        )?.checked;
+        return {
+          ...packageAsset,
+          reason:
+            checked === false || checked === undefined
+              ? e.target.value
+              : packageAsset.reason,
+        };
+      }),
+    };
+    setInput(updatedInput);
+
+  };
+
   return (
     <div>
       {/* table */}
@@ -519,7 +654,11 @@ const AllReject = ({ tableDataReject }) => {
             <div className="col-span-1">จำนวน</div>
             <div className="col-span-1">จำนวน(บาท)</div>
           </div>
-          <TableSummaryAllReject data={tableDataReject} />
+          <TableSummaryAllReject
+            assetList={assetList}
+            input={input}
+            setInput={setInput}
+          />
         </div>
       </div>
       {/* สาเหตุที่ไม่อนุมัติ */}
@@ -528,139 +667,196 @@ const AllReject = ({ tableDataReject }) => {
         <textarea
           maxLength=""
           className="h-[100px] border-[1px] mt-5  rounded-md w-full focus:border-sky-300"
+          value={allReason}
+          onChange={(e) => handleChangeAllReject(e)}
         ></textarea>
       </div>
     </div>
-  )
-}
+  );
+};
 
-const TableSummaryApprove = (props) => {
-  const [isClick, setIsClick] = useState(false)
+const TableSummaryApprove = ({ assetList }) => {
+  const [isClick, setIsClick] = useState(false);
+
+  const anyChecked = assetList.some((item) => item.checked);
 
   const handleClick = () => {
-    setIsClick(!isClick)
-  }
+    setIsClick(!isClick);
+  };
 
   return (
     <>
-      {props.data.map((item, idx) => {
-        return (
-          <div className="grid grid-cols-10 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
-            <div className="col-span-1  text-center flex justify-center items-center ">
-              <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
-                {idx + 1}
+      {anyChecked ? (
+        assetList.map((item, idx) => {
+          if (item.checked) {
+            return (
+              <div className="grid grid-cols-10 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+                <div className="col-span-1  text-center flex justify-center items-center ">
+                  <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+                    {idx + 1}
+                  </div>
+                </div>
+                <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                  {item.assetNumber}
+                </div>
+                <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                  {item.productName}
+                </div>
+                <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                  {item.brand}
+                </div>
+                <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
+                  {item.quantity}
+                </div>
+                <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
+                  {item.pricePerUnit}
+                </div>
               </div>
-            </div>
-            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetId}
-            </div>
-            <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetName}
-            </div>
-            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetModelDetail}
-            </div>
-            <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
-              {item.quantity}
-            </div>
-            <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
-              {item.totalPrice}
-            </div>
-          </div>
-        )
-      })}
+            );
+          }
+        })
+      ) : (
+        <div className="flex justify-center items-center h-40">
+          ยังไม่มีรายการยืมที่ท่านเลือก
+        </div>
+      )}
     </>
-  )
-}
-const TableSummaryEachReject = (props) => {
-  const [isClick, setIsClick] = useState(false)
+  );
+};
+const TableSummaryEachReject = ({ assetList, input, setInput }) => {
+  const [isClick, setIsClick] = useState(false);
 
   const handleClick = () => {
-    setIsClick(!isClick)
-  }
+    setIsClick(!isClick);
+  };
+
+  const handleChangeEachReject = (e, idx) => {
+    const clone = { ...input };
+    // console.log(assetList[idx]);
+    if (assetList[idx].hasOwnProperty("type4")) {
+      const packageAssetIdIdx = clone.packageAssetIdArray.findIndex(
+        (el) => el.packageAssetId === assetList[idx]._id
+      );
+      console.log(packageAssetIdIdx);
+      if (packageAssetIdIdx !== -1) {
+        clone.packageAssetIdArray[packageAssetIdIdx][e.target.name] =
+          e.target.value;
+      }
+      // clone.packageAssetIdArray[packageAssetId][e.target.name] = e.target.value;
+    } else {
+      const assetIdIdx = clone.assetIdArray.findIndex(
+        (el) => el.assetId === assetList[idx]._id
+      );
+      if (assetIdIdx !== -1) {
+        clone.assetIdArray[assetIdIdx][e.target.name] = e.target.value;
+      }
+    }
+    setInput(clone);
+  };
 
   return (
     <>
-      {props.data.map((item, idx) => {
-        return (
-          <div className="grid grid-cols-12 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
-            <div className="col-span-1  text-center flex justify-center items-center ">
-              <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
-                {idx + 1}
+      {assetList.map((item, idx) => {
+        if (
+          item.checked === false ||
+          item.hasOwnProperty("checked") === false
+        ) {
+          return (
+            <div className="grid grid-cols-12 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+              <div className="col-span-1  text-center flex justify-center items-center ">
+                <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+                  {idx + 1}
+                </div>
+              </div>
+              <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                {item.assetNumber}
+              </div>
+              <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                {item.productName}
+              </div>
+              <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                {item.brand}
+              </div>
+              <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
+                {item.quantity}
+              </div>
+              <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
+                {item.pricePerUnit}
+              </div>
+              <div className="col-span-2">
+                <input
+                  type="text"
+                  name="reason"
+                  value={
+                    assetList[idx].hasOwnProperty("type4")
+                      ? (
+                          input.packageAssetIdArray.find(
+                            (el) => el.packageAssetId === assetList[idx]._id
+                          ) || {}
+                        ).reason
+                      : (
+                          input.assetIdArray.find(
+                            (el) => el.assetId === assetList[idx]._id
+                          ) || {}
+                        ).reason
+                  }
+                  onChange={(e) => handleChangeEachReject(e, idx)}
+                  placeholder="Example"
+                  className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
               </div>
             </div>
-            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetId}
-            </div>
-            <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetName}
-            </div>
-            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetModelDetail}
-            </div>
-            <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
-              {item.quantity}
-            </div>
-            <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
-              {item.totalPrice}
-            </div>
-            <div className="col-span-2">
-              <input
-                type="text"
-                className="border-[1px] w-full p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-        )
+          );
+        }
       })}
     </>
-  )
-}
-const TableSummaryAllReject = (props) => {
-  const [isClick, setIsClick] = useState(false)
-
-  const handleClick = () => {
-    setIsClick(!isClick)
-  }
-
+  );
+};
+const TableSummaryAllReject = ({ assetList, input, setInput }) => {
   return (
     <>
-      {props.data.map((item, idx) => {
-        return (
-          <div className="grid grid-cols-10 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
-            <div className="col-span-1  text-center flex justify-center items-center ">
-              <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
-                {idx + 1}
+      {assetList.map((item, idx) => {
+        console.log(item.hasOwnProperty("checked"));
+        if (
+          item.checked === false ||
+          item.hasOwnProperty("checked") === false
+        ) {
+          return (
+            <div className="grid grid-cols-10 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+              <div className="col-span-1  text-center flex justify-center items-center ">
+                <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+                  {idx + 1}
+                </div>
+              </div>
+              <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                {item.assetNumber}
+              </div>
+              <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                {item.productName}
+              </div>
+              <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                {item.brand}
+              </div>
+              <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
+                {item.quantity}
+              </div>
+              <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
+                {item.pricePerUnit}
               </div>
             </div>
-            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetId}
-            </div>
-            <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetName}
-            </div>
-            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetModelDetail}
-            </div>
-            <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
-              {item.quantity}
-            </div>
-            <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
-              {item.totalPrice}
-            </div>
-          </div>
-        )
+          );
+        }
       })}
     </>
-  )
-}
+  );
+};
 
 const DropdownModalBorrowReject = ({ callback, header }) => {
-  const [isOpen, setOpen] = useState(false)
+  const [isOpen, setOpen] = useState(false);
 
   const handleDropDown = () => {
-    setOpen(!isOpen)
-  }
+    setOpen(!isOpen);
+  };
 
   return (
     <div className="relative">
@@ -689,8 +885,8 @@ const DropdownModalBorrowReject = ({ callback, header }) => {
       <div
         className={
           isOpen
-            ? 'absolute z-10 w-[225px] inset-x-0 top-10 border border-gray-100 rounded-md shadow-lg'
-            : 'hidden'
+            ? "absolute z-10 w-[225px] inset-x-0 top-10 border border-gray-100 rounded-md shadow-lg"
+            : "hidden"
         }
       >
         <ul
@@ -700,7 +896,7 @@ const DropdownModalBorrowReject = ({ callback, header }) => {
           <li>
             <button
               className="py-2 px-4 w-full hover:bg-gray-100"
-              onClick={() => callback('สาเหตุแบบหลายรายการ')}
+              onClick={() => callback("สาเหตุแบบหลายรายการ")}
             >
               สาเหตุแบบหลายรายการ
             </button>
@@ -708,7 +904,7 @@ const DropdownModalBorrowReject = ({ callback, header }) => {
           <li>
             <button
               className="py-2 px-4 w-full hover:bg-gray-100"
-              onClick={() => callback('แยกการให้สาเหตุแต่ละรายการ')}
+              onClick={() => callback("แยกการให้สาเหตุแต่ละรายการ")}
             >
               แยกการให้สาเหตุแต่ละรายการ
             </button>
@@ -716,6 +912,171 @@ const DropdownModalBorrowReject = ({ callback, header }) => {
         </ul>
       </div>
     </div>
-  )
-}
-export default BorrowApproveDetail
+  );
+};
+export default BorrowApproveDetail;
+
+const ModalIndividualReject = ({
+  input,
+  setInput,
+  fetchFirstBorrowApproveData,
+}) => {
+  const [showModal, setShowModal] = useState(false);
+  // const state = props.state;
+
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  const hoursOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+
+  const handleChangeIndividualReject = (e) => {
+    const clone = { ...input };
+    clone[e.target.name] = e.target.value;
+    setInput(clone);
+  };
+
+  const handleSubmitIndividualReject = async (e) => {
+    e.preventDefault();
+    const cloneInput = { ...input };
+
+    const filteredAndModifiedObject = (input) => {
+      // add the reason property to each item in the filtered packageAssetIdArray
+      const modifiedPackageAssetIdArray = input.packageAssetIdArray.map(
+        (asset) => ({
+          ...asset,
+          reason: input.reason,
+        })
+      );
+
+      // add the reason property to each item in the assetIdArray
+      const modifiedAssetIdArray = input.assetIdArray.map((asset) => ({
+        ...asset,
+        reason: input.reason,
+      }));
+
+      // create a new object with the modified packageAssetIdArray and assetIdArray
+      return {
+        ...input,
+        packageAssetIdArray: modifiedPackageAssetIdArray,
+        assetIdArray: modifiedAssetIdArray,
+      };
+    };
+
+    const result = filteredAndModifiedObject(cloneInput);
+
+    // only one that you select
+    const inputJSON = JSON.stringify(result);
+    await rejectAllBorrowApproveDetail(input._id,{ input: inputJSON });
+    // const topApproveListJSON = JSON.stringify(result);
+    // await rejectIndividualWaitingBorrow({
+    //   topApproveList: topApproveListJSON,
+    // });
+    // await fetchFirstBorrowApproveData();
+  };
+
+  return (
+    <>
+      <button
+        className="p-2 px-10 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-200"
+        type="button"
+        onClick={() => setShowModal(true)}
+      >
+        ไม่อนุมัติ
+      </button>
+      {showModal ? (
+        <>
+          <div className="fixed inset-0 -left-10 bg-black opacity-50" />
+          <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
+            <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
+              <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
+                {/* สาเหตุที่ไม่อนุมัติ */}
+                <div>
+                  {/* header*/}
+                  <div className="flex items-center justify-between p-5 ">
+                    <h3 className="text-xl">สาเหตุที่ไม่อนุมัติ</h3>
+                    <button
+                      className="border-0 text-black float-right"
+                      onClick={() => setShowModal(false)}
+                    >
+                      <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
+                        x
+                      </span>
+                    </button>
+                  </div>
+                  {/* reject information */}
+                  <div className="p-3">
+                    <div className="bg-background-page border-[2px] rounded-md p-3 w-full">
+                      <div className="md:flex justify-between">
+                        <div className="flex space-x-10">
+                          <h1>เลขที่ ID เลขที่การยืม</h1>
+                          <h1>{input.borrowIdDoc}</h1>
+                        </div>
+                        <div className="flex space-x-5 mr-5">
+                          <h1>
+                            {" "}
+                            {new Date(input.borrowDate).toLocaleDateString(
+                              "th-TH",
+                              options
+                            )}
+                          </h1>
+                          <h1>
+                            {" "}
+                            {new Date(input.borrowDate).toLocaleTimeString(
+                              "th-TH",
+                              hoursOptions
+                            )}
+                          </h1>
+                        </div>
+                      </div>
+                      <div className="mt-2">
+                        <div className="flex space-x-5">
+                          <h1>หน่วยงานที่เสนอ</h1>
+                          <h1>{input.sector}</h1>
+                        </div>
+                        <div className="flex items-center space-x-5 mt-2">
+                          <label>สาเหตุที่ไม่อนุมัติ</label>
+                          <input
+                            type="text"
+                            name="reason"
+                            value={input.reason}
+                            onChange={(e) => handleChangeIndividualReject(e)}
+                            placeholder="Example"
+                            required
+                            className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* footer */}
+                <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
+                  <button
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md "
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                  >
+                    ยกเลิก
+                  </button>
+                  <Link
+                    to="/borrowApprove"
+                    className="text-white bg-red-600 px-10 py-2 border rounded-md "
+                    // type="button"
+                    onClick={(e) => {
+                      setShowModal(false);
+                      handleSubmitIndividualReject(e);
+                    }}
+                  >
+                    ยืนยัน
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null}
+    </>
+  );
+};

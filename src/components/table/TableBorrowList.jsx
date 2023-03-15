@@ -45,7 +45,7 @@ const TableBorrowList = (props) => {
                       ? " bg-sidebar-green text-text-green  rounded-xl  "
                       : item.status === "watingReturnApprove"
                       ? "bg-orange-100 text-orange-400 rounded-xl"
-                      : item.status === "cancel"
+                      : item.status === "cancel" || item.status === "reject" 
                       ? "bg-red-200 text-red-600  rounded-xl"
                       : "bg-text-green text-white rounded-md hover:bg-green-800"
                   } border border-spacing-5 p-2 w-full`}
@@ -56,8 +56,10 @@ const TableBorrowList = (props) => {
                     ? "คืนสำเร็จ"
                     : item.status === "waitCheckReturn"
                     ? "รอตรวจรับ"
-                    : item.status === "cancel"
+                    : item.status === "cancel" 
                     ? "ยกเลิก"
+                    : item.status === "reject" 
+                    ? "ไม่อนุมัติ"
                     : "บันทึกคืน"}
                 </button>
               </div>

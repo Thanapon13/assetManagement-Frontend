@@ -93,7 +93,46 @@ export function deleteAsset(input) {
 }
 
 
-export function getAllSectorFromBorrow() {
+export function getAllFirstFetchBorrowApprove() {
+  return axios.get(`/borrow/allFirstFetchBorrowApprove`);
+}
+export function getBySearchTopBorrowApprove(search) {
 
+  function getQueryString(search) {
+    const params = Object.keys(search)
+      .filter(key => search[key] !== "") // remove empty values
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+      .join("&");
+    return params;
+  }
+
+  const queryString = getQueryString(search);
+
+  // console.log(queryString)
+
+  return axios.get(`/borrow/searchTopBorrowApprove?${queryString}`);
+}
+export function approveAllWaitingBorrow(input) {
+  return axios.patch(`/borrow/approveAllWaitingBorrow`,input);
+}
+export function rejectAllWaitingBorrow(input) {
+  return axios.patch(`/borrow/rejectAllWaitingBorrow`,input);
+}
+export function rejectIndividualWaitingBorrow(input) {
+  return axios.patch(`/borrow/rejectIndividualWaitingBorrow`,input);
+}
+
+// borrowApproveDetail page
+export function partiallyApproveBorrowApproveDetail(id,input) {
+  return axios.patch(`/borrow/partiallyApproveBorrowApproveDetail/${id}`,input);
+}
+export function rejectAllBorrowApproveDetail(id,input) {
+  console.log(id,input)
+  return axios.patch(`/borrow/rejectAllBorrowApproveDetail/${id}`,input);
+}
+
+
+// dropdown
+export function getAllSectorFromBorrow() {
   return axios.get(`/borrow/dropdownAllSectorFromBorrow`);
 }

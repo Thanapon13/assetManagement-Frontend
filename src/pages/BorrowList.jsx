@@ -204,7 +204,7 @@ const BorrowList = () => {
       } else {
         res = await getBorrowBySearch(search);
       }
-      console.log(res.data.borrow);
+      // console.log(res.data.borrow);
 
       // handle the response data
       setBorrowList(res.data.borrow);
@@ -225,6 +225,7 @@ const BorrowList = () => {
   };
 
   const handlePaginationSearch = (e) => {
+    console.log({ ...search, [e.target.name]: e.target.value })
     setSearch({ ...search, [e.target.name]: e.target.value });
     fetchSearchBorrowList({ ...search, [e.target.name]: e.target.value });
   };

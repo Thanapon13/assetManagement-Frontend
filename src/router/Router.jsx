@@ -140,7 +140,7 @@ const Router = () => {
         <Route path="borrowRecord" element={<BorrowRecord />} />
         <Route path="borrowApprove" element={<BorrowApprove />} />
         <Route
-          path="borrowApprove/borrowApproveDetail"
+          path="borrowApproveDetail/:borrowId"
           element={<BorrowApproveDetail />}
         />
         <Route path="borrowHistory" element={<BorrowHistoryIndex />} />

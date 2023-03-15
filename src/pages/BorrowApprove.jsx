@@ -4,108 +4,137 @@ import ModalBorrowRejectAllApprove from "../components/modal/ModalBorrowRejectAl
 import OnlyDateInput from "../components/date/onlyDateInput";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useEffect } from "react";
-import { getAllSectorFromBorrow } from "../api/borrowApi";
+import {
+  approveAllWaitingBorrow,
+  getAllFirstFetchBorrowApprove,
+  getAllSectorFromBorrow,
+  getBySearchTopBorrowApprove,
+  rejectIndividualWaitingBorrow,
+} from "../api/borrowApi";
 import ApproveSectorSelector from "../components/selector/ApproveSectorSelector";
+import { id } from "date-fns/locale";
 
 const BorrowApprove = () => {
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+
   const [search, setSearch] = useState({
     dateFrom: "",
     dateTo: new Date(),
     sector: "",
-    listStatus: "",
+    listStatus: [],
+  });
+  const [amountOfStatusList, setAmountOfStatusList] = useState({
+    totalAll: 0,
+    totalApprove: 0,
+    totalReject: 0,
+    totalWaiting: 0,
   });
 
   const [sectorList, setSectorList] = useState([]);
-
-  const dataTopApproveList = [
-    {
-      id: "1271",
-      agencyName: "ภาควิชาอายุรศาสตร์",
-      date: "29/12/2565",
-      time: "18:00",
-    },
-    {
-      id: "1272",
-      agencyName: "ภาควิชาเวทมนต์ศาสตร์มืด",
-      date: "30/12/2565",
-      time: "19:00",
-    },
-    {
-      id: "1273",
-      agencyName: "ภาควิชาปรุงยาแมนเดรก",
-      date: "31/12/2565",
-      time: "20:10",
-    },
-  ];
-
-  const dataBottomApprovedList = [
-    {
-      id: "1271",
-      agencyName: "ภาควิชาศาสตร์มืด",
-      date: "29/12/2565",
-      time: "18:00",
-      offerDate: "9/03/2565",
-      offerTime: "9:31",
-    },
-    {
-      id: "1272",
-      agencyName: "ภาควิชาศาสตร์มืดมิด",
-      date: "30/12/2565",
-      time: "19:00",
-      offerDate: "12/03/2565",
-      offerTime: "20:22",
-    },
-    {
-      id: "1273",
-      agencyName: "ภาควิชาศาสตร์มืดมน",
-      date: "23/11/2565",
-      time: "12:00",
-      offerDate: "22/05/2565",
-      offerTime: "8:22",
-    },
-  ];
 
   const boxStyle = {
     boxStatus: `p-2 rounded-md flex flex-col items-center border-[2px] shadow-md`,
   };
 
-  const [topApproveList, setTopApproveList] = useState(dataTopApproveList);
-  const [bottomApprovedList, setBottomApprovedList] = useState(
-    dataBottomApprovedList
-  );
+  const [topApproveList, setTopApproveList] = useState([]);
+  const [bottomApprovedList, setBottomApprovedList] = useState([]);
 
   // toggle check all
   const [isChecked, setIsChecked] = useState(false);
 
-  // handle
+  const fetchSearchWaitingBorrowList = async () => {
+    try {
+      console.log(search);
+      const res = await getBySearchTopBorrowApprove(search);
+      console.log(res.data);
+      // console.log("top",res.data.topApproveList);
+      // console.log("bottom",res.data.bottomApproveList);
+      setTopApproveList(res.data.topApproveList);
+      setBottomApprovedList(res.data.bottomApproveList);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // handle checkbox
   const handleAllCheckboxChange = (list) => {
     setIsChecked(!isChecked);
     const newCheck = !isChecked;
     const newList = list.map((item) => {
       return { ...item, checked: newCheck };
     });
+    console.log(newList);
     setTopApproveList(newList);
   };
 
   const handleCheckboxChange = (list, id) => {
     const newList = list.map((item) => {
-      if (item.id === id) {
+      if (item._id === id) {
         return { ...item, checked: !item.checked };
       }
       return item;
     });
+    console.log(newList);
     setTopApproveList(newList);
   };
 
   const handleSearch = () => {
-    // fetchSearchAssetList();
+    fetchSearchWaitingBorrowList();
   };
 
+  // handle add ListStatus in search
+  const handleListStatusChange = (value) => {
+    const listStatus = search.listStatus;
+    const index = listStatus.indexOf(value);
+    console.log(index);
+    if (index === -1) {
+      listStatus.push(value);
+    } else {
+      listStatus.splice(index, 1);
+    }
+    console.log(listStatus);
+    setSearch({ ...search, listStatus: listStatus });
+  };
+
+  // Modal Submit
+  const handleApproveAllWaitingList = async (e, state) => {
+    e.preventDefault();
+    console.log(state);
+    const topApproveListJSON = JSON.stringify(state);
+    console.log(topApproveListJSON);
+    await approveAllWaitingBorrow({
+      topApproveList: topApproveListJSON,
+    });
+    await fetchFirstBorrowApproveData();
+  };
+
+  // fetch dropdown sector
   const fetchApproveSectorSelector = async () => {
     try {
       const res = await getAllSectorFromBorrow();
-      console.log(res.data.sectors);
+      // console.log(res.data.sectors);
       setSectorList(res.data.sectors);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // getAllFirstFetchBorrowApprove
+  const fetchFirstBorrowApproveData = async () => {
+    try {
+      const res = await getAllFirstFetchBorrowApprove();
+      // console.log(res.data);
+      // console.log(res.data.waitingList);
+      // console.log("bottomList", res.data.bottomList);
+      setTopApproveList(res.data.waitingList);
+      setBottomApprovedList(res.data.bottomList);
+      // setSectorList(res.data.sectors);
+      setAmountOfStatusList({
+        totalAll: res.data.totalAll,
+        totalApprove: res.data.totalApprove,
+        totalReject: res.data.totalReject,
+        totalWaiting: res.data.totalWaiting,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -113,6 +142,7 @@ const BorrowApprove = () => {
 
   useEffect(() => {
     fetchApproveSectorSelector();
+    fetchFirstBorrowApproveData();
   }, []);
 
   return (
@@ -137,8 +167,8 @@ const BorrowApprove = () => {
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
           <div className="text-lg ">รายการเสนออนุมัติประจำวัน</div>
           {/* วันที่ */}
-          <div className="grid md:grid-cols-7 xl:grid-cols-13 pt-4 gap-5 md:gap-x-5">
-            <div className=" md:col-span-3 flex flex-col gap-y-2">
+          <div className="grid md:grid-cols-7 pt-4 gap-5 md:gap-x-5">
+            <div className=" md:col-span-2 flex flex-col gap-y-2">
               <label className=" text-text-gray flex">วันที่เริ่มต้น</label>
               <div className="flex h-[38px]">
                 <OnlyDateInput
@@ -148,7 +178,7 @@ const BorrowApprove = () => {
                 />
               </div>
             </div>
-            <div className="md:col-span-3 flex flex-col gap-y-2">
+            <div className="md:col-span-2 flex flex-col gap-y-2">
               <label className=" text-text-gray flex">วันที่สิ้นสุด</label>
               <div className="flex h-[38px]">
                 <OnlyDateInput
@@ -158,7 +188,7 @@ const BorrowApprove = () => {
                 />
               </div>
             </div>
-            <div className="md:col-span-3 flex flex-col gap-y-2">
+            <div className="md:col-span-2 flex flex-col gap-y-2">
               <label className="text-text-gray">
                 หน่วยงานที่เสนอ(รหัส P4P)
               </label>
@@ -178,7 +208,7 @@ const BorrowApprove = () => {
                 data={sectorList}
               />
             </div>
-            <div className=" md:col-span-3 flex flex-col gap-y-2">
+            {/* <div className=" md:col-span-3 flex flex-col gap-y-2">
               <label className="text-text-gray">รายการ</label>
               <select className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md">
                 <option defaultValue>ดูทั้งหมด</option>
@@ -186,7 +216,7 @@ const BorrowApprove = () => {
                 <option>อนุมัติ</option>
                 <option>ไม่อนุมัติ</option>
               </select>
-            </div>
+            </div> */}
 
             <div className="flex justify-end items-end">
               <button
@@ -205,24 +235,26 @@ const BorrowApprove = () => {
             <div className={`${boxStyle.boxStatus} border-blue-500`}>
               <h1>ทั้งหมด (รายการ)</h1>
               <div className="text-2xl font-semibold pt-3 text-blue-500">
-                10
+                {amountOfStatusList.totalAll}
               </div>
             </div>
             <div className={`${boxStyle.boxStatus} border-yellow-300`}>
               <h1>รออนุมัติ (รายการ)</h1>
               <div className="text-2xl font-semibold pt-3 text-yellow-700">
-                4
+                {amountOfStatusList.totalWaiting}
               </div>
             </div>
             <div className={`${boxStyle.boxStatus} border-green-500`}>
               <h1>อนุมัติ (รายการ)</h1>
               <div className="text-2xl font-semibold pt-3 text-green-600">
-                5
+                {amountOfStatusList.totalApprove}
               </div>
             </div>
             <div className={`${boxStyle.boxStatus} border-red-500`}>
               <h1>ไม่อนุมัติ (รายการ)</h1>
-              <div className="text-2xl font-semibold pt-3 text-red-500">1</div>
+              <div className="text-2xl font-semibold pt-3 text-red-500">
+                {amountOfStatusList.totalReject}
+              </div>
             </div>
           </div>
           {/* header approve list */}
@@ -236,19 +268,32 @@ const BorrowApprove = () => {
                 />
                 <h1 className="ml-2">เลือกทั้งหมด</h1>
               </div>
-              <h1 className="">เลือกแล้ว {3} รายการ</h1>
+              <h1 className="">
+                เลือกแล้ว {amountOfStatusList.totalWaiting} รายการ
+              </h1>
             </div>
             <div className="flex space-x-5 md:space-x-10">
-              <ModalBorrowRejectAllApprove />
-              <ModalApproveAll />
+              <ModalBorrowRejectAllApprove
+                state={topApproveList}
+                setState={setTopApproveList}
+                fetchFirstBorrowApproveData={fetchFirstBorrowApproveData}
+              />
+              <ModalApproveAll
+                state={topApproveList}
+                setState={setTopApproveList}
+                handleApproveAllWaitingList={handleApproveAllWaitingList}
+              />
             </div>
           </div>
           {/* approve list item */}
-          <BorrowApproveListItem
-            state={topApproveList}
-            setState={setTopApproveList}
-            handle={handleCheckboxChange}
-          />
+          <div className="mt-3">
+            <BorrowApproveListItem
+              state={topApproveList}
+              setState={setTopApproveList}
+              handle={handleCheckboxChange}
+              fetchFirstBorrowApproveData={fetchFirstBorrowApproveData}
+            />
+          </div>
         </div>
         {/* รายการคำขอที่จัดการแล้ว */}
         <div className="bg-white border-[1px] mb-5 p-4 rounded-lg shadow-sm text-sm mt-3">
@@ -256,7 +301,14 @@ const BorrowApprove = () => {
           <div className="flex items-center space-x-10">
             <div className="text-lg">รายการคำขอที่จัดการแล้ว</div>
             <div className="md:flex space-x-5">
-              <div className="flex text-text-green bg-sidebar-green p-2 border rounded-2xl ">
+              <button
+                className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${
+                  search.listStatus.includes("approve")
+                    ? "border-2 border-green-800 "
+                    : ""
+                }`}
+                onClick={() => handleListStatusChange("approve")}
+              >
                 อนุมัติแล้ว
                 <div className="ml-2">
                   <svg
@@ -272,8 +324,15 @@ const BorrowApprove = () => {
                     />
                   </svg>
                 </div>
-              </div>
-              <div className="flex text-red-500 bg-red-100 p-2 border rounded-2xl">
+              </button>
+              <button
+                className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${
+                  search.listStatus.includes("reject")
+                    ? "border-2 border-red-800 "
+                    : ""
+                }`}
+                onClick={() => handleListStatusChange("reject")}
+              >
                 ไม่อนุมัติ
                 <div className="ml-2">
                   <svg
@@ -289,8 +348,15 @@ const BorrowApprove = () => {
                     />
                   </svg>
                 </div>
-              </div>
-              <div className="flex text-orange-400 bg-orange-100 p-2 border rounded-2xl">
+              </button>
+              <button
+                className={`flex text-orange-400 bg-orange-100 p-2 border rounded-2xl  ${
+                  search.listStatus.includes("partiallyApprove")
+                    ? "border-2 border-orange-800 "
+                    : ""
+                }`}
+                onClick={() => handleListStatusChange("partiallyApprove")}
+              >
                 อนุมัติบางส่วน
                 <div className="ml-2">
                   <svg
@@ -306,11 +372,13 @@ const BorrowApprove = () => {
                     />
                   </svg>
                 </div>
-              </div>
+              </button>
             </div>
           </div>
           {/* approved list item */}
-          <BorrowApprovedListItem data={dataBottomApprovedList} />
+          <div className="mt-3">
+            <BorrowApprovedListItem data={bottomApprovedList} />
+          </div>
         </div>
       </div>
       {/* footer */}
@@ -334,117 +402,174 @@ const BorrowApprove = () => {
 };
 
 const BorrowApproveListItem = (props) => {
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  const hoursOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
   return (
-    <>
-      {props.state.map((item, idx) => {
-        return (
-          <div key={idx} className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              checked={item.checked}
-              onChange={() => props.handle(props.state, item.id)}
-              className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
-            />
-            <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
+    <div className="overflow-x-auto overflow-y-auto scrollbar ">
+      <div className=" h-[500px] ">
+        {props.state.map((item, idx) => {
+          return (
+            <div key={idx} className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                checked={item.checked}
+                onChange={() => props.handle(props.state, item._id)}
+                className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
+              />
+              <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
+                <div className="flex justify-between">
+                  <div className="flex space-x-10">
+                    <h1>เลขที่ ID เลขที่การยืม</h1>
+                    <h1>{item.borrowIdDoc}</h1>
+                  </div>
+                  <div className="flex space-x-5 mr-5">
+                    <h1>
+                      {new Date(item.borrowDate).toLocaleDateString(
+                        "th-TH",
+                        options
+                      )}
+                    </h1>
+                    <h1>
+                      {new Date(item.borrowDate).toLocaleTimeString(
+                        "th-TH",
+                        hoursOptions
+                      )}
+                    </h1>
+                  </div>
+                </div>
+                <div className="mt-5">
+                  <div className="flex space-x-5">
+                    <h1>หน่วยงานที่เสนอ</h1>
+                    <h1>{item.sector}</h1>
+                  </div>
+                  <div className="flex justify-end space-x-5">
+                    <ModalIndividualReject
+                      idx={idx}
+                      state={props.state}
+                      setState={props.setState}
+                      fetchFirstBorrowApproveData={
+                        props.fetchFirstBorrowApproveData
+                      }
+                    />
+                    <Link
+                      // type="button"
+                      to={`/borrowApproveDetail/${props.state[idx]._id}`}
+                      className=" p-2 px-10 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
+                    >
+                      อนุมัติ
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const BorrowApprovedListItem = ({ data }) => {
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  const hoursOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+  return (
+    <div className="overflow-x-auto overflow-y-auto scrollbar ">
+      <div className=" h-[500px] ">
+        {data.map((item, idx) => {
+          return (
+            <div
+              key={idx}
+              className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full"
+            >
               <div className="flex justify-between">
                 <div className="flex space-x-10">
                   <h1>เลขที่ ID เลขที่การยืม</h1>
-                  <h1>{item.id}</h1>
+                  <h1>{item.borrowIdDoc}</h1>
                 </div>
-                <div className="flex space-x-5 mr-5">
-                  <h1>{item.date}</h1>
-                  <h1>{item.time}</h1>
+                <div className="flex space-x-2 mr-5 text-text-gray">
+                  <h1>
+                    วันที่อนุมัติ:{" "}
+                    {new Date(item.borrowDate).toLocaleDateString(
+                      "th-TH",
+                      options
+                    )}{" "}
+                    ,
+                  </h1>
+                  <h1>
+                    {new Date(item.borrowDate).toLocaleTimeString(
+                      "th-TH",
+                      hoursOptions
+                    )}
+                  </h1>
                 </div>
               </div>
               <div className="mt-5">
                 <div className="flex space-x-5">
-                  <h1>หน่วยงานที่เสนอ</h1>
-                  <h1>{item.agencyName}</h1>
+                  <h1 className="text-text-gray">หน่วยงานที่เสนอ</h1>
+                  <h1>{item.sector}</h1>
                 </div>
-                <div className="flex justify-end space-x-5">
-                  <ModalIndividualReject data={item} />
-                  <Link
-                    // type="button"
-                    to="borrowApproveDetail"
-                    className=" p-2 px-10 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
-                  >
-                    อนุมัติ
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </>
-  );
-};
-
-const BorrowApprovedListItem = (props) => {
-  return (
-    <>
-      {props.data.map((item, idx) => {
-        return (
-          <div
-            key={idx}
-            className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full"
-          >
-            <div className="flex justify-between">
-              <div className="flex space-x-10">
-                <h1>เลขที่ ID เลขที่การยืม</h1>
-                <h1>{item.id}</h1>
-              </div>
-              <div className="flex space-x-2 mr-5 text-text-gray">
-                <h1>วันที่อนุมัติ: {item.date} ,</h1>
-                <h1>{item.time}</h1>
-              </div>
-            </div>
-            <div className="mt-5">
-              <div className="flex space-x-5">
-                <h1 className="text-text-gray">หน่วยงานที่เสนอ</h1>
-                <h1>{item.agencyName}</h1>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex text-text-gray">
-                  วันที่เสนอ
-                  <div className="px-5 text-black">
-                    {item.offerDate} , {item.offerTime}
+                <div className="flex justify-between items-center">
+                  <div className="flex text-text-gray">
+                    วันที่เสนอ
+                    <div className="px-5 text-black">
+                      {new Date(item.dateTime_approver).toLocaleDateString(
+                        "th-TH",
+                        options
+                      )}{" "}
+                      ,{" "}
+                      {new Date(item.dateTime_approver).toLocaleTimeString(
+                        "th-TH",
+                        hoursOptions
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="">
-                  <div className="text-text-green bg-sidebar-green p-2 border rounded-2xl ">
-                    อนุมัติแล้ว
+                  <div className="">
+                    <div
+                      className={`${
+                        item.status === "waiting"
+                          ? " bg-background-light-blue text-text-blue  rounded-xl "
+                          : item.status === "approve"
+                          ? " bg-sidebar-green text-text-green  rounded-xl  "
+                          : item.status === "watingReturnApprove"
+                          ? "bg-orange-100 text-orange-400 rounded-xl"
+                          : item.status === "cancel" || item.status === "reject"
+                          ? "bg-red-200 text-red-600  rounded-xl"
+                          : "bg-text-green text-white rounded-md hover:bg-green-800"
+                      } border border-spacing-5 p-2 w-full`}
+                    >
+                      {item.status === "waiting"
+                        ? "รออนุมัติ"
+                        : item.status === "done"
+                        ? "คืนสำเร็จ"
+                        : item.status === "waitCheckReturn"
+                        ? "รอตรวจรับ"
+                        : item.status === "cancel"
+                        ? "ยกเลิก"
+                        : item.status === "reject"
+                        ? "ไม่อนุมัติ"
+                        : "บันทึกคืน"}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
-      })}
-    </>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 
-const ModalApproveAll = () => {
+const ModalApproveAll = ({ state, setState, handleApproveAllWaitingList }) => {
   const [showModal, setShowModal] = useState(false);
-
-  const tableData = [
-    {
-      borrowIdDoc: "br.2314530087",
-      agencyBorrowerName: "พัดลม hatari แบบ",
-      borrowDate: "27/05/2132",
-    },
-    {
-      borrowIdDoc: "br.2314530087",
-      agencyBorrowerName: "พัดลม hatari แบบ",
-      borrowDate: "27/05/2132",
-    },
-    {
-      borrowIdDoc: "br.2314530087",
-      agencyBorrowerName: "พัดลม hatari แบบ",
-      borrowDate: "27/05/2132",
-    },
-  ];
 
   return (
     <>
@@ -486,7 +611,7 @@ const ModalApproveAll = () => {
                         <div className="col-span-3">หน่วยงานที่เสนอ</div>
                         <div className="col-span-2">วันที่เสนอ</div>
                       </div>
-                      <TableSummaryApprove data={tableData} />
+                      <TableSummaryApprove state={state} setState={setState} />
                     </div>
                   </div>
                 </div>
@@ -499,14 +624,16 @@ const ModalApproveAll = () => {
                   >
                     ยกเลิก
                   </button>
-                  <Link
-                    to="/borrowApprove"
+                  <button
                     className="text-white bg-text-green px-10 py-2 border rounded-md "
-                    // type="button"
-                    onClick={() => setShowModal(false)}
+                    type="button"
+                    onClick={(e) => {
+                      setShowModal(false);
+                      handleApproveAllWaitingList(e, state);
+                    }}
                   >
                     ยืนยัน
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
@@ -517,9 +644,64 @@ const ModalApproveAll = () => {
   );
 };
 
-const ModalIndividualReject = (props) => {
+const ModalIndividualReject = ({
+  state,
+  setState,
+  idx,
+  fetchFirstBorrowApproveData,
+}) => {
   const [showModal, setShowModal] = useState(false);
-  const item = props.data;
+  // const state = props.state;
+
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  const hoursOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+
+  const handleChangeIndividualReject = (e) => {
+    const clone = [...state];
+    clone[idx][e.target.name] = e.target.value;
+    setState(clone);
+  };
+
+  const handleSubmitIndividualReject = async (e) => {
+    e.preventDefault();
+    const cloneObject = state[idx];
+
+    const filteredAndModifiedObject = (input) => {
+      // add the reason property to each item in the filtered packageAssetIdArray
+      const modifiedPackageAssetIdArray = input.packageAssetIdArray.map(
+        (asset) => ({
+          ...asset,
+          reason: input.reason,
+        })
+      );
+
+      // add the reason property to each item in the assetIdArray
+      const modifiedAssetIdArray = input.assetIdArray.map((asset) => ({
+        ...asset,
+        reason: input.reason,
+      }));
+
+      // create a new object with the modified packageAssetIdArray and assetIdArray
+      return {
+        ...input,
+        packageAssetIdArray: modifiedPackageAssetIdArray,
+        assetIdArray: modifiedAssetIdArray,
+      };
+    };
+
+    const result = filteredAndModifiedObject(cloneObject);
+
+    // only one that you select
+    const topApproveListJSON = JSON.stringify(result);
+    await rejectIndividualWaitingBorrow({
+      topApproveList: topApproveListJSON,
+    });
+    await fetchFirstBorrowApproveData();
+  };
 
   return (
     <>
@@ -556,22 +738,37 @@ const ModalIndividualReject = (props) => {
                       <div className="md:flex justify-between">
                         <div className="flex space-x-10">
                           <h1>เลขที่ ID เลขที่การยืม</h1>
-                          <h1>{item.id}</h1>
+                          <h1>{state[idx].borrowIdDoc}</h1>
                         </div>
                         <div className="flex space-x-5 mr-5">
-                          <h1>{item.date}</h1>
-                          <h1>{item.time}</h1>
+                          <h1>
+                            {" "}
+                            {new Date(state[idx].borrowDate).toLocaleDateString(
+                              "th-TH",
+                              options
+                            )}
+                          </h1>
+                          <h1>
+                            {" "}
+                            {new Date(state[idx].borrowDate).toLocaleTimeString(
+                              "th-TH",
+                              hoursOptions
+                            )}
+                          </h1>
                         </div>
                       </div>
                       <div className="mt-2">
                         <div className="flex space-x-5">
                           <h1>หน่วยงานที่เสนอ</h1>
-                          <h1>{item.agencyName}</h1>
+                          <h1>{state[idx].sector}</h1>
                         </div>
                         <div className="flex items-center space-x-5 mt-2">
                           <label>สาเหตุที่ไม่อนุมัติ</label>
                           <input
                             type="text"
+                            name="reason"
+                            value={state[idx].reason}
+                            onChange={(e) => handleChangeIndividualReject(e)}
                             placeholder="Example"
                             required
                             className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
@@ -594,7 +791,10 @@ const ModalIndividualReject = (props) => {
                     to="/borrowApprove"
                     className="text-white bg-red-600 px-10 py-2 border rounded-md "
                     // type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={(e) => {
+                      setShowModal(false);
+                      handleSubmitIndividualReject(e);
+                    }}
                   >
                     ยืนยัน
                   </Link>
@@ -608,7 +808,18 @@ const ModalIndividualReject = (props) => {
   );
 };
 
-const TableSummaryApprove = (props) => {
+const TableSummaryApprove = ({ state, setState }) => {
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  const hoursOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+
+  console.log("TableSummaryApprove", state);
+
+  const anyChecked = state.some((item) => item.checked);
+
   const [isClick, setIsClick] = useState(false);
 
   const handleClick = () => {
@@ -616,28 +827,39 @@ const TableSummaryApprove = (props) => {
   };
 
   return (
-    <>
-      {props.data.map((item, idx) => {
-        return (
-          <div className="grid grid-cols-8 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
-            <div className="col-span-1  text-center flex justify-center items-center ">
-              <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
-                {idx + 1}
+    <div>
+      {anyChecked ? (
+        state.map((item, idx) => {
+          if (item.checked) {
+            return (
+              <div className="grid grid-cols-8 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+                <div className="col-span-1  text-center flex justify-center items-center ">
+                  <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+                    {idx + 1}
+                  </div>
+                </div>
+                <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                  {item.borrowIdDoc}
+                </div>
+                <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                  {item.sector}
+                </div>
+                <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
+                  {new Date(item.borrowDate).toLocaleDateString(
+                    "th-TH",
+                    options
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.borrowIdDoc}
-            </div>
-            <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.agencyBorrowerName}
-            </div>
-            <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.borrowDate}
-            </div>
-          </div>
-        );
-      })}
-    </>
+            );
+          }
+        })
+      ) : (
+        <div className="flex justify-center items-center h-40">
+          ยังไม่มีรายการยืมที่ท่านเลือก
+        </div>
+      )}
+    </div>
   );
 };
 

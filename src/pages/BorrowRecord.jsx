@@ -25,14 +25,11 @@ const BorrowRecord = () => {
     floor: "",
     room: "",
 
-    firstName_recorder: "paruj lab",
-    lastName_recorder: "paruj lab",
+    name_recorder: "paruj lab",
     dateTime_recorder: "",
-    firstName_courier: "",
-    lastName_courier: "",
+    name_courier: "",
     dateTime_courier: "",
-    firstName_approver: "",
-    lastName_approver: "",
+    name_approver: "",
     dateTime_approver: "",
     status: "not approve",
   });
