@@ -1,62 +1,111 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import TableBorrowDetailList from '../components/table/TableBorrowDetailList'
-import { FaArrowLeft } from 'react-icons/fa'
-import pic from '../assets/pic.png'
+import React from "react";
+import { Link, useParams } from "react-router-dom";
+import TableBorrowDetailList from "../components/table/TableBorrowDetailList";
+import { FaArrowLeft } from "react-icons/fa";
+import pic from "../assets/pic.png";
+import { useEffect } from "react";
+import { useState } from "react";
+import { getBorrowById } from "../api/borrowApi";
 
 const BorrowDetail = () => {
-  const tableData = [
-    {
-      ID: '1',
-      assetId: '7440-001-001',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '3',
-      status: 'ปกติ',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-    {
-      ID: '2',
-      assetId: '6301-018-0131',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '5',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-      status: 'ปกติ',
-    },
-    {
-      ID: '3',
-      assetId: '1314-013-1331',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '7',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-      status: 'ปกติ',
-    },
-    {
-      ID: '4',
-      assetId: '1314-013-1331',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '7',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-      status: 'ปกติ',
-    },
-  ]
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  const hoursOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+
+  const { borrowId } = useParams();
+
+  const [input, setInput] = useState([]);
+  const [assetList, setAssetList] = useState([]);
+  const [arrayImageURL, setArrayImageURL] = useState([]);
+
   const imageList = [
     {
-      imageName: 'image1.png',
+      imageName: "image1.png",
       image: pic,
     },
-  ]
+  ];
   const borrowData = {
-    borrowID: 'br.6602/1677',
-    pricePerDay: '1300.00',
-  }
+    borrowID: "br.6602/1677",
+    pricePerDay: "1300.00",
+  };
+
+  useEffect(() => {
+    const fetchBorrowById = async () => {
+      try {
+        const res = await getBorrowById(borrowId);
+        console.log(res.data.borrow);
+        const borrow = res.data.borrow;
+        const assets = borrow.assets;
+        const packageAssets = borrow.packageAssets;
+        // setImg(asset.imageArray[0].image);
+        const dateDiff = Math.ceil(
+          (new Date(res.data.borrow.borrowSetReturnDate) -
+            new Date(res.data.borrow.borrowDate)) /
+            (1000 * 60 * 60 * 24)
+        );
+        const totalPrice = dateDiff * res.data.borrow.pricePerDay;
+
+        setInput({
+          ...input,
+          borrowIdDoc: borrow.borrowIdDoc,
+          pricePerDay: borrow.pricePerDay,
+          borrowDate: borrow.borrowDate,
+          borrowSetReturnDate: borrow.borrowSetReturnDate,
+          borrowReturnDate: borrow.borrowReturnDate || "",
+          sector: borrow.sector,
+          subSector: borrow.subSector,
+          borrowPurpose: borrow.borrowPurpose,
+          dateDiff: dateDiff,
+          totalPrice: totalPrice,
+          handler: borrow.handler,
+          building: borrow.building,
+          floor: borrow.floor,
+          room: borrow.room,
+          reason: borrow.reason,
+          name_recorder: borrow.name_recorder,
+          dateTime_recorder: borrow.dateTime_recorder,
+          name_courier: borrow.name_courier,
+          dateTime_courier: borrow.dateTime_courier,
+          name_approver: borrow.name_approver,
+          dateTime_approver: borrow.dateTime_approver,
+          assetIdArray: borrow.assetIdArray,
+          packageAssetIdArray: borrow.packageAssetIdArray,
+          _id: borrow._id,
+        });
+
+        let totalAssetAndPackageArray = [];
+        for (let el of assets) {
+          totalAssetAndPackageArray.push(el);
+        }
+        for (let el of packageAssets) {
+          totalAssetAndPackageArray.push(el);
+        }
+        setAssetList(totalAssetAndPackageArray);
+        // console.log(totalAssetAndPackageArray);
+
+        let imageArrayList = [];
+        for (let el of totalAssetAndPackageArray) {
+          imageArrayList.push(el.imageArray);
+        }
+
+        imageArrayList.forEach((array) => {
+          array.forEach((img) => {
+            img["imgURL"] = `http://localhost:4000/images/${img.image}`;
+          });
+        });
+
+        console.log(imageArrayList);
+        setArrayImageURL(imageArrayList);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchBorrowById();
+  }, []);
+
   return (
     <>
       <div className="bg-background-page pt-5 p-3">
@@ -95,44 +144,83 @@ const BorrowDetail = () => {
             <div className="text-text-gray flex items-center ">
               เลขที่เอกสารการยืม
             </div>
-            <div className="flex items-center ">{borrowData.borrowID}</div>
+            <div className="flex items-center ">{input.borrowIdDoc}</div>
             <div className="text-text-gray flex items-center ">
               ราคายืมต่อวัน (บาท)
             </div>
-            <div className="flex items-center ">{borrowData.pricePerDay}</div>
+            <div className="flex items-center ">{input.pricePerDay}</div>
           </div>
           {/* row 2 จำนวนวันที่ยืม (วัน) */}
           <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
             <div className="text-text-gray flex items-center">
               จำนวนวันที่ยืม (วัน)
             </div>
-            <div className="flex items-center">{7}</div>
+            <div className="flex items-center">{input.dateDiff}</div>
             <div className="text-text-gray flex items-center">
               วัน-เวลาที่ยืม
             </div>
-            <div className="flex items-center">{'18/02/2566 , 09.00'}</div>
+            <div className="flex items-center">
+              {" "}
+              {new Date(input.borrowDate).toLocaleDateString(
+                "th-TH",
+                options
+              )}{" "}
+              ,{" "}
+              {new Date(input.borrowDate).toLocaleTimeString(
+                "th-TH",
+                hoursOptions
+              )}
+            </div>
           </div>
           {/* row 3 วัน-เวลาที่กำหนดส่งคืน */}
           <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
             <div className="text-text-gray flex items-center">
               วัน-เวลาที่กำหนดส่งคืน
             </div>
-            <div className="flex items-center">{'25/02/2566 , 16.00'}</div>
+            <div className="flex items-center">
+              {" "}
+              {new Date(input.borrowSetReturnDate).toLocaleDateString(
+                "th-TH",
+                options
+              )}{" "}
+              ,{" "}
+              {new Date(input.borrowSetReturnDate).toLocaleTimeString(
+                "th-TH",
+                hoursOptions
+              )}
+            </div>
             <div className="text-text-gray flex items-center">
               วัน-เวลาที่คืน
             </div>
-            <div className="flex items-center">{'25/02/2566 , 15.32'}</div>
+            <div className="flex items-center">
+              {" "}
+              {input.borrowReturnDate === ""
+                ? ""
+                : new Date(input.borrowReturnDate).toLocaleDateString(
+                    "th-TH",
+                    options
+                  )}{" "}
+              {input.borrowReturnDate === "" ? "" : ","}{" "}
+              {input.borrowReturnDate === ""
+                ? ""
+                : new Date(input.borrowReturnDate).toLocaleTimeString(
+                    "th-TH",
+                    hoursOptions
+                  )}
+            </div>
           </div>
           {/* row 4 วัตถุประสงค์การขอยืม */}
           <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
             <div className="text-text-gray flex items-center">
               วัตถุประสงค์การขอยืม
             </div>
-            <div className="flex items-center">{'ใช้ในงานราชการ'}</div>
+            <div className="flex items-center">{input.borrowPurpose}</div>
             <div className="text-text-gray flex items-center">
               มูลค่าการยืม (บาท)
             </div>
-            <div className="flex items-center">{9100.0}</div>
+            <div className="flex items-center">
+              {input.totalPrice?.toFixed(2)}
+            </div>
           </div>
         </div>
         {/* รายละเอียดผู้ยืม */}
@@ -143,14 +231,14 @@ const BorrowDetail = () => {
             <div className="text-text-gray flex items-center ">
               หน่วยงานที่ยืม
             </div>
-            <div className="flex items-center ">{'สำนักบริหารงานเภสัช'}</div>
+            <div className="flex items-center ">{input.sector}</div>
             <div className="text-text-gray flex items-center ">ภาควิชา</div>
-            <div className="flex items-center ">{'งานบริหารเภสัช'}</div>
+            <div className="flex items-center ">{input.subSector}</div>
           </div>
           {/* row 2 ผู้ดำเนินการ */}
           <div className="grid grid-cols-2 md:grid-cols-5 p-2">
             <div className="text-text-gray flex items-center">ผู้ดำเนินการ</div>
-            <div className="flex items-center">{'นายธรรมกร นามสมมุติ'}</div>
+            <div className="flex items-center">{input.handler}</div>
           </div>
         </div>
         {/* รายการครุภัณฑ์ที่ยืม */}
@@ -158,36 +246,27 @@ const BorrowDetail = () => {
           <div className="text-xl">รายการครุภัณฑ์ที่ยืม</div>
           {/* table */}
           <div className="overflow-x-auto scrollbar pt-4">
-            <div className="w-[1000px] h-auto lg:w-full">
-              <div className="grid grid-cols-10 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
+            <div className="w-[1200px] h-auto lg:w-full">
+              <div className="grid grid-cols-14 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
                 <div className="col-span-1">ลำดับ</div>
-                <div className="col-span-2">ID ครุภัณฑ์</div>
+                <div className="col-span-2">เลขครุภัณฑ์</div>
                 <div className="col-span-3">ชื่อครุภัณฑ์</div>
+                <div className="col-span-2">Serial Number</div>
                 <div className="col-span-2">เจ้าของครุภัณฑ์</div>
-                <div className="col-span-1">สถานะครุภัณฑ์</div>
+                <div className="col-span-2">สถานะครุภัณฑ์</div>
                 <div className="col-span-1">จำนวน(บาท)</div>
+                <div className="col-span-1">ดูรูปภาพ</div>
               </div>
-              <TableBorrowDetailList data={tableData} />
+              <TableBorrowDetailList
+                assetList={assetList}
+                arrayImageURL={arrayImageURL}
+              />
             </div>
           </div>
         </div>
-        {/* image list */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 mb-5 ">
-          <div className="text-xl">ภาพครุภัณฑ์</div>
-          {imageList.map((item, idx) => {
-            return (
-              <div className="flex justify-center pt-10 border-[2px] rounded-xl shadow-sm">
-                <img
-                  className="object-cover hover:object-scale-down h-[30em] w-[50em]"
-                  src={item.image}
-                />
-              </div>
-            )
-          })}
-        </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default BorrowDetail
+export default BorrowDetail;

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getBorrowById, partiallyApproveBorrowApproveDetail, rejectAllBorrowApproveDetail } from "../api/borrowApi";
+import {
+  getBorrowById,
+  partiallyApproveBorrowApproveDetail,
+  rejectAllBorrowApproveDetail,
+} from "../api/borrowApi";
 import TableBorrowApprove from "../components/table/TableBorrowApprove";
 import OnlyDateInput from "../components/date/onlyDateInput";
 
@@ -75,7 +79,7 @@ const BorrowApproveDetail = () => {
   };
 
   useEffect(() => {
-    const fetchAssetById = async () => {
+    const fetchBorrowById = async () => {
       try {
         const res = await getBorrowById(borrowId);
         console.log(res.data.borrow);
@@ -114,7 +118,7 @@ const BorrowApproveDetail = () => {
           dateTime_approver: borrow.dateTime_approver,
           assetIdArray: borrow.assetIdArray,
           packageAssetIdArray: borrow.packageAssetIdArray,
-          _id:borrow._id
+          _id: borrow._id,
         });
 
         let totalAssetAndPackageArray = [];
@@ -129,7 +133,7 @@ const BorrowApproveDetail = () => {
         console.log(err);
       }
     };
-    fetchAssetById();
+    fetchBorrowById();
   }, []);
 
   return (
@@ -158,6 +162,7 @@ const BorrowApproveDetail = () => {
             <div className="text-text-gray">/</div>
             <div className="text-text-gray ml-2">รายละเอียดการขออนุมัติ</div>
           </div>
+         
         </div>
 
         {/* ข้อมูลการยืมครุภัณฑ์ */}
@@ -468,11 +473,11 @@ const ModalSummary = ({ assetList, input, setInput }) => {
     setAllReject(payload);
   };
 
-  const handleSubmit =async(e)=>{
-    e.preventDefault()
-    const inputJSON = JSON.stringify(input)
-    await partiallyApproveBorrowApproveDetail(input._id,{input:inputJSON})
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const inputJSON = JSON.stringify(input);
+    await partiallyApproveBorrowApproveDetail(input._id, { input: inputJSON });
+  };
   return (
     <>
       <button
@@ -561,8 +566,10 @@ const ModalSummary = ({ assetList, input, setInput }) => {
                     // to="/borrowApprove"
                     className="text-white bg-text-green px-10 py-2 border rounded-md "
                     // type="button"
-                    onClick={(e) => {setShowModal(false)
-                    handleSubmit(e)}}
+                    onClick={(e) => {
+                      setShowModal(false);
+                      handleSubmit(e);
+                    }}
                   >
                     ยืนยัน
                   </Link>
@@ -638,7 +645,6 @@ const AllReject = ({ assetList, input, setInput }) => {
       }),
     };
     setInput(updatedInput);
-
   };
 
   return (
@@ -968,7 +974,7 @@ const ModalIndividualReject = ({
 
     // only one that you select
     const inputJSON = JSON.stringify(result);
-    await rejectAllBorrowApproveDetail(input._id,{ input: inputJSON });
+    await rejectAllBorrowApproveDetail(input._id, { input: inputJSON });
     // const topApproveListJSON = JSON.stringify(result);
     // await rejectIndividualWaitingBorrow({
     //   topApproveList: topApproveListJSON,

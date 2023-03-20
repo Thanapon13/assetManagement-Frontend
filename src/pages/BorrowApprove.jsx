@@ -485,82 +485,88 @@ const BorrowApprovedListItem = ({ data }) => {
       <div className=" h-[500px] ">
         {data.map((item, idx) => {
           return (
-            <div
-              key={idx}
-              className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full"
-            >
-              <div className="flex justify-between">
-                <div className="flex space-x-10">
-                  <h1>เลขที่ ID เลขที่การยืม</h1>
-                  <h1>{item.borrowIdDoc}</h1>
-                </div>
-                <div className="flex space-x-2 mr-5 text-text-gray">
-                  <h1>
-                    วันที่อนุมัติ:{" "}
-                    {new Date(item.borrowDate).toLocaleDateString(
-                      "th-TH",
-                      options
-                    )}{" "}
-                    ,
-                  </h1>
-                  <h1>
-                    {new Date(item.borrowDate).toLocaleTimeString(
-                      "th-TH",
-                      hoursOptions
-                    )}
-                  </h1>
-                </div>
-              </div>
-              <div className="mt-5">
-                <div className="flex space-x-5">
-                  <h1 className="text-text-gray">หน่วยงานที่เสนอ</h1>
-                  <h1>{item.sector}</h1>
-                </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex text-text-gray">
-                    วันที่เสนอ
-                    <div className="px-5 text-black">
-                      {new Date(item.dateTime_approver).toLocaleDateString(
+            <Link key={idx} to={`/viewBorrowApproveDetail/${item._id}`}>
+              <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
+                <div className="flex justify-between">
+                  <div className="flex space-x-10">
+                    <h1>เลขที่ ID เลขที่การยืม</h1>
+                    <h1>{item.borrowIdDoc}</h1>
+                  </div>
+                  <div className="flex space-x-2 mr-5 text-text-gray">
+                    <h1>
+                      วันที่อนุมัติ:{" "}
+                      {new Date(item.borrowDate).toLocaleDateString(
                         "th-TH",
                         options
                       )}{" "}
-                      ,{" "}
-                      {new Date(item.dateTime_approver).toLocaleTimeString(
+                      ,
+                    </h1>
+                    <h1>
+                      {new Date(item.borrowDate).toLocaleTimeString(
                         "th-TH",
                         hoursOptions
                       )}
-                    </div>
+                    </h1>
                   </div>
-                  <div className="">
-                    <div
-                      className={`${
-                        item.status === "waiting"
-                          ? " bg-background-light-blue text-text-blue  rounded-xl "
+                </div>
+                <div className="mt-5">
+                  <div className="flex space-x-5">
+                    <h1 className="text-text-gray">หน่วยงานที่เสนอ</h1>
+                    <h1>{item.sector}</h1>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="flex text-text-gray">
+                      วันที่เสนอ
+                      <div className="px-5 text-black">
+                        {new Date(item.dateTime_approver).toLocaleDateString(
+                          "th-TH",
+                          options
+                        )}{" "}
+                        ,{" "}
+                        {new Date(item.dateTime_approver).toLocaleTimeString(
+                          "th-TH",
+                          hoursOptions
+                        )}
+                      </div>
+                    </div>
+                    <div className="">
+                      <div
+                        className={`${
+                          item.status === "waiting"
+                            ? " bg-background-light-blue text-text-blue  rounded-xl "
+                            : item.status === "approve"
+                            ? " bg-sidebar-green text-text-green  rounded-xl  "
+                            : item.status === "partiallyApprove"
+                            ? " text-orange-400 bg-orange-100 p-2 border rounded-xl  "
+                            : item.status === "watingReturnApprove"
+                            ? "bg-orange-100 text-orange-400 rounded-xl"
+                            : item.status === "cancel" ||
+                              item.status === "reject"
+                            ? "bg-red-200 text-red-600  rounded-xl"
+                            : "bg-text-green text-white rounded-md hover:bg-green-800"
+                        } border border-spacing-5 p-2 w-full`}
+                      >
+                        {item.status === "waiting"
+                          ? "รออนุมัติ"
                           : item.status === "approve"
-                          ? " bg-sidebar-green text-text-green  rounded-xl  "
-                          : item.status === "watingReturnApprove"
-                          ? "bg-orange-100 text-orange-400 rounded-xl"
-                          : item.status === "cancel" || item.status === "reject"
-                          ? "bg-red-200 text-red-600  rounded-xl"
-                          : "bg-text-green text-white rounded-md hover:bg-green-800"
-                      } border border-spacing-5 p-2 w-full`}
-                    >
-                      {item.status === "waiting"
-                        ? "รออนุมัติ"
-                        : item.status === "done"
-                        ? "คืนสำเร็จ"
-                        : item.status === "waitCheckReturn"
-                        ? "รอตรวจรับ"
-                        : item.status === "cancel"
-                        ? "ยกเลิก"
-                        : item.status === "reject"
-                        ? "ไม่อนุมัติ"
-                        : "บันทึกคืน"}
+                          ? "อนุมัติแล้ว"
+                          : item.status === "partiallyApprove"
+                          ? "อนุมัติบางส่วน"
+                          : item.status === "done"
+                          ? "คืนสำเร็จ"
+                          : item.status === "waitCheckReturn"
+                          ? "รอตรวจรับ"
+                          : item.status === "cancel"
+                          ? "ยกเลิก"
+                          : item.status === "reject"
+                          ? "ไม่อนุมัติ"
+                          : "บันทึกคืน"}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

@@ -16,6 +16,10 @@ export function getBorrowById(id) {
   return axios.get(`/borrow/${id}`);
 }
 
+export function getViewBorrowApproveDetailById(id) {
+  return axios.get(`/borrow/viewBorrowApproveDetailById/${id}`);
+}
+
 export function getBorrowImageById(name) {
   return axios.get(`/images/${name}`);
 }
@@ -135,4 +139,27 @@ export function rejectAllBorrowApproveDetail(id,input) {
 // dropdown
 export function getAllSectorFromBorrow() {
   return axios.get(`/borrow/dropdownAllSectorFromBorrow`);
+}
+
+// getBySearchBorrowHistory
+export function getBySearchBorrowHistory(search) {
+
+  function getQueryString(search) {
+    const params = Object.keys(search)
+      .filter(key => search[key] !== "") // remove empty values
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+      .join("&");
+    return params;
+  }
+
+  const queryString = getQueryString(search);
+
+  // console.log(queryString)
+
+  return axios.get(`/borrow/searchBorrowHistory?${queryString}`);
+}
+
+// BorrowHistory page dropdown
+export function getBorrowHistorySector() {
+  return axios.get(`/borrow/BorrowHistorySector`);
 }

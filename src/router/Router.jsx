@@ -57,6 +57,7 @@ import {
 } from "../pages";
 
 import useAuth from '../hooks/useAuth'
+import ViewBorrowApproveDetail from '../pages/ViewBorrowApproveDetail';
 
 const Public = () => {
   return (
@@ -143,9 +144,13 @@ const Router = () => {
           path="borrowApproveDetail/:borrowId"
           element={<BorrowApproveDetail />}
         />
+          <Route
+          path="viewBorrowApproveDetail/:borrowId"
+          element={<ViewBorrowApproveDetail />}
+        />
         <Route path="borrowHistory" element={<BorrowHistoryIndex />} />
         <Route
-          path="borrowHistory/borrowHistoryDetail"
+          path="borrowHistoryDetail/:borrowId"
           element={<BorrowHistoryDetail />}
         />
 

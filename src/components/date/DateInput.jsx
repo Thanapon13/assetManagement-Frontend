@@ -127,7 +127,8 @@ function DateInput({ state, setState, lable, id }) {
         selected={
           location.pathname === "/assetInformationIndex" ||
           location.pathname === "/packageAssetInformationIndex" ||
-          location.pathname === "/borrowList"
+          location.pathname === "/borrowList" ||
+          location.pathname === "/borrowHistory" 
             ? state[id]
             : state
         }
@@ -135,7 +136,8 @@ function DateInput({ state, setState, lable, id }) {
           if (
             location.pathname === "/assetInformationIndex" ||
             location.pathname === "/packageAssetInformationIndex" ||
-            location.pathname === "/borrowList"
+            location.pathname === "/borrowList" ||
+            location.pathname === "/borrowHistory" 
           ) {
             setState((prevState) => ({ ...prevState, [id]: date }));
           } else {
