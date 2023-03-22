@@ -235,7 +235,7 @@ const BorrowApproveDetail = () => {
               <label className="text-text-gray">จำนวนวันที่ยืม (วัน) </label>
               <input
                 type="number"
-                placeholder="5"
+                placeholder="0"
                 readOnly
                 value={input.dateDiff}
                 className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
