@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import DropdownStatus from '../dropdown/DropdownStatus'
 
-const TableBorrowCheckSaving = (props) => {
+const TableBorrowCheckSaving = ({assetList}) => {
   const [isClick, setIsClick] = useState(false)
 
+  console.log(assetList)
   const handleClick = () => {
     setIsClick(!isClick)
   }
 
   return (
     <>
-      {props.data.map((item, idx) => {
+      {assetList.map((item, idx) => {
         return (
           <div className="grid grid-cols-11 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
             <div className="col-span-1">
@@ -25,7 +26,7 @@ const TableBorrowCheckSaving = (props) => {
               </div>
             </div>
             <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.assetId}
+              {item.assetNumber}
             </div>
             <div className="col-span-3 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
               {item.assetName}

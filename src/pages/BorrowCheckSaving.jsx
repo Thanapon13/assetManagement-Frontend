@@ -1,56 +1,106 @@
-import React from 'react'
-import { Link, useParams } from 'react-router-dom'
-import TableBorrowCheckSaving from '../components/table/TableBorrowCheckSaving'
-import { FaArrowLeft } from 'react-icons/fa'
-import pic from '../assets/pic.png'
+import React, { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import TableBorrowCheckSaving from "../components/table/TableBorrowCheckSaving";
+import { FaArrowLeft } from "react-icons/fa";
+import pic from "../assets/pic.png";
 import OnlyDateInput from "../components/date/onlyDateInput";
+import Selector from "../components/selector/Selector";
+import { useEffect } from "react";
+import { getBorrowCheckById } from "../api/borrowApi";
 
 const BorrowCheckSaving = () => {
-  const borrowId = useParams()
-  const tableData = [
-    {
-      ID: '1',
-      assetId: '7440-001-001',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '3',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-    {
-      ID: '2',
-      assetId: '6301-018-0131',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '5',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-    {
-      ID: '3',
-      assetId: '1314-013-1331',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '7',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-    {
-      ID: '4',
-      assetId: '1314-013-1331',
-      assetName: 'พัดลม hatari แบบ',
-      assetModelDetail: 'hatari/extream/18',
-      quantity: '7',
-      unit: 'ตัว',
-      totalPrice: '19000.00',
-    },
-  ]
-  const imageList = [
-    {
-      imageName: 'image1.png',
-      image: pic,
-    },
-  ]
+  const { borrowId } = useParams();
+  const [input, setInput] = useState({
+    // ข้อมูลการยืม
+    borrowIdDoc: 1,
+    pricePerDay: 0,
+    borrowDate: new Date(),
+    borrowReturnDate: "",
+    borrowSetReturnDate: "",
+    dateDiff: 0,
+    totalPrice: 0,
+    // รายละเอียดผู้ยืม
+    sector: "",
+    subSector: "",
+    borrowPurpose: "",
+    handler: "",
+    // สถานที่ตั้งใหม่
+    building: "",
+    floor: "",
+    room: "",
+
+    note: "",
+    reason: "",
+
+    name_recorder: "paruj lab",
+    dateTime_recorder: "",
+    name_courier: "",
+    dateTime_courier: "",
+    name_approver: "",
+    dateTime_approver: "",
+    status: "not approve",
+
+    assetIdArray: [],
+    packageAssetIdArray: [],
+  });
+
+  const [assetList, setAssetList] = useState([]);
+
+  useEffect(() => {
+    const fetchBorrowById = async () => {
+      try {
+        const res = await getBorrowCheckById(borrowId);
+        console.log(res.data);
+        console.log(res.data.borrow);
+        const borrow = res.data.borrow;
+        const matchedAssets = borrow.matchedAssets;
+        const matchedPackageAssets = borrow.matchedPackageAssets;
+        // setImg(asset.imageArray[0].image);
+        const dateDiff = Math.ceil(
+          (new Date(res.data.borrow.borrowSetReturnDate) -
+            new Date(res.data.borrow.borrowDate)) /
+            (1000 * 60 * 60 * 24)
+        );
+        const totalPrice = dateDiff * res.data.borrow.pricePerDay;
+
+        setInput({
+          ...input,
+          borrowIdDoc: borrow.borrowIdDoc,
+          pricePerDay: borrow.pricePerDay,
+          borrowDate: borrow.borrowDate,
+          borrowSetReturnDate: borrow.borrowSetReturnDate,
+          sector: borrow.sector,
+          subSector: borrow.subSector,
+          borrowPurpose: borrow.borrowPurpose,
+          dateDiff: dateDiff,
+          totalPrice: totalPrice,
+          handler: borrow.handler,
+          building: borrow.building,
+          floor: borrow.floor,
+          room: borrow.room,
+          reason: borrow.reason,
+          name_recorder: borrow.name_recorder,
+          dateTime_recorder: borrow.dateTime_recorder,
+          name_courier: borrow.name_courier,
+          dateTime_courier: borrow.dateTime_courier,
+          name_approver: borrow.name_approver,
+          dateTime_approver: borrow.dateTime_approver,
+          assetIdArray: borrow.assetIdArray,
+          packageAssetIdArray: borrow.packageAssetIdArray,
+          _id: borrow._id,
+        });
+
+        const matchAllAsset = matchedAssets.concat(matchedPackageAssets);
+        console.log(matchAllAsset);
+
+        setAssetList(matchAllAsset);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchBorrowById();
+  }, []);
+
   return (
     <>
       <div className="bg-background-page pt-5 p-3">
@@ -94,6 +144,7 @@ const BorrowCheckSaving = () => {
                   type="text"
                   placeholder="Example"
                   readOnly
+                  value={input.borrowIdDoc}
                   className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
@@ -105,29 +156,22 @@ const BorrowCheckSaving = () => {
                   setState={setInput}
                   disabled={true}
                 />
-                <input
-                  type="date"
-                  placeholder="12/05/10"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                />
               </div>
               <div className="flex flex-col gap-y-2 col-span-1">
                 <label className="text-text-gray">วันที่คืน</label>
-                <input
-                  type="date"
-                  placeholder="12/05/10"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                <OnlyDateInput
+                  id={"borrowReturnDate"}
+                  state={input}
+                  setState={setInput}
                 />
               </div>
               <div className="flex flex-col gap-y-2 col-span-2">
                 <label className="text-text-gray">วัตถุประสงค์การขอยืม</label>
-                <input
-                  type="text"
-                  placeholder="Example"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                <Selector
+                  placeholder={"Select"}
+                  state={input}
+                  setState={setInput}
+                  id={"วัตถุประสงค์การขอยืม"}
                 />
               </div>
             </div>
@@ -139,6 +183,7 @@ const BorrowCheckSaving = () => {
                   type="number"
                   placeholder="Example"
                   readOnly
+                  value={input.pricePerDay.toFixed(2)}
                   className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
@@ -148,16 +193,16 @@ const BorrowCheckSaving = () => {
                   type="number"
                   placeholder="5"
                   readOnly
+                  value={input.dateDiff}
                   className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
               <div className="flex flex-col gap-y-2 col-span-2">
                 <label className="text-text-gray">กำหนดส่งคืน</label>
-                <input
-                  type="date"
-                  placeholder="12/05/10"
-                  readOnly
-                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                <OnlyDateInput
+                  id={"borrowSetReturnDate"}
+                  state={input}
+                  setState={setInput}
                 />
               </div>
               <div className="flex flex-col gap-y-2 col-span-2">
@@ -166,6 +211,7 @@ const BorrowCheckSaving = () => {
                   type="number"
                   placeholder="400.00"
                   readOnly
+                  value={input.totalPrice.toFixed(2)}
                   className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
@@ -180,14 +226,14 @@ const BorrowCheckSaving = () => {
             <div className="text-text-gray flex items-center ">
               หน่วยงานที่ยืม
             </div>
-            <div className="flex items-center ">{'สำนักบริหารงานเภสัช'}</div>
+            <div className="flex items-center ">{input.sector}</div>
             <div className="text-text-gray flex items-center ">ภาควิชา</div>
-            <div className="flex items-center ">{'งานบริหารเภสัช'}</div>
+            <div className="flex items-center ">{input.subSector}</div>
           </div>
           {/* row 2 ผู้ดำเนินการ */}
-          <div className="grid grid-cols-2 md:grid-cols-5 p-2">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-5 p-2">
             <div className="text-text-gray flex items-center">ผู้ดำเนินการ</div>
-            <div className="flex items-center">{'นายธรรมกร นามสมมุติ'}</div>
+            <div className="flex items-center">{input.handler}</div>
           </div>
         </div>
         {/* รายการครุภัณฑ์ที่ยืม */}
@@ -230,23 +276,9 @@ const BorrowCheckSaving = () => {
                 <div className="col-span-1">สถานะครุภัณฑ์</div>
                 <div className="col-span-1">จำนวน(บาท)</div>
               </div>
-              <TableBorrowCheckSaving data={tableData} />
+              <TableBorrowCheckSaving assetList={assetList} />
             </div>
           </div>
-        </div>
-        {/* image list */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 mb-5 ">
-          <div className="text-xl">ภาพครุภัณฑ์</div>
-          {imageList.map((item, idx) => {
-            return (
-              <div className="flex justify-center pt-10 border-[2px] rounded-xl shadow-sm">
-                <img
-                  className="object-cover hover:object-scale-down h-[30em] w-[50em]"
-                  src={item.image}
-                />
-              </div>
-            )
-          })}
         </div>
       </div>
       {/* footer */}
@@ -266,7 +298,7 @@ const BorrowCheckSaving = () => {
         </button>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default BorrowCheckSaving
+export default BorrowCheckSaving;

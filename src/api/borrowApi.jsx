@@ -186,3 +186,7 @@ export function getBySearchBorrowCheck(search) {
 export function getBorrowCheckSector() {
   return axios.get(`/borrow/borrowCheckSector`);
 }
+
+export function getBorrowCheckById(id) {
+  return axios.get(`/borrow/borrowCheck/${id}`);
+}

@@ -13,7 +13,8 @@ const onlyDateInput = ({ state, setState, disabled, id }) => {
       `/${location.pathname.split("/")[1]}` === "/borrowEdit" ||
       location.pathname === "/borrowApprove" ||
       `/${location.pathname.split("/")[1]}` === "/borrowApproveDetail" ||
-      `/${location.pathname.split("/")[1]}` === "/viewBorrowApproveDetail" 
+      `/${location.pathname.split("/")[1]}` === "/viewBorrowApproveDetail" ||
+      `/${location.pathname.split("/")[1]}` === "/borrowCheckSaving" 
     ) {
       setState((prevState) => ({ ...prevState, [id]: christDate }));
     } else {
@@ -31,7 +32,8 @@ const onlyDateInput = ({ state, setState, disabled, id }) => {
           `/${location.pathname.split("/")[1]}` === "/borrowEdit" ||
           location.pathname === "/borrowApprove" ||
           `/${location.pathname.split("/")[1]}` === "/borrowApproveDetail" ||
-          `/${location.pathname.split("/")[1]}` === "/viewBorrowApproveDetail"
+          `/${location.pathname.split("/")[1]}` === "/viewBorrowApproveDetail" ||
+          `/${location.pathname.split("/")[1]}` === "/borrowCheckSaving" 
             ? state[id]
             : state
         } // Can be replace with string or dayjs object (e.g. "2020-12-31" or `dayjs()`)
