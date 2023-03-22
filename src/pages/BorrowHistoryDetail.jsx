@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { getViewBorrowApproveDetailById } from "../api/borrowApi";
 import TableViewBorrowHistoryListBorrowApprove from "../components/table/TableViewBorrowHistoryListBorrowApprove";
-import TableViewRejectAssetListBorrowApprove from "../components/table/TableViewRejectAssetListBorrowApprove";
 import TableViewBorrowHistoryListBorrowReject from "../components/table/TableViewBorrowHistoryListBorrowReject";
 
 const BorrowHistoryDetail = () => {

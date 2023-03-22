@@ -39,7 +39,7 @@ function DateInput({ state, setState, lable, id }) {
   return (
     <>
       <div className="relative">
-        <div className="text-xs font-semibold w-20 absolute -top-2 z-10 left-2">
+        <div className="text-xs font-semibold w-32 absolute -top-2 z-10 left-2">
           {lable}
         </div>
       </div>
@@ -128,7 +128,8 @@ function DateInput({ state, setState, lable, id }) {
           location.pathname === "/assetInformationIndex" ||
           location.pathname === "/packageAssetInformationIndex" ||
           location.pathname === "/borrowList" ||
-          location.pathname === "/borrowHistory" 
+          location.pathname === "/borrowHistory"  ||
+          location.pathname === "/borrowCheckIndex"  
             ? state[id]
             : state
         }
@@ -137,7 +138,8 @@ function DateInput({ state, setState, lable, id }) {
             location.pathname === "/assetInformationIndex" ||
             location.pathname === "/packageAssetInformationIndex" ||
             location.pathname === "/borrowList" ||
-            location.pathname === "/borrowHistory" 
+            location.pathname === "/borrowHistory" ||
+            location.pathname === "/borrowCheckIndex" 
           ) {
             setState((prevState) => ({ ...prevState, [id]: date }));
           } else {

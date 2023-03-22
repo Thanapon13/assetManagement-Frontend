@@ -1,10 +1,12 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import TableBorrowCheckSaving from '../components/table/TableBorrowCheckSaving'
 import { FaArrowLeft } from 'react-icons/fa'
 import pic from '../assets/pic.png'
+import OnlyDateInput from "../components/date/onlyDateInput";
 
 const BorrowCheckSaving = () => {
+  const borrowId = useParams()
   const tableData = [
     {
       ID: '1',
@@ -97,6 +99,12 @@ const BorrowCheckSaving = () => {
               </div>
               <div className="flex flex-col gap-y-2 col-span-1">
                 <label className="text-text-gray">วันที่ยืม</label>
+                <OnlyDateInput
+                  id={"borrowDate"}
+                  state={input}
+                  setState={setInput}
+                  disabled={true}
+                />
                 <input
                   type="date"
                   placeholder="12/05/10"

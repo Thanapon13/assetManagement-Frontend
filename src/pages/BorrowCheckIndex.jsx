@@ -1,162 +1,152 @@
-import React, { useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
-import Selector from '../components/selector/Selector'
-import TableBorrowCheckIndex from '../components/table/TableBorrowCheckIndex'
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
-import { AiOutlineSearch } from 'react-icons/ai'
-import DateInput from '../components/date/DateInput'
+import React, { useEffect, useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import Selector from "../components/selector/Selector";
+import TableBorrowCheckIndex from "../components/table/TableBorrowCheckIndex";
+import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import { AiOutlineSearch } from "react-icons/ai";
+import DateInput from "../components/date/DateInput";
+import {
+  getBySearchBorrowCheck,
+  getBorrowCheckSector,
+} from "../api/borrowApi";
+import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
 
 const BorrowCheckIndex = () => {
+  const todayThaiDate = ChangeDateToBuddhist(
+    new Date().toLocaleString("th-TH")
+  );
   // useState
-  const [perPage, setPerPage] = useState(10)
-  const [totalRow, setTotalRow] = useState(25)
+  const [amountPage, setAmountPage] = useState(1);
 
-  //Main Date
-  const [withdrawDate, setWithdrawDate] = useState()
+  // search
+  const [search, setSearch] = useState({
+    typeTextSearch: "borrowIdDoc",
+    textSearch: "",
+    status: "",
+    dateFrom: "",
+    dateTo: todayThaiDate,
+    sector: "",
+    page: "",
+    limit: 10,
+    total: 0,
+  });
 
-  // data
-  let tableData = [
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-      status: 'inProgress',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-      status: 'inProgress',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-      status: 'done',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-      status: 'inProgress',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-      status: 'done',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-      status: 'done',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-      status: 'inProgress',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-      status: 'inProgress',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-      status: 'done',
-    },
-    {
-      borrowDocId: '001',
-      ID: '202123',
-      assetId: '7440-0036-032 ร.พ.น - 2031(2)-65',
-      assetName: 'HP DESKTOP AIO 24-cb1005d',
-      borrowerName: 'กิตติศักดิ์',
-      borrowDateAt: '20/12/2565',
-      borrowSetDateReturn: '22/12/2565',
-      borrowReturnDate: '23/12/2565',
-      borrowPricePerDay: '150 บ.',
-      totalDay: '5',
-      totalPrice: '750 บ.',
-      status: 'done',
-    },
-  ]
+  const [borrowList, setBorrowList] = useState([]);
+  const [sectorList, setSectorList] = useState([]);
+
+  // handle
+  const handleChange = (e) => {
+    console.log({ ...search, [e.target.name]: e.target.value });
+    setSearch({ ...search, [e.target.name]: e.target.value });
+  };
+
+  const handleFirstPage = () => {
+    if (search.page === 1) {
+      // window.alert("You are already on the first page.");
+    } else {
+      setSearch({ ...search, page: 1 });
+      fetchSearchBorrowList({ ...search, page: 1 });
+    }
+  };
+  const handleLastPage = () => {
+    if (search.page === amountPage) {
+      // window.alert("You are already on the last page.");
+    } else {
+      setSearch({ ...search, page: amountPage });
+      fetchSearchBorrowList({ ...search, page: amountPage });
+    }
+  };
+  const handlePageDecrease = () => {
+    // console.log(search.page)
+    if (search.page > 1) {
+      let newPage = search.page - 1;
+      setSearch({ ...search, page: newPage });
+      fetchSearchBorrowList({ ...search, page: newPage });
+    } else {
+      // window.alert("You are already on the first page.");
+    }
+  };
+  const handlePageIncrease = () => {
+    // console.log(search.page)
+    // console.log(amountPage)
+    if (search.page < amountPage) {
+      let newPage = search.page + 1;
+      setSearch({ ...search, page: newPage });
+      fetchSearchBorrowList({ ...search, page: newPage });
+    } else {
+      // window.alert("You are already on the last page.");
+    }
+  };
+
+  const fetchSearchBorrowList = async (paginationSearchObj) => {
+    try {
+      let res = [];
+      // console.log(paginationSearchObj);
+      if (paginationSearchObj) {
+        res = await getBySearchBorrowCheck(paginationSearchObj);
+      } else {
+        res = await getBySearchBorrowCheck(search);
+      }
+      console.log(res.data.borrow);
+
+      // handle the response data
+      setBorrowList(res.data.borrow);
+      setSearch({
+        ...search,
+        page: res.data.page,
+        limit: res.data.limit,
+        total: res.data.total,
+      });
+      setAmountPage(Math.ceil(res.data.total / res.data.limit));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleSearch = () => {
+    fetchSearchBorrowList();
+  };
+
+  const handlePaginationSearch = (e) => {
+    console.log({ ...search, [e.target.name]: e.target.value });
+    setSearch({ ...search, [e.target.name]: e.target.value });
+    fetchSearchBorrowList({ ...search, [e.target.name]: e.target.value });
+  };
+
+  // fetch dropdown sector
+  const fetchBorrowHistorySectorSelector = async () => {
+    try {
+      const res = await getBorrowCheckSector();
+      console.log(res.data.sectors);
+      setSectorList(res.data.sectors);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // fetch all data
+  const fetchBorrowList = async () => {
+    try {
+      const res = await getBySearchBorrowCheck({});
+      console.log(res.data.borrow);
+      setBorrowList(res.data.borrow);
+      setSearch({
+        ...search,
+        page: res.data.page,
+        limit: res.data.limit,
+        total: res.data.total,
+      });
+      setAmountPage(Math.ceil(res.data.total / res.data.limit));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBorrowHistorySectorSelector();
+    fetchBorrowList();
+  }, []);
 
   return (
     <div className="bg-background-page px-5 pt-5 pb-36 ">
@@ -174,21 +164,25 @@ const BorrowCheckIndex = () => {
           <div className="text-text-gray">/</div>
           <div className="text-text-gray ml-2">รายการรอตรวจรับคืน</div>
         </div>
-
-        {/* right button เพิ่มใบเบิก */}
-        <button
-          type="button"
-          className="bg-text-green text-white px-4 py-2 rounded hover:bg-green-800"
-        >
-          + เพิ่มใบครุภัณฑ์
-        </button>
       </div>
 
       {/* search bar */}
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
         <div className="text-xs font-semibold">ค้นหาโดย</div>
         <div className="md:col-span-2">
-          <Selector placeholder={'ID'} />
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs text-gray-500 sm:text-sm border-gray-300 rounded-md w-full"
+            name="typeTextSearch"
+            value={search.typeTextSearch}
+            onChange={handleChange}
+          >
+            <option defaultValue value="borrowIdDoc">
+              เลขที่เอกสารการยืม
+            </option>
+            <option defaultValue value="assetNumber">
+              เลขครุภัณฑ์
+            </option>
+          </select>
         </div>
 
         <div className="md:col-span-4  h-[38px] relative">
@@ -204,16 +198,42 @@ const BorrowCheckIndex = () => {
           />
         </div>
 
+        <div className="md:col-span-3 ">
+          <BorrowHistorySectorSelector
+            placeholder={"หน่วยงาน"}
+            state={search}
+            setState={setSearch}
+            search={search}
+            setSearch={setSearch}
+            id={"sector"}
+            data={sectorList}
+          />
+        </div>
+
         <div className="md:col-span-3">
-          <Selector placeholder={'สถานะ'} />
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs text-gray-500 sm:text-sm border-gray-300 rounded-md w-full"
+            name="status"
+            value={search.status}
+            onChange={handleChange}
+          >
+            <option defaultValue value="">
+              สถานะ
+            </option>
+            <option value="approve">อนุมัติแล้ว</option>
+            <option value="partiallyApprove">อนุมัติบางส่วน</option>
+            <option value="watingReturnApprove ">รออนุมัติคืน</option>
+            <option value="approveReturn">อนุมัติคืนแล้ว</option>
+          </select>
         </div>
 
         <div className="md:col-span-3 h-full ">
           <div className="flex h-full">
             <DateInput
-              state={withdrawDate}
-              setState={setWithdrawDate}
-              lable="date from"
+              id="dateFrom"
+              state={search}
+              setState={setSearch}
+              lable="date from (วันที่ยืม)"
             />
           </div>
         </div>
@@ -221,22 +241,19 @@ const BorrowCheckIndex = () => {
         <div className="md:col-span-3 h-full ">
           <div className="flex h-full">
             <DateInput
-              state={withdrawDate}
-              setState={setWithdrawDate}
-              lable="date to"
+              id="dateTo"
+              state={search}
+              setState={setSearch}
+              lable="date to (วันที่ยืม)"
             />
           </div>
-        </div>
-
-        <div className="md:col-span-3">
-          <Selector placeholder={'ฝ่าย/กลุ่มงาน'} />
         </div>
 
         <div className="flex justify-end">
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-            // onClick={handleSearch}
+            onClick={handleSearch}
           >
             <div className="text-xl text-white">
               <AiOutlineSearch />
@@ -247,21 +264,20 @@ const BorrowCheckIndex = () => {
       {/* table */}
       <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
         <div className="w-[1200px] lg:w-full lg:h-full h-[500px]">
-          <div className="text-sm">ผลการค้นหา {totalRow} รายการ</div>
+          <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
           <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
             {/* top bar */}
             <div className="grid grid-cols-12 gap-2 h-12 items-center text-center">
-              <div className="col-span-1">ID ใบยืม</div>
-              <div className="col-span-2">เลขครุภัณฑ์</div>
-              <div className="col-span-3">ชื่อครุภัณฑ์</div>
-              <div className="col-span-1">ชื่อผู้ขอยืม</div>
+              <div className="col-span-1">ลำดับ</div>
+              <div className="col-span-3">เลขที่เอกสารการยืม</div>
+              <div className="col-span-3">หน่วยงานที่ยืม</div>
               <div className="col-span-1">วันที่ยืม</div>
               <div className="col-span-1">กำหนดคืน</div>
               <div className="col-span-1">วันที่คืน</div>
               <div className="col-span-2">Action</div>
             </div>
           </div>
-          <TableBorrowCheckIndex data={tableData} />
+          <TableBorrowCheckIndex data={borrowList} search={search} />
           <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
             <div className="flex mr-10 items-center">
               <div>Rows per page:</div>
@@ -285,7 +301,12 @@ const BorrowCheckIndex = () => {
               </select>
             </div>
 
-            <div>1-{perPage} of 13</div>
+            <div>
+              {" "}
+              {search.limit * (search.page - 1) + 1}-
+              {search.limit * (search.page - 1) + borrowList.length} of{" "}
+              {search.total}
+            </div>
 
             <button className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
               <HiChevronLeft className="text-lg" />
@@ -297,7 +318,7 @@ const BorrowCheckIndex = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BorrowCheckIndex
+export default BorrowCheckIndex;

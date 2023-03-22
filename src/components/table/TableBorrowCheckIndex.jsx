@@ -1,15 +1,17 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { BsFillPencilFill, BsFillEyeFill } from 'react-icons/bs'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { BsFillPencilFill, BsFillEyeFill } from "react-icons/bs";
 
 const TableBorrowCheckIndex = (props) => {
-  const [isClick, setIsClick] = useState(false)
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
 
-  let navigate = useNavigate()
+  const [isClick, setIsClick] = useState(false);
+
+  let navigate = useNavigate();
 
   const handleClick = () => {
-    setIsClick(!isClick)
-  }
+    setIsClick(!isClick);
+  };
 
   return (
     <>
@@ -18,25 +20,38 @@ const TableBorrowCheckIndex = (props) => {
           <div
             className={`grid grid-cols-12 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
-            <div className="col-span-1">{item.borrowDocId}</div>
-            <div className="col-span-2">{item.assetId}</div>
-            <div className="col-span-3 ">{item.assetName}</div>
-            <div className="col-span-1">{item.borrowerName}</div>
-            <div className="col-span-1">{item.borrowDateAt}</div>
-            <div className="col-span-1 ">{item.borrowSetDateReturn}</div>
-            <div className="col-span-1">{item.borrowReturnDate}</div>
+             <div className="col-span-1">{props.search.page >1 ?props.search.limit + idx +1 : idx+1}</div>
+            <div className="col-span-3">{item.borrowIdDoc}</div>
+            <div className="col-span-3 ">{item.sector}</div>
+            <div className="col-span-1">
+              {new Date(item.borrowDate).toLocaleDateString("th-TH", options)}
+            </div>
+            <div className="col-span-1">
+              {new Date(item.borrowSetReturnDate).toLocaleDateString(
+                "th-TH",
+                options
+              )}
+            </div>
+            <div className="col-span-1 ">
+              {item.borrowReturnDate
+                ? new Date(item.borrowReturnDate).toLocaleDateString(
+                    "th-TH",
+                    options
+                  )
+                : "-"}
+            </div>
             <div className="col-span-2">
               <div className="grid grid-cols-2">
                 <div
                   className={`${
-                    item.status === 'done'
-                      ? ' bg-green-100 text-green-700 border-green-100'
-                      : ' bg-orange-100 border-orange-100 text-orange-400 '
+                    item.status === "done"
+                      ? "  text-green-700 bg-sidebar-green"
+                      : " bg-orange-100 border-orange-100 text-orange-400 "
                   } px-4 py-2 rounded-2xl border`}
                 >
-                  {item.status === 'done' ? 'คืนสำเร็จ' : 'รอตรวจรับ'}
+                  {item.status === "done" ? "คืนสำเร็จ" : "รอตรวจรับ"}
                 </div>
-                {item.status === 'inProgress' ? (
+                {item.status === "inProgress" ? (
                   <div className="flex justify-center">
                     <Link
                       // type="button"
@@ -61,10 +76,10 @@ const TableBorrowCheckIndex = (props) => {
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
-export default TableBorrowCheckIndex
+export default TableBorrowCheckIndex;

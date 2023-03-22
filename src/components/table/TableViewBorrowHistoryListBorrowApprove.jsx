@@ -30,7 +30,21 @@ const TableViewBorrowHistoryListBorrowApprove = ({ approveAssetList }) => {
               {item.sector}
             </div>
             <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {item.status}
+            {item.status === "waiting"
+              ? "รออนุมัติ"
+              : item.status === "approve"
+              ? "อนุมัติแล้ว"
+              : item.status === "partiallyApprove"
+              ? "อนุมัติบางส่วน"
+              : item.status === "done"
+              ? "คืนสำเร็จ"
+              : item.status === "waitCheckReturn"
+              ? "รอตรวจรับ"
+              : item.status === "cancel"
+              ? "ยกเลิก"
+              : item.status === "reject"
+              ? "ไม่อนุมัติ"
+              : "บันทึกคืน"}
             </div>
             <div className="col-span-1 bg-table-data  h-[42px] border-[2px] flex justify-center items-center rounded-md">
               {item.pricePerUnit}

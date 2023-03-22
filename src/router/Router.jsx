@@ -131,7 +131,7 @@ const Router = () => {
         <Route path="borrowDetail/:borrowId" element={<BorrowDetail />} />
         <Route path="borrowCheckIndex" element={<BorrowCheckIndex />} />
         <Route
-          path="borrowCheckIndex/borrowCheckSaving"
+          path="borrowCheckSaving/:borrowId"
           element={<BorrowCheckSaving />}
         />
         <Route

@@ -25,43 +25,72 @@ const TableBorrowList = (props) => {
             key={idx}
             className={`grid grid-cols-12 gap-2 h-12 pt-2  text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
-            <div className="col-span-1">{props.search.page >1 ?props.search.limit + idx +1 : idx+1}</div>
+            <div className="col-span-1">
+              {props.search.page > 1 ? props.search.limit + idx + 1 : idx + 1}
+            </div>
             <div className="col-span-3">{item.borrowIdDoc}</div>
             <div className="col-span-3 ">{item.sector}</div>
-            <div className="col-span-1">{new Date(item.borrowDate).toLocaleDateString("th-TH", options)}</div>
+            <div className="col-span-1">
+              {new Date(item.borrowDate).toLocaleDateString("th-TH", options)}
+            </div>
             {/* insuranceStartDate.toLocaleDateString("en-GB", options) */}
-            <div className="col-span-1 ">{new Date(item.borrowSetReturnDate).toLocaleDateString("th-TH", options)}</div>
-            <div className="col-span-1">{item.borrowReturnDate? new Date(item.borrowReturnDate).toLocaleDateString("th-TH", options):"-" }</div>
+            <div className="col-span-1 ">
+              {new Date(item.borrowSetReturnDate).toLocaleDateString(
+                "th-TH",
+                options
+              )}
+            </div>
+            <div className="col-span-1">
+              {item.borrowReturnDate
+                ? new Date(item.borrowReturnDate).toLocaleDateString(
+                    "th-TH",
+                    options
+                  )
+                : "-"}
+            </div>
             <div className="col-span-2 grid grid-cols-2 items-center">
               <div className="flex justify-center">
-                <button
-                  type="button"
-                  // to={`/borrowSaving/${ID}`}
-                  onClick={() => handleClick(item.borrowStatus)}
-                  className={`${
-                    item.status === "waiting"
-                      ? " bg-background-light-blue text-text-blue  rounded-xl "
-                      : item.status === "approve"
-                      ? " bg-sidebar-green text-text-green  rounded-xl  "
-                      : item.status === "watingReturnApprove"
-                      ? "bg-orange-100 text-orange-400 rounded-xl"
-                      : item.status === "cancel" || item.status === "reject" 
-                      ? "bg-red-200 text-red-600  rounded-xl"
-                      : "bg-text-green text-white rounded-md hover:bg-green-800"
-                  } border border-spacing-5 p-2 w-full`}
-                >
-                  {item.status === "waiting"
-                    ? "รออนุมัติ"
-                    : item.status === "done"
-                    ? "คืนสำเร็จ"
-                    : item.status === "waitCheckReturn"
-                    ? "รอตรวจรับ"
-                    : item.status === "cancel" 
-                    ? "ยกเลิก"
-                    : item.status === "reject" 
-                    ? "ไม่อนุมัติ"
-                    : "บันทึกคืน"}
-                </button>
+                {item.status === "approve" ||
+                item.status === "partiallyApprove" ? (
+                  <Link
+                    to={`/borrowCheckSaving/${item._id}`}
+                    className="bg-text-green text-white rounded-md hover:bg-green-800 p-2 w-full"
+                  >
+                    {item.status === "approve" ||
+                    item.status === "partiallyApprove"
+                      ? "บันทึกคืน"
+                      : ""}
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    // to={`/borrowSaving/${ID}`}
+                    onClick={() => handleClick(item.borrowStatus)}
+                    className={`${
+                      item.status === "waiting"
+                        ? " bg-background-light-blue text-text-blue  rounded-xl "
+                        : item.status === "approve"
+                        ? " bg-sidebar-green text-text-green  rounded-xl  "
+                        : item.status === "watingReturnApprove"
+                        ? "bg-orange-100 text-orange-400 rounded-xl"
+                        : item.status === "cancel" || item.status === "reject"
+                        ? "bg-red-200 text-red-600  rounded-xl"
+                        : "bg-text-green text-white rounded-md hover:bg-green-800"
+                    } border border-spacing-5 p-2 w-full`}
+                  >
+                    {item.status === "waiting"
+                      ? "รออนุมัติ"
+                      : item.status === "done"
+                      ? "คืนสำเร็จ"
+                      : item.status === "waitCheckReturn"
+                      ? "รอตรวจรับ"
+                      : item.status === "cancel"
+                      ? "ยกเลิก"
+                      : item.status === "reject"
+                      ? "ไม่อนุมัติ"
+                      : "บันทึกคืน"}
+                  </button>
+                )}
               </div>
               <div className="flex justify-center">
                 {item.status === "waiting" ? (

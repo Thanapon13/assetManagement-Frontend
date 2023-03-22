@@ -163,3 +163,26 @@ export function getBySearchBorrowHistory(search) {
 export function getBorrowHistorySector() {
   return axios.get(`/borrow/BorrowHistorySector`);
 }
+
+// getBySearchBorrowCheck
+export function getBySearchBorrowCheck(search) {
+
+  function getQueryString(search) {
+    const params = Object.keys(search)
+      .filter(key => search[key] !== "") // remove empty values
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+      .join("&");
+    return params;
+  }
+
+  const queryString = getQueryString(search);
+
+  // console.log(queryString)
+
+  return axios.get(`/borrow/searchBorrowCheck?${queryString}`);
+}
+
+// BorrowHistory page dropdown
+export function getBorrowCheckSector() {
+  return axios.get(`/borrow/borrowCheckSector`);
+}
