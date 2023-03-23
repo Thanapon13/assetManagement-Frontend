@@ -16,6 +16,7 @@ import BarcodeScanner from "../components/scanner/BarcodeScanner";
 import QRscanner from "../components/scanner/QRscanner";
 import { useEffect } from "react";
 import OnlyDateInput from "../components/date/onlyDateInput";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
 const AssetInformation = () => {
   const inputImg = useRef();
@@ -123,6 +124,7 @@ const AssetInformation = () => {
     useState(false);
   const [scanBarcodeModal, setScanBarcodeModal] = useState(false);
   const [scanQRCodeModal, setScanQRCodeModal] = useState(false);
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
 
   //Modal ค่าเสื่อมราคา
   const [depreciationStartDate, setDepreciationStartDate] = useState(
@@ -332,7 +334,9 @@ const AssetInformation = () => {
     setArrayDocument(clone);
   };
 
-  const handleGenData = (e) => {};
+  const handleGenData = (e) => {
+    console.log(input, genData);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -364,8 +368,7 @@ const AssetInformation = () => {
         for (let i = 2; i <= input.quantity; i++) {
           const duplicatedFile = new File(
             [file.image],
-            `${file.image.name.split(".")[0]}_(${i - 1}).${
-              file.image.name.split(".")[1]
+            `${file.image.name.split(".")[0]}_(${i - 1}).${file.image.name.split(".")[1]
             }`,
             { type: file.type }
           );
@@ -382,7 +385,7 @@ const AssetInformation = () => {
       // console.log("allArrayImage",[...arrayImage,...duplicatedArrayImage])
     }
 
-   
+
     // if (duplicatedArrayImage.length > 0) {
     //   const duplicatedArrayImageJSON = JSON.stringify(duplicatedArrayImage);
     //   formData.append("duplicatedArrayImage", duplicatedArrayImageJSON);
@@ -408,8 +411,7 @@ const AssetInformation = () => {
         for (let i = 2; i <= input.quantity; i++) {
           const duplicatedFile = new File(
             [file.document],
-            `${file.document.name.split(".")[0]}_(${i - 1}).${
-              file.document.name.split(".")[1]
+            `${file.document.name.split(".")[0]}_(${i - 1}).${file.document.name.split(".")[1]
             }`,
             { type: file.type }
           );
@@ -1263,28 +1265,28 @@ const AssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationStartDate}
-                          setState={setDepreciationStartDate}
-                        />
+                      <OnlyDateInput
+                        state={depreciationStartDate}
+                        setState={setDepreciationStartDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationRegisterDate}
-                          setState={setDepreciationRegisterDate}
-                        />
+                      <OnlyDateInput
+                        state={depreciationRegisterDate}
+                        setState={setDepreciationRegisterDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationReceivedDate}
-                          setState={setDepreciationReceivedDate}
-                        />
+                      <OnlyDateInput
+                        state={depreciationReceivedDate}
+                        setState={setDepreciationReceivedDate}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1367,8 +1369,8 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationPresentMonth == Infinity ||
-                          depreciationPresentMonth == -Infinity ||
-                          isNaN(depreciationPresentMonth)
+                            depreciationPresentMonth == -Infinity ||
+                            isNaN(depreciationPresentMonth)
                             ? 0
                             : depreciationPresentMonth.toFixed(2)
                         }
@@ -1388,8 +1390,8 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationCumulativePrice == Infinity ||
-                          depreciationCumulativePrice == -Infinity ||
-                          isNaN(depreciationCumulativePrice)
+                            depreciationCumulativePrice == -Infinity ||
+                            isNaN(depreciationCumulativePrice)
                             ? 0
                             : depreciationCumulativePrice.toFixed(2)
                         }
@@ -1409,8 +1411,8 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationYearPrice == Infinity ||
-                          depreciationYearPrice == -Infinity ||
-                          isNaN(depreciationYearPrice)
+                            depreciationYearPrice == -Infinity ||
+                            isNaN(depreciationYearPrice)
                             ? 0
                             : depreciationYearPrice.toFixed(2)
                         }
@@ -1430,8 +1432,8 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationRemainPrice == Infinity ||
-                          depreciationRemainPrice == -Infinity ||
-                          isNaN(depreciationRemainPrice)
+                            depreciationRemainPrice == -Infinity ||
+                            isNaN(depreciationRemainPrice)
                             ? 0
                             : depreciationRemainPrice.toFixed(2)
                         }
@@ -1456,8 +1458,8 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationBookValue == Infinity ||
-                          depreciationBookValue == -Infinity ||
-                          isNaN(depreciationBookValue)
+                            depreciationBookValue == -Infinity ||
+                            isNaN(depreciationBookValue)
                             ? 0
                             : depreciationBookValue.toFixed(2)
                         }
@@ -1472,11 +1474,11 @@ const AssetInformation = () => {
                       เดือน/ปี ที่ทำการประมวลผล
                     </div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          disabled={true}
-                          state={depreciationProcess}
-                          setState={setDepreciationProcess}
-                        />
+                      <OnlyDateInput
+                        disabled={true}
+                        state={depreciationProcess}
+                        setState={setDepreciationProcess}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1561,28 +1563,28 @@ const AssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationStartDate}
-                          setState={setAccumulateDepreciationStartDate}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationStartDate}
+                        setState={setAccumulateDepreciationStartDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationRegisterDate}
-                          setState={setAccumulateDepreciationRegisterDate}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationRegisterDate}
+                        setState={setAccumulateDepreciationRegisterDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationReceivedDate}
-                          setState={setAccumulateDepreciationReceivedDate}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationReceivedDate}
+                        setState={setAccumulateDepreciationReceivedDate}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1667,8 +1669,8 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationPresentMonth == Infinity ||
-                          accumulateDepreciationPresentMonth == -Infinity ||
-                          isNaN(accumulateDepreciationPresentMonth)
+                            accumulateDepreciationPresentMonth == -Infinity ||
+                            isNaN(accumulateDepreciationPresentMonth)
                             ? 0
                             : accumulateDepreciationPresentMonth.toFixed(2)
                         }
@@ -1688,8 +1690,8 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationCumulativePrice == Infinity ||
-                          accumulateDepreciationCumulativePrice == -Infinity ||
-                          isNaN(accumulateDepreciationCumulativePrice)
+                            accumulateDepreciationCumulativePrice == -Infinity ||
+                            isNaN(accumulateDepreciationCumulativePrice)
                             ? 0
                             : accumulateDepreciationCumulativePrice.toFixed(2)
                         }
@@ -1709,8 +1711,8 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationYearPrice == Infinity ||
-                          accumulateDepreciationYearPrice == -Infinity ||
-                          isNaN(accumulateDepreciationYearPrice)
+                            accumulateDepreciationYearPrice == -Infinity ||
+                            isNaN(accumulateDepreciationYearPrice)
                             ? 0
                             : accumulateDepreciationYearPrice.toFixed(2)
                         }
@@ -1730,8 +1732,8 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationRemainPrice == Infinity ||
-                          accumulateDepreciationRemainPrice == -Infinity ||
-                          isNaN(accumulateDepreciationRemainPrice)
+                            accumulateDepreciationRemainPrice == -Infinity ||
+                            isNaN(accumulateDepreciationRemainPrice)
                             ? 0
                             : accumulateDepreciationRemainPrice.toFixed(2)
                         }
@@ -1756,8 +1758,8 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationBookValue == Infinity ||
-                          accumulateDepreciationBookValue == -Infinity ||
-                          isNaN(accumulateDepreciationBookValue)
+                            accumulateDepreciationBookValue == -Infinity ||
+                            isNaN(accumulateDepreciationBookValue)
                             ? 0
                             : accumulateDepreciationBookValue.toFixed(2)
                         }
@@ -1772,11 +1774,11 @@ const AssetInformation = () => {
                       เดือน/ปี ที่ทำการประมวลผล
                     </div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          disabled={true}
-                          state={accumulateDepreciationProcess}
-                          setState={setAccumulateDepreciationProcess}
-                        />
+                      <OnlyDateInput
+                        disabled={true}
+                        state={accumulateDepreciationProcess}
+                        setState={setAccumulateDepreciationProcess}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1861,17 +1863,23 @@ const AssetInformation = () => {
         <div className="flex justify-end gap-4">
           <button
             className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-            // onClick={() => inputDoc.current.click()}
+          // onClick={() => inputDoc.current.click()}
           >
             บันทึกแบบร่าง
           </button>
           <button
-            type="button"
+            id="form"
+            type="submit"
             className="bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-            onClick={handleSubmit}
           >
             บันทึกข้อมูล
           </button>
+
+          <ModalConfirmSave
+            isVisible={showModalConfirm}
+            onClose={() => setShowModalConfirm(false)}
+          // onSave={handleSubmit}
+          />
         </div>
       </div>
     </>
