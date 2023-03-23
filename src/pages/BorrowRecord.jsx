@@ -5,6 +5,7 @@ import Selector from "../components/selector/Selector";
 import TableLocationHistory from "../components/table/TableLocationHistory";
 import OnlyDateInput from "../components/date/onlyDateInput";
 import { createBorrow } from "../api/borrowApi";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
 const BorrowRecord = () => {
   const [countRow, setCountRow] = useState(1);
@@ -50,7 +51,7 @@ const BorrowRecord = () => {
         isPackage: false,
       },
     ]);
-
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
   //handle bottom table
   const handleClickIncrease = (e) => {
     e.preventDefault();
@@ -115,7 +116,8 @@ const BorrowRecord = () => {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    setShowModalConfirm(false)
+    // e.preventDefault();
     const inputJSON = JSON.stringify(input);
     console.log(saveAssetWithdrawTableArray);
     const sortsaveAssetWithdrawTableArray = sortArray(
@@ -141,7 +143,7 @@ const BorrowRecord = () => {
       console.log(input.borrowSetReturnDate);
       const diffTime = Math.abs(
         new Date(input.borrowSetReturnDate).getTime() -
-          input.borrowDate?.getTime()
+        input.borrowDate?.getTime()
       );
       console.log(diffTime);
       diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -361,20 +363,27 @@ const BorrowRecord = () => {
           </div>
         </div>
         {/* footer */}
-        <div className="bottom-0 bg-white  flex justify-end items-center gap-10 p-3 text-sm mr-3 ">
+        {/* <div className="bottom-0 bg-white  flex justify-end items-center gap-4 p-3 text-sm mr-3 "> */}
+        <div className="flex justify-between items-center gap-10 p-5 text-sm">
           <button
             type="button"
-            className="border-[2px] hover:bg-gray-100 text-black text-sm rounded-md p-2"
+            // className="border-[2px] hover:bg-gray-100 text-black text-sm rounded-md p-2"
+            className=" hover:bg-gray-100 text-text-gray text-sm rounded-md py-2 px-4"
           >
             ยกเลิก
           </button>
           <button
             type="submit"
             className="bg-text-green hover:bg-green-800 text-white text-sm rounded-md p-2"
-            onClick={handleSubmit}
+            onClick={() => setShowModalConfirm(true)}
           >
             บันทึกขอยืมครุภัณฑ์
           </button>
+          <ModalConfirmSave
+            isVisible={showModalConfirm}
+            onClose={() => setShowModalConfirm(false)}
+            onSave={handleSubmit}
+          />
         </div>
       </form>
     </>

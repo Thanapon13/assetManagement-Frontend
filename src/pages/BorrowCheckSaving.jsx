@@ -45,6 +45,7 @@ const BorrowCheckSaving = () => {
   });
 
   const [assetList, setAssetList] = useState([]);
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
 
   useEffect(() => {
     const fetchBorrowById = async () => {
@@ -293,9 +294,15 @@ const BorrowCheckSaving = () => {
         <button
           type="button"
           className="bg-text-green hover:bg-green-800 text-white text-sm rounded-md p-2"
+          // onClick={() => setShowModalConfirm(true)}
         >
           บันทึกคืนครุภัณฑ์
         </button>
+        {/* <ModalConfirmSave
+            isVisible={showModalConfirm}
+            onClose={() => setShowModalConfirm(false)}
+            // onSave={handleSubmit}
+          /> */}
       </div>
     </>
   );

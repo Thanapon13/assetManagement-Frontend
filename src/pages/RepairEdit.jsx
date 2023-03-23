@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import Selector from '../components/selector/Selector'
 
 const RepairEdit = () => {
   const location = useLocation()
   const item = location.state?.data
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
   return (
     <>
       <div className="bg-background-page pt-5 p-3">
@@ -48,11 +49,10 @@ const RepairEdit = () => {
             <div className="flex gap-5 items-center text-sm">
               <h3>สถานะใบแจ้งซ่อม</h3>
               <div
-                className={`${
-                  item.repairStatus === 'waitTechnicianConfirm'
+                className={`${item.repairStatus === 'waitTechnicianConfirm'
                     ? 'px-4 py-2 bg-sky-200 border-sky-200 text-blue-700 rounded-full'
                     : 'px-4 py-2 bg-gray-300 border-sky-200 rounded-full'
-                } `}
+                  } `}
               >
                 {item.repairStatus}
               </div>
@@ -262,9 +262,16 @@ const RepairEdit = () => {
           <button className="px-4 py-2 border-[1px] border-text-green text-text-green rounded-md hover:bg-green-100">
             บันทึกแบบร่าง
           </button>
-          <button className="px-4 py-2 border-[1px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800">
+          <button className="px-4 py-2 border-[1px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
+            onClick={() => setShowModalConfirm(true)}
+          >
             บันทึกแจ้งซ่อม
           </button>
+          <ModalConfirmSave
+            isVisible={showModalConfirm}
+            onClose={() => setShowModalConfirm(false)}
+          // onSave={handleSubmit}
+          />
         </div>
       </div>
     </>

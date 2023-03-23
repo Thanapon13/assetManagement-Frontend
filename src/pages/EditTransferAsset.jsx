@@ -5,6 +5,7 @@ import Selector from "../components/selector/Selector";
 import TableLocationHistory from "../components/table/TableLocationHistory";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import RowofTableSaveTransfer from "../components/table/RowofTableSaveTransfer";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
 const EditTransferAsset = () => {
   const todayThaiDate = ChangeDateToBuddhist(
@@ -21,7 +22,7 @@ const EditTransferAsset = () => {
     building: "",
     floor: "",
     room: "",
-    transfereeSector:"",
+    transfereeSector: "",
     transferPendingDateTime: todayThaiDate,
     firstName_recorder: "",
     lastName_recorder: "",
@@ -35,7 +36,7 @@ const EditTransferAsset = () => {
     status: "waiting",
   });
   const [countIndexArray, setCountIndexArray] = useState([0]);
-
+  const [showModalConfirm, setShowModalConfirm] = useState(false)
   const [saveTransferTableArray, setSaveTransferTableArray] = useState([
     {
       index: 0,
@@ -265,6 +266,32 @@ const EditTransferAsset = () => {
         >
           บันทึกขอยืมครุภัณฑ์
         </button>
+        {/* <div className="flex justify-between items-center gap-10 p-5 text-sm mr-3">
+        <button
+          type="button"
+          className=" hover:bg-gray-100 text-text-gray text-sm rounded-md py-2 px-4"
+        >
+          ยกเลิก
+        </button>
+        <div className="flex justify-end gap-4">
+          <button
+            className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+          >
+            บันทึกแบบร่าง
+          </button>
+          <button
+            type="button"
+            className="bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
+            // onClick={handleSubmit}
+            onClick={() => setShowModalConfirm(true)}
+          >
+            // บันทึกขออนุมัติ
+          </button>
+          <ModalConfirmSave
+            isVisible={showModalConfirm}
+            onClose={() => setShowModalConfirm(false)}
+          // onSave={handleSubmit}
+          /> */}
       </div>
     </>
   );

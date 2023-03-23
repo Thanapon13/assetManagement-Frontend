@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import RowOfTableViewSubcomponentPackageAssetInformation from "../components/table/RowOfTableViewSubcomponentPackageAssetInformation";
 import { getPackageAssetById, updatePackageAsset } from "../api/packageAssetApi";
 import OnlyDateInput from "../components/date/onlyDateInput";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
 const EditPackageAssetInformation = () => {
   const { packageAssetId } = useParams();
@@ -110,6 +111,7 @@ const EditPackageAssetInformation = () => {
     useState(false);
   const [scanBarcodeModal, setScanBarcodeModal] = useState(false);
   const [scanQRCodeModal, setScanQRCodeModal] = useState(false);
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
 
   //Modal ค่าเสื่อมราคา
   const [depreciationStartDate, setDepreciationStartDate] = useState(
@@ -1993,6 +1995,12 @@ const EditPackageAssetInformation = () => {
             >
               บันทึกข้อมูล
             </button>
+            
+            {/* <ModalConfirmSave
+              isVisible={showModalConfirm}
+              onClose={() => setShowModalConfirm(false)}
+              onSave={handleSubmit}
+            /> */}
           </div>
         </div>
       </div>

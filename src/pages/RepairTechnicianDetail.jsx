@@ -5,6 +5,7 @@ import { FaArrowLeft } from 'react-icons/fa'
 const RepairTechnicianDetail = () => {
   const location = useLocation()
   // const item = location.state?.data
+  const [showModalConfirm, setShowModalConfirm] = useState(false)
   const item = {
     informRepairDate: '12/09/2565 14:36 น.',
     informRepairIdDoc: '20212334512',
@@ -255,9 +256,16 @@ const RepairTechnicianDetail = () => {
             </div>
             <div className="flex gap-5">
               <ModalRejectRepair />
-              <button className="px-14 py-2 rounded-md text-sm bg-blue-500 text-white hover:bg-blue-800">
+              <button className="px-14 py-2 rounded-md text-sm bg-blue-500 text-white hover:bg-blue-800"
+                onClick={() => setShowModalConfirm(true)}
+              >
                 รับงาน
               </button>
+              <ModalConfirmSave
+                isVisible={showModalConfirm}
+                onClose={() => setShowModalConfirm(false)}
+              // onSave={handleSubmit}
+              />
             </div>
           </div>
         </>

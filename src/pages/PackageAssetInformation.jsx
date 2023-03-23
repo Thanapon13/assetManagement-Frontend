@@ -24,6 +24,7 @@ import RowOfTablePackageAssetInformation from "../components/table/RowOfTablePac
 import RowOfTableTopSubcomponentPackageAssetInformation from "../components/table/RowOfTableTopSubcomponentPackageAssetInformation";
 import RowOfTableBottomSubcomponentPackageAssetInformation from "../components/table/RowOfTableBottomSubcomponentPackageAssetInformation";
 import OnlyDateInput from "../components/date/onlyDateInput";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
 const PackageAssetInformation = () => {
   const inputImg = useRef();
@@ -131,6 +132,7 @@ const PackageAssetInformation = () => {
     useState(false);
   const [scanBarcodeModal, setScanBarcodeModal] = useState(false);
   const [scanQRCodeModal, setScanQRCodeModal] = useState(false);
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
 
   //Modal ค่าเสื่อมราคา
   const [depreciationStartDate, setDepreciationStartDate] = useState(
@@ -406,7 +408,8 @@ const PackageAssetInformation = () => {
   const handleGenData = (e) => {};
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    setShowModalConfirm(false)
+    // e.preventDefault();
     const inputJSON = JSON.stringify(input);
     const genDataJSON = JSON.stringify(genData);
     const bottomSubComponentDataJSON = JSON.stringify(bottomSubComponentData);
@@ -2105,10 +2108,17 @@ const PackageAssetInformation = () => {
           <button
             type="button"
             className="bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-            onClick={handleSubmit}
+            // onClick={handleSubmit}
+            onClick={() => setShowModalConfirm(true)}
           >
             บันทึกข้อมูล
           </button>
+
+           <ModalConfirmSave
+              isVisible={showModalConfirm}
+              onClose={() => setShowModalConfirm(false)}
+              onSave={handleSubmit}
+            />
         </div>
       </div>
     </>
