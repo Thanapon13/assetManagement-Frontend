@@ -67,7 +67,7 @@ function TableBorrowRecord({
   const handleChange = (e) => {
     const clone = [...saveAssetWithdrawTableArray];
     // console.log(clone);
-    clone[index][e.target.name] = e.target.value;
+    clone[index][e.target.name] = e.target.name === "amount" ? parseInt(e.target.value) : e.target.value;
     // console.log(e.target.value)
     // console.log(saveAssetWithdrawTableArray[index].maxQuantity)
 
@@ -142,7 +142,7 @@ function TableBorrowRecord({
   useEffect(() => {
     fetchAssetList();
   }, []);
-
+  
   useEffect(() => {
     fetchAssetListByProductName(search);
   }, [search.productName]);
@@ -214,7 +214,7 @@ function TableBorrowRecord({
           name="amount"
           type="number"
           min="0"
-          required
+          // required
           disabled={
             saveAssetWithdrawTableArray[index]?.isFetching === true
               ? true
@@ -225,7 +225,7 @@ function TableBorrowRecord({
           onChange={handleChange}
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.amount
+            saveAssetWithdrawTableArray[index]?.amount.toLocaleString()
           }
           placeholder={saveAssetWithdrawTableArray[index]?.maxQuantity}
         />
@@ -235,7 +235,7 @@ function TableBorrowRecord({
           disabled
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.unit
+            saveAssetWithdrawTableArray[index]?.unit.toLocaleString()
           }
         />
         <input
@@ -243,7 +243,7 @@ function TableBorrowRecord({
           disabled
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.pricePerUnit
+            saveAssetWithdrawTableArray[index]?.pricePerUnit.toLocaleString()
           }
         />
       </div>
