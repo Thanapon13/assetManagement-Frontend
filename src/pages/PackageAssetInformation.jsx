@@ -58,7 +58,7 @@ const PackageAssetInformation = () => {
     model: "",
     size: "",
     quantity: 0,
-    serialNumberMachine: "", //
+    // serialNumberMachine: "", //
     source: "",
     category: "",
     acquiredType: "",
@@ -70,7 +70,7 @@ const PackageAssetInformation = () => {
     type4: "",
     type8: "",
     type13: "",
-    allSector: "", //
+    // allSector: "", //
     status: "not approve",
   });
   const [errorInput, setErrorInput] = useState(false)
@@ -408,7 +408,7 @@ const PackageAssetInformation = () => {
     setErrorContract(errContract)
     setErrorSale(errSale)
     console.log(errInput, errContract, errSale)
-    if (!errInput || !errContract || !errSale) setShowModalConfirm(true)
+    if (!(errInput || errContract || errSale)) setShowModalConfirm(true)
   }
 
   const handleSubmit = async (e) => {
