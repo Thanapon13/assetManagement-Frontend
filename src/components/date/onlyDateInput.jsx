@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { WatDatePicker } from "thaidatepicker-react";
 import { AiTwotoneCalendar } from "react-icons/ai";
 
-const onlyDateInput = ({ state, setState, disabled, id }) => {
+const onlyDateInput = ({ state, setState, disabled, id, isValid }) => {
   // const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleWatDatePickerChange = (christDate) => {
@@ -14,7 +14,7 @@ const onlyDateInput = ({ state, setState, disabled, id }) => {
       location.pathname === "/borrowApprove" ||
       `/${location.pathname.split("/")[1]}` === "/borrowApproveDetail" ||
       `/${location.pathname.split("/")[1]}` === "/viewBorrowApproveDetail" ||
-      `/${location.pathname.split("/")[1]}` === "/borrowCheckSaving" 
+      `/${location.pathname.split("/")[1]}` === "/borrowCheckSaving"
     ) {
       setState((prevState) => ({ ...prevState, [id]: christDate }));
     } else {
@@ -29,11 +29,11 @@ const onlyDateInput = ({ state, setState, disabled, id }) => {
         // onChange={handleWatDatePickerChange}
         value={
           location.pathname === "/borrowRecord" ||
-          `/${location.pathname.split("/")[1]}` === "/borrowEdit" ||
-          location.pathname === "/borrowApprove" ||
-          `/${location.pathname.split("/")[1]}` === "/borrowApproveDetail" ||
-          `/${location.pathname.split("/")[1]}` === "/viewBorrowApproveDetail" ||
-          `/${location.pathname.split("/")[1]}` === "/borrowCheckSaving" 
+            `/${location.pathname.split("/")[1]}` === "/borrowEdit" ||
+            location.pathname === "/borrowApprove" ||
+            `/${location.pathname.split("/")[1]}` === "/borrowApproveDetail" ||
+            `/${location.pathname.split("/")[1]}` === "/viewBorrowApproveDetail" ||
+            `/${location.pathname.split("/")[1]}` === "/borrowCheckSaving"
             ? state[id]
             : state
         } // Can be replace with string or dayjs object (e.g. "2020-12-31" or `dayjs()`)
@@ -44,7 +44,7 @@ const onlyDateInput = ({ state, setState, disabled, id }) => {
           borderRadius: "6px",
           width: "100%",
           height: "38px",
-          borderColor: "rgb(209 213 219)",
+          borderColor: isValid ? "#ef4444" : "rgb(209 213 219)",
           backgroundColor: disabled ? "rgb(229 231 235)" : "",
         }} // styles for input
         // clearable={true} // true | false

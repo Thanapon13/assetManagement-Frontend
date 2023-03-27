@@ -12,7 +12,7 @@ function TableBorrowRecord({
   index,
   saveAssetWithdrawTableArray,
   setSaveAssetWithdrawTableArray,
-
+  errorAssestTable,
   deleteRow,
 }) {
   const [dataProductName, setDataProductName] = useState([]);
@@ -170,11 +170,12 @@ function TableBorrowRecord({
             saveAssetWithdrawTableArray[index].amount > 1
               ? false
               : saveAssetWithdrawTableArray[index].isFetching
-              ? false
-              : true
+                ? false
+                : true
           }
           search={search}
           setSearch={setSearch}
+          errors={errorAssestTable}
         />
       </div>
       <div className="col-span-3 ">
@@ -190,11 +191,12 @@ function TableBorrowRecord({
             search.assetNumber !== ""
               ? false
               : saveAssetWithdrawTableArray[index].isFetching
-              ? false
-              : true
+                ? false
+                : true
           }
           search={search}
           setSearch={setSearch}
+          errors={errorAssestTable}
         />
       </div>
       <input
@@ -208,15 +210,17 @@ function TableBorrowRecord({
       />
       <div className="col-span-3 grid grid-cols-4 gap-5">
         <input
-          className="col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          className={`${errorAssestTable && !saveAssetWithdrawTableArray[index]?.amount && 'border-red-500'} col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
           name="amount"
+          type="number"
+          min="0"
           required
           disabled={
             saveAssetWithdrawTableArray[index]?.isFetching === true
               ? true
               : search.assetNumber === ""
-              ? false
-              : true
+                ? false
+                : true
           }
           onChange={handleChange}
           value={

@@ -18,6 +18,7 @@ const AssetNumberSelector = ({
   disabled,
   search,
   setSearch,
+  errors
 }) => {
   let location = useLocation();
   // console.log(location.pathname);
@@ -80,7 +81,7 @@ const AssetNumberSelector = ({
         onClick={() => {
           disabled ? setOpen(!open) : setOpen(false);
         }}
-        className={` border border-gray-300 bg-white ${
+        className={`${errors && !state[index][id].length && 'border-red-500'} border border-gray-300 bg-white ${
           location.pathname === "/dashboard" ? "text-md" : "text-sm"
         } rounded-lg focus:ring-blue-500 focus:border-blue-500 z-0  w-full  dark:focus:ring-blue-500 dark:focus:border-blue-500  p-2 flex items-center justify-between ${
           state[index][id] ? "text-gray-700" : "text-gray-500"
