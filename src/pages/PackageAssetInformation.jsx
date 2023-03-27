@@ -67,13 +67,13 @@ const PackageAssetInformation = () => {
     guaranteedMonth: "",
     purposeOfUse: "",
     assetGroupNumber: "แมม",
-    type4: "type4",
-    type8: "type8",
-    type13: "type13",
-    allSector:"",
-
+    type4: "",
+    type8: "",
+    type13: "",
+    allSector: "",
     status: "not approve",
   });
+  const [errorInput, setErrorInput] = useState(false)
 
   // upload image
   const [arrayImage, setArrayImage] = useState([]);
@@ -98,31 +98,32 @@ const PackageAssetInformation = () => {
     },
   ]);
 
-  
-
-  // console.log(barcode,"barcode")
 
   // สัญญาจัดซื้อ
-  const [acquisitionMethod, setAcquisitionMethod] = useState("");
-  const [moneyType, setMoneyType] = useState("");
-  const [deliveryDocument, setDeliveryDocument] = useState("");
-  const [contractNumber, setContractNumber] = useState("");
-  const [receivedDate, setReceivedDate] = useState(todayThaiDate);
-  const [seller, setSeller] = useState("");
-  const [price, setPrice] = useState("");
-  const [billNumber, setBillNumber] = useState("");
-  const [purchaseYear, setPurchaseYear] = useState(todayThaiDate);
-  const [purchaseDate, setPurchaseDate] = useState(todayThaiDate);
-  const [documentDate, setDocumentDate] = useState(todayThaiDate);
+  const [inputContract, setInputContract] = useState({
+    acquisitionMethod: "",
+    moneyType: "",
+    deliveryDocument: "",
+    contractNumber: "",
+    receivedDate: todayThaiDate,
+    seller: "",
+    price: "",
+    billNumber: "",
+    purchaseYear: todayThaiDate,
+    purchaseDate: todayThaiDate,
+    documentDate: todayThaiDate,
+  })
+  const [errorContract, setErrorContract] = useState(false)
 
   // การจำหน่าย
-  const [salesDocument, setSalesDocument] = useState("");
-  const [distributeDocumentDate, setDistributeDocumentDate] =
-    useState(todayThaiDate);
-  const [distributeApprovalReleaseDate, setDistributeApprovalReleaseDate] =
-    useState(todayThaiDate);
-  const [distributeStatus, setDistributeStatus] = useState("");
-  const [distributionNote, setDistributionNote] = useState("");
+  const [inputSale, setInputSale] = useState({
+    salesDocument: "",
+    distributeDocumentDate: todayThaiDate,
+    distributeApprovalReleaseDate: todayThaiDate,
+    distributeStatus: "",
+    distributionNote: ""
+  })
+  const [errorSale, setErrorSale] = useState(false)
 
   //Show Modal
   const [showViewImageModal, setShowViewImageModal] = useState(false);
@@ -240,60 +241,36 @@ const PackageAssetInformation = () => {
     useState(todayThaiDate);
 
   // handle
-  const handleChangeRealAssetId = (e) => {
+  const handleChange = (e) => {
     const clone = { ...input };
-    clone.realAssetId = e.target.value;
+    clone[e.target.name] = e.target.value;
     setInput(clone);
   };
-  const handleChangeAssetGroupNumber = (e) => {
-    const clone = { ...input };
-    clone.assetGroupNumber = e.target.value;
-    setInput(clone);
+  const handleChangeSales = (e) => {
+    const { name, value } = e.target
+    setInputSale({
+      ...inputSale,
+      [name]: value
+    })
   };
-  const handleChangeEngProductName = (e) => {
-    const clone = { ...input };
-    clone.engProductName = e.target.value;
-    setInput(clone);
+  const handleChangeSelectSale = (name, value) => {
+    setInputSale({
+      ...inputSale,
+      [name]: value
+    })
   };
-  const handleChangeProductName = (e) => {
-    const clone = { ...input };
-    clone.productName = e.target.value;
-    setInput(clone);
+  const handleChangeContract = (e) => {
+    const { name, value } = e.target
+    setInputContract({
+      ...inputContract,
+      [name]: value
+    })
   };
-  const handleChangeModel = (e) => {
-    const clone = { ...input };
-    clone.model = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeSize = (e) => {
-    const clone = { ...input };
-    clone.size = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeQuantity = (e) => {
-    const clone = { ...input };
-    clone.quantity = e.target.value;
-    setInput(clone);
-  };
-  const handleChangePricePerUnit = (e) => {
-    const clone = { ...input };
-    clone.pricePerUnit = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeSource = (e) => {
-    const clone = { ...input };
-    clone.source = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeAllSector = (e) => {
-    const clone = { ...input };
-    clone.allSector = e.target.value;
-    setInput(clone);
-  };
-  const handleChangeGuaranteedMonth = (e) => {
-    const clone = { ...input };
-    clone.guaranteedMonth = e.target.value;
-    setInput(clone);
+  const handleChangeSelectContract = (name, value) => {
+    setInputContract({
+      ...inputContract,
+      [name]: value
+    })
   };
 
   const handleGenSubComponentData = () => {
@@ -304,7 +281,7 @@ const PackageAssetInformation = () => {
       topSubComponentData.forEach((el, idx) => {
         if (idx + 1 < topSubComponentData.length) {
           bottomArray.push({
-            assetNumber: `${assetNumber}(${idx+1})`,
+            assetNumber: `${assetNumber}(${idx + 1})`,
             productName: el.productName,
             serialNumber: "-",
             price: "",
@@ -405,19 +382,43 @@ const PackageAssetInformation = () => {
     setArrayDocument(clone);
   };
 
-  const handleGenData = (e) => {};
+  const handleGenData = (e) => {
+    console.log(input, genData)
+  }
+
+  const handleForm = async () => {
+    let errInput, errContract, errSale
+    Object.values(input).map((value, index) => {
+      if (errInput) return
+      if (!value) errInput = true
+      if (Object.keys(input).length == index + 1) errInput = false
+    })
+    Object.values(inputContract).map((value, index) => {
+      if (errContract) return
+      if (!value) errContract = true
+      if (Object.keys(input).length == index + 1) errContract = false
+    })
+    // console.log(value, inputSale);
+    Object.entries(inputSale).forEach(([key, value], index) => {
+      if (errSale || key === "distributionNote") return
+      if (!value) errSale = true
+      if (Object.keys(input).length == index + 1) errSale = false
+    })
+    setErrorInput(errInput)
+    setErrorContract(errContract)
+    setErrorSale(errSale)
+    console.log(errInput, errContract, errSale)
+    if (!errInput || !errContract || !errSale) setShowModalConfirm(true)
+  }
 
   const handleSubmit = async (e) => {
-    setShowModalConfirm(false)
-    // e.preventDefault();
-    const inputJSON = JSON.stringify(input);
+    const inputJSON = JSON.stringify({ input, ...inputSale, ...inputContract });
     const genDataJSON = JSON.stringify(genData);
     const bottomSubComponentDataJSON = JSON.stringify(bottomSubComponentData);
     const formData = new FormData();
     formData.append("input", inputJSON);
     formData.append("insuranceStartDate", insuranceStartDate);
     formData.append("insuranceExpiredDate", insuranceExpiredDate);
-
     // image
     const baseArrayImage = [];
     if (arrayImage?.length > 0) {
@@ -440,19 +441,17 @@ const PackageAssetInformation = () => {
         for (let i = 2; i <= input.quantity; i++) {
           const duplicatedFile = new File(
             [file.image],
-            `${file.image.name.split(".")[0]}_(${i - 1}).${
-              file.image.name.split(".")[1]
+            `${file.image.name.split(".")[0]}_(${i - 1}).${file.image.name.split(".")[1]
             }`,
             { type: file.type }
           );
           formData.append("arrayImage", duplicatedFile);
           console.log(duplicatedFile)
           console.log(bottomSubComponentData.length)
-          for(let j=1;j<=bottomSubComponentData.length;j++){
+          for (let j = 1; j <= bottomSubComponentData.length; j++) {
             const duplicatedSubFile = new File(
               [file.image],
-              `${file.image.name.split(".")[0]}_(${i - 1})_(${j}).${
-                file.image.name.split(".")[1]
+              `${file.image.name.split(".")[0]}_(${i - 1})_(${j}).${file.image.name.split(".")[1]
               }`,
               { type: file.type }
             );
@@ -470,54 +469,52 @@ const PackageAssetInformation = () => {
       // console.log("allArrayImage",[...arrayImage,...duplicatedArrayImage])
     }
 
-     // document
-     const baseArrayDocument = [];
-     if (arrayDocument?.length > 0) {
-       arrayDocument.forEach((file) => {
-         // console.log(file.image.name);
-         baseArrayDocument.push({
-           document: file.document.name
-         });
-       });
-     }
-     const baseArrayDocumentJSON = JSON.stringify(baseArrayDocument);
-     formData.append("baseArrayDocument", baseArrayDocumentJSON);
-     // for duplicate document file if create asset as too many
-     // const duplicatedArrayDocument = [];
-     if (arrayDocument?.length > 0) {
-       arrayDocument.forEach((file) => {
-         formData.append("arrayDocument", file.document);
-         for (let i = 2; i <= input.quantity; i++) {
-           const duplicatedFile = new File(
-             [file.document],
-             `${file.document.name.split(".")[0]}_(${i - 1}).${
-               file.document.name.split(".")[1]
-             }`,
-             { type: file.type }
-           );
-           formData.append("arrayDocument", duplicatedFile);
+    // document
+    const baseArrayDocument = [];
+    if (arrayDocument?.length > 0) {
+      arrayDocument.forEach((file) => {
+        // console.log(file.image.name);
+        baseArrayDocument.push({
+          document: file.document.name
+        });
+      });
+    }
+    const baseArrayDocumentJSON = JSON.stringify(baseArrayDocument);
+    formData.append("baseArrayDocument", baseArrayDocumentJSON);
+    // for duplicate document file if create asset as too many
+    // const duplicatedArrayDocument = [];
+    if (arrayDocument?.length > 0) {
+      arrayDocument.forEach((file) => {
+        formData.append("arrayDocument", file.document);
+        for (let i = 2; i <= input.quantity; i++) {
+          const duplicatedFile = new File(
+            [file.document],
+            `${file.document.name.split(".")[0]}_(${i - 1}).${file.document.name.split(".")[1]
+            }`,
+            { type: file.type }
+          );
+          formData.append("arrayDocument", duplicatedFile);
 
-           for(let j=1;j<=bottomSubComponentData.length;j++){
+          for (let j = 1; j <= bottomSubComponentData.length; j++) {
             const duplicatedSubFile = new File(
               [file.document],
-              `${file.document.name.split(".")[0]}_(${i - 1})_(${j}).${
-                file.document.name.split(".")[1]
+              `${file.document.name.split(".")[0]}_(${i - 1})_(${j}).${file.document.name.split(".")[1]
               }`,
               { type: file.type }
             );
             formData.append("arrayDocument", duplicatedSubFile);
             console.log(duplicatedSubFile)
           }
-           // duplicatedArrayDocument.push({
-           //   ...file,
-           //   document: duplicatedFile.name,
-           // });
-         }
-       });
-       // console.log("duplicatedArrayDocument", duplicatedArrayDocument);
- 
-       // console.log("allArrayDocument",[...arrayDocument,...duplicatedArrayDocument])
-     }
+          // duplicatedArrayDocument.push({
+          //   ...file,
+          //   document: duplicatedFile.name,
+          // });
+        }
+      });
+      // console.log("duplicatedArrayDocument", duplicatedArrayDocument);
+
+      // console.log("allArrayDocument",[...arrayDocument,...duplicatedArrayDocument])
+    }
 
     // arrayImage.forEach((file) => {
     //   formData.append("arrayImage", file.image);
@@ -587,31 +584,8 @@ const PackageAssetInformation = () => {
       accumulateDepreciationBookValue
     );
 
-
-    //สัญญาจัดซื้อ
-    formData.append("acquisitionMethod", acquisitionMethod);
-    formData.append("moneyType", moneyType);
-    formData.append("deliveryDocument", deliveryDocument);
-    formData.append("contractNumber", contractNumber);
-    formData.append("receivedDate", receivedDate);
-    formData.append("seller", seller);
-    formData.append("price", price);
-    formData.append("billNumber", billNumber);
-    formData.append("purchaseYear", purchaseYear);
-    formData.append("purchaseDate", purchaseDate);
-    formData.append("documentDate", documentDate);
-
-    //การจำหน่าย
-    formData.append("salesDocument", salesDocument);
-    formData.append("distributeDocumentDate", distributeDocumentDate);
-    formData.append(
-      "distributeApprovalReleaseDate",
-      distributeApprovalReleaseDate
-    );
-    formData.append("distributeStatus", distributeStatus);
-    formData.append("distributionNote", distributionNote);
-
-    await createPackageAsset(formData);
+    const response = await createPackageAsset(formData);
+    if (response.status === 200) setShowModalConfirm(false)
   };
 
   useEffect(() => {
@@ -651,7 +625,7 @@ const PackageAssetInformation = () => {
 
             <div className="text-text-gray">/</div>
             <Link
-              to="/assetInformation"
+              to="/packageAssetInformationIndex"
               className=" text-text-green underline text-xs focus:text-sky-700 focus:underline ml-2"
             >
               ข้อมูลครุภัณฑ์เป็นชุด
@@ -674,7 +648,7 @@ const PackageAssetInformation = () => {
                 id="engProductName"
                 onChange={handleChangeEngProductName}
                 value={input.engProductName}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.engProductName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* ชื่อครุภัณฑ์ภาษาไทย */}
@@ -686,7 +660,7 @@ const PackageAssetInformation = () => {
                 id="productName"
                 onChange={handleChangeProductName}
                 value={input.productName}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.productName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* ประเภทครุภัณฑ์ */}
@@ -698,6 +672,7 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ประเภทครุภัณฑ์"}
+                  isValid={errorInput && !input.type}
                 />
               </div>
             </div>
@@ -710,6 +685,7 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ชนิดครุภัณฑ์"}
+                  isValid={errorInput && !input.kind}
                 />
               </div>
             </div>
@@ -723,7 +699,7 @@ const PackageAssetInformation = () => {
                 id="realAssetId"
                 onChange={handleChangeRealAssetId}
                 value={input.realAssetId}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.realAssetId && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -732,12 +708,13 @@ const PackageAssetInformation = () => {
               <div>
                 <div className="mb-1">จำนวน</div>
                 <input
-                  type="text"
+                  type="number"
                   name="quantity"
                   id="quantity"
                   onChange={handleChangeQuantity}
                   value={input.quantity}
-                  className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                  min="0"
+                  className={`${errorInput && !input.quantity && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
                 />
               </div>
               {/* หน่วยนับ */}
@@ -749,6 +726,7 @@ const PackageAssetInformation = () => {
                     state={input}
                     setState={setInput}
                     id={"หน่วยนับ"}
+                    isValid={errorInput && !input.unit}
                   />
                 </div>
               </div>
@@ -763,6 +741,7 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ยี่ห้อ"}
+                  isValid={errorInput && !input.brand}
                 />
               </div>
             </div>
@@ -775,7 +754,7 @@ const PackageAssetInformation = () => {
                 id="model"
                 onChange={handleChangeModel}
                 value={input.model}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.model && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* ขนาด */}
@@ -787,7 +766,7 @@ const PackageAssetInformation = () => {
                 id="size"
                 onChange={handleChangeSize}
                 value={input.size}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.size && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -800,6 +779,7 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"หมวดหมู่ครุภัณฑ์"}
+                  isValid={errorInput && !input.category}
                 />
               </div>
             </div>
@@ -812,6 +792,7 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"กลุ่ม"}
+                  isValid={errorInput && !input.group}
                 />
               </div>
             </div>
@@ -824,20 +805,22 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ประเภทที่ได้มา"}
+                  isValid={errorInput && !input.acquiredType}
                 />
               </div>
             </div>
             {/* แหล่งที่ได้มา */}
             <div>
               <div className="mb-1">แหล่งที่ได้มา</div>
-              <input
-                type="text"
-                name="source"
-                id="source"
-                onChange={handleChangeSource}
-                value={input.source}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+              <div className="flex h-[38px] ">
+                <Selector
+                  placeholder={"Select"}
+                  state={input}
+                  setState={setInput}
+                  id={"แหล่งที่ได้มา"}
+                  isValid={errorInput && !input.source}
+                />
+              </div>
             </div>
             {/* วัตถุประสงค์ในการใช้งาน */}
             <div>
@@ -848,6 +831,7 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"วัตถุประสงค์ในการใช้งาน"}
+                  isValid={errorInput && !input.purposeOfUse}
                 />
               </div>
             </div>
@@ -855,24 +839,26 @@ const PackageAssetInformation = () => {
             <div>
               <div className="mb-1">ราคาต่อหน่วย (บาท)</div>
               <input
-                type="text"
+                min="0"
+                type="number"
                 name="pricePerUnit"
                 id="pricePerUnit"
                 onChange={handleChangePricePerUnit}
                 value={input.pricePerUnit}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.pricePerUnit && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* จำนวนเดือนที่รับประกัน (เดือน) */}
             <div>
               <div className="mb-1">จำนวนเดือนที่รับประกัน (เดือน)</div>
               <input
-                type="text"
+                min="0"
+                type="number"
                 name="guaranteedMonth"
                 id="guaranteedMonth"
                 onChange={handleChangeGuaranteedMonth}
                 value={input.guaranteedMonth}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.guaranteedMonth && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* วันที่เริ่มรับประกัน */}
@@ -905,6 +891,7 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ประเภทครุภัณฑ์ 4 หลัก"}
+                  isValid={errorInput && !input.type4}
                 />
               </div>
             </div>
@@ -917,6 +904,7 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ประเภทครุภัณฑ์ 8 หลัก"}
+                  isValid={errorInput && !input.type8}
                 />
               </div>
             </div>
@@ -929,6 +917,7 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ประเภทครุภัณฑ์ 13 หลัก"}
+                  isValid={errorInput && !input.type13}
                 />
               </div>
             </div>
@@ -942,6 +931,7 @@ const PackageAssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"การจ่ายครุภัณฑ์ให้หน่วยงาน"}
+                  isValid={errorInput && !input.distributeToSector}
                 />
               </div>
             </div>
@@ -956,7 +946,7 @@ const PackageAssetInformation = () => {
                 disabled
                 onChange={handleChangeAssetGroupNumber}
                 value={input.assetGroupNumber}
-                className="w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.assetGroupNumber && 'border-red-500'} w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -972,7 +962,7 @@ const PackageAssetInformation = () => {
           {/* block white bottom */}
           <div className=" my-3 p-3">
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-              <div className="w-[800px] xl:w-full h-[500px] ">
+              <div className="w-[800px] xl:w-full max-h-[500px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
                   <div className="grid grid-cols-17 gap-2 text-center">
                     <div className="ml-2">ลำดับ</div>
@@ -1048,8 +1038,9 @@ const PackageAssetInformation = () => {
                 <div className="text-text-gray text-sm">(JPEG , PNG , SVG)</div>
               </div>
               <button
-                className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                className="inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 disabled:hover:bg-gray-100"
                 onClick={() => setShowViewImageModal(true)}
+                disabled={!arrayImage.length}
               >
                 <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
                 ดูรูปภาพ
@@ -1158,8 +1149,9 @@ const PackageAssetInformation = () => {
               <div className="flex h-[38px] ">
                 <Selector
                   placeholder={"Select"}
-                  state={acquisitionMethod}
-                  setState={setAcquisitionMethod}
+                  setState={value => handleChangeSelectContract("acquisitionMethod", value)}
+                  state={inputContract.acquisitionMethod}
+                  isValid={errorContract && !inputContract.acquisitionMethod}
                   id={"วิธีการได้มา"}
                 />
               </div>
@@ -1170,8 +1162,9 @@ const PackageAssetInformation = () => {
               <div className="flex h-[38px] ">
                 <Selector
                   placeholder={"Select"}
-                  state={moneyType}
-                  setState={setMoneyType}
+                  state={inputContract.moneyType}
+                  setState={value => handleChangeSelectContract("moneyType", value)}
+                  isValid={errorContract && !inputContract.moneyType}
                   id={"ประเภทเงิน"}
                 />
               </div>
@@ -1183,9 +1176,9 @@ const PackageAssetInformation = () => {
                 type="text"
                 name="deliveryDocument"
                 id="deliveryDocument"
-                onChange={(e) => setDeliveryDocument(e.target.value)}
-                value={deliveryDocument}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                onChange={handleChangeContract}
+                value={inputContract.deliveryDocument}
+                className={`${errorContract && !inputContract.deliveryDocument && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* เลขที่สัญญา */}
@@ -1195,16 +1188,19 @@ const PackageAssetInformation = () => {
                 type="text"
                 name="contractNumber"
                 id="contractNumber"
-                onChange={(e) => setContractNumber(e.target.value)}
-                value={contractNumber}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                onChange={handleChangeContract}
+                value={inputContract.contractNumber}
+                className={`${errorContract && !inputContract.contractNumber && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* วันที่รับมอบ */}
             <div>
               <div className="mb-1">วันที่รับมอบ</div>
               <div className="flex h-[38px]">
-                <DateInput state={receivedDate} setState={setReceivedDate} />
+                <DateInput
+                  state={inputContract.receivedDate}
+                  setState={value => handleChangeSelectContract("receivedDate", value)}
+                />
               </div>
             </div>
             {/* ผู้ขาย */}
@@ -1213,8 +1209,9 @@ const PackageAssetInformation = () => {
               <div className="flex h-[38px] ">
                 <Selector
                   placeholder={"Select"}
-                  state={seller}
-                  setState={setSeller}
+                  state={inputContract.seller}
+                  setState={value => handleChangeSelectContract("seller", value)}
+                  isValid={errorContract && !inputContract.seller}
                   id={"ผู้ขาย"}
                 />
               </div>
@@ -1223,12 +1220,13 @@ const PackageAssetInformation = () => {
             <div>
               <div className="mb-1">ราคาซื้อ (บาท)</div>
               <input
-                type="text"
+                type="number"
                 name="price"
                 id="price"
-                onChange={(e) => setPrice(e.target.value)}
-                value={price}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                min="0"
+                onChange={handleChangeContract}
+                value={inputContract.price}
+                className={`${errorContract && !inputContract.price && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* เลขที่ใบเบิก */}
@@ -1238,16 +1236,18 @@ const PackageAssetInformation = () => {
                 type="text"
                 name="billNumber"
                 id="billNumber"
-                onChange={(e) => setBillNumber(e.target.value)}
-                value={billNumber}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                onChange={handleChangeContract}
+                value={inputContract.billNumber}
+                className={`${errorContract && !inputContract.billNumber && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* ปีที่ซื้อ */}
             <div>
               <div className="mb-1">ปีที่ซื้อ</div>
               <div className="flex h-[38px]">
-                <DateInput state={purchaseYear} setState={setPurchaseYear} />
+                <DateInput
+                  state={inputContract.purchaseYear}
+                  setState={value => handleChangeSelectContract("purchaseYear", value)} />
               </div>
             </div>
 
@@ -1255,14 +1255,14 @@ const PackageAssetInformation = () => {
             <div>
               <div className="mb-1">วันที่ซื้อ</div>
               <div className="flex h-[38px]">
-                <DateInput state={purchaseDate} setState={setPurchaseDate} />
+                <DateInput state={inputContract.purchaseDate} setState={value => handleChangeSelectContract("purchaseDate", value)} />
               </div>
             </div>
             {/* วันที่ลงเอกสาร */}
             <div>
               <div className="mb-1">วันที่ลงเอกสาร</div>
               <div className="flex h-[38px]">
-                <DateInput state={documentDate} setState={setDocumentDate} />
+                <DateInput state={inputContract.documentDate} setState={value => handleChangeSelectContract("documentDate", value)} />
               </div>
             </div>
           </div>
@@ -1279,9 +1279,9 @@ const PackageAssetInformation = () => {
                 type="text"
                 name="salesDocument"
                 id="salesDocument"
-                onChange={(e) => setSalesDocument(e.target.value)}
-                value={salesDocument}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                onChange={handleChangeSales}
+                value={inputSale.salesDocument}
+                className={`${errorSale && !inputSale.salesDocument && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* เอกสารลงวันที่ */}
@@ -1289,8 +1289,8 @@ const PackageAssetInformation = () => {
               <div className="mb-1">เอกสารลงวันที่</div>
               <div className="flex h-[38px]">
                 <DateInput
-                  state={distributeDocumentDate}
-                  setState={setDistributeDocumentDate}
+                  setState={(value) => handleChangeSelectSale("distributeDocumentDate", value)}
+                  state={inputSale.distributeDocumentDate}
                 />
               </div>
             </div>
@@ -1299,8 +1299,8 @@ const PackageAssetInformation = () => {
               <div className="mb-1">วันอนุมัติจำหน่าย</div>
               <div className="flex h-[38px]">
                 <DateInput
-                  state={distributeApprovalReleaseDate}
-                  setState={setDistributeApprovalReleaseDate}
+                  setState={(value) => handleChangeSelectSale("distributeApprovalReleaseDate", value)}
+                  state={inputSale.distributeApprovalReleaseDate}
                 />
               </div>
             </div>
@@ -1310,8 +1310,9 @@ const PackageAssetInformation = () => {
               <div className="flex h-[38px] ">
                 <Selector
                   placeholder={"Select"}
-                  state={distributeStatus}
-                  setState={setDistributeStatus}
+                  isValid={errorSale && !inputSale.distributeStatus}
+                  setState={(value) => handleChangeSelectSale("distributeStatus", value)}
+                  state={inputSale.distributeStatus}
                   id={"สถานะ"}
                 />
               </div>
@@ -1323,8 +1324,8 @@ const PackageAssetInformation = () => {
                 type="text"
                 name="distributionNote"
                 id="distributionNote"
-                onChange={(e) => setDistributionNote(e.target.value)}
-                value={distributionNote}
+                onChange={handleChangeSales}
+                value={inputSale.distributionNote}
                 className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
@@ -1395,28 +1396,28 @@ const PackageAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationStartDate}
-                          setState={setDepreciationStartDate}
-                        />
+                      <OnlyDateInput
+                        state={depreciationStartDate}
+                        setState={setDepreciationStartDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationRegisterDate}
-                          setState={setDepreciationRegisterDate}
-                        />
+                      <OnlyDateInput
+                        state={depreciationRegisterDate}
+                        setState={setDepreciationRegisterDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationReceivedDate}
-                          setState={setDepreciationReceivedDate}
-                        />
+                      <OnlyDateInput
+                        state={depreciationReceivedDate}
+                        setState={setDepreciationReceivedDate}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1499,8 +1500,8 @@ const PackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationPresentMonth == Infinity ||
-                          depreciationPresentMonth == -Infinity ||
-                          isNaN(depreciationPresentMonth)
+                            depreciationPresentMonth == -Infinity ||
+                            isNaN(depreciationPresentMonth)
                             ? 0
                             : depreciationPresentMonth.toFixed(2)
                         }
@@ -1520,8 +1521,8 @@ const PackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationCumulativePrice == Infinity ||
-                          depreciationCumulativePrice == -Infinity ||
-                          isNaN(depreciationCumulativePrice)
+                            depreciationCumulativePrice == -Infinity ||
+                            isNaN(depreciationCumulativePrice)
                             ? 0
                             : depreciationCumulativePrice.toFixed(2)
                         }
@@ -1541,8 +1542,8 @@ const PackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationYearPrice == Infinity ||
-                          depreciationYearPrice == -Infinity ||
-                          isNaN(depreciationYearPrice)
+                            depreciationYearPrice == -Infinity ||
+                            isNaN(depreciationYearPrice)
                             ? 0
                             : depreciationYearPrice.toFixed(2)
                         }
@@ -1562,8 +1563,8 @@ const PackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationRemainPrice == Infinity ||
-                          depreciationRemainPrice == -Infinity ||
-                          isNaN(depreciationRemainPrice)
+                            depreciationRemainPrice == -Infinity ||
+                            isNaN(depreciationRemainPrice)
                             ? 0
                             : depreciationRemainPrice.toFixed(2)
                         }
@@ -1588,8 +1589,8 @@ const PackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationBookValue == Infinity ||
-                          depreciationBookValue == -Infinity ||
-                          isNaN(depreciationBookValue)
+                            depreciationBookValue == -Infinity ||
+                            isNaN(depreciationBookValue)
                             ? 0
                             : depreciationBookValue.toFixed(2)
                         }
@@ -1604,7 +1605,7 @@ const PackageAssetInformation = () => {
                       เดือน/ปี ที่ทำการประมวลผล
                     </div>
                     <div className="inline-block relative w-full h-[41px]">
-                      
+
                       <input
                         type="date"
                         name="เดือน/ปี ที่ทำการประมวลผล"
@@ -1698,28 +1699,28 @@ const PackageAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationStartDate}
-                          setState={setAccumulateDepreciationStartDate}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationStartDate}
+                        setState={setAccumulateDepreciationStartDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationRegisterDate}
-                          setState={setAccumulateDepreciationRegisterDate}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationRegisterDate}
+                        setState={setAccumulateDepreciationRegisterDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationReceivedDate}
-                          setState={setAccumulateDepreciationReceivedDate}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationReceivedDate}
+                        setState={setAccumulateDepreciationReceivedDate}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1804,8 +1805,8 @@ const PackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationPresentMonth == Infinity ||
-                          accumulateDepreciationPresentMonth == -Infinity ||
-                          isNaN(accumulateDepreciationPresentMonth)
+                            accumulateDepreciationPresentMonth == -Infinity ||
+                            isNaN(accumulateDepreciationPresentMonth)
                             ? 0
                             : accumulateDepreciationPresentMonth.toFixed(2)
                         }
@@ -1825,8 +1826,8 @@ const PackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationCumulativePrice == Infinity ||
-                          accumulateDepreciationCumulativePrice == -Infinity ||
-                          isNaN(accumulateDepreciationCumulativePrice)
+                            accumulateDepreciationCumulativePrice == -Infinity ||
+                            isNaN(accumulateDepreciationCumulativePrice)
                             ? 0
                             : accumulateDepreciationCumulativePrice.toFixed(2)
                         }
@@ -1846,8 +1847,8 @@ const PackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationYearPrice == Infinity ||
-                          accumulateDepreciationYearPrice == -Infinity ||
-                          isNaN(accumulateDepreciationYearPrice)
+                            accumulateDepreciationYearPrice == -Infinity ||
+                            isNaN(accumulateDepreciationYearPrice)
                             ? 0
                             : accumulateDepreciationYearPrice.toFixed(2)
                         }
@@ -1867,8 +1868,8 @@ const PackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationRemainPrice == Infinity ||
-                          accumulateDepreciationRemainPrice == -Infinity ||
-                          isNaN(accumulateDepreciationRemainPrice)
+                            accumulateDepreciationRemainPrice == -Infinity ||
+                            isNaN(accumulateDepreciationRemainPrice)
                             ? 0
                             : accumulateDepreciationRemainPrice.toFixed(2)
                         }
@@ -1893,8 +1894,8 @@ const PackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationBookValue == Infinity ||
-                          accumulateDepreciationBookValue == -Infinity ||
-                          isNaN(accumulateDepreciationBookValue)
+                            accumulateDepreciationBookValue == -Infinity ||
+                            isNaN(accumulateDepreciationBookValue)
                             ? 0
                             : accumulateDepreciationBookValue.toFixed(2)
                         }
@@ -2101,24 +2102,23 @@ const PackageAssetInformation = () => {
         <div className="flex justify-end gap-4">
           <button
             className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-            // onClick={() => inputDoc.current.click()}
+          // onClick={() => inputDoc.current.click()}
           >
             บันทึกแบบร่าง
           </button>
           <button
             type="button"
             className="bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-            // onClick={handleSubmit}
-            onClick={() => setShowModalConfirm(true)}
+            onClick={handleForm}
           >
             บันทึกข้อมูล
           </button>
 
-           <ModalConfirmSave
-              isVisible={showModalConfirm}
-              onClose={() => setShowModalConfirm(false)}
-              onSave={handleSubmit}
-            />
+          <ModalConfirmSave
+            isVisible={showModalConfirm}
+            onClose={() => setShowModalConfirm(false)}
+            onSave={handleSubmit}
+          />
         </div>
       </div>
     </>
