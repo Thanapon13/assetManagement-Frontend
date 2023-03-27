@@ -58,7 +58,7 @@ const PackageAssetInformation = () => {
     model: "",
     size: "",
     quantity: 0,
-    serialNumberMachine: "",
+    serialNumberMachine: "", //
     source: "",
     category: "",
     acquiredType: "",
@@ -70,7 +70,7 @@ const PackageAssetInformation = () => {
     type4: "",
     type8: "",
     type13: "",
-    allSector: "",
+    allSector: "", //
     status: "not approve",
   });
   const [errorInput, setErrorInput] = useState(false)
@@ -646,7 +646,7 @@ const PackageAssetInformation = () => {
                 type="text"
                 name="engProductName"
                 id="engProductName"
-                onChange={handleChangeEngProductName}
+                onChange={handleChange}
                 value={input.engProductName}
                 className={`${errorInput && !input.engProductName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
@@ -658,7 +658,7 @@ const PackageAssetInformation = () => {
                 type="text"
                 name="productName"
                 id="productName"
-                onChange={handleChangeProductName}
+                onChange={handleChange}
                 value={input.productName}
                 className={`${errorInput && !input.productName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
@@ -697,7 +697,7 @@ const PackageAssetInformation = () => {
                 type="text"
                 name="realAssetId"
                 id="realAssetId"
-                onChange={handleChangeRealAssetId}
+                onChange={handleChange}
                 value={input.realAssetId}
                 className={`${errorInput && !input.realAssetId && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
@@ -711,7 +711,7 @@ const PackageAssetInformation = () => {
                   type="number"
                   name="quantity"
                   id="quantity"
-                  onChange={handleChangeQuantity}
+                  onChange={handleChange}
                   value={input.quantity}
                   min="0"
                   className={`${errorInput && !input.quantity && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
@@ -752,7 +752,7 @@ const PackageAssetInformation = () => {
                 type="text"
                 name="model"
                 id="model"
-                onChange={handleChangeModel}
+                onChange={handleChange}
                 value={input.model}
                 className={`${errorInput && !input.model && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
@@ -764,7 +764,7 @@ const PackageAssetInformation = () => {
                 type="text"
                 name="size"
                 id="size"
-                onChange={handleChangeSize}
+                onChange={handleChange}
                 value={input.size}
                 className={`${errorInput && !input.size && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
@@ -843,7 +843,7 @@ const PackageAssetInformation = () => {
                 type="number"
                 name="pricePerUnit"
                 id="pricePerUnit"
-                onChange={handleChangePricePerUnit}
+                onChange={handleChange}
                 value={input.pricePerUnit}
                 className={`${errorInput && !input.pricePerUnit && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
@@ -856,7 +856,7 @@ const PackageAssetInformation = () => {
                 type="number"
                 name="guaranteedMonth"
                 id="guaranteedMonth"
-                onChange={handleChangeGuaranteedMonth}
+                onChange={handleChange}
                 value={input.guaranteedMonth}
                 className={`${errorInput && !input.guaranteedMonth && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
@@ -944,7 +944,7 @@ const PackageAssetInformation = () => {
                 name="assetGroupNumber"
                 id="assetGroupNumber"
                 disabled
-                onChange={handleChangeAssetGroupNumber}
+                onChange={handleChange}
                 value={input.assetGroupNumber}
                 className={`${errorInput && !input.assetGroupNumber && 'border-red-500'} w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
