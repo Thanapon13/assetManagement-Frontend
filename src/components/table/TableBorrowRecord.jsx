@@ -142,7 +142,7 @@ function TableBorrowRecord({
   useEffect(() => {
     fetchAssetList();
   }, []);
-  
+
   useEffect(() => {
     fetchAssetListByProductName(search);
   }, [search.productName]);
@@ -210,9 +210,9 @@ function TableBorrowRecord({
       />
       <div className="col-span-3 grid grid-cols-4 gap-5">
         <input
-          className={`${errorAssestTable && !saveAssetWithdrawTableArray[index]?.amount && 'border-red-500'} col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
+          className={`${errorAssestTable && !saveAssetWithdrawTableArray[index]?.amount && 'border-red-500'} border-gray-300 text-sm col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
           name="amount"
-          type="number"
+          type="text" inputmode="numeric"
           min="0"
           // required
           disabled={

@@ -6,6 +6,7 @@ import TableLocationHistory from "../components/table/TableLocationHistory";
 import OnlyDateInput from "../components/date/onlyDateInput";
 import { createBorrow } from "../api/borrowApi";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
+import ModalSuccess from "../components/modal/ModalSuccess";
 
 const BorrowRecord = () => {
   const [countRow, setCountRow] = useState(1);
@@ -47,6 +48,7 @@ const BorrowRecord = () => {
   const [errorAssestTable, setErrorAssestTable] = useState(false)
 
   const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [showModalSuccess, setShowModalSuccess] = useState(false);
   //handle bottom table
   const handleClickIncrease = (e) => {
     e.preventDefault();
@@ -154,7 +156,10 @@ const BorrowRecord = () => {
       saveAssetWithdrawTableArray: saveAssetWithdrawTableArrayJSON,
     });
     console.log(response, inputs);
-    if (response.status === 200) setShowModalConfirm(false)
+    if (response.status === 200) {
+      setShowModalConfirm(false)
+      setShowModalSuccess(true)
+    }
   };
 
   useEffect(() => {
@@ -418,6 +423,7 @@ const BorrowRecord = () => {
             onClose={() => setShowModalConfirm(false)}
             onSave={handleSubmit}
           />
+           {showModalSuccess && <ModalSuccess urlPath='/borrowList' />}
         </div>
       </div>
     </>
