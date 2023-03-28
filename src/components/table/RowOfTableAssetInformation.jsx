@@ -24,13 +24,14 @@ function RowOfTableAssetInformation({
   // console.log(barcode, "barcode");
 
   const { inputRef } = useBarcode({
-    value: barcode,
+    value: genData[indexGenData]?.serialNumber || null,
     options: {
       background: "#ffffff",
     },
   });
 
   const printRef = useRef();
+  const noPrintRef = useRef();
 
   //Show Modal
   const [showPrintModal, setShowPrintModal] = useState(false);
@@ -49,10 +50,10 @@ function RowOfTableAssetInformation({
     setGenData(clone);
   };
 
-  useEffect(() => {
-    setBarcode(genData[indexGenData]?.serialNumber);
-    setQr(genData[indexGenData]?.serialNumber);
-  }, [indexGenData]);
+  // useEffect(() => {
+  //   setBarcode(genData[indexGenData]?.serialNumber);
+  //   setQr(genData[indexGenData]?.serialNumber);
+  // }, [indexGenData]);
 
   return (
     <div>
@@ -109,7 +110,7 @@ function RowOfTableAssetInformation({
           className="col-span-2 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
           value={genData && genData[index]?.productName}
         /> */}
-         <div className="col-span-2">
+        <div className="col-span-2">
           <div className="flex h-[38px] ">
             <Selector
               placeholder={"Select"}
@@ -152,14 +153,14 @@ function RowOfTableAssetInformation({
                 </button>
               );
             }}
-            content={() => printRef.current}
+            content={() => barcode ? printRef.current : noPrintRef.current}
             // documentTitle="kiminoto doc"
             // pageStyle="print"
             onAfterPrint={() => console.log("print")}
           />
         </div>
 
-        <div ref={printRef} className="absolute -z-10">
+        {/* <div ref={printRef} className="absolute -z-10">
           {barcode !== "" ? (
             <canvas id="mybarcode" ref={inputRef} className="w-full" />
           ) : (
@@ -172,7 +173,19 @@ function RowOfTableAssetInformation({
               <p>No QR code preview</p>
             )}
           </div>
+        </div> */}
+
+        <div ref={printRef} className="absolute -z-10">
+          <canvas id="mybarcode" ref={inputRef} className="w-full" />
+          <QRcode id="myqr" value={genData[indexGenData]?.serialNumber} size={320} includeMargin={true} />
         </div>
+        <div ref={noPrintRef} className="absolute -z-10">
+          <div>
+            <p>No barcode preview</p>
+            <p>No QR code preview</p>
+          </div>
+        </div>
+
       </div>
     </div>
   );
