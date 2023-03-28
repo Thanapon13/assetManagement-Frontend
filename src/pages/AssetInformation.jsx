@@ -64,6 +64,9 @@ const AssetInformation = () => {
     status: "not approve",
   });
 
+  const [errorInput, setErrorInput] = useState(false)
+  const [errorGen, setErrorGen] = useState(false)
+
   // upload image
   const [arrayImage, setArrayImage] = useState([]);
   const [arrayImageURL, setArrayImageURL] = useState([]);
@@ -73,49 +76,79 @@ const AssetInformation = () => {
   const [arrayDocument, setArrayDocument] = useState([]);
 
   // gen เลขครุภัณฑ์
-  const [genData, setGenData] = useState([
-    {
-      // index: 0,
-      assetNumber: "sfer123",
-      serialNumber: "a12b12",
-      sector: "",
-      asset01: "66071032",
-      replacedAssetNumber: "aaa",
-    },
-    {
-      assetNumber: "jykuh222",
-      serialNumber: "dfg234htjn",
-      sector: "",
-      asset01: "66071032",
-      replacedAssetNumber: "bbb",
-    },
-  ]);
+  const [genData, setGenData] = useState([])
+  const genDataForm = {
+    assetNumber: "",
+    serialNumber: "",
+    sector: "",
+    asset01: "",
+    replacedAssetNumber: "",
+  }
+  // const [genData, setGenData] = useState([
+  //   {
+  //     // index: 0,
+  //     assetNumber: "sfer123",
+  //     serialNumber: "a12b12",
+  //     sector: "",
+  //     asset01: "66071032",
+  //     replacedAssetNumber: "aaa",
+  //   },
+  //   {
+  //     assetNumber: "jykuh222",
+  //     serialNumber: "dfg234htjn",
+  //     sector: "",
+  //     asset01: "66071032",
+  //     replacedAssetNumber: "bbb",
+  //   },
+  // ]);
 
   const [indexGenData, setIndexGenData] = useState(0);
   const [barcode, setBarcode] = useState(genData[indexGenData]?.serialNumber);
   const [qr, setQr] = useState(genData[indexGenData]?.serialNumber);
 
   // สัญญาจัดซื้อ
-  const [acquisitionMethod, setAcquisitionMethod] = useState("");
-  const [moneyType, setMoneyType] = useState("");
-  const [deliveryDocument, setDeliveryDocument] = useState("");
-  const [contractNumber, setContractNumber] = useState("");
-  const [receivedDate, setReceivedDate] = useState(todayThaiDate);
-  const [seller, setSeller] = useState("");
-  const [price, setPrice] = useState("");
-  const [billNumber, setBillNumber] = useState("");
-  const [purchaseYear, setPurchaseYear] = useState(todayThaiDate);
-  const [purchaseDate, setPurchaseDate] = useState(todayThaiDate);
-  const [documentDate, setDocumentDate] = useState(todayThaiDate);
+  // const [acquisitionMethod, setAcquisitionMethod] = useState("");
+  // const [moneyType, setMoneyType] = useState("");
+  // const [deliveryDocument, setDeliveryDocument] = useState("");
+  // const [contractNumber, setContractNumber] = useState("");
+  // const [receivedDate, setReceivedDate] = useState(todayThaiDate);
+  // const [seller, setSeller] = useState("");
+  // const [price, setPrice] = useState("");
+  // const [billNumber, setBillNumber] = useState("");
+  // const [purchaseYear, setPurchaseYear] = useState(todayThaiDate);
+  // const [purchaseDate, setPurchaseDate] = useState(todayThaiDate);
+  // const [documentDate, setDocumentDate] = useState(todayThaiDate);
+  const [inputContract, setInputContract] = useState({
+    acquisitionMethod: "",
+    moneyType: "",
+    deliveryDocument: "",
+    contractNumber: "",
+    receivedDate: todayThaiDate,
+    seller: "",
+    price: "",
+    billNumber: "",
+    purchaseYear: todayThaiDate,
+    purchaseDate: todayThaiDate,
+    documentDate: todayThaiDate,
+  })
+  const [errorContract, setErrorContract] = useState(false)
 
   // การจำหน่าย
-  const [salesDocument, setSalesDocument] = useState("");
-  const [distributeDocumentDate, setDistributeDocumentDate] =
-    useState(todayThaiDate);
-  const [distributeApprovalReleaseDate, setDistributeApprovalReleaseDate] =
-    useState(todayThaiDate);
-  const [distributeStatus, setDistributeStatus] = useState("");
-  const [distributionNote, setDistributionNote] = useState("");
+  const [inputSale, setInputSale] = useState({
+    salesDocument: "",
+    distributeDocumentDate: todayThaiDate,
+    distributeApprovalReleaseDate: todayThaiDate,
+    distributeStatus: "",
+    distributionNote: ""
+  })
+  const [errorSale, setErrorSale] = useState(false)
+  // const [salesDocument, setSalesDocument] = useState("");
+  // const [distributeDocumentDate, setDistributeDocumentDate] =
+  //   useState(todayThaiDate);
+  // const [distributeApprovalReleaseDate, setDistributeApprovalReleaseDate] =
+  //   useState(todayThaiDate);
+  // const [distributeStatus, setDistributeStatus] = useState("");
+  // const [distributionNote, setDistributionNote] = useState("");
 
   //Show Modal
   const [showViewImageModal, setShowViewImageModal] = useState(false);
@@ -191,6 +224,37 @@ const AssetInformation = () => {
     useState(todayThaiDate);
 
   // handle
+  const handleChange = (e) => {
+    const clone = { ...input };
+    clone[e.target.name] = e.target.value;
+    setInput(clone);
+  };
+  const handleChangeSales = (e) => {
+    const { name, value } = e.target
+    setInputSale({
+      ...inputSale,
+      [name]: value
+    })
+  };
+  const handleChangeSelectSale = (name, value) => {
+    setInputSale({
+      ...inputSale,
+      [name]: value
+    })
+  };
+  const handleChangeContract = (e) => {
+    const { name, value } = e.target
+    setInputContract({
+      ...inputContract,
+      [name]: value
+    })
+  };
+  const handleChangeSelectContract = (name, value) => {
+    setInputContract({
+      ...inputContract,
+      [name]: value
+    })
+  };
   const handleChangeRealAssetId = (e) => {
     const clone = { ...input };
     clone.realAssetId = e.target.value;
@@ -223,6 +287,7 @@ const AssetInformation = () => {
   };
   const handleChangeQuantity = (e) => {
     const clone = { ...input };
+    if (e.target.value) setErrorGen(false)
     clone.quantity = e.target.value;
     setInput(clone);
   };
@@ -335,12 +400,47 @@ const AssetInformation = () => {
   };
 
   const handleGenData = (e) => {
-    console.log(input, genData);
+    if (!input.quantity) {
+      setErrorGen(true)
+    } else {
+      const arr = []
+      for (let i = 0; i < input.quantity; i++) {
+        arr.push(genDataForm)
+      }
+      setGenData(arr)
+    }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const inputJSON = JSON.stringify(input);
+    let errInput, errContact, errSale
+    // checkError
+    console.log({ input, ...inputSale, ...inputContract });
+    Object.values(input).map((value, index) => {
+      if (errInput) return
+      if (!value) errInput = true
+      if (Object.keys(input).length == index + 1) errInput = false
+    })
+    Object.values(inputContract).map((value, index) => {
+      if (errContact) return
+      if (!value) errContact = true
+      if (Object.keys(inputContract).length == index + 1) errContact = false
+    })
+    Object.values(inputSale).map((value, index) => {
+      if (errSale) return
+      if (!value) errSale = true
+      if (Object.keys(inputSale).length == index + 1) errSale = false
+    })
+    if (errInput) {
+      setErrorGen(false)
+      setErrorInput(true)
+    }
+    if (errContact) setErrorContract(true)
+    if (errSale) setErrorSale(true)
+    if (!(errorInput || errorContract || errorSale)) setShowModalConfirm(true)
+  }
+
+  const submit = async () => {
+    const inputJSON = JSON.stringify({ input, ...inputSale, ...inputContract });
     const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
     formData.append("input", inputJSON);
@@ -384,7 +484,6 @@ const AssetInformation = () => {
 
       // console.log("allArrayImage",[...arrayImage,...duplicatedArrayImage])
     }
-
 
     // if (duplicatedArrayImage.length > 0) {
     //   const duplicatedArrayImageJSON = JSON.stringify(duplicatedArrayImage);
@@ -493,30 +592,8 @@ const AssetInformation = () => {
       accumulateDepreciationBookValue
     );
 
-    //สัญญาจัดซื้อ
-    formData.append("acquisitionMethod", acquisitionMethod);
-    formData.append("moneyType", moneyType);
-    formData.append("deliveryDocument", deliveryDocument);
-    formData.append("contractNumber", contractNumber);
-    formData.append("receivedDate", receivedDate);
-    formData.append("seller", seller);
-    formData.append("price", price);
-    formData.append("billNumber", billNumber);
-    formData.append("purchaseYear", purchaseYear);
-    formData.append("purchaseDate", purchaseDate);
-    formData.append("documentDate", documentDate);
-
-    //การจำหน่าย
-    formData.append("salesDocument", salesDocument);
-    formData.append("distributeDocumentDate", distributeDocumentDate);
-    formData.append(
-      "distributeApprovalReleaseDate",
-      distributeApprovalReleaseDate
-    );
-    formData.append("distributeStatus", distributeStatus);
-    formData.append("distributionNote", distributionNote);
-
-    await createAsset(formData);
+    const response = await createAsset(formData);
+    if(response.status === 200) setShowModalConfirm(false)
   };
 
   useEffect(() => {
@@ -530,11 +607,11 @@ const AssetInformation = () => {
     setArrayImageURL(newImageUrls);
   }, [arrayImage]);
 
-  useEffect(() => {
-    const newGenData = [...genData];
-    newGenData.forEach((el, idx) => (el.sector = input.allSector));
-    setGenData(newGenData);
-  }, [input.allSector]);
+  // useEffect(() => {
+  //   const newGenData = [...genData];
+  //   newGenData.forEach((el, idx) => (el.sector = input.allSector));
+  //   setGenData(newGenData);
+  // }, [input.allSector]);
 
   // data
   return (
@@ -585,7 +662,7 @@ const AssetInformation = () => {
                 id="engProductName"
                 onChange={handleChangeEngProductName}
                 value={input.engProductName}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.engProductName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* ชื่อครุภัณฑ์ภาษาไทย */}
@@ -597,7 +674,7 @@ const AssetInformation = () => {
                 id="productName"
                 onChange={handleChangeProductName}
                 value={input.productName}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.productName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* ประเภทครุภัณฑ์ */}
@@ -609,6 +686,7 @@ const AssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ประเภทครุภัณฑ์"}
+                  isValid={errorInput && !input.type}
                 />
               </div>
             </div>
@@ -621,6 +699,7 @@ const AssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ชนิดครุภัณฑ์"}
+                  isValid={errorInput && !input.kind}
                 />
               </div>
             </div>
@@ -634,7 +713,7 @@ const AssetInformation = () => {
                 id="realAssetId"
                 onChange={handleChangeRealAssetId}
                 value={input.realAssetId}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.realAssetId && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -643,13 +722,15 @@ const AssetInformation = () => {
               <div>
                 <div className="mb-1">จำนวน</div>
                 <input
-                  type="text"
+                  type="number"
+                  min="0"
                   name="quantity"
                   id="quantity"
                   onChange={handleChangeQuantity}
                   value={input.quantity}
-                  className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                  className={`${errorInput && !input.quantity && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
                 />
+                <div className="text-red-500 pt-1">{errorGen && !input.quantity && `*โปรดระบุ`}</div>
               </div>
               {/* หน่วยนับ */}
               <div>
@@ -660,6 +741,7 @@ const AssetInformation = () => {
                     state={input}
                     setState={setInput}
                     id={"หน่วยนับ"}
+                    isValid={errorInput && !input.unit}
                   />
                 </div>
               </div>
@@ -674,6 +756,7 @@ const AssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ยี่ห้อ"}
+                  isValid={errorInput && !input.brand}
                 />
               </div>
             </div>
@@ -686,7 +769,7 @@ const AssetInformation = () => {
                 id="model"
                 onChange={handleChangeModel}
                 value={input.model}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.model && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* ขนาด */}
@@ -698,7 +781,7 @@ const AssetInformation = () => {
                 id="size"
                 onChange={handleChangeSize}
                 value={input.size}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.size && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -711,6 +794,7 @@ const AssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"หมวดหมู่ครุภัณฑ์"}
+                  isValid={errorInput && !input.category}
                 />
               </div>
             </div>
@@ -723,6 +807,7 @@ const AssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"กลุ่ม"}
+                  isValid={errorInput && !input.group}
                 />
               </div>
             </div>
@@ -735,6 +820,7 @@ const AssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"ประเภทที่ได้มา"}
+                  isValid={errorInput && !input.acquiredType}
                 />
               </div>
             </div>
@@ -747,6 +833,7 @@ const AssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"แหล่งที่ได้มา"}
+                  isValid={errorInput && !input.source}
                 />
               </div>
             </div>
@@ -759,6 +846,7 @@ const AssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"วัตถุประสงค์ในการใช้งาน"}
+                  isValid={errorInput && !input.purposeOfUse}
                 />
               </div>
             </div>
@@ -766,24 +854,26 @@ const AssetInformation = () => {
             <div>
               <div className="mb-1">ราคาต่อหน่วย (บาท)</div>
               <input
-                type="text"
+                min="0"
+                type="number"
                 name="pricePerUnit"
                 id="pricePerUnit"
                 onChange={handleChangePricePerUnit}
                 value={input.pricePerUnit}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.pricePerUnit && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* จำนวนเดือนที่รับประกัน (เดือน) */}
             <div>
               <div className="mb-1">จำนวนเดือนที่รับประกัน (เดือน)</div>
               <input
-                type="text"
+                min="0"
+                type="number"
                 name="guaranteedMonth"
                 id="guaranteedMonth"
                 onChange={handleChangeGuaranteedMonth}
                 value={input.guaranteedMonth}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.guaranteedMonth && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* วันที่เริ่มรับประกัน */}
@@ -816,6 +906,7 @@ const AssetInformation = () => {
                   state={input}
                   setState={setInput}
                   id={"การจ่ายครุภัณฑ์ให้หน่วยงาน"}
+                  isValid={errorInput && !input.distributeToSector}
                 />
               </div>
               {/* <input
@@ -838,7 +929,7 @@ const AssetInformation = () => {
                 disabled
                 onChange={handleChangeAssetGroupNumber}
                 value={input.assetGroupNumber}
-                className="w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`${errorInput && !input.assetGroupNumber && 'border-red-500'} w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -854,7 +945,7 @@ const AssetInformation = () => {
           {/* block white bottom */}
           <div className=" my-3 p-3">
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-              <div className="w-[1000px] xl:w-full h-[500px] ">
+              <div className="w-[1000px] xl:w-full min-h-[350px] max-h-[500px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
                   <div className="grid grid-cols-12 gap-2 text-center">
                     <div className="ml-2">ลำดับ</div>
@@ -1028,8 +1119,11 @@ const AssetInformation = () => {
               <div className="flex h-[38px] ">
                 <Selector
                   placeholder={"Select"}
-                  state={acquisitionMethod}
-                  setState={setAcquisitionMethod}
+                  // state={acquisitionMethod}
+                  // setState={setAcquisitionMethod}
+                  setState={value => handleChangeSelectContract("acquisitionMethod", value)}
+                  state={inputContract.acquisitionMethod}
+                  isValid={errorContract && !inputContract.acquisitionMethod}
                   id={"วิธีการได้มา"}
                 />
               </div>
@@ -1040,8 +1134,9 @@ const AssetInformation = () => {
               <div className="flex h-[38px] ">
                 <Selector
                   placeholder={"Select"}
-                  state={moneyType}
-                  setState={setMoneyType}
+                  state={inputContract.moneyType}
+                  setState={value => handleChangeSelectContract("moneyType", value)}
+                  isValid={errorContract && !inputContract.moneyType}
                   id={"ประเภทเงิน"}
                 />
               </div>
@@ -1053,9 +1148,9 @@ const AssetInformation = () => {
                 type="text"
                 name="deliveryDocument"
                 id="deliveryDocument"
-                onChange={(e) => setDeliveryDocument(e.target.value)}
-                value={deliveryDocument}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                onChange={handleChangeContract}
+                value={inputContract.deliveryDocument}
+                className={`${errorContract && !inputContract.deliveryDocument && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* เลขที่สัญญา */}
@@ -1065,16 +1160,17 @@ const AssetInformation = () => {
                 type="text"
                 name="contractNumber"
                 id="contractNumber"
-                onChange={(e) => setContractNumber(e.target.value)}
-                value={contractNumber}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                onChange={handleChangeContract}
+                value={inputContract.contractNumber}
+                className={`${errorContract && !inputContract.contractNumber && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* วันที่รับมอบ */}
             <div>
               <div className="mb-1">วันที่รับมอบ</div>
               <div className="flex h-[38px]">
-                <DateInput state={receivedDate} setState={setReceivedDate} />
+                <DateInput state={inputContract.receivedDate} setState={value => handleChangeSelectContract("receivedDate", value)}
+                />
               </div>
             </div>
             {/* ผู้ขาย */}
@@ -1083,8 +1179,9 @@ const AssetInformation = () => {
               <div className="flex h-[38px] ">
                 <Selector
                   placeholder={"Select"}
-                  state={seller}
-                  setState={setSeller}
+                  state={inputContract.seller}
+                  setState={value => handleChangeSelectContract("seller", value)}
+                  isValid={errorContract && !inputContract.seller}
                   id={"ผู้ขาย"}
                 />
               </div>
@@ -1093,12 +1190,13 @@ const AssetInformation = () => {
             <div>
               <div className="mb-1">ราคาซื้อ (บาท)</div>
               <input
-                type="text"
+                min="0"
+                type="number"
                 name="price"
                 id="price"
-                onChange={(e) => setPrice(e.target.value)}
-                value={price}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                onChange={handleChangeContract}
+                value={inputContract.price}
+                className={`${errorContract && !inputContract.price && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* เลขที่ใบเบิก */}
@@ -1108,16 +1206,17 @@ const AssetInformation = () => {
                 type="text"
                 name="billNumber"
                 id="billNumber"
-                onChange={(e) => setBillNumber(e.target.value)}
-                value={billNumber}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                onChange={handleChangeContract}
+                value={inputContract.billNumber}
+                className={`${errorContract && !inputContract.billNumber && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* ปีที่ซื้อ */}
             <div>
               <div className="mb-1">ปีที่ซื้อ</div>
               <div className="flex h-[38px]">
-                <DateInput state={purchaseYear} setState={setPurchaseYear} />
+                <DateInput state={inputContract.purchaseYear} setState={value => handleChangeSelectContract("purchaseYear", value)}
+                />
               </div>
             </div>
 
@@ -1125,14 +1224,16 @@ const AssetInformation = () => {
             <div>
               <div className="mb-1">วันที่ซื้อ</div>
               <div className="flex h-[38px]">
-                <DateInput state={purchaseDate} setState={setPurchaseDate} />
+                <DateInput state={inputContract.purchaseDate} setState={value => handleChangeSelectContract("purchaseDate", value)}
+                />
               </div>
             </div>
             {/* วันที่ลงเอกสาร */}
             <div>
               <div className="mb-1">วันที่ลงเอกสาร</div>
               <div className="flex h-[38px]">
-                <DateInput state={documentDate} setState={setDocumentDate} />
+                <DateInput state={inputContract.documentDate} setState={value => handleChangeSelectContract("documentDate", value)}
+                />
               </div>
             </div>
           </div>
@@ -1149,9 +1250,10 @@ const AssetInformation = () => {
                 type="text"
                 name="salesDocument"
                 id="salesDocument"
-                onChange={(e) => setSalesDocument(e.target.value)}
-                value={salesDocument}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                // onChange={(e) => setSalesDocument(e.target.value)}
+                onChange={handleChangeSales}
+                value={inputSale.salesDocument}
+                className={`${errorSale && !inputSale.salesDocument && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             {/* เอกสารลงวันที่ */}
@@ -1159,8 +1261,11 @@ const AssetInformation = () => {
               <div className="mb-1">เอกสารลงวันที่</div>
               <div className="flex h-[38px]">
                 <DateInput
-                  state={distributeDocumentDate}
-                  setState={setDistributeDocumentDate}
+
+                  // state={distributeDocumentDate}
+                  // setState={setDistributeDocumentDate}
+                  setState={(value) => handleChangeSelectSale("distributeDocumentDate", value)}
+                  state={inputSale.distributeDocumentDate}
                 />
               </div>
             </div>
@@ -1169,8 +1274,8 @@ const AssetInformation = () => {
               <div className="mb-1">วันอนุมัติจำหน่าย</div>
               <div className="flex h-[38px]">
                 <DateInput
-                  state={distributeApprovalReleaseDate}
-                  setState={setDistributeApprovalReleaseDate}
+                  setState={(value) => handleChangeSelectSale("distributeApprovalReleaseDate", value)}
+                  state={inputSale.distributeApprovalReleaseDate}
                 />
               </div>
             </div>
@@ -1180,8 +1285,11 @@ const AssetInformation = () => {
               <div className="flex h-[38px] ">
                 <Selector
                   placeholder={"Select"}
-                  state={distributeStatus}
-                  setState={setDistributeStatus}
+                  // state={distributeStatus}
+                  // setState={setDistributeStatus}
+                  isValid={errorSale && !inputSale.distributeStatus}
+                  setState={(value) => handleChangeSelectSale("distributeStatus", value)}
+                  state={inputSale.distributeStatus}
                   id={"สถานะ"}
                 />
               </div>
@@ -1193,8 +1301,8 @@ const AssetInformation = () => {
                 type="text"
                 name="distributionNote"
                 id="distributionNote"
-                onChange={(e) => setDistributionNote(e.target.value)}
-                value={distributionNote}
+                onChange={handleChangeSales}
+                value={inputSale.distributionNote}
                 className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
@@ -1871,6 +1979,7 @@ const AssetInformation = () => {
             id="form"
             type="submit"
             className="bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
+            onClick={handleSubmit}
           >
             บันทึกข้อมูล
           </button>
@@ -1878,7 +1987,7 @@ const AssetInformation = () => {
           <ModalConfirmSave
             isVisible={showModalConfirm}
             onClose={() => setShowModalConfirm(false)}
-          // onSave={handleSubmit}
+            onSave={submit}
           />
         </div>
       </div>
