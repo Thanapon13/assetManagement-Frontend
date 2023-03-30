@@ -35,12 +35,12 @@ const BorrowRecord = () => {
     useState([
       {
         // index: 0,
-        assetNumber: "test",
-        productName: "test",
-        brand: "test",
-        amount: 1,
-        unit: "xx",
-        pricePerUnit: "1",
+        assetNumber: "",
+        productName: "",
+        brand: "",
+        amount: 0,
+        unit: "",
+        pricePerUnit: 0,
         maxQuantity: 1,
         isPackage: false,
       },
@@ -50,24 +50,25 @@ const BorrowRecord = () => {
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [showModalSuccess, setShowModalSuccess] = useState(false);
   //handle bottom table
+  const newSaveAssetWithdrawTableArray = {
+    index: countRow,
+    assetNumber: "",
+    productName: "",
+    brand: "",
+    amount: "",
+    unit: "",
+    pricePerUnit: "",
+    maxQuantity: 0,
+    isPackage: false,
+  };
+
   const handleClickIncrease = (e) => {
     e.preventDefault();
     setCountRow(countRow + 1);
     setCountIndexArray([...countIndexArray, countRow]);
 
     let clone = [...saveAssetWithdrawTableArray];
-    const newCloneArray = {
-      index: countRow,
-      assetNumber: "",
-      productName: "",
-      brand: "",
-      amount: "",
-      unit: "",
-      pricePerUnit: "",
-      maxQuantity: 0,
-      isPackage: false,
-    };
-    setSaveAssetWithdrawTableArray([...clone, newCloneArray]);
+    setSaveAssetWithdrawTableArray([...clone, newSaveAssetWithdrawTableArray]);
   };
 
   const deleteRow = (index) => {
@@ -119,6 +120,10 @@ const BorrowRecord = () => {
       if (!value) errInput = true
       if (Object.keys(input).length == index + 1) errInput = false
     })
+    if (!saveAssetWithdrawTableArray.length) {
+      setSaveAssetWithdrawTableArray([newSaveAssetWithdrawTableArray])
+      errAssetTable = true
+    }
     saveAssetWithdrawTableArray.map(list => {
       Object.entries(list).forEach(([key, value], index) => {
         if (errAssetTable || key === "isPackage") return
@@ -135,7 +140,7 @@ const BorrowRecord = () => {
     // const user = await getUserInfo
     const inputs = {
       ...input,
-      name_recorder: "",
+      name_recorder: "userTest", //
       dateTime_recorder: new Date(),
       name_courier: "",
       dateTime_courier: "",
@@ -155,8 +160,8 @@ const BorrowRecord = () => {
       input: inputJSON,
       saveAssetWithdrawTableArray: saveAssetWithdrawTableArrayJSON,
     });
-    console.log(response, inputs);
-    if (response.status === 200) {
+    
+    if (!response.data.message) {
       setShowModalConfirm(false)
       setShowModalSuccess(true)
     }
@@ -260,7 +265,7 @@ const BorrowRecord = () => {
           <div className="text-xl">รายการครุภัณฑ์ที่เลือก</div>
           {/* table */}
           <div className="overflow-x-auto scrollbar pt-4">
-            <div className="w-[1000px] lg:w-full p-2">
+            <div className="w-[1000px] lg:w-full p-2 min-h-[30vh]">
               <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
                 <div className="grid grid-cols-12 gap-2 text-center">
                   <div className="ml-2 col-span-1 ">ลำดับ</div>
@@ -423,7 +428,7 @@ const BorrowRecord = () => {
             onClose={() => setShowModalConfirm(false)}
             onSave={handleSubmit}
           />
-           {showModalSuccess && <ModalSuccess urlPath='/borrowList' />}
+          {showModalSuccess && <ModalSuccess urlPath='/borrowList' />}
         </div>
       </div>
     </>
