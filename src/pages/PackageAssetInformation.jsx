@@ -25,6 +25,8 @@ import RowOfTableTopSubcomponentPackageAssetInformation from "../components/tabl
 import RowOfTableBottomSubcomponentPackageAssetInformation from "../components/table/RowOfTableBottomSubcomponentPackageAssetInformation";
 import OnlyDateInput from "../components/date/onlyDateInput";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
+import ModalSuccess from "../components/modal/ModalSuccess";
+import { IoIosClose } from "react-icons/io";
 
 const PackageAssetInformation = () => {
   const inputImg = useRef();
@@ -74,6 +76,7 @@ const PackageAssetInformation = () => {
     status: "not approve",
   });
   const [errorInput, setErrorInput] = useState(false)
+  const [errorGen, setErrorGen] = useState(false)
 
   // upload image
   const [arrayImage, setArrayImage] = useState([]);
@@ -83,21 +86,12 @@ const PackageAssetInformation = () => {
   const [arrayDocument, setArrayDocument] = useState([]);
 
   // gen เลขครุภัณฑ์
-  const [genData, setGenData] = useState([
-    {
-      assetNumber: "6300-0127-305/001",
-      productName: "aaa",
-      sector: "asd",
-      replacedAssetNumber: "dfg",
-    },
-    {
-      assetNumber: "6300-0127-305/002",
-      productName: "aaa",
-      sector: "qwe",
-      replacedAssetNumber: "gjhkg",
-    },
-  ]);
-
+  const [genData, setGenData] = useState([])
+  const newGenData = {
+    sector: "",
+    replacedAssetNumber: "",
+  }
+  const [errorAssestTable, setErrorAssestTable] = useState(false)
 
   // สัญญาจัดซื้อ
   const [inputContract, setInputContract] = useState({
@@ -134,6 +128,7 @@ const PackageAssetInformation = () => {
   const [scanBarcodeModal, setScanBarcodeModal] = useState(false);
   const [scanQRCodeModal, setScanQRCodeModal] = useState(false);
   const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [showModalSuccess, setShowModalSuccess] = useState(false);
 
   //Modal ค่าเสื่อมราคา
   const [depreciationStartDate, setDepreciationStartDate] = useState(
@@ -198,21 +193,21 @@ const PackageAssetInformation = () => {
   // RowOfTableTopSubcomponentPackageAssetInformation
   // gen subcomponent
   const [topSubComponentData, setTopSubComponentData] = useState([
-    { productName: "โต๊ะรับแขกอเนกประสงค์" },
-    { productName: "เก้าอี้รับแขกสุขภาพประหยัด" },
+    // { productName: "โต๊ะรับแขกอเนกประสงค์" },
+    // { productName: "เก้าอี้รับแขกสุขภาพประหยัด" },
     { productName: "" },
   ]);
-
+  const [errorGenSubComponentData, setErrorGenSubComponentData] = useState(false)
   // RowOfTableTopSubcomponentPackageAssetInformation
   // gen subcomponent
   const [bottomSubComponentData, setBottomSubComponentData] = useState([
-    {
-      assetNumber: "",
-      productName: "",
-      serialNumber: "serialNumber",
-      pricePerUnit: "",
-      asset01: "",
-    },
+    // {
+    //   assetNumber: "",
+    //   productName: "",
+    //   serialNumber: "serialNumber",
+    //   pricePerUnit: "",
+    //   asset01: "",
+    // },
   ]);
 
   const [indexGenData, setIndexGenData] = useState(0);
@@ -240,8 +235,17 @@ const PackageAssetInformation = () => {
   const [insuranceExpiredDate, setInsuranceExpiredDate] =
     useState(todayThaiDate);
 
+  const [invalidName, setInvalidName] = useState(false)
   // handle
   const handleChange = (e) => {
+    const name = e.target.name
+    if (name === "engProductName") {
+      setInvalidName(/[^A-Za-z]/.test(e.target.value) && name)
+    } else if (name === "productName") {
+      setInvalidName(/[A-Za-z]/.test(e.target.value) && name)
+    } else {
+      setInvalidName(false)
+    }
     const clone = { ...input };
     clone[e.target.name] = e.target.value;
     setInput(clone);
@@ -275,25 +279,45 @@ const PackageAssetInformation = () => {
 
   const handleGenSubComponentData = () => {
     const bottomArray = [];
-
-    genData.forEach((el, idx) => {
-      const assetNumber = el.assetNumber;
-      topSubComponentData.forEach((el, idx) => {
-        if (idx + 1 < topSubComponentData.length) {
-          bottomArray.push({
-            assetNumber: `${assetNumber}(${idx + 1})`,
-            productName: el.productName,
-            serialNumber: "-",
-            price: "",
-            asset01: "",
-          });
-        }
+    topSubComponentData
+    topSubComponentData.forEach((data, idx) => {
+      if (!data.productName) {
+        setErrorGenSubComponentData(true)
+        return
+      }
+      // genData.forEach((el, idx) => {
+      //   const assetNumber = el.assetNumber;
+      // if (idx + 1 < topSubComponentData.length) {
+      bottomArray.push({
+        // assetNumber: `${assetNumber}(${idx + 1})`,
+        productName: data.productName,
+        serialNumber: "",
+        price: "",
+        asset01: "",
       });
+      // }
+      // });
     });
-    console.log(bottomArray)
+    console.log(bottomArray, topSubComponentData)
 
     setBottomSubComponentData(bottomArray)
   };
+
+  function checkErrorTopSubComponentTable() {
+    let errTable
+    topSubComponentData.map((ele, ind) => {
+      console.log(Object.keys(ele).length, ind);
+      Object.values(ele).map((value, index) => {
+        console.log(index);
+        // if (errorAssestTable) return
+        if (!value) errTable = true
+        if (Object.keys(ele).length == ind + 1) errTable = false
+      })
+    })
+    console.log(errTable);
+    setErrorGenSubComponentData(errTable)
+    // return errTable
+  }
 
   //upload image
   // validate size 2mb = 2,000,000 byte
@@ -383,32 +407,49 @@ const PackageAssetInformation = () => {
   };
 
   const handleGenData = (e) => {
-    console.log(input, genData)
+    if (!input.quantity || !input.productName || !input.type || !input.category || !input.kind || !input.engProductName) {
+      setErrorGen(true)
+    } else {
+      const arr = []
+      for (let i = 0; i < input.quantity; i++) {
+        console.log(i.length)
+        arr.push({ ...newGenData, assetNumber: `6300-xxx-xxx/00${i + 1}`, productName: input.productName, })
+      }
+      setGenData(arr)
+    }
   }
 
   const handleForm = async () => {
-    let errInput, errContract, errSale
+    let errInput, errContract, errSale, errTable
     Object.values(input).map((value, index) => {
       if (errInput) return
       if (!value) errInput = true
       if (Object.keys(input).length == index + 1) errInput = false
     })
+    genData.map(ele => {
+      Object.values(ele).map((value, index) => {
+        if (errorAssestTable) return
+        if (!value) errTable = true
+        if (Object.keys(input).length == index + 1) errTable = false
+      })
+    })
+    // checkError//SubComponentTable()
     Object.values(inputContract).map((value, index) => {
       if (errContract) return
       if (!value) errContract = true
-      if (Object.keys(input).length == index + 1) errContract = false
+      if (Object.keys(inputContract).length == index + 1) errContract = false
     })
     // console.log(value, inputSale);
     Object.entries(inputSale).forEach(([key, value], index) => {
       if (errSale || key === "distributionNote") return
       if (!value) errSale = true
-      if (Object.keys(input).length == index + 1) errSale = false
+      if (Object.keys(inputSale).length == index + 1) errSale = false
     })
     setErrorInput(errInput)
+    setErrorAssestTable(errTable)
     setErrorContract(errContract)
     setErrorSale(errSale)
-    console.log(errInput, errContract, errSale)
-    if (!(errInput || errContract || errSale)) setShowModalConfirm(true)
+    if (!(errInput || errContract || errSale || errTable)) setShowModalConfirm(true)
   }
 
   const handleSubmit = async (e) => {
@@ -585,7 +626,10 @@ const PackageAssetInformation = () => {
     );
 
     const response = await createPackageAsset(formData);
-    if (response.status === 200) setShowModalConfirm(false)
+    if (response.status === 200) {
+      setShowModalConfirm(false)
+      setShowModalSuccess(true)
+    }
   };
 
   useEffect(() => {
@@ -606,7 +650,7 @@ const PackageAssetInformation = () => {
         {/* Header */}
         <div className="flex items-center">
           <Link
-            to="/assetInformation"
+            to="/packageAssetInformationIndex"
             className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
           >
             <BsArrowLeft className="text-lg" />
@@ -650,6 +694,7 @@ const PackageAssetInformation = () => {
                 value={input.engProductName}
                 className={`${errorInput && !input.engProductName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
+              <div className="text-red-500 pt-1">{invalidName === "engProductName" ? `*โปรดระบุให้ถูกต้อง` : errorGen && !input.engProductName && `*โปรดระบุ`}</div>
             </div>
             {/* ชื่อครุภัณฑ์ภาษาไทย */}
             <div>
@@ -662,6 +707,7 @@ const PackageAssetInformation = () => {
                 value={input.productName}
                 className={`${errorInput && !input.productName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
+              <div className="text-red-500 pt-1">{invalidName === "productName" ? `*โปรดระบุให้ถูกต้อง` : errorGen && !input.productName && `*โปรดระบุ`}</div>
             </div>
             {/* ประเภทครุภัณฑ์ */}
             <div>
@@ -675,6 +721,7 @@ const PackageAssetInformation = () => {
                   isValid={errorInput && !input.type}
                 />
               </div>
+              <div className="text-red-500 pt-1">{errorGen && !input.type && `*โปรดระบุ`}</div>
             </div>
             {/* ชนิดครุภัณฑ์ */}
             <div>
@@ -688,6 +735,7 @@ const PackageAssetInformation = () => {
                   isValid={errorInput && !input.kind}
                 />
               </div>
+              <div className="text-red-500 pt-1">{errorGen && !input.kind && `*โปรดระบุ`}</div>
             </div>
 
             {/* ลำดับครุภัณฑ์ (ID) */}
@@ -716,6 +764,7 @@ const PackageAssetInformation = () => {
                   min="0"
                   className={`${errorInput && !input.quantity && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
                 />
+                <div className="text-red-500 pt-1">{errorGen && input.quantity == 0 && `*โปรดระบุ`}</div>
               </div>
               {/* หน่วยนับ */}
               <div>
@@ -782,6 +831,7 @@ const PackageAssetInformation = () => {
                   isValid={errorInput && !input.category}
                 />
               </div>
+              <div className="text-red-500 pt-1">{errorGen && !input.category && `*โปรดระบุ`}</div>
             </div>
             {/* กลุ่ม */}
             <div>
@@ -878,6 +928,7 @@ const PackageAssetInformation = () => {
                 <DateInput
                   state={insuranceExpiredDate}
                   setState={setInsuranceExpiredDate}
+                  minDate={insuranceStartDate}
                 />
               </div>
             </div>
@@ -962,7 +1013,7 @@ const PackageAssetInformation = () => {
           {/* block white bottom */}
           <div className=" my-3 p-3">
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-              <div className="w-[800px] xl:w-full max-h-[500px] ">
+              <div className="w-[800px] xl:w-full max-h-[500px] min-h-[30vh]">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
                   <div className="grid grid-cols-17 gap-2 text-center">
                     <div className="ml-2">ลำดับ</div>
@@ -991,6 +1042,7 @@ const PackageAssetInformation = () => {
                       setBarcode={setBarcode}
                       qr={qr}
                       setQr={setQr}
+                      errorAssestTable={errorAssestTable}
                     />
                   );
                 })}
@@ -1010,7 +1062,7 @@ const PackageAssetInformation = () => {
           </div>
           {/* image */}
           <div className="sm:grid sm:grid-cols-6 gap-6">
-            <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4 h-96">
+            <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4 h-80">
               <img src={boxIcon} className="w-[50px]" />
               <div className="text-text-green font-semibold">
                 วางรูปภาพครุภัณฑ์ หรือ
@@ -1037,34 +1089,37 @@ const PackageAssetInformation = () => {
                 </div>
                 <div className="text-text-gray text-sm">(JPEG , PNG , SVG)</div>
               </div>
-              <button
-                className="inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 disabled:hover:bg-gray-100"
-                onClick={() => setShowViewImageModal(true)}
-                disabled={!arrayImage.length}
-              >
-                <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
-                ดูรูปภาพ
-              </button>
             </div>
             {/* file upload image*/}
-            <div className="col-span-2 sm:mt-5">
-              {arrayImage.map((el, idx) => (
-                <div
-                  key={idx}
-                  className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
-                >
-                  <div className="flex items-center text-text-green">
-                    <img src={docIcon} className="w-4 h-4 " />
-                    <div className="ml-2 text-sm">{el.image.name}</div>
-                  </div>
-                  <button
-                    className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
-                    onClick={() => deleteImg(idx)}
+            <div className="col-span-2 sm:mt-3">
+              <div className="h-64 overflow-y-auto scrollbar">
+                {arrayImage.map((el, idx) => (
+                  <div
+                    key={idx}
+                    className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
                   >
-                    X
-                  </button>
-                </div>
-              ))}
+                    <div className="flex items-center text-text-green">
+                      <img src={docIcon} className="w-4 h-4 " />
+                      <div className="ml-2 text-sm">{el.image.name}</div>
+                    </div>
+                    <button
+                      className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
+                      onClick={() => deleteImg(idx)}
+                    >
+                      <IoIosClose className="text-2xl" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {!!arrayImage.length &&
+                <button
+                  className="flex mx-auto items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                  onClick={() => setShowViewImageModal(true)}
+                >
+                  <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
+                  ดูรูปภาพ
+                </button>
+              }
             </div>
           </div>
 
@@ -1105,7 +1160,7 @@ const PackageAssetInformation = () => {
                       className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
                       onClick={() => deleteDoc(idx)}
                     >
-                      X
+                      <IoIosClose className="text-2xl" />
                     </button>
                   </div>
                 ))}
@@ -1126,10 +1181,10 @@ const PackageAssetInformation = () => {
 
               {/* ส่วนประกอบย่อย */}
               <div className="bg-background-page py-10 px-30 h-40 rounded-lg flex flex-col justify-center items-center gap-4 mt-5">
-                <div className=" font-semibold">ส่วนประกอบย่อย</div>
+                <div className=" font-semibold">ส่วนประกอบย่อย{!!bottomSubComponentData.length && ` (${bottomSubComponentData.length})`}</div>
                 <button
                   type="button"
-                  className=" inline-flex justify-center items-center py-1 px-2 border-[1px] border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                  className=" inline-flex justify-center items-center py-1 px-2 border-[2px] border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
                   onClick={() => setShowSubComponentModal(true)}
                 >
                   + ส่วนประกอบย่อย
@@ -1193,16 +1248,6 @@ const PackageAssetInformation = () => {
                 className={`${errorContract && !inputContract.contractNumber && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-            {/* วันที่รับมอบ */}
-            <div>
-              <div className="mb-1">วันที่รับมอบ</div>
-              <div className="flex h-[38px]">
-                <DateInput
-                  state={inputContract.receivedDate}
-                  setState={value => handleChangeSelectContract("receivedDate", value)}
-                />
-              </div>
-            </div>
             {/* ผู้ขาย */}
             <div>
               <div className="mb-1">ผู้ขาย</div>
@@ -1214,6 +1259,27 @@ const PackageAssetInformation = () => {
                   isValid={errorContract && !inputContract.seller}
                   id={"ผู้ขาย"}
                 />
+              </div>
+            </div>
+            {/* วันที่รับมอบ */}
+            <div className="grid grid-cols-2 gap-1">
+              <div className="mb-1">
+                วันที่ซื้อ
+                <div className="flex h-[38px]">
+                  <DateInput
+                    state={inputContract.purchaseDate}
+                    setState={value => handleChangeSelectContract("receivedDate", value)}
+                  />
+                </div>
+              </div>
+              <div className="mb-1">
+                วันที่รับมอบ
+                <div className="flex h-[38px]">
+                  <DateInput
+                    state={inputContract.receivedDate}
+                    setState={value => handleChangeSelectContract("receivedDate", value)}
+                  />
+                </div>
               </div>
             </div>
             {/* ราคาซื้อ (บาท) */}
@@ -1243,21 +1309,17 @@ const PackageAssetInformation = () => {
             </div>
             {/* ปีที่ซื้อ */}
             <div>
-              <div className="mb-1">ปีที่ซื้อ</div>
+              <div className="mb-1">ปีงบประมาณที่ซื้อ</div>
               <div className="flex h-[38px]">
                 <DateInput
                   state={inputContract.purchaseYear}
-                  setState={value => handleChangeSelectContract("purchaseYear", value)} />
+                  setState={value => handleChangeSelectContract("purchaseYear", value)}
+                  onlyYear={true}
+                />
               </div>
             </div>
 
-            {/* วันที่ซื้อ */}
-            <div>
-              <div className="mb-1">วันที่ซื้อ</div>
-              <div className="flex h-[38px]">
-                <DateInput state={inputContract.purchaseDate} setState={value => handleChangeSelectContract("purchaseDate", value)} />
-              </div>
-            </div>
+
             {/* วันที่ลงเอกสาร */}
             <div>
               <div className="mb-1">วันที่ลงเอกสาร</div>
@@ -1944,7 +2006,7 @@ const PackageAssetInformation = () => {
           <div>
             <div className="grid grid-cols-6">
               <div className="bg-white col-span-6 rounded-lg overflow-x-auto scrollbar">
-                <div className="h-[800px] p-2 ">
+                <div className="max-h-[800px] p-2 ">
                   {/* top */}
                   <div className=" my-3 p-3">
                     <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
@@ -1963,6 +2025,8 @@ const PackageAssetInformation = () => {
                               index={idx}
                               topSubComponentData={topSubComponentData}
                               setTopSubComponentData={setTopSubComponentData}
+                              error={errorGenSubComponentData}
+                              checkError={checkErrorTopSubComponentTable}
                             />
                           );
                         })}
@@ -1982,7 +2046,7 @@ const PackageAssetInformation = () => {
                   {/* bottom */}
                   <div className=" my-3 p-3">
                     <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-                      <div className="w-[800px] xl:w-full h-[300px] ">
+                      <div className="w-[800px] xl:w-full max-h-[300px] ">
                         <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-md">
                           <div className="grid grid-cols-19 gap-2 text-center">
                             <div className="ml-2">ลำดับ</div>
@@ -2000,10 +2064,8 @@ const PackageAssetInformation = () => {
                             <RowOfTableBottomSubcomponentPackageAssetInformation
                               key={idx}
                               index={idx}
-                              bottomSubComponentData={bottomSubComponentData}
-                              setBottomSubComponentData={
-                                setBottomSubComponentData
-                              }
+                              data={bottomSubComponentData}
+                              setData={setBottomSubComponentData}
                               scanBarcodeModal={scanBarcodeModal}
                               scanQRCodeModal={scanQRCodeModal}
                               setScanBarcodeModal={setScanBarcodeModal}
@@ -2119,6 +2181,7 @@ const PackageAssetInformation = () => {
             onClose={() => setShowModalConfirm(false)}
             onSave={handleSubmit}
           />
+          {showModalSuccess && <ModalSuccess urlPath='/packageAssetInformationIndex' />}
         </div>
       </div>
     </>
