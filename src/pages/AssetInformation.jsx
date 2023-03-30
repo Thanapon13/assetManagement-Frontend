@@ -17,6 +17,8 @@ import QRscanner from "../components/scanner/QRscanner";
 import { useEffect } from "react";
 import OnlyDateInput from "../components/date/onlyDateInput";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
+import ModalSuccess from "../components/modal/ModalSuccess";
+import { IoIosClose } from "react-icons/io";
 
 const AssetInformation = () => {
   const inputImg = useRef();
@@ -84,40 +86,12 @@ const AssetInformation = () => {
     asset01: "",
     replacedAssetNumber: "",
   }
-  // const [genData, setGenData] = useState([
-  //   {
-  //     // index: 0,
-  //     assetNumber: "sfer123",
-  //     serialNumber: "a12b12",
-  //     sector: "",
-  //     asset01: "66071032",
-  //     replacedAssetNumber: "aaa",
-  //   },
-  //   {
-  //     assetNumber: "jykuh222",
-  //     serialNumber: "dfg234htjn",
-  //     sector: "",
-  //     asset01: "66071032",
-  //     replacedAssetNumber: "bbb",
-  //   },
-  // ]);
 
   const [indexGenData, setIndexGenData] = useState(0);
   const [barcode, setBarcode] = useState(genData[indexGenData]?.serialNumber);
   const [qr, setQr] = useState(genData[indexGenData]?.serialNumber);
 
   // สัญญาจัดซื้อ
-  // const [acquisitionMethod, setAcquisitionMethod] = useState("");
-  // const [moneyType, setMoneyType] = useState("");
-  // const [deliveryDocument, setDeliveryDocument] = useState("");
-  // const [contractNumber, setContractNumber] = useState("");
-  // const [receivedDate, setReceivedDate] = useState(todayThaiDate);
-  // const [seller, setSeller] = useState("");
-  // const [price, setPrice] = useState("");
-  // const [billNumber, setBillNumber] = useState("");
-  // const [purchaseYear, setPurchaseYear] = useState(todayThaiDate);
-  // const [purchaseDate, setPurchaseDate] = useState(todayThaiDate);
-  // const [documentDate, setDocumentDate] = useState(todayThaiDate);
   const [inputContract, setInputContract] = useState({
     acquisitionMethod: "",
     moneyType: "",
@@ -142,13 +116,6 @@ const AssetInformation = () => {
     distributionNote: ""
   })
   const [errorSale, setErrorSale] = useState(false)
-  // const [salesDocument, setSalesDocument] = useState("");
-  // const [distributeDocumentDate, setDistributeDocumentDate] =
-  //   useState(todayThaiDate);
-  // const [distributeApprovalReleaseDate, setDistributeApprovalReleaseDate] =
-  //   useState(todayThaiDate);
-  // const [distributeStatus, setDistributeStatus] = useState("");
-  // const [distributionNote, setDistributionNote] = useState("");
 
   //Show Modal
   const [showViewImageModal, setShowViewImageModal] = useState(false);
@@ -158,6 +125,7 @@ const AssetInformation = () => {
   const [scanBarcodeModal, setScanBarcodeModal] = useState(false);
   const [scanQRCodeModal, setScanQRCodeModal] = useState(false);
   const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [showModalSuccess, setShowModalSuccess] = useState(false);
 
   //Modal ค่าเสื่อมราคา
   const [depreciationStartDate, setDepreciationStartDate] = useState(
@@ -270,6 +238,12 @@ const AssetInformation = () => {
     clone.engProductName = e.target.value;
     setInput(clone);
   };
+  function checkInvalidEngName() {
+    return (/[ก-ฮ]/.test(input.engProductName))
+  }
+  function checkInvalidName() {
+    return (/[A-Za-z]/.test(input.productName))
+  }
   const handleChangeProductName = (e) => {
     const clone = { ...input };
     clone.productName = e.target.value;
@@ -399,13 +373,13 @@ const AssetInformation = () => {
     setArrayDocument(clone);
   };
 
-  const handleGenData = (e) => {
-    if (!input.quantity) {
+  const handleGenData = () => {
+    if (!input.quantity || !input.type || !input.category || !input.kind) {
       setErrorGen(true)
     } else {
       const arr = []
       for (let i = 0; i < input.quantity; i++) {
-        arr.push(genDataForm)
+        arr.push({ ...genDataForm, assetNumber: `6300-xxx/00${i + 1}` })
       }
       setGenData(arr)
     }
@@ -436,11 +410,11 @@ const AssetInformation = () => {
     }
     if (errContact) setErrorContract(true)
     if (errSale) setErrorSale(true)
-    if (!(errorInput || errorContract || errorSale)) setShowModalConfirm(true)
+    if (!(errInput || errContact || errSale)) setShowModalConfirm(true)
   }
 
   const submit = async () => {
-    const inputJSON = JSON.stringify({ input, ...inputSale, ...inputContract });
+    const inputJSON = JSON.stringify({ ...input, ...inputSale, ...inputContract });
     const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
     formData.append("input", inputJSON);
@@ -593,7 +567,10 @@ const AssetInformation = () => {
     );
 
     const response = await createAsset(formData);
-    if(response.status === 200) setShowModalConfirm(false)
+    if (response.status === 200) {
+      setShowModalConfirm(false)
+      setShowModalSuccess(true)
+    }
   };
 
   useEffect(() => {
@@ -664,6 +641,7 @@ const AssetInformation = () => {
                 value={input.engProductName}
                 className={`${errorInput && !input.engProductName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
+              <div className="text-red-500 pt-1">{checkInvalidEngName() && `*โปรดระบุให้ถูกต้อง`}</div>
             </div>
             {/* ชื่อครุภัณฑ์ภาษาไทย */}
             <div>
@@ -676,6 +654,7 @@ const AssetInformation = () => {
                 value={input.productName}
                 className={`${errorInput && !input.productName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
+              <div className="text-red-500 pt-1">{checkInvalidName() && `*โปรดระบุให้ถูกต้อง`}</div>
             </div>
             {/* ประเภทครุภัณฑ์ */}
             <div>
@@ -689,6 +668,7 @@ const AssetInformation = () => {
                   isValid={errorInput && !input.type}
                 />
               </div>
+              <div className="text-red-500 pt-1">{errorGen && !input.type && `*โปรดระบุ`}</div>
             </div>
             {/* ชนิดครุภัณฑ์ */}
             <div>
@@ -702,6 +682,7 @@ const AssetInformation = () => {
                   isValid={errorInput && !input.kind}
                 />
               </div>
+              <div className="text-red-500 pt-1">{errorGen && !input.kind && `*โปรดระบุ`}</div>
             </div>
 
             {/* ลำดับครุภัณฑ์ (ID) */}
@@ -797,6 +778,7 @@ const AssetInformation = () => {
                   isValid={errorInput && !input.category}
                 />
               </div>
+              <div className="text-red-500 pt-1">{errorGen && !input.category && `*โปรดระบุ`}</div>
             </div>
             {/* กลุ่ม */}
             <div>
@@ -855,11 +837,12 @@ const AssetInformation = () => {
               <div className="mb-1">ราคาต่อหน่วย (บาท)</div>
               <input
                 min="0"
-                type="number"
+                type="text"
+                inputMode="numeric"
                 name="pricePerUnit"
                 id="pricePerUnit"
                 onChange={handleChangePricePerUnit}
-                value={input.pricePerUnit}
+                value={(+input.pricePerUnit).toLocaleString()}
                 className={`${errorInput && !input.pricePerUnit && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
@@ -961,22 +944,24 @@ const AssetInformation = () => {
                 </div>
                 {genData?.map((el, idx) => {
                   return (
-                    <RowOfTableAssetInformation
-                      key={idx}
-                      index={idx}
-                      genData={genData}
-                      setGenData={setGenData}
-                      scanBarcodeModal={scanBarcodeModal}
-                      scanQRCodeModal={scanQRCodeModal}
-                      setScanBarcodeModal={setScanBarcodeModal}
-                      setScanQRCodeModal={setScanQRCodeModal}
-                      setIndexGenData={setIndexGenData}
-                      indexGenData={indexGenData}
-                      barcode={barcode}
-                      setBarcode={setBarcode}
-                      qr={qr}
-                      setQr={setQr}
-                    />
+                    <div key={idx}>
+                      <RowOfTableAssetInformation
+                        key={idx}
+                        index={idx}
+                        genData={genData}
+                        setGenData={setGenData}
+                        scanBarcodeModal={scanBarcodeModal}
+                        scanQRCodeModal={scanQRCodeModal}
+                        setScanBarcodeModal={setScanBarcodeModal}
+                        setScanQRCodeModal={setScanQRCodeModal}
+                        setIndexGenData={setIndexGenData}
+                        indexGenData={indexGenData}
+                        barcode={barcode}
+                        setBarcode={setBarcode}
+                        qr={qr}
+                        setQr={setQr}
+                      />
+                    </div>
                   );
                 })}
               </div>
@@ -995,7 +980,7 @@ const AssetInformation = () => {
           </div>
           {/* image */}
           <div className="sm:grid sm:grid-cols-6 gap-6">
-            <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4 h-96">
+            <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4 h-80">
               <img src={boxIcon} className="w-[50px]" />
               <div className="text-text-green font-semibold">
                 วางรูปภาพครุภัณฑ์ หรือ
@@ -1022,33 +1007,37 @@ const AssetInformation = () => {
                 </div>
                 <div className="text-text-gray text-sm">(JPEG , PNG , SVG)</div>
               </div>
-              <button
-                className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-                onClick={() => setShowViewImageModal(true)}
-              >
-                <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
-                ดูรูปภาพ
-              </button>
             </div>
             {/* file upload image*/}
-            <div className="col-span-2 sm:mt-5">
-              {arrayImage.map((el, idx) => (
-                <div
-                  key={idx}
-                  className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
-                >
-                  <div className="flex items-center text-text-green">
-                    <img src={docIcon} className="w-4 h-4 " />
-                    <div className="ml-2 text-sm">{el.image.name}</div>
-                  </div>
-                  <button
-                    className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
-                    onClick={() => deleteImg(idx)}
+            <div className="col-span-2 sm:mt-3">
+              <div className="h-64 overflow-y-auto scrollbar">
+                {arrayImage.map((el, idx) => (
+                  <div
+                    key={idx}
+                    className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
                   >
-                    X
-                  </button>
-                </div>
-              ))}
+                    <div className="flex items-center text-text-green">
+                      <img src={docIcon} className="w-4 h-4 " />
+                      <div className="ml-2 text-sm">{el.image.name}</div>
+                    </div>
+                    <button
+                      className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
+                      onClick={() => deleteImg(idx)}
+                    >
+                      <IoIosClose className="text-2xl" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {!!arrayImage.length &&
+                <button
+                  className="flex mx-auto items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                  onClick={() => setShowViewImageModal(true)}
+                >
+                  <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
+                  ดูรูปภาพ
+                </button>
+              }
             </div>
           </div>
 
@@ -1089,7 +1078,7 @@ const AssetInformation = () => {
                       className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
                       onClick={() => deleteDoc(idx)}
                     >
-                      X
+                      <IoIosClose className="text-2xl" />
                     </button>
                   </div>
                 ))}
@@ -1192,10 +1181,11 @@ const AssetInformation = () => {
               <input
                 min="0"
                 type="number"
+                // inputMode="numeric"
                 name="price"
                 id="price"
                 onChange={handleChangeContract}
-                value={inputContract.price}
+                value={(+inputContract.price).toLocaleString()}
                 className={`${errorContract && !inputContract.price && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
@@ -1215,7 +1205,7 @@ const AssetInformation = () => {
             <div>
               <div className="mb-1">ปีที่ซื้อ</div>
               <div className="flex h-[38px]">
-                <DateInput state={inputContract.purchaseYear} setState={value => handleChangeSelectContract("purchaseYear", value)}
+                <DateInput onlyYear state={inputContract.purchaseYear} setState={value => handleChangeSelectContract("purchaseYear", value)}
                 />
               </div>
             </div>
@@ -1409,10 +1399,12 @@ const AssetInformation = () => {
                     <div className="inline-block relative w-full h-[41px]">
                       <div className="relative">
                         <input
+                          min="0"
                           type="text"
+                          inputmode="numeric"
                           name="ราคาซื้อ"
                           id="ราคาซื้อ"
-                          value={depreciationPrice}
+                          value={(+depreciationPrice).toLocaleString()}
                           onChange={(e) => setDepreciationPrice(e.target.value)}
                           className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
                         />
@@ -1424,7 +1416,9 @@ const AssetInformation = () => {
                     <div className="mb-1 text-xs">จำนวนปีที่ใช้งาน</div>
                     <div className="inline-block relative w-full h-[41px]">
                       <input
+                        min="0"
                         type="text"
+                        inputmode="numeric"
                         name="จำนวนปีที่ใช้งาน"
                         id="จำนวนปีที่ใช้งาน"
                         value={depreciationYearUsed}
@@ -1441,7 +1435,9 @@ const AssetInformation = () => {
                     <div className="mb-1 text-xs">ราคาซาก</div>
                     <div className="inline-block relative w-full h-[41px]">
                       <input
+                        min="0"
                         type="text"
+                        inputmode="numeric"
                         name="ราคาซาก"
                         id="ราคาซาก"
                         value={depreciationCarcassPrice}
@@ -1480,7 +1476,7 @@ const AssetInformation = () => {
                             depreciationPresentMonth == -Infinity ||
                             isNaN(depreciationPresentMonth)
                             ? 0
-                            : depreciationPresentMonth.toFixed(2)
+                            : depreciationPresentMonth.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1501,7 +1497,7 @@ const AssetInformation = () => {
                             depreciationCumulativePrice == -Infinity ||
                             isNaN(depreciationCumulativePrice)
                             ? 0
-                            : depreciationCumulativePrice.toFixed(2)
+                            : depreciationCumulativePrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1522,7 +1518,7 @@ const AssetInformation = () => {
                             depreciationYearPrice == -Infinity ||
                             isNaN(depreciationYearPrice)
                             ? 0
-                            : depreciationYearPrice.toFixed(2)
+                            : depreciationYearPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1543,7 +1539,7 @@ const AssetInformation = () => {
                             depreciationRemainPrice == -Infinity ||
                             isNaN(depreciationRemainPrice)
                             ? 0
-                            : depreciationRemainPrice.toFixed(2)
+                            : depreciationRemainPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         }
                         onChange={(e) =>
                           setDepreciationRemainPrice(e.target.value)
@@ -1569,7 +1565,7 @@ const AssetInformation = () => {
                             depreciationBookValue == -Infinity ||
                             isNaN(depreciationBookValue)
                             ? 0
-                            : depreciationBookValue.toFixed(2)
+                            : depreciationBookValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1780,7 +1776,7 @@ const AssetInformation = () => {
                             accumulateDepreciationPresentMonth == -Infinity ||
                             isNaN(accumulateDepreciationPresentMonth)
                             ? 0
-                            : accumulateDepreciationPresentMonth.toFixed(2)
+                            : accumulateDepreciationPresentMonth.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1801,7 +1797,7 @@ const AssetInformation = () => {
                             accumulateDepreciationCumulativePrice == -Infinity ||
                             isNaN(accumulateDepreciationCumulativePrice)
                             ? 0
-                            : accumulateDepreciationCumulativePrice.toFixed(2)
+                            : accumulateDepreciationCumulativePrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1822,7 +1818,7 @@ const AssetInformation = () => {
                             accumulateDepreciationYearPrice == -Infinity ||
                             isNaN(accumulateDepreciationYearPrice)
                             ? 0
-                            : accumulateDepreciationYearPrice.toFixed(2)
+                            : accumulateDepreciationYearPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1843,7 +1839,7 @@ const AssetInformation = () => {
                             accumulateDepreciationRemainPrice == -Infinity ||
                             isNaN(accumulateDepreciationRemainPrice)
                             ? 0
-                            : accumulateDepreciationRemainPrice.toFixed(2)
+                            : accumulateDepreciationRemainPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         }
                         // onChange={(e) =>
                         //   setDepreciationRemainPrice(e.target.value)
@@ -1869,7 +1865,7 @@ const AssetInformation = () => {
                             accumulateDepreciationBookValue == -Infinity ||
                             isNaN(accumulateDepreciationBookValue)
                             ? 0
-                            : accumulateDepreciationBookValue.toFixed(2)
+                            : accumulateDepreciationBookValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1989,6 +1985,8 @@ const AssetInformation = () => {
             onClose={() => setShowModalConfirm(false)}
             onSave={submit}
           />
+
+          {showModalSuccess && <ModalSuccess urlPath='/assetInformationIndex' />}
         </div>
       </div>
     </>
