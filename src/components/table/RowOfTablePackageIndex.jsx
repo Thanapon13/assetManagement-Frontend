@@ -13,17 +13,20 @@ function RowOfTablePackageIndex({
   sector,
   status,
   handleDelete,
+  building,
+  department
 }) {
   return (
     <div
-      className={`grid grid-cols-16 gap-5 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
+      className={`grid grid-cols-19 gap-5 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
     >
-      <div className="ml-2 text-center">{realAssetId}</div>
+      <div className="ml-2 text-center">{index+1}</div>
       <div className="col-span-3">{assetNumber}</div>
       <div className="col-span-3 ">{productName}</div>
-      <div className="col-span-2 text-center">{price.toFixed(2)}</div>
-      <div className="col-span-3">{sector}</div>
-      {/* <div className="col-span-1 ">{building}</div> */}
+      <div className="col-span-2 text-center">{price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+      <div className="col-span-2">{department}</div>
+      <div className="col-span-2">{sector}</div>
+      <div className="col-span-2">{building}</div>
       <div className="col-span-2 flex justify-center">
         <div
           className={`  ${
@@ -49,7 +52,6 @@ function RowOfTablePackageIndex({
             : "ชำรุด"}
         </div>
       </div>
-
       <div className="col-span-2 flex justify-center gap-2 mr-2">
         <Link
           to={`/viewPackageAssetInformation/${_id}`}

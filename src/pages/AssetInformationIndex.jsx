@@ -276,21 +276,21 @@ const AssetInformationIndex = () => {
 
       {/* table */}
       <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
-        <div className="w-[1000px] lg:w-full h-[550px] ">
+        <div className="w-[1000px] lg:w-full max-h-[50em] mb-4">
           <div>
             <div className="flex p-4">
               <div className=" text-sm text-text-gray">ผลการค้นหา </div>
               <div className="ml-2 text-sm">{search.total} รายการ </div>
             </div>
             {/* top bar */}
-            <div className="grid grid-cols-16 gap-5 h-12 items-center text-center text-text-black-table text-xs font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
-              <div className="ml-2">ID</div>
+            <div className="grid grid-cols-17 gap-5 h-12 items-center text-center text-text-black-table text-xs font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
+              <div className="ml-2">ลำดับ</div>
               <div className="col-span-3">เลขครุภัณฑ์</div>
               <div className="col-span-3">ชื่อครุภัณฑ์</div>
               <div className="col-span-2">ราคา</div>
-
-              <div className="col-span-3">หน่วยงาน</div>
-              {/* <div className="col-span-1">อาคาร</div> */}
+              {/* <div className="col-span-1">ฝ่าย/กลุ่มงาน</div> */}
+              <div className="col-span-2">หน่วยงาน</div>
+              <div className="col-span-1">อาคาร</div>
               <div className="col-span-2 text-center">สถานะ</div>
               <div className="col-span-2 text-center font-bold mr-2">
                 Action
@@ -306,10 +306,10 @@ const AssetInformationIndex = () => {
                 realAssetId={el.realAssetId}
                 assetNumber={el.assetNumber}
                 productName={el.productName}
-                // department={el.department}
+                department={el.department}
                 sector={el.sector}
                 // agency={el.agency}
-                // building={el.building}
+                building={el.building}
                 // floor={el.floor}
                 // room={el.room}
                 status={el.status}
