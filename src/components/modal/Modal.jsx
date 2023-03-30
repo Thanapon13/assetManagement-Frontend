@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import { IoIosClose } from "react-icons/io";
 
 function Modal({
   id,
@@ -66,7 +67,8 @@ function Modal({
                   className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-xl"
                   onClick={() => onClose()}
                 >
-                  X
+                  {/* X */}
+                  <IoIosClose className="text-3xl" />
                 </button>
               </div>
             </div>
@@ -74,7 +76,7 @@ function Modal({
             {id !== "showViewImageModal" ? (
               <div className="flex justify-center items-center border-t-2 border-grey-300 p-4">
                 <button
-                  className="inline-flex justify-center items-center h-full py-2 px-8 border border-transparent shadow-sm text-xs font-medium rounded-md text-gray-700 bg-gray-300 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
+                  className="inline-flex justify-center items-center h-full py-2 px-8 border border-transparent shadow-sm text-xs font-medium rounded-md text-gray-700 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
                   onClick={() => onClose()}
                 >
                   ยกเลิก
