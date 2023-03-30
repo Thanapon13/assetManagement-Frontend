@@ -6,8 +6,15 @@ function RowOfTableTopSubcomponentPackageAssetInformation({
   index,
   topSubComponentData,
   setTopSubComponentData,
+  error,
+  checkError
 }) {
   const [disabled, setDisabled] = useState(true);
+
+  const deleteRow = (ind) => {
+    const data = topSubComponentData.filter((ele, i) => i !== ind)
+    setTopSubComponentData(data);
+  }
 
   // const onChange = (e) => {
   //   setTopSubComponentData((prev) => ({
@@ -18,7 +25,7 @@ function RowOfTableTopSubcomponentPackageAssetInformation({
 
   const handleChangeProductName = (e) => {
     const clone = [...topSubComponentData];
-    // console.log(clone);
+    if(error) checkError()
     clone[index].productName = e.target.value;
     setTopSubComponentData(clone);
   };
@@ -46,6 +53,16 @@ function RowOfTableTopSubcomponentPackageAssetInformation({
           </div>
           <input
             name="productName"
+            // className={`${error && !topSubComponentData[index]?.productName ? 'border-red-500' : disabled !== index ? "border-0" : "border-block-green"} border-[1px] col-span-5 text-left flex justify-center items-center p-2 bg-white rounded focus:border-2 focus:border-block-green focus:outline-none  focus:border-focus-blue`}
+            className={`${error && !topSubComponentData[index]?.productName && 'border-red-500'} disabled:border-0
+            border-[1px] col-span-5 text-left flex justify-center items-center p-2 bg-white rounded focus:border-2 focus:border-block-green focus:outline-none  focus:border-focus-blue`}
+            disabled={disabled !== index}
+            onChange={handleChangeProductName}
+            value={topSubComponentData[index]?.productName}
+            onClick={() => {console.log(index,disabled); setDisabled(index)}}
+          />
+          {/* <input
+            name="productName"
             className={`col-span-5 text-center flex justify-center items-center  py-2 bg-white ${
               disabled ? "" : " border-[1px] border-block-green"
             } ${
@@ -56,12 +73,13 @@ function RowOfTableTopSubcomponentPackageAssetInformation({
             disabled={disabled}
             onChange={handleChangeProductName}
             value={topSubComponentData[index]?.productName}
-          />
-          <div className="flex">
+          /> */}
+          <div className="flex justify-center">
             <button
-              className="mr-3 flex justify-center items-center text-white bg-button-orange hover:bg-orange-400 rounded-lg focus:border-2 focus:outline-none  focus:bg-orange-400 w-7 h-8  py-2 "
+              className="mr-3 flex justify-center items-center text-white bg-button-orange hover:bg-orange-400 rounded-lg focus:border-2 focus:outline-none  focus:bg-orange-400 w-8 h-8  py-2 "
               onClick={() => {
-                setDisabled(!disabled);
+                // setDisabled(!disabled);
+                setDisabled(index);
               }}
             >
               <svg
@@ -78,7 +96,7 @@ function RowOfTableTopSubcomponentPackageAssetInformation({
               </svg>
             </button>
             <button
-              className="flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-7 h-8  py-2 "
+              className="flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8  py-2 "
               onClick={() => {
                 deleteRow(index);
               }}
@@ -109,19 +127,16 @@ function RowOfTableTopSubcomponentPackageAssetInformation({
               </div>
             </div>
             <input
-              className={`col-span-5 text-center flex justify-center items-center  py-2 bg-white border-[1px] border-block-green
-                ${
-                  topSubComponentData[index]
-                    ? ""
-                    : "border-[1px] border-block-green"
-                }  rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
+              className={`${error && !topSubComponentData[index]?.productName && 'border-red-500'} col-span-5 text-left flex justify-center items-center p-2 bg-white border-[1px] border-block-green
+              ${topSubComponentData[index] ? "" : "border-[1px] border-block-green"}
+                rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
               onChange={handleChangeProductName}
               value={topSubComponentData[index]?.productName}
             />
             <div className="flex justify-center">
               <button
                 type="button"
-                className=" text-xl text-white w-[38px] h-[38px]  rounded-full bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+                className=" text-xl text-white w-[38px] h-[38px] rounded-full bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
                 onClick={handleClickIncreaseSubcomponent}
               >
                 +

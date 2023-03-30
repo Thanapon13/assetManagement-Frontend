@@ -1,4 +1,3 @@
-import Selector from "../selector/Selector";
 import ScanDropdown from "../dropdown/ScanDropdown";
 import { useBarcode } from "@createnextapp/react-barcode";
 import QRcode from "qrcode.react";
@@ -8,10 +7,8 @@ import { useRef } from "react";
 
 function RowOfTableBottomSubcomponentPackageAssetInformation({
   index,
-  bottomSubComponentData,
-  setBottomSubComponentData,
-  // genData,
-  // setGenData,
+  data,
+  setData,
   setScanBarcodeModal,
   setScanQRCodeModal,
   setIndexGenData,
@@ -22,44 +19,40 @@ function RowOfTableBottomSubcomponentPackageAssetInformation({
   setQr,
 }) {
   const { inputRef } = useBarcode({
-    value: barcode,
+    value: barcode || null,
     options: {
       background: "#ffffff",
     },
   });
-
+  const noPrintRef = useRef();
   const printRef = useRef();
 
   const onChange = (e) => {
-    setBottomSubComponentData((prev) => ({
+    setData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
 
   const handleChangeSerialNumber = (e) => {
-    const clone = [...bottomSubComponentData];
+    const clone = [...data];
     // console.log(clone);
     clone[index].serialNumber = e.target.value;
-    setBottomSubComponentData(clone);
+    setData(clone);
     setBarcode(e.target.value);
     setQr(e.target.value)
   };
   const handleChangePricePerUnit = (e) => {
-    const clone = [...bottomSubComponentData];
+    const clone = [...data];
     clone[index].pricePerUnit = e.target.value;
-    setBottomSubComponentData(clone);
+    setData(clone);
   };
   const handleChangeAsset01 = (e) => {
-    const clone = [...bottomSubComponentData];
+    const clone = [...data];
     clone[index].asset01 = e.target.value;
-    setBottomSubComponentData(clone);
+    setData(clone);
   };
 
-  useEffect(() => {
-    setBarcode(bottomSubComponentData[indexGenData]?.serialNumber);
-    setQr(bottomSubComponentData[indexGenData]?.serialNumber);
-  }, [indexGenData]);
   return (
     <div>
       <div
@@ -75,7 +68,7 @@ function RowOfTableBottomSubcomponentPackageAssetInformation({
           name="assetNumber"
           id="assetNumber"
           disabled
-          value={bottomSubComponentData[index]?.assetNumber}
+          value={data[index]?.assetNumber}
           className="col-span-4 w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
         />
         <input
@@ -83,16 +76,16 @@ function RowOfTableBottomSubcomponentPackageAssetInformation({
           name="productName"
           id="productName"
           disabled
-          value={bottomSubComponentData[index]?.productName}
+          value={data[index]?.productName}
           className="col-span-4 w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
         />
-         <div className="flex relative col-span-4">
+        <div className="flex relative col-span-4">
           <input
-           type="text"
-           name="serialNumber"
+            type="text"
+            name="serialNumber"
             className="w-full text-left text-xs pl-3 flex justify-center items-center py-2 border-[1px] border-gray-300 rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             onChange={handleChangeSerialNumber}
-            value={bottomSubComponentData[index]?.serialNumber}
+            value={data[index]?.serialNumber}
           />
           <div
             className="z-20 absolute top-1/2 right-0 transform -translate-x-1/2 -translate-y-1/2"
@@ -109,7 +102,7 @@ function RowOfTableBottomSubcomponentPackageAssetInformation({
           name="pricePerUnit"
           id="pricePerUnit"
           onChange={handleChangePricePerUnit}
-          value={bottomSubComponentData[index]?.pricePerUnit}
+          value={data[index]?.pricePerUnit}
           className="col-span-2 w-full h-[38px]  border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
         />
         <input
@@ -117,17 +110,17 @@ function RowOfTableBottomSubcomponentPackageAssetInformation({
           name="asset01"
           id="asset01"
           onChange={handleChangeAsset01}
-          value={bottomSubComponentData[index]?.asset01}
+          value={data[index]?.asset01}
           className="col-span-2 w-full h-[38px]  border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
         />
 
         <div
           className="col-span-2 flex justify-center relative"
-          onClick={() => {
-            setIndexGenData(index);
-            // setShowPrintModal(true)
-            // console.log(index)
-          }}
+        // onClick={() => {
+        //   setIndexGenData(index);
+        //   // setShowPrintModal(true)
+        //   // console.log(index)
+        // }}
         >
           <ReactToPrint
             trigger={() => {
@@ -151,27 +144,26 @@ function RowOfTableBottomSubcomponentPackageAssetInformation({
                 </button>
               );
             }}
-            content={() => printRef.current}
-            // documentTitle="kiminoto doc"
+            onBeforeGetContent={async () => await setIndexGenData(index)}
+            content={() => data[indexGenData]?.serialNumber ? printRef.current : noPrintRef.current}
             // pageStyle="print"
             onAfterPrint={() => console.log("print")}
           />
         </div>
 
-        <div ref={printRef} className="absolute -z-10 top-40">
-          {barcode !== "" ? (
-            <canvas id="mybarcode" ref={inputRef} className="w-[300px]" />
-          ) : (
-            <p>No barcode preview</p>
-          )}
-          <div>
-            {qr ? (
-              <QRcode id="myqr" value={qr} size={300} includeMargin={true} />
-            ) : (
+        <div hidden>
+          <div id="" ref={printRef} className="absolute -z-10" >
+            <canvas id="mybarcode" ref={inputRef} className="w-full" />
+            <QRcode id="myqr" value={data[indexGenData]?.serialNumber} size={320} includeMargin={true} />
+          </div>
+          <div ref={noPrintRef} className="absolute -z-10">
+            <div>
+              <p>No barcode preview</p>
               <p>No QR code preview</p>
-            )}
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   );

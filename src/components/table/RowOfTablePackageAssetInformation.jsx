@@ -6,6 +6,7 @@ function RowOfTablePackageAssetInformation({
   index,
   genData,
   setGenData,
+  errorAssestTable,
   scanBarcodeModal,
   scanQRCodeModal,
   setScanBarcodeModal,
@@ -17,7 +18,6 @@ function RowOfTablePackageAssetInformation({
   qr,
   setQr,
 }) {
-  // console.log(barcode, "barcode");
 
   const onChange = (e) => {
     setState((prev) => ({
@@ -43,7 +43,7 @@ function RowOfTablePackageAssetInformation({
           value={genData && genData[index]?.assetNumber}
         />
         <input
-          className="col-span-4 bg-gray-200 text-center flex justify-center items-center  py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          className="col-span-4 bg-gray-200 text-left flex justify-center items-center p-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
           disabled
           value={genData && genData[index]?.productName}
         />
@@ -56,6 +56,7 @@ function RowOfTablePackageAssetInformation({
               state={genData}
               setState={setGenData}
               id={"หน่วยงาน"}
+              isValid={errorAssestTable && !genData[index]?.sector}
             />
           </div>
         </div>
@@ -68,6 +69,7 @@ function RowOfTablePackageAssetInformation({
               state={genData}
               setState={setGenData}
               id={"แทนครุภัณฑ์ที่ถูกแทงจำหน่าย"}
+              isValid={errorAssestTable && !genData[index]?.replacedAssetNumber}
             />
           </div>
         </div>
