@@ -123,14 +123,7 @@ function RowOfTableAssetInformation({
         </div>
 
 
-        <div
-          className="flex justify-center relative"
-          onClick={() => {
-            setIndexGenData(index);
-            // setShowPrintModal(true)
-            // console.log(index)
-          }}
-        >
+        <div className="flex justify-center relative">
           <ReactToPrint
             trigger={() => {
               return (
@@ -153,7 +146,8 @@ function RowOfTableAssetInformation({
                 </button>
               );
             }}
-            content={() => barcode ? printRef.current : noPrintRef.current}
+            onBeforeGetContent={async () => { await setIndexGenData(index) }}
+            content={() => genData[indexGenData]?.serialNumber ? printRef.current : noPrintRef.current}
             // documentTitle="kiminoto doc"
             // pageStyle="print"
             onAfterPrint={() => console.log("print")}
