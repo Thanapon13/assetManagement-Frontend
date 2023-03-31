@@ -14,6 +14,7 @@ import QRcode from "qrcode.react";
 import RowOfTableBorrowHistory from "../components/table/RowOfTableBorrowHistory";
 import RowOfTableBuildingHistory from "../components/table/RowOfTableBuildingHistory";
 import OnlyDateInput from "../components/date/onlyDateInput";
+import { getViewBorrowHistoryByAssetId } from "../api/borrowApi";
 
 const ViewAssetInformation = () => {
   const { assetId } = useParams();
@@ -71,6 +72,9 @@ const ViewAssetInformation = () => {
     status: "not approve",
   });
 
+  // ประวัติการยืม
+  const [borrowHistoryList,setBorrowHistoryList] = useState([])
+
   // upload image
   const [arrayImage, setArrayImage] = useState([]);
   const [arrayImageURL, setArrayImageURL] = useState([]);
@@ -79,27 +83,6 @@ const ViewAssetInformation = () => {
   // คู่มือและเอกสารแนบ
   const [arrayDocument, setArrayDocument] = useState([]);
 
-  // ประวัติการยืม
-  const [borrowData, setBorrowData] = useState([
-    {
-      borrowIdDoc: "65/0322171",
-      borrowerName: "ชัชชาติ",
-      agencyName: "สำนักคอมพิวเตอร์",
-      borrowDate: "19/11/2565",
-      realReturnDate: "19/12/2565",
-      offerBorrowApproveDate: "19/12/2565",
-      borrowStatus: "done",
-    },
-    {
-      borrowIdDoc: "65/0322171",
-      borrowerName: "จันทร์ฉาย",
-      agencyName: "สำนักคอมพิวเตอร์",
-      borrowDate: "19/11/2565",
-      realReturnDate: "19/12/2565",
-      offerBorrowApproveDate: "19/12/2565",
-      borrowStatus: "done",
-    },
-  ]);
 
   // ประวัติสถานที่ตั้ง
   const [buildingData, setBuildingData] = useState([
@@ -358,7 +341,15 @@ const ViewAssetInformation = () => {
         console.log(err);
       }
     };
+
+    const fetchBorrowHistoryByAssetId = async () => {
+      const res = await getViewBorrowHistoryByAssetId(assetId);
+      const borrowHistoryArray =  res.data.borrows
+      setBorrowHistoryList(borrowHistoryArray)
+      console.log("borrowHistoryArray", borrowHistoryArray);
+    };
     fetchAssetById();
+    fetchBorrowHistoryByAssetId();
   }, []);
 
   useEffect(() => {
@@ -565,7 +556,7 @@ const ViewAssetInformation = () => {
                   <div className=" px-5 pt-5  pb-10">
                     {arrayImageURL?.map((el, idx) => (
                       <img
-                      key={idx}
+                        key={idx}
                         crossOrigin="true"
                         src={el}
                         className="w-[640px] mb-5"
@@ -747,21 +738,20 @@ const ViewAssetInformation = () => {
                     <div className="col-span-2">สถานะ</div>
                   </div>
                 </div>
-                {borrowData?.map((el, idx) => {
+                {borrowHistoryList?.map((el, idx) => {
                   return (
                     <RowOfTableBorrowHistory
                       key={idx}
                       index={idx}
-                      borrowData={borrowData}
-                      borrowIdDoc={borrowData[idx]?.borrowIdDoc}
-                      borrowerName={borrowData[idx]?.borrowerName}
-                      agencyName={borrowData[idx]?.agencyName}
-                      borrowDate={borrowData[idx]?.borrowDate}
-                      realReturnDate={borrowData[idx]?.realReturnDate}
-                      offerBorrowApproveDate={
-                        borrowData[idx]?.offerBorrowApproveDate
+                      borrowIdDoc={el?.borrowIdDoc}
+                      sector={el?.sector}
+                      borrowDate={el?.borrowDate}
+                      borrowSetReturnDate={el?.borrowSetReturnDate}
+                      borrowReturnDate={el?.borrowReturnDate}
+                      handler={
+                        el?.handler
                       }
-                      borrowStatus={borrowData[idx]?.borrowStatus}
+                      status={el?.status}
                     />
                   );
                 })}

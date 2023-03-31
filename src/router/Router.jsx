@@ -58,6 +58,7 @@ import {
 
 import useAuth from '../hooks/useAuth'
 import ViewBorrowApproveDetail from '../pages/ViewBorrowApproveDetail';
+import BorrowCheckApprove from '../pages/BorrowCheckApprove';
 
 const Public = () => {
   return (
@@ -135,7 +136,11 @@ const Router = () => {
           element={<BorrowCheckSaving />}
         />
         <Route
-          path="borrowCheckIndex/borrowCheckDetail"
+          path="borrowCheckApprove/:borrowId"
+          element={<BorrowCheckApprove />}
+        />
+        <Route
+          path="viewBorrowCheckDetail/:borrowId"
           element={<BorrowCheckDetail />}
         />
         <Route path="borrowRecord" element={<BorrowRecord />} />

@@ -1903,7 +1903,7 @@ const EditAssetInformation = () => {
             {arrayImageURL.map((el, idx) => (
               // console.log(el)
 
-              <img crossorigin="true" src={el} className="w-[640px] mb-5" />
+              <img crossOrigin="true" src={el} className="w-[640px] mb-5" />
             ))}
           </div>
         </Modal>

@@ -18,9 +18,12 @@ const TableBorrowCheckIndex = (props) => {
       {props.data.map((item, idx) => {
         return (
           <div
+            key={item._id}
             className={`grid grid-cols-12 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
-             <div className="col-span-1">{props.search.page >1 ?props.search.limit + idx +1 : idx+1}</div>
+            <div className="col-span-1">
+              {props.search.page > 1 ? props.search.limit + idx + 1 : idx + 1}
+            </div>
             <div className="col-span-3">{item.borrowIdDoc}</div>
             <div className="col-span-3 ">{item.sector}</div>
             <div className="col-span-1">
@@ -40,38 +43,52 @@ const TableBorrowCheckIndex = (props) => {
                   )
                 : "-"}
             </div>
-            <div className="col-span-2">
-              <div className="grid grid-cols-2">
-                <div
-                  className={`${
-                    item.status === "done"
-                      ? "  text-green-700 bg-sidebar-green"
-                      : " bg-orange-100 border-orange-100 text-orange-400 "
-                  } px-4 py-2 rounded-2xl border`}
-                >
-                  {item.status === "done" ? "คืนสำเร็จ" : "รอตรวจรับ"}
+            <div className="col-span-2 grid grid-cols-2 items-center gap-2">
+              <div className="flex justify-center">
+                <div className="flex gap-1">
+                  <div
+                    className={`${
+                      item.status === "done"
+                        ? "  text-green-700 bg-sidebar-green"
+                        : " bg-orange-100 border-orange-100 text-orange-400 "
+                    } px-4 py-2 rounded-2xl border`}
+                  >
+                    {item.status === "done" ? "คืนสำเร็จ" : "รอตรวจรับ"}
+                  </div>
                 </div>
-                {item.status === "inProgress" ? (
-                  <div className="flex justify-center">
-                    <Link
-                      // type="button"
-                      // to={`/borrowSaving/${ID}`}
-                      to="/BorrowCheckIndex/borrowCheckSaving"
-                      onClick={handleClick}
-                      className="text-white bg-text-green hover:bg-green-800 border border-spacing-5  rounded-md p-2"
-                    >
-                      ตรวจรับ
-                    </Link>
-                  </div>
+              </div>
+
+              <div className="flex justify-center">
+                {item.status === "waitingReturnApprove" ||
+                item.status === "partiallyReturn" ? (
+                  <Link
+                    to={`/borrowCheckApprove/${item._id}`}
+                    className="bg-text-green text-white rounded-md hover:bg-green-800 p-2 w-full"
+                  >
+                    {item.status === "waitingReturnApprove" ||
+                    item.status === "partiallyReturn"
+                      ? "ตรวจรับ"
+                      : ""}
+                    {/* {item.status} */}
+                  </Link>
                 ) : (
-                  <div className="flex justify-center">
-                    <Link
-                      to="/borrowCheckIndex/borrowCheckDetail"
-                      className="border-[1px] h-[31px] w-[31px] flex justify-center items-center rounded-md border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-                    >
-                      <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
-                    </Link>
-                  </div>
+                  <Link
+                  to={`/viewBorrowCheckDetail/${item._id}`}
+                    className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
+                  >
+                    <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
+                  </Link>
+                  // <div
+                  //   // type="button"
+                  //   // to={`/borrowSaving/${ID}`}
+                  //   className={`${
+                  //     item.status === "done"
+                  //       ? "  text-green-700 bg-sidebar-green"
+                  //       : " bg-orange-100 border-orange-100 text-orange-400 "
+                  //   } px-4 py-2 rounded-2xl border`}
+                  // >
+                  //   {item.status === "done" ? "คืนสำเร็จ" : "ตรวจรับคืน"}
+                  // </div>
                 )}
               </div>
             </div>

@@ -11,10 +11,12 @@ import Modal from "../components/modal/Modal";
 import { useEffect } from "react";
 import {
   getBorrowCheckById,
+  updateBorrowCheckReturnApproveById,
   updateBorrowCheckSavingById,
 } from "../api/borrowApi";
+import TableBorrowCheckApprove from "../components/table/TableBorrowCheckApprove";
 
-const BorrowCheckSaving = () => {
+const BorrowCheckApprove = () => {
   const inputImg = useRef();
 
   const imageTypes = ["image/png", "image/jpeg", "image/svg+xml"];
@@ -54,6 +56,9 @@ const BorrowCheckSaving = () => {
     packageAssetIdArray: [],
   });
 
+  // upload image
+  const [arrayImage, setArrayImage] = useState([]);
+  const [arrayImageURL, setArrayImageURL] = useState([]);
 
   const [assetList, setAssetList] = useState([]);
 
@@ -63,6 +68,48 @@ const BorrowCheckSaving = () => {
   //Show Modal
   const [showViewImageModal, setShowViewImageModal] = useState(false);
 
+  //upload image
+  // validate size 2mb = 2,000,000 byte
+  const handleImageChange = (e) => {
+    const fileList = e.target.files;
+    console.log(fileList);
+    const cloneFile = [...arrayImage];
+    for (let i = 0; i < fileList.length; i++) {
+      if (!imageTypes.includes(fileList[i].type)) {
+        toast.warn(`${fileList[i].name} is wrong file type!`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else if (fileList[i].size > 2000000) {
+        toast.warn(`${fileList[i].name} has more than 2mb!`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        cloneFile.push({ image: fileList[i] });
+      }
+    }
+
+    setArrayImage(cloneFile);
+  };
+
+  const deleteImg = (idx) => {
+    let clone = [...arrayImage];
+    clone.splice(idx, 1);
+    setArrayImage(clone);
+  };
 
   // handle checkbox
   const handleAllCheckboxChange = (list) => {
@@ -70,10 +117,10 @@ const BorrowCheckSaving = () => {
     const newCheck = !isChecked;
     const newList = list.map((item) => {
       console.log(item.returnDate);
-      if (item?.returnDate) {
-        return { ...item };
-      } else {
+      if (item?.return === "watingApprove") {
         return { ...item, checked: newCheck };
+      } else {
+        return { ...item };
       }
     });
     console.log(newList);
@@ -101,61 +148,88 @@ const BorrowCheckSaving = () => {
   const handleSubmit = async (e, borrowReturnDate) => {
     e.preventDefault();
 
+    // console.log(assetList);
     const anyChecked = assetList.some((item) => item.checked);
+    // console.log(anyChecked);
 
     if (anyChecked) {
-    const updatedInput = {
-      ...input,
-      assetIdArray: input.assetIdArray.map((asset) => {
-        const item = assetList.find(
-          (item) => item._id === asset.assetId
-        )
-        return {
-          ...asset,
-          return:
-            item.checked === false || item.checked === undefined ?  (item?.return ? item?.return: "") : "watingApprove",
-          returnDate:
-            item.checked === false || item.checked === undefined ? (item?.returnDate ? item?.returnDate: "") : borrowReturnDate,
-        };
-      }),
-      packageAssetIdArray: input.packageAssetIdArray.map((packageAsset) => {
-        const item = assetList.find(
-          (item) => item._id === packageAsset.packageAssetId
-        )
-        return {
-          ...packageAsset,
-          return:
-            item.checked === false || item.checked === undefined ?  (item?.return ? item?.return: ""): "watingApprove",
-          returnDate:
-            item.checked === false || item.checked === undefined ? (item?.returnDate ? item?.returnDate: "") : borrowReturnDate,
-        };
-      }),
-    };
-    setInput(updatedInput);
+      const updatedInput = {
+        ...input,
+        assetIdArray: input.assetIdArray.map((asset) => {
+          const item = assetList.find((item) => item._id === asset.assetId);
+          // console.log(item)
+          return {
+            ...asset,
+            return:
+              item.checked === false || item.checked === undefined
+                ? item?.return
+                  ? item?.return
+                  : ""
+                : "done",
+          };
+        }),
+        packageAssetIdArray: input.packageAssetIdArray.map((packageAsset) => {
+          const item = assetList.find(
+            (item) => item._id === packageAsset.packageAssetId
+          );
+          return {
+            ...packageAsset,
+            return:
+              item.checked === false || item.checked === undefined
+                ? item?.return
+                  ? item?.return
+                  : ""
+                : "done",
+          };
+        }),
+      };
+      setInput(updatedInput);
+      console.log(updatedInput);
 
-    const inputJSON = JSON.stringify(updatedInput);
+      const inputJSON = JSON.stringify(updatedInput);
+      const formData = new FormData();
+      formData.append("input", inputJSON);
 
-    await updateBorrowCheckSavingById(input._id, { input: inputJSON });
-  } else {
-    toast.error("You didn't choose some asset", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  }
+      // image file
+      const existArrayImage = [];
+      if (arrayImage?.length > 0) {
+        arrayImage.forEach((el) => {
+          if (el.image._id) {
+            existArrayImage.push(el.image);
+          } else {
+            formData.append("arrayImage", el.image);
+          }
+        });
+        formData.append("existArrayImage", JSON.stringify(existArrayImage));
+      }
+
+      console.log("arrayImage", arrayImage);
+      console.log("existArrayImage", existArrayImage);
+
+      await updateBorrowCheckReturnApproveById(input._id, formData);
+    } else {
+      toast.error("You didn't choose some asset", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
 
   useEffect(() => {
     const fetchBorrowById = async () => {
       try {
         const res = await getBorrowCheckById(borrowId);
+        // console.log(res.data);
+        // console.log(res.data.borrow);
         const borrow = res.data.borrow;
         const matchedAssets = borrow.matchedAssets;
+        // console.log(matchedAssets);
         const matchedPackageAssets = borrow.matchedPackageAssets;
         // console.log(matchedPackageAssets);
         // setImg(asset.imageArray[0].image);
@@ -195,8 +269,17 @@ const BorrowCheckSaving = () => {
           _id: borrow._id,
         });
 
+        const fetchImages = borrow.imageArray || [];
+        const clone = [...arrayImage];
+        if (fetchImages?.length > 0) {
+          for (let el of fetchImages) {
+            clone.push({ image: { name: el.image, _id: el._id } });
+          }
+          setArrayImage(clone);
+        }
+
         const matchAllAsset = matchedAssets.concat(matchedPackageAssets);
-        // console.log(matchAllAsset);
+        console.log(matchAllAsset);
 
         setAssetList(matchAllAsset);
       } catch (err) {
@@ -206,6 +289,20 @@ const BorrowCheckSaving = () => {
     fetchBorrowById();
   }, []);
 
+  useEffect(() => {
+    // console.log(2);
+    if (arrayImage.length < 1) return;
+    const newImageUrls = [];
+    arrayImage.forEach((img) => {
+      if (img.image._id) {
+        newImageUrls.push(`http://localhost:4000/images/${img.image.name}`);
+      } else {
+        newImageUrls.push(URL.createObjectURL(img.image));
+      }
+    });
+    setArrayImageURL(newImageUrls);
+  }, [arrayImage]);
+
   return (
     <>
       <div className="bg-background-page pt-5 p-3">
@@ -214,7 +311,7 @@ const BorrowCheckSaving = () => {
           <Link to={`/borrowCheckIndex`}>
             <FaArrowLeft className="text-gray-400" />
           </Link>
-          <h1>บันทึกคืนครุภัณฑ์</h1>
+          <h1>ตรวจรับคืนครุภัณฑ์</h1>
         </div>
         <div className="flex pt-3">
           <div className="flex text-xs">
@@ -225,7 +322,14 @@ const BorrowCheckSaving = () => {
               Home
             </Link>
             <div className="text-text-gray">/</div>
-            <div className="text-text-gray ml-2">บันทึกคืนครุภัณฑ์</div>
+            <Link
+              to="/borrowCheckIndex"
+              className=" text-text-green ml-2 underline text-xs focus:text-sky-700 focus:underline mr-2"
+            >
+              รายการรอตรวจรับคืน
+            </Link>
+            <div className="text-text-gray">/</div>
+            <div className="text-text-gray ml-2">ตรวจรับคืนครุภัณฑ์</div>
           </div>
         </div>
         {/* ข้อมูลการคืนครุภัณฑ์ */}
@@ -261,6 +365,7 @@ const BorrowCheckSaving = () => {
                   id={"borrowReturnDate"}
                   state={input}
                   setState={setInput}
+                  disabled={true}
                 />
               </div>
               <div className="flex flex-col gap-y-2 col-span-2">
@@ -359,13 +464,74 @@ const BorrowCheckSaving = () => {
                 <div className="col-span-1">สถานะครุภัณฑ์</div>
                 <div className="col-span-1">จำนวน(บาท)</div>
               </div>
-              <TableBorrowCheckSaving
+              <TableBorrowCheckApprove
                 assetList={assetList}
                 handleCheckboxChange={handleCheckboxChange}
               />
             </div>
           </div>
 
+          {/* image */}
+
+          <div className="sm:grid sm:grid-cols-6 gap-6">
+            <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4 h-96">
+              <img src={boxIcon} className="w-[50px]" />
+              <div className="text-text-green font-semibold">
+                วางรูปภาพครุภัณฑ์ หรือ
+              </div>
+              <button
+                className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-full text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                onClick={() => inputImg.current.click()}
+              >
+                Upload
+              </button>
+              <input
+                type="file"
+                multiple
+                className="hidden"
+                ref={inputImg}
+                onChange={handleImageChange}
+              />
+              <div className="flex flex-col justify-center items-center">
+                <div className="text-text-gray text-sm">
+                  สามารถอัพโหลดได้หลายไฟล์
+                </div>
+                <div className="text-text-gray text-sm">
+                  จำกัด 8 ไฟล์ ไฟล์ละไม่เกิน 2MB.
+                </div>
+                <div className="text-text-gray text-sm">(JPEG , PNG , SVG)</div>
+              </div>
+              <button
+                className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                onClick={() => setShowViewImageModal(true)}
+              >
+                <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
+                ดูรูปภาพ
+              </button>
+            </div>
+            {/* file upload image*/}
+            <div className="col-span-2 sm:mt-5">
+              {arrayImage.map((el, idx) => (
+                <div
+                  key={idx}
+                  className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
+                >
+                  <div className="flex items-center text-text-green">
+                    <img src={docIcon} className="w-4 h-4 " />
+                    <div className="ml-2 text-sm">{el.image.name}</div>
+                  </div>
+                  {el.image._id ? null : (
+                    <button
+                      className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
+                      onClick={() => deleteImg(idx)}
+                    >
+                      X
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -405,10 +571,25 @@ const BorrowCheckSaving = () => {
         </button>
       </div>
 
-      <ToastContainer />
+      {/* view image */}
+      <Modal
+        id="showViewImageModal"
+        isVisible={showViewImageModal}
+        width={"[800px]"}
+        onClose={() => setShowViewImageModal(false)}
+        header={"รูปภาพครุภัณฑ์"}
+        showViewImageModal={showViewImageModal}
+      >
+        <div className=" px-10 pt-2 pb-10">
+          {arrayImageURL.map((el, idx) => (
+            <img crossorigin="true" src={el} className="w-[640px] mb-5" />
+          ))}
+        </div>
+      </Modal>
 
+      <ToastContainer />
     </>
   );
 };
 
-export default BorrowCheckSaving;
+export default BorrowCheckApprove;

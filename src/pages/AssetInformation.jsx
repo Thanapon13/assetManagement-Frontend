@@ -354,7 +354,7 @@ const AssetInformation = () => {
     }
     const baseArrayImageJSON = JSON.stringify(baseArrayImage);
     formData.append("baseArrayImage", baseArrayImageJSON);
-    // console.log(baseArrayImageJSON)
+    console.log(baseArrayImageJSON)
 
     // const duplicatedArrayImage = [];
     if (arrayImage?.length > 0) {

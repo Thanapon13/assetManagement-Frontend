@@ -4,11 +4,10 @@ import TableBorrowCheckDetail from "../components/table/TableBorrowCheckDetail";
 import { FaArrowLeft } from "react-icons/fa";
 import { useEffect } from "react";
 import { useState } from "react";
-import { getViewBorrowApproveDetailById } from "../api/borrowApi";
-import TableViewBorrowHistoryListBorrowApprove from "../components/table/TableViewBorrowHistoryListBorrowApprove";
-import TableViewBorrowHistoryListBorrowReject from "../components/table/TableViewBorrowHistoryListBorrowReject";
+import { getBorrowById } from "../api/borrowApi";
+import TableBorrowDetailList from "../components/table/TableBorrowDetailList";
 
-const BorrowHistoryDetail = () => {
+const ViewBorrowCheckDetail = () => {
   let options = { day: "2-digit", month: "2-digit", year: "numeric" };
   const hoursOptions = {
     hour: "2-digit",
@@ -18,50 +17,15 @@ const BorrowHistoryDetail = () => {
 
   const { borrowId } = useParams();
 
-  const [input, setInput] = useState({
-    // ข้อมูลการยืม
-    borrowIdDoc: 1,
-    pricePerDay: 0,
-    borrowDate: new Date(),
-    borrowReturnDate: "",
-    borrowSetReturnDate: "",
-    dateDiff: 0,
-    totalPrice: 0,
-    // รายละเอียดผู้ยืม
-    sector: "",
-    subSector: "",
-    borrowPurpose: "",
-    handler: "",
-    // สถานที่ตั้งใหม่
-    building: "",
-    floor: "",
-    room: "",
-
-    note: "",
-    reason: "",
-
-    name_recorder: "paruj lab",
-    dateTime_recorder: "",
-    name_courier: "",
-    dateTime_courier: "",
-    name_approver: "",
-    dateTime_approver: "",
-    status: "",
-
-    assetIdArray: [],
-    packageAssetIdArray: [],
-  });
-
+  const [input, setInput] = useState([]);
   const [assetList, setAssetList] = useState([]);
-  const [approveAssetList, setApproveAssetList] = useState([]);
-  const [approveAssetImageList, setApproveAssetImageList] = useState([]);
-  const [rejectAssetList, setRejectAssetList] = useState([]);
-  const [rejectAssetImageList, setRejectAssetImageList] = useState([]);
+  const [arrayImageURL, setArrayImageURL] = useState([]);
+  const [borrowArrayImageURL, setBorrowArrayImageURL] = useState([]);
 
   useEffect(() => {
     const fetchBorrowById = async () => {
       try {
-        const res = await getViewBorrowApproveDetailById(borrowId);
+        const res = await getBorrowById(borrowId);
         console.log(res.data.borrow);
         const borrow = res.data.borrow;
         const assets = borrow.assets;
@@ -73,6 +37,8 @@ const BorrowHistoryDetail = () => {
             (1000 * 60 * 60 * 24)
         );
         const totalPrice = dateDiff * res.data.borrow.pricePerDay;
+
+       
 
         setInput({
           ...input,
@@ -98,46 +64,40 @@ const BorrowHistoryDetail = () => {
           name_approver: borrow.name_approver,
           dateTime_approver: borrow.dateTime_approver,
           assetIdArray: borrow.assetIdArray,
-          status: borrow.status,
-          note: borrow.note,
           packageAssetIdArray: borrow.packageAssetIdArray,
           _id: borrow._id,
         });
 
-        setApproveAssetList(res.data.approveArray);
-        setRejectAssetList(res.data.rejectArray);
+        // image for borrow
+        let borrowImageArray = borrow.imageArray;
 
-        // image for approve asset list
-        let imageApproveArrayList = [];
-        for (let el of res.data.approveArray) {
-          imageApproveArrayList.push(el.imageArray);
+        borrowImageArray.forEach((el) => {
+          el["imgURL"] = `http://localhost:4000/images/${el.image}`;
+        });
+
+        console.log("borrowImageArray", borrowImageArray);
+        setBorrowArrayImageURL(borrowImageArray);
+
+        // image for asset
+        let totalAssetAndPackageArray = [];
+
+        totalAssetAndPackageArray = assets.concat(packageAssets);
+        setAssetList(totalAssetAndPackageArray);
+        // console.log(totalAssetAndPackageArray);
+
+        let imageArrayList = [];
+        for (let el of totalAssetAndPackageArray) {
+          imageArrayList.push(el.imageArray);
         }
 
-        imageApproveArrayList.forEach((array) => {
+        imageArrayList.forEach((array) => {
           array.forEach((img) => {
             img["imgURL"] = `http://localhost:4000/images/${img.image}`;
           });
         });
-        setApproveAssetImageList(imageApproveArrayList)
 
-         // image for rejct asset list
-        let imageRejectArrayList = [];
-        for (let el of res.data.rejectArray) {
-          imageRejectArrayList.push(el.imageArray);
-        }
-
-        imageRejectArrayList.forEach((array) => {
-          array.forEach((img) => {
-            img["imgURL"] = `http://localhost:4000/images/${img.image}`;
-          });
-        });
-        setRejectAssetImageList(imageRejectArrayList)
-
-        // console.log("imageApproveArrayList",imageApproveArrayList);
-        // console.log("imageRejectArrayList",imageRejectArrayList);
-
-        // console.log("res.data.approveArray",res.data.approveArray)
-        // console.log("res.data.rejectArray",res.data.rejectArray)
+        console.log(imageArrayList);
+        setArrayImageURL(imageArrayList);
       } catch (err) {
         console.log(err);
       }
@@ -149,10 +109,10 @@ const BorrowHistoryDetail = () => {
       <div className="bg-background-page pt-5 p-3">
         {/* Header */}
         <div className="text-2xl text-text-green flex items-center space-x-5 ">
-          <Link to={`/borrowHistory`}>
+          <Link to={`/borrowCheckIndex`}>
             <FaArrowLeft className="text-gray-400" />
           </Link>
-          <h1>รายละเอียดประวัติการยืม</h1>
+          <h1>รายละเอียดการตรวจรับคืน</h1>
         </div>
         <div className="flex pt-3">
           {/* left home */}
@@ -165,16 +125,17 @@ const BorrowHistoryDetail = () => {
             </Link>
             <div className="text-text-gray">/</div>
             <Link
-              to="/borrowHistory"
+              to="/borrowCheckIndex"
               className=" text-text-green ml-2 underline text-xs focus:text-sky-700 focus:underline mr-2"
             >
-              ประวัติการยืม
+              รายการรอตรวจรับคืน
             </Link>
             <div className="text-text-gray">/</div>
-            <div className="text-text-gray ml-2">รายละเอียดประวัติการยืม</div>
+            <div className="text-text-gray ml-2">รายละเอียดการตรวจรับคืน</div>
           </div>
         </div>
-        {/* ข้อมูลครุภัณฑ์ */}
+
+        {/* ข้อมูลการยืมครุภัณฑ์ */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
           <div className="text-xl">ข้อมูลการยืมครุภัณฑ์</div>
           {/* row 1 เลขที่เอกสารการยืม */}
@@ -183,8 +144,21 @@ const BorrowHistoryDetail = () => {
               เลขที่เอกสารการยืม
             </div>
             <div className="flex items-center ">{input.borrowIdDoc}</div>
-            <div className="text-text-gray flex items-center ">วันที่ยืม</div>
-            <div className="flex items-center ">
+            <div className="text-text-gray flex items-center ">
+              ราคายืมต่อวัน (บาท)
+            </div>
+            <div className="flex items-center ">{input.pricePerDay}</div>
+          </div>
+          {/* row 2 จำนวนวันที่ยืม (วัน) */}
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
+            <div className="text-text-gray flex items-center">
+              จำนวนวันที่ยืม (วัน)
+            </div>
+            <div className="flex items-center">{input.dateDiff}</div>
+            <div className="text-text-gray flex items-center">
+              วัน-เวลาที่ยืม
+            </div>
+            <div className="flex items-center">
               {" "}
               {new Date(input.borrowDate).toLocaleDateString(
                 "th-TH",
@@ -197,9 +171,11 @@ const BorrowHistoryDetail = () => {
               )}
             </div>
           </div>
-          {/* row 2 กำหนดคืน*/}
+          {/* row 3 วัน-เวลาที่กำหนดส่งคืน */}
           <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
-            <div className="text-text-gray flex items-center">กำหนดคืน</div>
+            <div className="text-text-gray flex items-center">
+              วัน-เวลาที่กำหนดส่งคืน
+            </div>
             <div className="flex items-center">
               {" "}
               {new Date(input.borrowSetReturnDate).toLocaleDateString(
@@ -212,11 +188,13 @@ const BorrowHistoryDetail = () => {
                 hoursOptions
               )}
             </div>
-            <div className="text-text-gray flex items-center">วันที่คืน</div>
+            <div className="text-text-gray flex items-center">
+              วัน-เวลาที่คืน
+            </div>
             <div className="flex items-center">
               {" "}
               {input.borrowReturnDate === ""
-                ? ""
+                ? "-"
                 : new Date(input.borrowReturnDate).toLocaleDateString(
                     "th-TH",
                     options
@@ -230,87 +208,84 @@ const BorrowHistoryDetail = () => {
                   )}
             </div>
           </div>
+          {/* row 4 วัตถุประสงค์การขอยืม */}
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
+            <div className="text-text-gray flex items-center">
+              วัตถุประสงค์การขอยืม
+            </div>
+            <div className="flex items-center">{input.borrowPurpose}</div>
+            <div className="text-text-gray flex items-center">
+              มูลค่าการยืม (บาท)
+            </div>
+            <div className="flex items-center">
+              {input.totalPrice?.toFixed(2)}
+            </div>
+          </div>
         </div>
         {/* รายละเอียดผู้ยืม */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
           <div className="text-xl">รายละเอียดผู้ยืม</div>
-          {/* row 1 ผู้ดำเนินการ */}
+          {/* row 1 หน่วยงานที่ยืม */}
           <div className="grid grid-cols-2 gap-4 md:grid-cols-5 mt-5 p-2">
             <div className="text-text-gray flex items-center ">
-              ผู้ดำเนินการ
+              หน่วยงานที่ยืม
             </div>
-            <div className="flex items-center ">{input.handler}</div>
-            <div className="text-text-gray flex items-center ">หน่วยงาน</div>
             <div className="flex items-center ">{input.sector}</div>
+            <div className="text-text-gray flex items-center ">ภาควิชา</div>
+            <div className="flex items-center ">{input.subSector}</div>
           </div>
-          {/* row 2 ภาควิชา */}
+          {/* row 2 ผู้ดำเนินการ */}
           <div className="grid grid-cols-2 md:grid-cols-5 p-2">
-            <div className="text-text-gray flex items-center">ภาควิชา</div>
-            <div className="flex items-center">{input.subSector}</div>
-          </div>
-          {/* row 3 ที่อยู่ */}
-          <div className="grid grid-cols-2 md:grid-cols-5 p-2">
-            <div className="text-text-gray flex items-center">ที่อยู่</div>
-            <div className="flex items-center col-span-3">
-              {"888 อาคารรัตนวิดี ถนนสุขุมวิท เขตดุสิต กรุงเทพฯ 10310"}
-            </div>
+            <div className="text-text-gray flex items-center">ผู้ดำเนินการ</div>
+            <div className="flex items-center">{input.handler}</div>
           </div>
         </div>
-
         {/* รายการครุภัณฑ์ที่ยืม */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
           <div className="text-xl">รายการครุภัณฑ์ที่ยืม</div>
           {/* table */}
-          <div className="overflow-x-auto  scrollbar pt-4 mb-5">
-            <div className="w-[1000px] h-[300px] lg:w-full p-2 pb-4">
-              <div className="grid grid-cols-13 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
+          <div className="overflow-x-auto scrollbar pt-4">
+            <div className="w-[1000px] h-auto lg:w-full">
+              <div className="grid grid-cols-14 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
                 <div className="col-span-1">ลำดับ</div>
-                <div className="col-span-2">เลขครุภัณฑ์</div>
-                <div className="col-span-2">ชื่อครุภัณฑ์</div>
+                <div className="col-span-2">ID ครุภัณฑ์</div>
+                <div className="col-span-3">ชื่อครุภัณฑ์</div>
                 <div className="col-span-2">Serial Number</div>
                 <div className="col-span-2">เจ้าของครุภัณฑ์</div>
                 <div className="col-span-2">สถานะครุภัณฑ์</div>
                 <div className="col-span-1">จำนวน(บาท)</div>
                 <div className="col-span-1">ดูรูปภาพ</div>
               </div>
-              <TableViewBorrowHistoryListBorrowApprove
-                approveAssetList={approveAssetList}
-                approveAssetImageList={approveAssetImageList}
+              <TableBorrowDetailList
+                assetList={assetList}
+                arrayImageURL={arrayImageURL}
               />
             </div>
           </div>
+        </div>
 
-          {/* รายการครุภัณฑ์ที่ไม่อนุมัติ */}
-          {rejectAssetList.length > 0 ? (
-            <div>
-              <div className="text-xl">รายการครุภัณฑ์ที่ไม่อนุมัติ</div>
-
-              <div className="overflow-x-auto  scrollbar pt-4 mb-5">
-                <div className="w-[1000px] h-[300px] lg:w-full p-2 pb-4">
-                  <div className="grid grid-cols-14 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
-                    <div className="col-span-1">ลำดับ</div>
-                    <div className="col-span-2">เลขครุภัณฑ์</div>
-                    <div className="col-span-2">ชื่อครุภัณฑ์</div>
-                    <div className="col-span-2">Serial Number</div>
-                    <div className="col-span-2">เจ้าของครุภัณฑ์</div>
-                    <div className="col-span-2">สถานะครุภัณฑ์</div>
-                    <div className="col-span-1">จำนวน(บาท)</div>
-                    <div className="col-span-2">สาเหตุ</div>
-                  </div>
-                  <TableViewBorrowHistoryListBorrowReject
-                    rejectAssetList={rejectAssetList}
-                  />
+        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 mb-5 ">
+          <div className="text-xl">ภาพครุภัณฑ์</div>
+          <div className="border-2 border-gray-300  px-30 rounded-lg flex flex-col justify-center items-center gap-4  ">
+            <div className="overflow-y-auto scrollbar ">
+              <div className="h-[550px]">
+                <div className=" px-5 pt-5  pb-10">
+                  {borrowArrayImageURL?.map((el, idx) => (
+                    <img
+                      key={idx}
+                      crossOrigin="true"
+                      src={el.imgURL}
+                      className="w-[640px] mb-5"
+                    />
+                  ))}
                 </div>
               </div>
             </div>
-          ) : (
-            <></>
-          )}
+          </div>
         </div>
-
       </div>
     </>
   );
 };
 
-export default BorrowHistoryDetail;
+export default ViewBorrowCheckDetail;

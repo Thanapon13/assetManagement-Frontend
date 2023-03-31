@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DropdownStatus from "../dropdown/DropdownStatus";
 
-const TableBorrowCheckSaving = ({ assetList, handleCheckboxChange }) => {
+const TableBorrowCheckApprove = ({ assetList, handleCheckboxChange }) => {
   const [isClick, setIsClick] = useState(false);
 
   const handleClick = () => {
@@ -15,17 +15,17 @@ const TableBorrowCheckSaving = ({ assetList, handleCheckboxChange }) => {
           <div
             key={item?._id}
             className={`grid grid-cols-11 gap-2 h-12 py-2 text-xs text-center items-center ${
-              item?.returnDate ? "bg-gray-50" : "bg-white"
+              item?.return === "done" || item?.return === "" ? "bg-gray-50" : "bg-white"
             }`}
           >
             <div className="col-span-1 text-center flex justify-center items-center">
               <input
                 type="checkbox"
                 className={` text-text-green placeholder-text-green focus:ring-0 rounded-sm ${
-                  item?.returnDate ? "bg-gray-300" : ""
+                  item?.return === "done" || item?.return === "" ? "bg-gray-300" : ""
                 }`}
                 checked={item?.checked}
-                disabled={item?.returnDate ? true : false}
+                disabled={item?.return === "done" || item?.return === ""? true : false}
                 onChange={() => handleCheckboxChange(assetList, item._id)}
               />
             </div>
@@ -64,4 +64,4 @@ const TableBorrowCheckSaving = ({ assetList, handleCheckboxChange }) => {
   );
 };
 
-export default TableBorrowCheckSaving;
+export default TableBorrowCheckApprove;

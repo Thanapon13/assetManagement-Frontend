@@ -5,6 +5,8 @@ import TableBorrowCheckIndex from "../components/table/TableBorrowCheckIndex";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { AiOutlineSearch } from "react-icons/ai";
+import { CgPushChevronLeft } from "react-icons/cg";
+import { CgPushChevronRight } from "react-icons/cg";
 import DateInput from "../components/date/DateInput";
 import {
   getBySearchBorrowCheck,
@@ -222,8 +224,8 @@ const BorrowCheckIndex = () => {
             </option>
             <option value="approve">อนุมัติแล้ว</option>
             <option value="partiallyApprove">อนุมัติบางส่วน</option>
-            <option value="watingReturnApprove ">รออนุมัติคืน</option>
-            <option value="approveReturn">อนุมัติคืนแล้ว</option>
+            <option value="waitingReturnApprove ">รออนุมัติคืน</option>
+            <option value="done">อนุมัติคืนแล้ว</option>
           </select>
         </div>
 
@@ -282,9 +284,10 @@ const BorrowCheckIndex = () => {
             <div className="flex mr-10 items-center">
               <div>Rows per page:</div>
               <select
-                id="perPage"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                onChange={(e) => setPerPage(e.target.value)}
+                 id="limit"
+                 name="limit"
+                 className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                 onChange={handlePaginationSearch}
               >
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -308,11 +311,29 @@ const BorrowCheckIndex = () => {
               {search.total}
             </div>
 
-            <button className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={handleFirstPage}
+            >
+              <CgPushChevronLeft className="text-lg" />
+            </button>
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={handlePageDecrease}
+            >
               <HiChevronLeft className="text-lg" />
             </button>
-            <button className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={handlePageIncrease}
+            >
               <HiChevronRight className="text-lg" />
+            </button>
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={handleLastPage}
+            >
+              <CgPushChevronRight className="text-lg font-bold" />
             </button>
           </div>
         </div>
