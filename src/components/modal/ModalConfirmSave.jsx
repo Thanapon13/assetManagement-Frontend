@@ -1,6 +1,6 @@
 import { IoIosClose } from "react-icons/io";
 
-const ModalConfirmSave = ({ isVisible, onClose, onSave, text, header }) => {
+const ModalConfirmSave = ({ isVisible, onClose, onSave, text, header, mode }) => {
 
     const handleClose = (e) => {
         if (e.target.id === "wrapper") onClose()
@@ -18,7 +18,7 @@ const ModalConfirmSave = ({ isVisible, onClose, onSave, text, header }) => {
                         <div className={`mx-auto min-w-[30em]`} >
                             <div className="bg-white rounded min-w-[50%]">
                                 <div className="flex justify-between border-grey-300  p-4">
-                                    <div className="text-text-green text-xl font-bold self-end">{header || "ยืนยันรายการบันทึก"}</div>
+                                    <div className="text-text-green text-xl font-bold self-end">{header || mode === "edit" ? "ยืนยันการแก้ไข" : "ยืนยันรายการบันทึก"}</div>
 
                                     <button
                                         className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
