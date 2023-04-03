@@ -52,7 +52,7 @@ const AssetInformation = () => {
     model: "",
     size: "",
     quantity: 0,
-    serialNumberMachine: "",
+    // serialNumberMachine: "",
     source: "",
     category: "",
     acquiredType: "",
@@ -414,7 +414,7 @@ const AssetInformation = () => {
   }
 
   const submit = async () => {
-    const inputJSON = JSON.stringify({ ...input, ...inputSale, ...inputContract });
+    const inputJSON = JSON.stringify(input);
     const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
     formData.append("input", inputJSON);
@@ -566,8 +566,31 @@ const AssetInformation = () => {
       accumulateDepreciationBookValue
     );
 
+     //สัญญาจัดซื้อ
+     formData.append("acquisitionMethod", inputContract.acquisitionMethod);
+     formData.append("moneyType", inputContract.moneyType);
+     formData.append("deliveryDocument", inputContract.deliveryDocument);
+     formData.append("contractNumber", inputContract.contractNumber);
+     formData.append("receivedDate", inputContract.receivedDate);
+     formData.append("seller", inputContract.seller);
+     formData.append("price", inputContract.price);
+     formData.append("billNumber",inputContract.billNumber);
+     formData.append("purchaseYear", inputContract.purchaseYear);
+     formData.append("purchaseDate", inputContract.purchaseDate);
+     formData.append("documentDate", inputContract.documentDate);
+ 
+     //การจำหน่าย
+     formData.append("salesDocument", inputSale.salesDocument);
+     formData.append("distributeDocumentDate", inputSale.distributeDocumentDate);
+     formData.append(
+       "distributeApprovalReleaseDate",
+       inputSale.distributeApprovalReleaseDate
+     );
+     formData.append("distributeStatus", inputSale.distributeStatus);
+     formData.append("distributionNote", inputSale.distributionNote);
+
     const response = await createAsset(formData);
-    if (!response.data.message) {
+    if (response.data.message.includes("created success")) {
       setShowModalConfirm(false)
       setShowModalSuccess(true)
     }
