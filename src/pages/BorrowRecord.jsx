@@ -232,7 +232,7 @@ const BorrowRecord = () => {
                 type="text"
                 placeholder="Example"
                 readOnly
-                value={input.pricePerDay.toLocaleString()}
+                value={input.pricePerDay.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
@@ -417,7 +417,7 @@ const BorrowRecord = () => {
           </button>
           <button
             type="button"
-            className="bg-text-green hover:bg-green-800 text-white text-sm rounded-md p-2"
+            className="bg-text-green hover:bg-green-800 text-white text-sm rounded-md py-2 px-4"
             onClick={handleForm}
           >
             บันทึกขอยืมครุภัณฑ์
