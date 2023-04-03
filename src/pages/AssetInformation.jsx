@@ -567,7 +567,7 @@ const AssetInformation = () => {
     );
 
     const response = await createAsset(formData);
-    if (response.status === 200) {
+    if (!response.data.message) {
       setShowModalConfirm(false)
       setShowModalSuccess(true)
     }
@@ -1031,7 +1031,7 @@ const AssetInformation = () => {
               </div>
               {!!arrayImage.length &&
                 <button
-                  className="flex mx-auto items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                  className="mt-2 flex mx-auto items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
                   onClick={() => setShowViewImageModal(true)}
                 >
                   <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
