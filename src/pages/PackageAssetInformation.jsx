@@ -73,7 +73,7 @@ const PackageAssetInformation = () => {
     type8: "",
     type13: "",
     // allSector: "", //
-    status: "not approve",
+    // status: "not approve",
   });
   const [errorInput, setErrorInput] = useState(false)
   const [errorGen, setErrorGen] = useState(false)
@@ -626,6 +626,29 @@ const PackageAssetInformation = () => {
       "accumulateDepreciationBookValue",
       accumulateDepreciationBookValue
     );
+
+    //สัญญาจัดซื้อ
+    formData.append("acquisitionMethod", inputContract.acquisitionMethod);
+    formData.append("moneyType", inputContract.moneyType);
+    formData.append("deliveryDocument", inputContract.deliveryDocument);
+    formData.append("contractNumber", inputContract.contractNumber);
+    formData.append("receivedDate", inputContract.receivedDate);
+    formData.append("seller", inputContract.seller);
+    formData.append("price", inputContract.price);
+    formData.append("billNumber", inputContract.billNumber);
+    formData.append("purchaseYear", inputContract.purchaseYear);
+    formData.append("purchaseDate", inputContract.purchaseDate);
+    formData.append("documentDate", inputContract.documentDate);
+
+    //การจำหน่าย
+    formData.append("salesDocument", inputSale.salesDocument);
+    formData.append("distributeDocumentDate", inputSale.distributeDocumentDate);
+    formData.append(
+      "distributeApprovalReleaseDate",
+      inputSale.distributeApprovalReleaseDate
+    );
+    formData.append("distributeStatus", inputSale.distributeStatus);
+    formData.append("distributionNote", inputSale.distributionNote);
 
     const response = await createPackageAsset(formData);
     if (response.data.message.includes("created successful")) {
