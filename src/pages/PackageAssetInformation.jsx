@@ -280,23 +280,23 @@ const PackageAssetInformation = () => {
   const handleGenSubComponentData = () => {
     const bottomArray = [];
     topSubComponentData
-    topSubComponentData.forEach((data, idx) => {
-      if (!data.productName) {
-        setErrorGenSubComponentData(true)
-        return
-      }
-      // genData.forEach((el, idx) => {
-      //   const assetNumber = el.assetNumber;
-      // if (idx + 1 < topSubComponentData.length) {
-      bottomArray.push({
-        // assetNumber: `${assetNumber}(${idx + 1})`,
-        productName: data.productName,
-        serialNumber: "",
-        price: "",
-        asset01: "",
+    genData.forEach((el, idx) => {
+      topSubComponentData.forEach((data, idx) => {
+        if (!data.productName) {
+          setErrorGenSubComponentData(true)
+          return
+        }
+        const assetNumber = el.assetNumber;
+        // if (idx + 1 < topSubComponentData.length) {
+        bottomArray.push({
+          assetNumber: `${assetNumber}(${idx + 1})`,
+          productName: data.productName,
+          serialNumber: "",
+          pricePerUnit: "",
+          asset01: "",
+        });
+        // }
       });
-      // }
-      // });
     });
     console.log(bottomArray, topSubComponentData)
 
@@ -449,11 +449,13 @@ const PackageAssetInformation = () => {
     setErrorAssestTable(errTable)
     setErrorContract(errContract)
     setErrorSale(errSale)
+    console.log({ ...input, ...inputSale, ...inputContract });
+    console.log(genData, bottomSubComponentData);
     if (!(errInput || errContract || errSale || errTable)) setShowModalConfirm(true)
   }
 
   const handleSubmit = async (e) => {
-    const inputJSON = JSON.stringify({ input, ...inputSale, ...inputContract });
+    const inputJSON = JSON.stringify({ ...input, ...inputSale, ...inputContract });
     const genDataJSON = JSON.stringify(genData);
     const bottomSubComponentDataJSON = JSON.stringify(bottomSubComponentData);
     const formData = new FormData();
@@ -626,7 +628,7 @@ const PackageAssetInformation = () => {
     );
 
     const response = await createPackageAsset(formData);
-    if (response.status === 200) {
+    if (response.data.message.includes("created successful")) {
       setShowModalConfirm(false)
       setShowModalSuccess(true)
     }

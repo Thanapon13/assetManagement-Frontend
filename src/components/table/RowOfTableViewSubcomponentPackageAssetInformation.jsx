@@ -26,13 +26,12 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
 }) {
   const locaiton = useLocation();
   const { inputRef } = useBarcode({
-    value: barcode,
-    options: {
-      background: "#ffffff",
-    },
+    value: bottomSubComponentData[indexGenData]?.serialNumber || null,
+    options: { background: "#ffffff" },
   });
 
   const printRef = useRef();
+  const noPrintRef = useRef();
 
   const onChange = (e) => {
     setBottomSubComponentData((prev) => ({
@@ -60,10 +59,11 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
     setBottomSubComponentData(clone);
   };
 
-  useEffect(() => {
-    setBarcode(bottomSubComponentData[indexGenData]?.serialNumber);
-    setQr(bottomSubComponentData[indexGenData]?.serialNumber);
-  }, [indexGenData]);
+  // useEffect(() => {
+  //   setBarcode(bottomSubComponentData[indexGenData]?.serialNumber);
+  //   setQr(bottomSubComponentData[indexGenData]?.serialNumber);
+  // }, [indexGenData]);
+
   return (
     <div>
       <div
@@ -86,9 +86,9 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
           type="text"
           name="productName"
           id="productName"
-          disabled
+          // disabled
           value={bottomSubComponentData[index]?.productName}
-          className="col-span-4 w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+          className="col-span-4 w-full h-[38px] border-[1px] pl-2 text-xs  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
         />
         <div className="flex relative col-span-4">
           <input
@@ -99,11 +99,10 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
                 ? true
                 : false
             }
-            className={`w-full text-left text-xs pl-3 ${
-               locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
+            className={`w-full text-left text-xs pl-3 ${locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
                 ? "bg-gray-200"
                 : ""
-            }  flex justify-center items-center py-2 border-[1px] border-gray-300 rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
+              }  flex justify-center items-center py-2 border-[1px] border-gray-300 rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
             onChange={handleChangeSerialNumber}
             value={bottomSubComponentData[index]?.serialNumber}
           />
@@ -126,30 +125,28 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
           name="pricePerUnit"
           id="pricePerUnit"
           disabled={
-             locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}` ? true : false
+            locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}` ? true : false
           }
           onChange={handleChangePricePerUnit}
-          value={bottomSubComponentData[index]?.pricePerUnit}
-          className={`col-span-2 w-full h-[38px] ${
-             locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
+          value={bottomSubComponentData[index]?.pricePerUnit.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          className={`col-span-2 w-full h-[38px] ${locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
               ? "bg-gray-200"
               : ""
-          } border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+            } border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
         />
         <input
           type="text"
           name="asset01"
           id="asset01"
           disabled={
-             locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}` ? true : false
+            locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}` ? true : false
           }
           onChange={handleChangeAsset01}
           value={bottomSubComponentData[index]?.asset01}
-          className={`col-span-2 w-full h-[38px] ${
-             locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
+          className={`col-span-2 w-full h-[38px] ${locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
               ? "bg-gray-200"
               : ""
-          }  border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+            }  border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
         />
 
         <div
@@ -182,27 +179,22 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
                 </button>
               );
             }}
-            content={() => printRef.current}
-            // documentTitle="kiminoto doc"
-            // pageStyle="print"
-            onAfterPrint={() => console.log("print")}
+            content={() => bottomSubComponentData[indexGenData]?.serialNumber ? printRef.current : noPrintRef.current}
+            onBeforeGetContent={async () => { await setIndexGenData(index) }}
           />
         </div>
 
-        <div ref={printRef} className="absolute -z-10 top-40">
-          {barcode !== "" ? (
-            <canvas id="mybarcode" ref={inputRef} className="w-[300px]" />
-          ) : (
-            <p>No barcode preview</p>
-          )}
+        <div ref={printRef} className="absolute -z-10">
+          <canvas id="mybarcode" ref={inputRef} className="w-full" />
+          <QRcode id="myqr" value={bottomSubComponentData[indexGenData]?.serialNumber} size={320} includeMargin={true} />
+        </div>
+        <div ref={noPrintRef} className="absolute -z-10">
           <div>
-            {qr ? (
-              <QRcode id="myqr" value={qr} size={300} includeMargin={true} />
-            ) : (
-              <p>No QR code preview</p>
-            )}
+            <p>No barcode preview</p>
+            <p>No QR code preview</p>
           </div>
         </div>
+
       </div>
     </div>
   );
