@@ -169,8 +169,8 @@ function TableBorrowRecord({
           disabled={
             saveAssetWithdrawTableArray[index].amount > 1
               ? false
-              : saveAssetWithdrawTableArray[index].isFetching
-                ? false
+              // : saveAssetWithdrawTableArray[index].isFetching
+              //   ? false
                 : true
           }
           search={search}
@@ -190,8 +190,8 @@ function TableBorrowRecord({
           disabled={
             search.assetNumber !== ""
               ? false
-              : saveAssetWithdrawTableArray[index].isFetching
-                ? false
+              // : saveAssetWithdrawTableArray[index].isFetching
+              //   ? false
                 : true
           }
           search={search}
@@ -235,7 +235,7 @@ function TableBorrowRecord({
           disabled
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.unit.toLocaleString()
+            saveAssetWithdrawTableArray[index]?.unit
           }
         />
         <input
@@ -243,7 +243,7 @@ function TableBorrowRecord({
           disabled
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.pricePerUnit.toLocaleString()
+            saveAssetWithdrawTableArray[index]?.pricePerUnit.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
           }
         />
       </div>

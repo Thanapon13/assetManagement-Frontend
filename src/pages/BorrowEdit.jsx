@@ -6,10 +6,13 @@ import TableLocationHistory from "../components/table/TableLocationHistory";
 import { FaArrowLeft } from "react-icons/fa";
 import { getBorrowById, updateBorrow } from "../api/borrowApi";
 import OnlyDateInput from "../components/date/onlyDateInput";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
+import ModalSuccess from "../components/modal/ModalSuccess";
+import { Spinner } from "flowbite-react";
 
 const BorrowEdit = () => {
   const { borrowId } = useParams();
-  const [countRow, setCountRow] = useState(1);
+  const [countRow, setCountRow] = useState(0);
 
   const [input, setInput] = useState({
     // ข้อมูลการยืม
@@ -26,35 +29,23 @@ const BorrowEdit = () => {
     building: "",
     floor: "",
     room: "",
-
-    name_recorder: "paruj lab",
-    dateTime_recorder: "",
-    name_courier: "",
-    dateTime_courier: "",
-    name_approver: "",
-    dateTime_approver: "",
-    status: "not approve",
   });
   const [countIndexArray, setCountIndexArray] = useState([0]);
 
-  const [saveAssetWithdrawTableArray, setSaveAssetWithdrawTableArray] =
-    useState([
-      {
-        index: 0,
-        assetNumber: "",
-        productName: "",
-        brand: "",
-        amount: "",
-        unit: "",
-        pricePerUnit: "",
-        maxQuantity: 0,
-        isPackage: false,
-        isFetching:false
-      },
-    ]);
+  const [saveAssetWithdrawTableArray, setSaveAssetWithdrawTableArray] = useState([]);
+  const newSaveAssetWithdrawTableArray = {
+    index: countRow,
+    assetNumber: "",
+    productName: "",
+    brand: "",
+    amount: "",
+    unit: "",
+    pricePerUnit: "",
+    maxQuantity: 0,
+    isPackage: false,
+  };
 
-    const [deleteAssetArray,setDeleteAssetArray] = useState([])
-
+  const [deleteAssetArray, setDeleteAssetArray] = useState([])
   //handle bottom table
   const handleClickIncrease = (e) => {
     e.preventDefault();
@@ -72,7 +63,7 @@ const BorrowEdit = () => {
       pricePerUnit: "",
       maxQuantity: 0,
       isPackage: false,
-      isFetching:false
+      isFetching: false
     };
     setSaveAssetWithdrawTableArray([...clone, newCloneArray]);
   };
@@ -85,8 +76,8 @@ const BorrowEdit = () => {
     let clone = [...saveAssetWithdrawTableArray];
     let deleteOneRow = clone.splice(index, 1);
     console.log(deleteOneRow[0]);
-    setDeleteAssetArray([...deleteAssetArray,deleteOneRow[0]])
-    console.log([...deleteAssetArray,deleteOneRow[0]])
+    setDeleteAssetArray([...deleteAssetArray, deleteOneRow[0]])
+    console.log([...deleteAssetArray, deleteOneRow[0]])
     setSaveAssetWithdrawTableArray(clone);
   };
 
@@ -122,10 +113,48 @@ const BorrowEdit = () => {
     return sortedDataArray;
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const inputJSON = JSON.stringify(input);
-    console.log(saveAssetWithdrawTableArray);
+  const [errorInput, setErrorInput] = useState(false)
+  const [errorAssestTable, setErrorAssestTable] = useState(false)
+  //Modal
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [showModalSuccess, setShowModalSuccess] = useState(false);
+
+  const handleForm = () => {
+    let errInput, errAssetTable
+    Object.values(input).map((value, index) => {
+      if (errInput) return
+      if (!value) errInput = true
+    })
+    if (!saveAssetWithdrawTableArray.length) {
+      setSaveAssetWithdrawTableArray([newSaveAssetWithdrawTableArray])
+      errAssetTable = true
+    }
+    saveAssetWithdrawTableArray.map(list => {
+      Object.entries(list).forEach(([key, value], index) => {
+        if (errAssetTable || key === "isPackage" || key === "index") return
+        if (!value) errAssetTable = true
+      })
+    })
+    setErrorInput(errInput)
+    setErrorAssestTable(errAssetTable)
+    console.log(errAssetTable, deleteAssetArray);
+    // if (!(errInput || errAssetTable))
+    setShowModalConfirm(true)
+  }
+
+  const handleSubmit = async () => {
+    // const user = await getUserInfo
+    const inputs = {
+      ...input,
+      name_recorder: "userTestEdit", //
+      // dateTime_recorder: new Date(dataBorrow.dateTime_recorder) || "",
+      // name_courier: dataBorrow.name_courier || "",
+      // dateTime_courier: new Date(dataBorrow.dateTime_courier) || "",
+      // name_approver: dataBorrow.name_approver || "",
+      // dateTime_approver: new Date(dataBorrow.dateTime_approver) || "",
+      // status: dataBorrow.status,
+    }
+    const inputJSON = JSON.stringify(inputs);
     const sortsaveAssetWithdrawTableArray = sortArray(
       saveAssetWithdrawTableArray
     );
@@ -134,13 +163,19 @@ const BorrowEdit = () => {
     );
 
     const deleteAssetArrayJSON = JSON.stringify(deleteAssetArray)
-    await updateBorrow({
+    const response = await updateBorrow({
       input: inputJSON,
       saveAssetWithdrawTableArray: saveAssetWithdrawTableArrayJSON,
-      deleteAssetArray:deleteAssetArrayJSON
-    },borrowId);
+      deleteAssetArray: deleteAssetArrayJSON
+    }, borrowId);
+    console.log(response.data);
+    if (response.data.message.includes("updated success")) {
+      setShowModalConfirm(false)
+      setShowModalSuccess(true)
+    }
   };
 
+  const [dataBorrow, setDataBorrow] = useState()
   useEffect(() => {
     const fetchAssetById = async () => {
       try {
@@ -163,15 +198,13 @@ const BorrowEdit = () => {
           building: borrow.building,
           floor: borrow.floor,
           room: borrow.room,
-
-          name_recorder: borrow.name_recorder,
-          dateTime_recorder: new Date(borrow.dateTime_recorder),
-          name_courier: borrow.name_courier,
-          dateTime_courier: new Date(borrow.dateTime_courier),
-          name_approver: borrow.name_approver,
-          dateTime_approver: new Date(borrow.dateTime_approver),
-
-          status: borrow.status,
+          // name_recorder: borrow.name_recorder,
+          // dateTime_recorder: new Date(borrow.dateTime_recorder),
+          // name_courier: borrow.name_courier,
+          // dateTime_courier: new Date(borrow.dateTime_courier),
+          // name_approver: borrow.name_approver,
+          // dateTime_approver: new Date(borrow.dateTime_approver),
+          // status: borrow.status,
         });
 
         const assetData = borrow.assets.map((asset, index) => ({
@@ -179,14 +212,14 @@ const BorrowEdit = () => {
           assetNumber: asset.assetNumber,
           productName: asset.productName,
           brand: asset.brand,
-          amount:1,
+          amount: 1,
           unit: asset.unit,
           pricePerUnit: asset.pricePerUnit,
           maxQuantity: 1,
           isPackage: false,
-          isFetching:true
+          isFetching: true
         }));
-      
+
         const packageAssetData = borrow.packageAssets.map((packageAsset, index) => ({
           index: index + borrow.assets.length,
           assetNumber: packageAsset.assetNumber,
@@ -197,13 +230,13 @@ const BorrowEdit = () => {
           pricePerUnit: packageAsset.pricePerUnit,
           maxQuantity: 1,
           isPackage: true,
-          isFetching:true
+          isFetching: true
         }));
 
         const saveData = [...assetData, ...packageAssetData]
         setCountRow(saveData.length)
-      
         setSaveAssetWithdrawTableArray(saveData);
+        if (saveData.length) setDataBorrow(borrow)
       } catch (err) {
         console.log(err);
       }
@@ -221,7 +254,7 @@ const BorrowEdit = () => {
     if (input.borrowSetReturnDate) {
       const diffTime = Math.abs(
         new Date(input.borrowSetReturnDate).getTime() -
-          new Date(input.borrowDate)?.getTime()
+        new Date(input.borrowDate)?.getTime()
       );
       diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     }
@@ -235,7 +268,6 @@ const BorrowEdit = () => {
 
   return (
     <>
-    <form>
       {/* body */}
       <div className="bg-background-page pt-5 p-3">
         {/* Header */}
@@ -265,208 +297,225 @@ const BorrowEdit = () => {
             <div className="text-text-gray ml-2">แก้ไขใบยืมครุภัณฑ์</div>
           </div>
         </div>
-        {/* ข้อมูลการยืมครุภัณฑ์ */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
-          <div className="text-xl">ข้อมูลการยืมครุภัณฑ์</div>
-          {/* Row 1 เลขที่เอกสารการยืม */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray flex">
-                เลขที่เอกสารการยืม
-                <h1 className="text-red-500 ml-2 font-bold">*</h1>
-              </label>
-              <input
-                type="text"
-                value={input.borrowIdDoc}
-                placeholder="Example"
-                readOnly
-                className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">ราคายืม (ต่อวัน)</label>
-              <input
-                type="text"
-                placeholder="Example"
-                readOnly
-                value={input.pricePerDay}
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-          {/* Row 2 วันที่ยืม */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">วันที่ยืม</label>
-              <OnlyDateInput
-                id={"borrowDate"}
-                state={input}
-                setState={setInput}
-                disabled={true}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">กำหนดส่งคืน</label>
-              <OnlyDateInput
-                id={"borrowSetReturnDate"}
-                state={input}
-                setState={setInput}
-              />
-            </div>
-          </div>
-        </div>
-        {/* รายการครุภัณฑ์ที่เลือก */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
-          <div className="text-xl">รายการครุภัณฑ์ที่เลือก</div>
-          {/* table */}
-          <div className="overflow-x-auto scrollbar pt-4">
-            <div className="w-[1000px] lg:w-full p-2 ">
-              <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                <div className="grid grid-cols-12 gap-2 text-center">
-                  <div className="ml-2 col-span-1 ">ลำดับ</div>
-                  <div className="col-span-2">เลขครุภัณฑ์</div>
-                  <div className="col-span-3">ชื่อครุภัณฑ์</div>
-                  <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
-                  <div className="col-span-3 grid grid-cols-4 gap-5">
-                    <div className="col-span-1">จำนวน</div>
-                    <div className="col-span-1">หน่วยนับ</div>
-                    <div className="col-span-2">จำนวนเงิน (บาท)</div>
-                  </div>
+        {!dataBorrow
+          ? <div className="mt-5 min-h-[70vh] w-full text-center"><Spinner size="xl" /></div>
+          : <>
+            {/* ข้อมูลการยืมครุภัณฑ์ */}
+            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
+              <div className="text-xl">ข้อมูลการยืมครุภัณฑ์</div>
+              {/* Row 1 เลขที่เอกสารการยืม */}
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray flex">
+                    เลขที่เอกสารการยืม
+                    <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                  </label>
+                  <input
+                    type="text"
+                    value={input.borrowIdDoc}
+                    placeholder="Example"
+                    readOnly
+                    className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className="text-text-gray">ราคายืม (ต่อวัน)</label>
+                  <input
+                    type="text"
+                    placeholder="Example"
+                    readOnly
+                    value={input.pricePerDay.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                  />
                 </div>
               </div>
-              {saveAssetWithdrawTableArray?.map((el, idx) => {
-                return (
-                  <TableBorrowRecord
-                    key={idx}
-                    index={idx}
-                    saveAssetWithdrawTableArray={saveAssetWithdrawTableArray}
-                    setSaveAssetWithdrawTableArray={
-                      setSaveAssetWithdrawTableArray
-                    }
-                    deleteRow={deleteRow}
+              {/* Row 2 วันที่ยืม */}
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray">วันที่ยืม</label>
+                  <OnlyDateInput
+                    id={"borrowDate"}
+                    state={input}
+                    setState={setInput}
+                    disabled={true}
                   />
-                );
-              })}
-              <button
-                type="button"
-                className="w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-                onClick={handleClickIncrease}
-              >
-                + เพิ่มครุภัณฑ์
-              </button>
-
-              <div className="h-[24px]"></div>
-            </div>
-          </div>
-        </div>
-        {/* รายละเอียดผู้ยืม */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-xl">รายละเอียดผู้ยืม</div>
-          {/* Row 1 หน่วยงาน */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <div className="flex flex-col gap-y-2 col-span-2">
-                <label className=" text-text-gray flex">
-                  หน่วยงาน
-                  <h1 className="text-red-500 ml-2 font-bold">*</h1>
-                </label>
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className="text-text-gray">กำหนดส่งคืน</label>
+                  <OnlyDateInput
+                    id={"borrowSetReturnDate"}
+                    state={input}
+                    setState={setInput}
+                    isValid={!input.borrowSetReturnDate}
+                  />
+                </div>
               </div>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"หน่วยงาน"}
-              />
             </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">ภาควิชา</label>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"ภาควิชา"}
-              />
+            {/* รายการครุภัณฑ์ที่เลือก */}
+            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
+              <div className="text-xl">รายการครุภัณฑ์ที่เลือก</div>
+              {/* table */}
+              <div className="overflow-x-auto scrollbar pt-4 min-h-[14rem]">
+                <div className="w-[1000px] lg:w-full p-2 ">
+                  <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+                    <div className="grid grid-cols-12 gap-2 text-center">
+                      <div className="ml-2 col-span-1 ">ลำดับ</div>
+                      <div className="col-span-2">เลขครุภัณฑ์</div>
+                      <div className="col-span-3">ชื่อครุภัณฑ์</div>
+                      <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
+                      <div className="col-span-3 grid grid-cols-4 gap-5">
+                        <div className="col-span-1">จำนวน</div>
+                        <div className="col-span-1">หน่วยนับ</div>
+                        <div className="col-span-2">จำนวนเงิน (บาท)</div>
+                      </div>
+                    </div>
+                  </div>
+                  {saveAssetWithdrawTableArray?.map((el, idx) => {
+                    return (
+                      <TableBorrowRecord
+                        key={idx}
+                        index={idx}
+                        saveAssetWithdrawTableArray={saveAssetWithdrawTableArray}
+                        setSaveAssetWithdrawTableArray={
+                          setSaveAssetWithdrawTableArray
+                        }
+                        deleteRow={deleteRow}
+                        errorAssestTable={errorAssestTable}
+                      />
+                    );
+                  })}
+                  <button
+                    type="button"
+                    className="mt-2 w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+                    onClick={handleClickIncrease}
+                  >
+                    + เพิ่มครุภัณฑ์
+                  </button>
+
+                </div>
+              </div>
             </div>
-          </div>
-          {/* Row 2 วัตถุประสงค์การขอยืม */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">วัตถุประสงค์การขอยืม</label>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"วัตถุประสงค์การขอยืม"}
-              />
+            {/* รายละเอียดผู้ยืม */}
+            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+              <div className="text-xl">รายละเอียดผู้ยืม</div>
+              {/* Row 1 หน่วยงาน */}
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <div className="flex flex-col gap-y-2 col-span-2">
+                    <label className=" text-text-gray flex">
+                      หน่วยงาน
+                      <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                    </label>
+                  </div>
+                  <Selector
+                    placeholder={"Select"}
+                    state={input}
+                    setState={setInput}
+                    id={"หน่วยงาน"}
+                    isValid={!input.sector}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className="text-text-gray">ภาควิชา</label>
+                  <Selector
+                    placeholder={"Select"}
+                    state={input}
+                    setState={setInput}
+                    id={"ภาควิชา"}
+                    isValid={!input.subSector}
+                  />
+                </div>
+              </div>
+              {/* Row 2 วัตถุประสงค์การขอยืม */}
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray">วัตถุประสงค์การขอยืม</label>
+                  <Selector
+                    placeholder={"Select"}
+                    state={input}
+                    setState={setInput}
+                    id={"วัตถุประสงค์การขอยืม"}
+                    isValid={!input.borrowPurpose}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray">ผู้ดำเนินการ</label>
+                  <input
+                    type="text"
+                    placeholder="Example"
+                    name="handler"
+                    value={input.handler}
+                    onChange={handleChange}
+                    className={`${!input.handler && 'border-red-500'} border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">ผู้ดำเนินการ</label>
-              <input
-                type="text"
-                placeholder="Example"
-                name="handler"
-                value={input.handler}
-                onChange={handleChange}
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+            {/* สถานที่ตั้งใหม่ */}
+            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+              <div className="text-xl">สถานที่ตั้งใหม่</div>
+              {/* Row 1 ชื่อ */}
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray flex">
+                    อาคาร
+                    <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                  </label>
+                  <Selector
+                    placeholder={"Select"}
+                    state={input}
+                    setState={setInput}
+                    id={"อาคาร"}
+                    isValid={!input.building}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-1">
+                  <label className="text-text-gray">ชั้น</label>
+                  <Selector
+                    placeholder={"Select"}
+                    state={input}
+                    setState={setInput}
+                    id={"ชั้น"}
+                    isValid={!input.floor}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-1">
+                  <label className="text-text-gray">ห้อง</label>
+                  <Selector
+                    placeholder={"Select"}
+                    state={input}
+                    setState={setInput}
+                    id={"ห้อง"}
+                    isValid={!input.room}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        {/* สถานที่ตั้งใหม่ */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-xl">สถานที่ตั้งใหม่</div>
-          {/* Row 1 ชื่อ */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray flex">
-                อาคาร
-                <h1 className="text-red-500 ml-2 font-bold">*</h1>
-              </label>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"อาคาร"}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-1">
-              <label className="text-text-gray">ชั้น</label>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"ชั้น"}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-1">
-              <label className="text-text-gray">ห้อง</label>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"ห้อง"}
-              />
-            </div>
-          </div>
-        </div>
+          </>}
       </div>
       {/* footer */}
-      <div className="bottom-0 bg-white  flex justify-end items-center gap-10 p-3 text-sm mr-3 ">
+      <div className="bottom-0 bg-white  flex justify-end items-center gap-6 p-3 text-sm mr-3 ">
         <button
           type="button"
-          className="border-[2px] hover:bg-gray-100 text-black text-sm rounded-md p-2"
+          className=" hover:bg-gray-100 text-text-gray text-sm rounded-md py-2 px-4"
         >
           ยกเลิก
         </button>
         <button
-        type="submit"
-        className="bg-text-green hover:bg-green-800 text-white text-sm rounded-md p-2"
-        onClick={handleSubmit}
+          type="submit"
+          className="bg-text-green hover:bg-green-800 text-white text-sm rounded-md py-2 px-4"
+          onClick={handleForm}
         >
           บันทึกขอยืมครุภัณฑ์
         </button>
+
+        <ModalConfirmSave
+          isVisible={showModalConfirm}
+          onClose={() => setShowModalConfirm(false)}
+          onSave={handleSubmit}
+        />
+        {showModalSuccess && <ModalSuccess urlPath='/borrowList' />}
       </div>
-      </form>
     </>
   );
 };
