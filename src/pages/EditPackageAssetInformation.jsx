@@ -375,8 +375,11 @@ const EditPackageAssetInformation = () => {
     })
     bottomSubComponentData.map(ele => {
       Object.values(ele).map((value, index) => {
+        const key = (Object.keys(ele)[index])
         if (errTable) return
-        if (!value) errTable = true
+        if(key === "serialNumber" || key == "pricePerUnit" || key == "asset01") {
+          if (!value) errTable = true
+        }
       })
     })
     Object.values(inputContract).map((value, index) => {
