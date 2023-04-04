@@ -86,9 +86,9 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
           type="text"
           name="productName"
           id="productName"
-          // disabled
+          disabled
           value={bottomSubComponentData[index]?.productName}
-          className="col-span-4 w-full h-[38px] border-[1px] pl-2 text-xs  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+          className="col-span-4 w-full h-[38px] disabled:bg-gray-200 border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
         />
         <div className="flex relative col-span-4">
           <input
