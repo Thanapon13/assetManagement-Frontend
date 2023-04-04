@@ -407,6 +407,7 @@ const AssetInformation = () => {
     if (errInput) {
       setErrorGen(false)
       setErrorInput(true)
+      window.scrollTo({ top: 180, behavior: "smooth", });
     }
     if (errContact) setErrorContract(true)
     if (errSale) setErrorSale(true)
@@ -865,7 +866,8 @@ const AssetInformation = () => {
                 name="pricePerUnit"
                 id="pricePerUnit"
                 onChange={handleChangePricePerUnit}
-                value={(+input.pricePerUnit).toLocaleString()}
+                // value={(+input.pricePerUnit).toLocaleString()}
+                value={(input.pricePerUnit)}
                 className={`${errorInput && !input.pricePerUnit && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
@@ -1208,7 +1210,8 @@ const AssetInformation = () => {
                 name="price"
                 id="price"
                 onChange={handleChangeContract}
-                value={(+inputContract.price).toLocaleString()}
+                // value={(+inputContract.price).toLocaleString()}
+                value={(inputContract.price)}
                 className={`${errorContract && !inputContract.price && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
@@ -1427,7 +1430,7 @@ const AssetInformation = () => {
                           inputmode="numeric"
                           name="ราคาซื้อ"
                           id="ราคาซื้อ"
-                          value={(+depreciationPrice).toLocaleString()}
+                          value={(depreciationPrice)}
                           onChange={(e) => setDepreciationPrice(e.target.value)}
                           className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
                         />
