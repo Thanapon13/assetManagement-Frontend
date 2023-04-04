@@ -22,7 +22,8 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
   qr,
   setQr,
   // disabled,
-  packageAssetId
+  packageAssetId,
+  isValid
 }) {
   const locaiton = useLocation();
   const { inputRef } = useBarcode({
@@ -99,7 +100,7 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
                 ? true
                 : false
             }
-            className={`w-full text-left text-xs pl-3 ${locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
+            className={`${isValid && !bottomSubComponentData[index]?.serialNumber && 'border-red-500'} w-full text-left text-xs pl-3 ${locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
                 ? "bg-gray-200"
                 : ""
               }  flex justify-center items-center py-2 border-[1px] border-gray-300 rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
@@ -129,7 +130,7 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
           }
           onChange={handleChangePricePerUnit}
           value={bottomSubComponentData[index]?.pricePerUnit.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          className={`col-span-2 w-full h-[38px] ${locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
+          className={`${isValid && !bottomSubComponentData[index]?.pricePerUnit && 'border-red-500'} col-span-2 w-full h-[38px] ${locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
               ? "bg-gray-200"
               : ""
             } border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
@@ -143,7 +144,7 @@ function RowOfTableViewSubcomponentPackageAssetInformation({
           }
           onChange={handleChangeAsset01}
           value={bottomSubComponentData[index]?.asset01}
-          className={`col-span-2 w-full h-[38px] ${locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
+          className={`${isValid && !bottomSubComponentData[index]?.asset01 && 'border-red-500'} col-span-2 w-full h-[38px] ${locaiton.pathname === `/viewPackageAssetInformation/${packageAssetId}`
               ? "bg-gray-200"
               : ""
             }  border-[1px] pl-2 text-xs border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}

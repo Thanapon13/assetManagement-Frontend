@@ -449,8 +449,7 @@ const PackageAssetInformation = () => {
     setErrorAssestTable(errTable)
     setErrorContract(errContract)
     setErrorSale(errSale)
-    console.log({ ...input, ...inputSale, ...inputContract });
-    console.log(genData, bottomSubComponentData);
+    if (errInput) window.scrollTo({ top: 170, behavior: "smooth", });
     if (!(errInput || errContract || errSale || errTable)) setShowModalConfirm(true)
   }
 
