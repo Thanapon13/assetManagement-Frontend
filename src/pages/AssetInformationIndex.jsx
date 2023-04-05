@@ -134,10 +134,12 @@ const AssetInformationIndex = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, remark) => {
     try {
       await deleteAsset(id);
-
+      // const response = await deleteAsset(id, สาเหตุที่ยกเลิก)
+      // if(response...) {}
+      setShowModalDeleteAsset(false)
       fetchAssetList()
     } catch (err) {
       console.log(err);
@@ -314,10 +316,18 @@ const AssetInformationIndex = () => {
                 // room={el.room}
                 status={el.status}
                 price={el.pricePerUnit}
-                handleDelete={handleDelete}
+                // handleDelete={handleDelete}
+                handleDelete={() => setShowModalDeleteAsset(el)}
               />
             );
           })}
+          {showModalDeleteAsset &&
+            <ModalDeleteAsset
+              element={showModalDeleteAsset}
+              close={() => setShowModalDeleteAsset(false)}
+              confirmDelete={handleDelete}
+            />
+          }
           <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
             <div className="flex items-center mr-10">
               <div>Rows per page:</div>
@@ -381,14 +391,14 @@ const AssetInformationIndex = () => {
   );
 };
 
-// onClick={() => setShowModalDeleteAsset(true)}
-// { showModalDeleteAsset && <ModalDeleteAsset setShowModal={() => setShowModalDeleteAsset(false)} /> }
-
 function ModalDeleteAsset(props) {
-
+  const elem = props.element
+  const [remark, setRemark] = useState("")
+  const [error, setError] = useState(false)
   return (
     <>
-      <div className="fixed inset-0 -left-10 bg-black opacity-50" onClick={() => console.group('false')} />
+      {/* responsive not done */}
+      <div className="fixed inset-0 -left-10 bg-black opacity-50" />
       <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
         <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
           <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
@@ -400,47 +410,49 @@ function ModalDeleteAsset(props) {
                 <button
                   className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
 
-                  onClick={() => props.setShowModal(false)}
+                  onClick={() => props.close()}
                 >
                   <IoIosClose className="text-2xl" />
                 </button>
               </div>
               {/* content */}
               <div className="px-5 py-4 text-base">
-                <div className="grid grid-cols-2  md:grid-cols-4 p-2">
+                <div className="grid grid-cols-2  md:grid-cols-6 p-2">
                   <div className="text-text-gray flex items-center ">
                     เลขครุภัณฑ์
                   </div>
-                  <div className="flex items-center ">
-                    {/* เลขครุภัณฑ์ */}
+                  <div className="flex items-center md:col-span-2">
+                    {elem.assetNumber}
                   </div>
                   <div className="text-text-gray flex items-center ">
                     ชื่อครุภัณฑ์
                   </div>
-                  <div className="flex items-center ">
-                    {/* ชื่อครุภัณฑ์ */}
+                  <div className="flex items-center md:col-span-2">
+                    {elem.productName}
                   </div>
                 </div>
                 {/* row 2 */}
-                <div className="grid grid-cols-2 md:grid-cols-4 p-2">
+                <div className="grid grid-cols-2 md:grid-cols-6 p-2">
                   <div className="text-text-gray flex items-center">
                     หน่วยงาน
                   </div>
-                  <div className="flex items-center">
-                    {/* หน่วยงาน */}
+                  <div className="flex items-center md:col-span-2">
+                    {elem.sector}
                   </div>
                   <div className="text-text-gray flex items-center">
                     ราคา
                   </div>
-                  <div className="flex items-center">
-                    {/* ราคา */}
+                  <div className="flex items-center md:col-span-2">
+                    {elem.pricePerUnit}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 p-2">
+                <div className="grid grid-cols-2 md:grid-cols-6 p-2">
                   <div className="text-text-gray flex items-center">
                     สาเหตุที่ยกเลิก
                   </div>
-                  <textarea className="col-span-3 border-[1px] p-2 h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue"></textarea>
+                  <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                    onChange={e => setRemark(e.target.value)}
+                  />
                 </div>
               </div>
             </div>
@@ -450,19 +462,17 @@ function ModalDeleteAsset(props) {
                 // className="px-10 py-2 border-[1px] shadow-sm rounded-md "
                 className="px-10 py-3 text-white bg-gray-400 shadow-sm rounded-md "
                 type="button"
-                onClick={() => props.setShowModal(false)}
+                onClick={() => props.close()}
               >
                 ย้อนกลับ
               </button>
-              <Link
-                to="/borrowApprove"
-                // className="text-white bg-text-green px-10 py-2 border rounded-md "
+              <button
                 className="text-white bg-red-600 px-10 py-3 border rounded-md "
                 // type="button"
-                onClick={() => props.confirm()}
+                onClick={() => remark ? props.confirmDelete(props._id, remark) : setError(true)}
               >
                 ยืนยันลบ
-              </Link>
+              </button>
             </div>
           </div>
         </div>
