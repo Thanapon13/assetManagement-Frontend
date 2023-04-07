@@ -131,10 +131,11 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
         className={`${error && "border-red-500"} w-full h-[38px] shadow-sm focus:border-2 focus:outline-none  focus:border-focus-blue  sm:text-xs border-[1px] border-gray-300 rounded-md pl-2`}
         selected={
           location.pathname === "/assetInformationIndex" ||
-            location.pathname === "/packageAssetInformationIndex" ||
-            location.pathname === "/borrowList" ||
-            location.pathname === "/borrowHistory" ||
-            location.pathname === "/borrowCheckIndex"
+          location.pathname === "/packageAssetInformationIndex" ||
+          location.pathname === "/borrowList" ||
+          location.pathname === "/borrowHistory"  ||
+          location.pathname === "/borrowCheckIndex"  ||
+          location.pathname === "/addUserInformation" 
             ? state[id]
             : state
         }
@@ -144,7 +145,8 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
             location.pathname === "/packageAssetInformationIndex" ||
             location.pathname === "/borrowList" ||
             location.pathname === "/borrowHistory" ||
-            location.pathname === "/borrowCheckIndex"
+            location.pathname === "/borrowCheckIndex"  ||
+            location.pathname === "/addUserInformation" 
           ) {
             setState((prevState) => ({ ...prevState, [id]: date }));
           } else {

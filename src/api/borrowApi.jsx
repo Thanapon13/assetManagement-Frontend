@@ -4,7 +4,7 @@ export function createBorrow(input) {
   return axios.post("/borrow/create", input);
 }
 
-export function updateBorrow(input,id) {
+export function updateBorrow(input, id) {
   return axios.patch(`/borrow/update/${id}`, input);
 }
 
@@ -25,11 +25,12 @@ export function getBorrowImageById(name) {
 }
 
 export function getBorrowBySearch(search) {
-
   function getQueryString(search) {
     const params = Object.keys(search)
-      .filter(key => search[key] !== "") // remove empty values
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+      .filter((key) => search[key] !== "") // remove empty values
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
+      )
       .join("&");
     return params;
   }
@@ -42,11 +43,12 @@ export function getBorrowBySearch(search) {
 }
 
 export function getByAssetNumberSelector(search) {
-
   function getQueryString(search) {
     const params = Object.keys(search)
-      .filter(key => search[key] !== "") // remove empty values
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+      .filter((key) => search[key] !== "") // remove empty values
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
+      )
       .join("&");
     return params;
   }
@@ -59,11 +61,12 @@ export function getByAssetNumberSelector(search) {
 }
 
 export function getByProductSelector(search) {
-
   function getQueryString(search) {
     const params = Object.keys(search)
-      .filter(key => search[key] !== "") // remove empty values
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+      .filter((key) => search[key] !== "") // remove empty values
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
+      )
       .join("&");
     return params;
   }
@@ -76,11 +79,12 @@ export function getByProductSelector(search) {
 }
 
 export function getQuantitySelector(search) {
-
   function getQueryString(search) {
     const params = Object.keys(search)
-      .filter(key => search[key] !== "") // remove empty values
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+      .filter((key) => search[key] !== "") // remove empty values
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
+      )
       .join("&");
     return params;
   }
@@ -96,16 +100,16 @@ export function deleteAsset(input) {
   return axios.delete(`/borrow/deleteAsset/${input}`);
 }
 
-
 export function getAllFirstFetchBorrowApprove() {
   return axios.get(`/borrow/allFirstFetchBorrowApprove`);
 }
 export function getBySearchTopBorrowApprove(search) {
-
   function getQueryString(search) {
     const params = Object.keys(search)
-      .filter(key => search[key] !== "") // remove empty values
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+      .filter((key) => search[key] !== "") // remove empty values
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
+      )
       .join("&");
     return params;
   }
@@ -117,24 +121,26 @@ export function getBySearchTopBorrowApprove(search) {
   return axios.get(`/borrow/searchTopBorrowApprove?${queryString}`);
 }
 export function approveAllWaitingBorrow(input) {
-  return axios.patch(`/borrow/approveAllWaitingBorrow`,input);
+  return axios.patch(`/borrow/approveAllWaitingBorrow`, input);
 }
 export function rejectAllWaitingBorrow(input) {
-  return axios.patch(`/borrow/rejectAllWaitingBorrow`,input);
+  return axios.patch(`/borrow/rejectAllWaitingBorrow`, input);
 }
 export function rejectIndividualWaitingBorrow(input) {
-  return axios.patch(`/borrow/rejectIndividualWaitingBorrow`,input);
+  return axios.patch(`/borrow/rejectIndividualWaitingBorrow`, input);
 }
 
 // borrowApproveDetail page
-export function partiallyApproveBorrowApproveDetail(id,input) {
-  return axios.patch(`/borrow/partiallyApproveBorrowApproveDetail/${id}`,input);
+export function partiallyApproveBorrowApproveDetail(id, input) {
+  return axios.patch(
+    `/borrow/partiallyApproveBorrowApproveDetail/${id}`,
+    input
+  );
 }
-export function rejectAllBorrowApproveDetail(id,input) {
-  console.log(id,input)
-  return axios.patch(`/borrow/rejectAllBorrowApproveDetail/${id}`,input);
+export function rejectAllBorrowApproveDetail(id, input) {
+  // console.log(id, input);
+  return axios.patch(`/borrow/rejectAllBorrowApproveDetail/${id}`, input);
 }
-
 
 // dropdown
 export function getAllSectorFromBorrow() {
@@ -143,11 +149,12 @@ export function getAllSectorFromBorrow() {
 
 // getBySearchBorrowHistory
 export function getBySearchBorrowHistory(search) {
-
   function getQueryString(search) {
     const params = Object.keys(search)
-      .filter(key => search[key] !== "") // remove empty values
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+      .filter((key) => search[key] !== "") // remove empty values
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
+      )
       .join("&");
     return params;
   }
@@ -166,11 +173,12 @@ export function getBorrowHistorySector() {
 
 // getBySearchBorrowCheck
 export function getBySearchBorrowCheck(search) {
-
   function getQueryString(search) {
     const params = Object.keys(search)
-      .filter(key => search[key] !== "") // remove empty values
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+      .filter((key) => search[key] !== "") // remove empty values
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
+      )
       .join("&");
     return params;
   }
@@ -190,3 +198,26 @@ export function getBorrowCheckSector() {
 export function getBorrowCheckById(id) {
   return axios.get(`/borrow/borrowCheck/${id}`);
 }
+
+export function updateBorrowCheckSavingById(id, input) {
+  return axios.patch(`/borrow/borrowCheckSaving/${id}`, input);
+}
+
+export function updateBorrowCheckReturnApproveById(id, input) {
+  return axios.patch(`/borrow/borrowCheckReturnApprove/${id}`, input, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+}
+
+// fetchBorrowHistoryByAssetId for AssetInformation page
+export function getViewBorrowHistoryByAssetId(id) {
+  return axios.get(`/borrow/viewBorrowHistoryByAssetId/${id}`);
+}
+
+// fetchBorrowHistoryByPackageAssetId for PackageAssetInformation page
+export function getViewBorrowHistoryByPackageAssetId(id) {
+  return axios.get(`/borrow/viewBorrowHistoryByPackageAssetId/${id}`);
+}
+

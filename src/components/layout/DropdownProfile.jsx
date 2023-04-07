@@ -1,23 +1,24 @@
-import React, { useState } from 'react'
-import * as RiIcons from 'react-icons/ri'
-import profile from '../../assets/profile.png'
-import useLogout from '../../hooks/useLogout'
-import { useNavigate, Link } from 'react-router-dom'
+import React, { useState } from "react";
+import * as RiIcons from "react-icons/ri";
+import profile from "../../assets/profile.png";
+import { useNavigate, Link } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from "../../context/AuthProvider";
 
 const DropdownProfile = () => {
-  const [isActive, setIsActive] = useState(false)
+  const { logout } = useContext(AuthContext);
+  const [isActive, setIsActive] = useState(false);
 
-  const navigate = useNavigate()
-  const logout = useLogout()
+  const navigate = useNavigate();
 
-  const signOut = async () => {
-    await logout()
-    navigate('/login')
-  }
+  const signOut =  () => {
+    logout();
+    navigate("/logout")
+  };
 
   const handleOnClick = () => {
-    setIsActive(!isActive)
-  }
+    setIsActive(!isActive);
+  };
 
   return (
     <div className="inline-flex bg-transparent">
@@ -47,8 +48,8 @@ const DropdownProfile = () => {
         <div
           className={
             isActive
-              ? 'absolute right-0 z-10 w-56 mt-4 origin-top-right bg-white border border-gray-100 rounded-md shadow-lg'
-              : 'hidden'
+              ? "absolute right-0 z-10 w-56 mt-4 origin-top-right bg-white border border-gray-100 rounded-md shadow-lg"
+              : "hidden"
           }
         >
           <div className="p-2">
@@ -60,13 +61,13 @@ const DropdownProfile = () => {
               LogOut
             </button>
             <a
-              href="#"
+              href="/"
               className="block px-4 py-2 text-sm text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700"
             >
               Some Menu
             </a>
             <a
-              href="#"
+              href="/"
               className="block px-4 py-2 text-sm text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700"
             >
               Some Menu
@@ -75,7 +76,7 @@ const DropdownProfile = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DropdownProfile
+export default DropdownProfile;

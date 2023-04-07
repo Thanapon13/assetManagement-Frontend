@@ -11,6 +11,7 @@ const Selector = ({
   state,
   setState,
   id,
+  name,
   index,
   api,
   isValid,
@@ -110,10 +111,10 @@ const Selector = ({
 
   // หน่วยงาน editAssetInformation ,index search ,borrowRecord
   const handleChangeSectorInEditAssetInfo = (value) => {
-    console.log(2)
+    console.log(2);
     const clone = { ...state };
     clone.sector = value;
-    console.log(clone)
+    console.log(clone);
     setState(clone);
   };
   // หน่วยงาน assetInformation
@@ -223,6 +224,14 @@ const Selector = ({
     setState(clone);
   };
 
+  const handleChangeObject = (value) => {
+    const clone = { ...state };
+    console.log(clone);
+    clone[name] = value;
+    console.log(clone);
+    setState(clone);
+  };
+
   useEffect(() => {
     document.addEventListener("click", handleClickOutSide, true);
 
@@ -231,7 +240,6 @@ const Selector = ({
       .then((data) => {
         setData(data);
       });
-
 
     // fetchApi()
   }, []);

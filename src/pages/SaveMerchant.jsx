@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { createMerchant } from '../api/merchant';
+import InputAddress from "react-thailand-address-autocomplete";
 
 export const SaveMerchant = () => {
   const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
@@ -40,6 +41,7 @@ export const SaveMerchant = () => {
   })
 
   const handleChange = (e) => {
+    console.log(e.target.name)
     setInput(prevInput => {
       return {
         ...prevInput,
@@ -105,19 +107,19 @@ export const SaveMerchant = () => {
         cloneFile.push({ document: fileList[i].name });
       } else {
         console.log('Er')
-        // toast.warn(
-        //   `${fileList[i].name} is wrong file type or size is more than 2mb.!`,
-        //   {
-        //     position: "top-right",
-        //     autoClose: 5000,
-        //     hideProgressBar: false,
-        //     closeOnClick: true,
-        //     pauseOnHover: true,
-        //     draggable: true,
-        //     progress: undefined,
-        //     theme: "light",
-        //   }
-        // );
+        toast.warn(
+          `${fileList[i].name} is wrong file type or size is more than 2mb.!`,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          }
+        );
       }
     }
     setArrayDocument(cloneFile);
@@ -202,9 +204,17 @@ export const SaveMerchant = () => {
     setErrorInputBottom(errInputBottom)
     setErrorAddress(errAddress)
     //   if (!(errInput || errAddress || errInputBottom)) setShowModalConfirm(true)
-
-
   }
+
+  const onSelectAddress = ({ subdistrict, district, province, zipcode }) => {
+    
+    // setInput({
+    //   subdistrict,
+    //   district,
+    //   province,
+    //   zipcode,
+    // });
+  };
 
   return (
     <>
@@ -247,8 +257,7 @@ export const SaveMerchant = () => {
               <div className="mb-1">รหัสผู้ค้า</div>
               <input
                 type="text"
-                name="ID"
-                id="ID"
+                name="merchantNo"
                 onChange={handleChange}
                 value={input.merchantNo}
                 className={`${inputClassname}`}
@@ -258,8 +267,7 @@ export const SaveMerchant = () => {
               <div className="mb-1">เลขที่ประจำตัวผู้เสียภาษี</div>
               <input
                 type="text"
-                name="billNumber"
-                id="billNumber"
+                name="taxNumber"
                 onChange={handleChange}
                 value={input.taxNumber}
                 className={`${inputClassname}`}
@@ -304,8 +312,7 @@ export const SaveMerchant = () => {
               <div className="flex h-[38px]">
                 <input
                   type="text"
-                  name="sector"
-                  id="sector"
+                  name="personName"
                   onChange={handleChange}
                   value={input.personName}
                   className={`${inputClassname}`}
@@ -317,8 +324,7 @@ export const SaveMerchant = () => {
               <div className="mb-1">เบอร์โทรศัพท์</div>
               <input
                 type="text"
-                name="billNumber"
-                id="billNumber"
+                name="telNo"
                 onChange={handleChange}
                 value={input.telNo}
                 className={`${inputClassname}`}
@@ -328,8 +334,7 @@ export const SaveMerchant = () => {
               <div className="mb-1">E-mail</div>
               <input
                 type="email"
-                name="allPrice"
-                id="allPrice"
+                name="email"
                 onChange={handleChange}
                 value={input.email}
                 className={`${inputClassname}`}
@@ -391,8 +396,22 @@ export const SaveMerchant = () => {
                     </div>
                     <div>
                       อำเภอ
-                      <Selector
-
+                      <InputAddress
+                        address="district"
+                        value={address.district}
+                        // onChange={onChange}
+                        onSelect={onSelectAddress}
+                        filter={(items) =>
+                          items.filter(
+                            (item) =>
+                              (!district || item.district.includes(district)) &&
+                              (!subdistrict ||
+                                item.subdistrict.includes(subdistrict)) &&
+                              (!province || item.province.includes(province)) &&
+                              (!zipcode || item.zipcode.includes(zipcode))
+                          )
+                        }
+                      // style={{ width: "100% !important", display: "inline" }}
                       />
                     </div>
 
@@ -491,9 +510,8 @@ export const SaveMerchant = () => {
               <input
                 type="text"
                 name="salesDocument"
-                id="salesDocument"
-                // onChange={handleChangeSales}
                 // value={inputBottom.}
+                // onChange={handleChangeSales}
                 // className={`${errorSale && !inputSale.salesDocument && 'border-red-500'} 
                 className={`${inputClassname}`} />
             </div>
@@ -563,21 +581,21 @@ export const SaveMerchant = () => {
             <div className='text-sm'>กลุ่มประเภท</div>
             <div className="grid grid-cols-1 gap-y-3 mt-3 text-xs">
               <div>
-                <input type="radio" className="border border-text-green p-2 mx-2" 
-                name="groupType" 
-                value="" />
+                <input type="radio" className="border border-text-green p-2 mx-2"
+                  name="groupType"
+                  value="" />
                 <label>เจ้าหนี้การค้าภายในประเทศ</label>
               </div>
               <div>
-                <input type="radio" className="border border-text-green p-2 mx-2" 
-                name="groupType" 
-                value="" />
+                <input type="radio" className="border border-text-green p-2 mx-2"
+                  name="groupType"
+                  value="" />
                 <label>เจ้าหนี้การค้าภายนอกประเทศ</label>
               </div>
               <div>
-                <input type="radio" className="border border-text-green p-2 mx-2" 
-                name="groupType" 
-                value="" />
+                <input type="radio" className="border border-text-green p-2 mx-2"
+                  name="groupType"
+                  value="" />
                 <label>เจ้าหนี้เฉพาะหน่วยงานย่อย</label>
               </div>
             </div>

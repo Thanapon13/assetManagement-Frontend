@@ -51,28 +51,32 @@ const TableBorrowList = (props) => {
             <div className="col-span-2 grid grid-cols-2 items-center">
               <div className="flex justify-center">
                 {item.status === "approve" ||
-                item.status === "partiallyApprove" ? (
+                item.status === "partiallyApprove" ||
+                item.status === "waitingReturnApprove"||
+                item.status === "partiallyReturn" ? (
                   <Link
                     to={`/borrowCheckSaving/${item._id}`}
                     className="bg-text-green text-white rounded-md hover:bg-green-800 p-2 w-full"
                   >
                     {item.status === "approve" ||
-                    item.status === "partiallyApprove"
+                    item.status === "partiallyApprove"||
+                    item.status === "waitingReturnApprove"||
+                    item.status === "partiallyReturn" 
                       ? "บันทึกคืน"
                       : ""}
                   </Link>
                 ) : (
-                  <button
-                    type="button"
-                    // to={`/borrowSaving/${ID}`}
+                  <div
                     onClick={() => handleClick(item.borrowStatus)}
                     className={`${
                       item.status === "waiting"
                         ? " bg-background-light-blue text-text-blue  rounded-xl "
                         : item.status === "approve"
                         ? " bg-sidebar-green text-text-green  rounded-xl  "
-                        : item.status === "watingReturnApprove"
+                        : item.status === "waitingReturnApprove"
                         ? "bg-orange-100 text-orange-400 rounded-xl"
+                        : item.status === "done"
+                        ? " text-green-700 bg-sidebar-green rounded-xl"
                         : item.status === "cancel" || item.status === "reject"
                         ? "bg-red-200 text-red-600  rounded-xl"
                         : "bg-text-green text-white rounded-md hover:bg-green-800"
@@ -82,14 +86,14 @@ const TableBorrowList = (props) => {
                       ? "รออนุมัติ"
                       : item.status === "done"
                       ? "คืนสำเร็จ"
-                      : item.status === "waitCheckReturn"
+                      : item.status === "waitingReturnApprove"
                       ? "รอตรวจรับ"
                       : item.status === "cancel"
                       ? "ยกเลิก"
                       : item.status === "reject"
                       ? "ไม่อนุมัติ"
                       : "บันทึกคืน"}
-                  </button>
+                  </div>
                 )}
               </div>
               <div className="flex justify-center">

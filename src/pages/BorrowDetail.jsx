@@ -2,7 +2,6 @@ import React from "react";
 import { Link, useParams } from "react-router-dom";
 import TableBorrowDetailList from "../components/table/TableBorrowDetailList";
 import { FaArrowLeft } from "react-icons/fa";
-import pic from "../assets/pic.png";
 import { useEffect } from "react";
 import { useState } from "react";
 import { getBorrowById } from "../api/borrowApi";
@@ -21,16 +20,6 @@ const BorrowDetail = () => {
   const [assetList, setAssetList] = useState([]);
   const [arrayImageURL, setArrayImageURL] = useState([]);
 
-  const imageList = [
-    {
-      imageName: "image1.png",
-      image: pic,
-    },
-  ];
-  const borrowData = {
-    borrowID: "br.6602/1677",
-    pricePerDay: "1300.00",
-  };
 
   useEffect(() => {
     const fetchBorrowById = async () => {

@@ -77,7 +77,7 @@ const TableBorrowDetailList = ({ assetList, arrayImageURL }) => {
         <div className=" px-10 pt-2 pb-10">
           {arrayImageURL[imgIndex]?.map((el, idx) => (
             <img
-              crossorigin="true"
+              crossOrigin="true"
               src={el.imgURL}
               className="w-[640px] mb-5"
             />

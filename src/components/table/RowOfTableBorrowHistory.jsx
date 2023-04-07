@@ -10,15 +10,21 @@ import { useEffect } from "react";
 
 function RowOfTableBorrowHistory({
   index,
-  setBorrowData,
   borrowIdDoc,
-  borrowerName,
-  agencyName,
+  sector,
   borrowDate,
-  realReturnDate,
-  offerBorrowApproveDate,
-  borrowStatus,
+  borrowSetReturnDate,
+  handler,
+  borrowReturnDate,
+  status,
 }) {
+  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  const hoursOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+
   return (
     <div>
       <div
@@ -38,59 +44,100 @@ function RowOfTableBorrowHistory({
         <input
           className="col-span-2 bg-gray-200 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
           disabled
-          value={borrowerName}
+          value={handler}
         />
         <div className="flex relative col-span-2">
           <input
             className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
-            value={agencyName}
+            value={sector}
           />
         </div>
         <div className="flex relative col-span-2">
           <input
             className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             disabled
-            value={borrowDate}
+            value={`${
+              borrowDate 
+                ? new Date(borrowDate).toLocaleDateString(
+                  "th-TH",
+                  options
+                )
+                : "-"
+            }${" "}${borrowDate  ? "," : ""}${" "} ${borrowDate ? new Date(borrowDate).toLocaleTimeString("th-TH",hoursOptions)
+              : ""
+          }`}
           />
         </div>
         <div className="flex relative col-span-2">
           <input
             className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             disabled
-            value={realReturnDate}
+            value={`${
+              borrowSetReturnDate 
+                ? new Date(borrowSetReturnDate).toLocaleDateString(
+                  "th-TH",
+                  options
+                )
+                : "-"
+            }${" "}${borrowSetReturnDate  ? "," : ""}${" "} ${borrowSetReturnDate ? new Date(borrowSetReturnDate).toLocaleTimeString("th-TH",hoursOptions)
+              : ""
+          }`}
           />
         </div>
         <div className="flex relative col-span-2">
           <input
             className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             disabled
-            value={offerBorrowApproveDate}
+            value={`${
+              borrowReturnDate 
+                ? new Date(borrowReturnDate).toLocaleDateString(
+                  "th-TH",
+                  options
+                )
+                : "-"
+            }${" "}${borrowReturnDate  ? "," : ""}${" "} ${borrowReturnDate ? new Date(borrowReturnDate).toLocaleTimeString("th-TH",hoursOptions)
+              : ""
+          }`}
           />
         </div>
         <div className="flex justify-center  col-span-2">
-            <button
-              type="button"
-              disabled
-              // to={`/borrowSaving/${ID}`}
-              // onClick={() => handleClick(item.borrowStatus)}
-              className={`${
-                borrowStatus === "waitApprove"
-                  ? "bg-sky-200 text-blue-600 rounded-xl border-sky-200"
-                  : borrowStatus === "done"
-                  ? " bg-sidebar-green text-text-green  rounded-xl border-sidebar-green "
-                  : borrowStatus === "waitCheckReturn"
-                  ? "bg-orange-100 text-orange-400 border-orange-100 rounded-xl"
-                  : "bg-text-green text-white rounded-xl hover:bg-green-800"
-              } border border-spacing-5 p-2 w-24 flex justify-center`}
-            >
-              {borrowStatus === "waitApprove"
-                ? "รออนุมัติ"
-                : borrowStatus === "done"
-                ? "คืนสำเร็จ"
-                : borrowStatus === "waitCheckReturn"
-                ? "รอตรวจรับ"
-                : "บันทึกคืน"}
-            </button>
+          <button
+            type="button"
+            disabled
+            // to={`/borrowSaving/${ID}`}
+            // onClick={() => handleClick(item.borrowStatus)}
+            className={`${
+              status === "waiting"
+                ? " bg-background-light-blue text-text-blue  rounded-2xl "
+                : status === "approve"
+                ? " bg-sidebar-green text-text-green  rounded-2xl  "
+                : status === "partiallyApprove"
+                ? " text-orange-400 bg-orange-100 p-2 border rounded-2xl  "
+                : status === "watingReturnApprove"
+                ? "bg-orange-100 text-orange-400 rounded-2xl"
+                : status === "cancel" || status === "reject"
+                ? "bg-red-200 text-red-600  rounded-2xl"
+                : "bg-text-green text-white hover:bg-green-800 rounded-2xl"
+            } border border-spacing-5 p-2 w-full`}
+          >
+            {status === "waiting"
+              ? "รออนุมัติ"
+              : status === "approve"
+              ? "อนุมัติแล้ว"
+              : status === "partiallyApprove"
+              ? "อนุมัติบางส่วน"
+              : status === "done"
+              ? "คืนสำเร็จ"
+              : status === "waitCheckReturn"
+              ? "รอตรวจรับ"
+              : status === "cancel"
+              ? "ยกเลิก"
+              : status === "reject"
+              ? "ไม่อนุมัติ"
+              : status === "waitingReturnApprove"
+              ? "รออนุมัติคืน"
+              : "บันทึกคืน"}
+          </button>
         </div>
       </div>
     </div>

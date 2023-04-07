@@ -14,6 +14,7 @@ import RowOfTableBuildingHistory from "../components/table/RowOfTableBuildingHis
 import RowOfTableViewSubcomponentPackageAssetInformation from "../components/table/RowOfTableViewSubcomponentPackageAssetInformation";
 import OnlyDateInput from "../components/date/onlyDateInput";
 import { getPackageAssetById } from "../api/packageAssetApi";
+import { getViewBorrowHistoryByPackageAssetId } from "../api/borrowApi";
 
 const ViewPackageAssetInformation = () => {
 
@@ -45,27 +46,9 @@ const ViewPackageAssetInformation = () => {
   // subcomponent
   const [bottomSubComponentData, setBottomSubComponentData] = useState([]);
 
-  // ประวัติการยืม
-  const [borrowData, setBorrowData] = useState([
-    {
-      borrowIdDoc: "65/0322171",
-      borrowerName: "ชัชชาติ",
-      agencyName: "สำนักคอมพิวเตอร์",
-      borrowDate: "19/11/2565",
-      realReturnDate: "19/12/2565",
-      offerBorrowApproveDate: "19/12/2565",
-      borrowStatus: "done",
-    },
-    {
-      borrowIdDoc: "65/0322171",
-      borrowerName: "จันทร์ฉาย",
-      agencyName: "สำนักคอมพิวเตอร์",
-      borrowDate: "19/11/2565",
-      realReturnDate: "19/12/2565",
-      offerBorrowApproveDate: "19/12/2565",
-      borrowStatus: "done",
-    },
-  ]);
+    // ประวัติการยืม
+    const [borrowHistoryList,setBorrowHistoryList] = useState([])
+
 
   // ประวัติสถานที่ตั้ง
   const [buildingData, setBuildingData] = useState([
@@ -340,7 +323,16 @@ const ViewPackageAssetInformation = () => {
         console.log(err);
       }
     };
+
+    const fetchBorrowHistoryByPackageAssetId = async () => {
+      const res = await getViewBorrowHistoryByPackageAssetId(packageAssetId);
+      const borrowHistoryArray =  res.data.borrows
+      setBorrowHistoryList(borrowHistoryArray)
+      console.log("borrowHistoryArray", borrowHistoryArray);
+    };
+
     fetchAssetById();
+    fetchBorrowHistoryByPackageAssetId();
   }, []);
 
   useEffect(() => {
@@ -732,21 +724,20 @@ const ViewPackageAssetInformation = () => {
                     <div className="col-span-2">สถานะ</div>
                   </div>
                 </div>
-                {borrowData?.map((el, idx) => {
+                {borrowHistoryList?.map((el, idx) => {
                   return (
                     <RowOfTableBorrowHistory
-                      key={idx}
-                      index={idx}
-                      borrowData={borrowData}
-                      borrowIdDoc={borrowData[idx]?.borrowIdDoc}
-                      borrowerName={borrowData[idx]?.borrowerName}
-                      agencyName={borrowData[idx]?.agencyName}
-                      borrowDate={borrowData[idx]?.borrowDate}
-                      realReturnDate={borrowData[idx]?.realReturnDate}
-                      offerBorrowApproveDate={
-                        borrowData[idx]?.offerBorrowApproveDate
-                      }
-                      borrowStatus={borrowData[idx]?.borrowStatus}
+                    key={idx}
+                    index={idx}
+                    borrowIdDoc={el?.borrowIdDoc}
+                    sector={el?.sector}
+                    borrowDate={el?.borrowDate}
+                    borrowSetReturnDate={el?.borrowSetReturnDate}
+                    borrowReturnDate={el?.borrowReturnDate}
+                    handler={
+                      el?.handler
+                    }
+                    status={el?.status}
                     />
                   );
                 })}
