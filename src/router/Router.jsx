@@ -53,11 +53,14 @@ import {
   ApprovalTransferAssetDetail,
   ViewApprovalTransferAssetDetail,
   ViewWaitingTransferAsset,
-  EditTransferAsset
+  EditTransferAsset,
 } from "../pages";
 
 import useAuth from '../hooks/useAuth'
 import ViewBorrowApproveDetail from '../pages/ViewBorrowApproveDetail';
+import Merchant from '../pages/Merchant';
+import SaveMerchant from '../pages/SaveMerchant';
+import ViewMerchant from '../pages/ViewMerchant';
 
 const Public = () => {
   return (
@@ -119,6 +122,11 @@ const Router = () => {
           path="editPackageAssetInformation/:packageAssetId"
           element={<EditPackageAssetInformation />}
         />
+        <Route path="merchant" element={<Merchant />} />
+        <Route path="saveMerchant" element={<SaveMerchant />} />
+        <Route path="viewMerchant/:merchantId" element={<ViewMerchant />} />
+        <Route path="merchantInfo" element={<Merchant />} />
+
         <Route path="assetWithdraw" element={<AssetWithdraw />} />
         <Route path="saveAssetWithdraw" element={<SaveAssetWithdraw />} />
         <Route
@@ -144,7 +152,7 @@ const Router = () => {
           path="borrowApproveDetail/:borrowId"
           element={<BorrowApproveDetail />}
         />
-          <Route
+        <Route
           path="viewBorrowApproveDetail/:borrowId"
           element={<ViewBorrowApproveDetail />}
         />
@@ -161,7 +169,7 @@ const Router = () => {
         <Route path="viewApprovalTransferAssetDetail/:transferId" element={<ViewApprovalTransferAssetDetail />} />
         <Route path="viewWaitingTransferAsset/:transferId" element={<ViewWaitingTransferAsset />} />
         <Route path="editTransferAsset/:transferId" element={<EditTransferAsset />} />
-        
+
         {/* <Route path="repairDashboard" element={<RepairDashboard />} /> */}
         <Route path="transferAsset" element={<TransferAsset />} />
         <Route path="repairIndex" element={<RepairIndex />} />

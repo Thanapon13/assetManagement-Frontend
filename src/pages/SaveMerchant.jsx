@@ -1,47 +1,71 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Selector from '../components/selector/Selector'
-import { HiChevronLeft } from 'react-icons/hi'
-import { HiChevronRight } from 'react-icons/hi'
-import { AiOutlineSearch } from 'react-icons/ai'
 import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
-import DateInput from '../components/date/DateInput'
-import RowOfWithdrawTableArray from '../components/table/RowOfWithdrawTableArray'
-import RowOfTableSaveAssetWithdraw from '../components/table/RowOfTableSaveAssetWithdraw'
 import boxIcon from "../public/pics/boxIcon.png";
 import { IoIosClose } from "react-icons/io";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import { BsArrowLeft } from "react-icons/bs";
+import docIcon from "../public/pics/docIcon.png";
+import { useRef } from "react";
+import { useForm } from "react-hook-form";
+// import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { createMerchant } from '../api/merchant';
 
-export const SaveAssetWithdraw = () => {
+export const SaveMerchant = () => {
   const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
 
   // useState
 
   const [input, setInput] = useState({
-    ID: '',
-    billNumber: '',
-    documentRegistration: '',
-    sector: '',
-    eligiblePerson: '',
-    selfSector: '',
-    allPrice: 0,
-    firstName_recorder: '',
-    lastName_recorder: '',
-    dateTime_recorder: '',
-    firstName_courier: '',
-    lastName_courier: '',
-    dateTime_courier: '',
-    firstName_approver: '',
-    lastName_approver: '',
-    dateTime_approver: '',
-    status: 'not approve',
+    merchantNo: '',
+    taxNumber: '',
+    titleCompany: '',
+    companyName: '',
+    titleName: '',
+    personName: '',
+    telNo: '',
+    email: '',
   })
 
-  const inputAddress = {
-    road: "",
+  const [inputBottom, setInputBottom] = useState({
+    bankAccountNum: "",
+    detailBankAccount: "",
+    bankNo: "",
+    branchCode: "",
+    identificationNumber: "",
+    groupType: "",
+  })
 
+  const handleChange = (e) => {
+    setInput(prevInput => {
+      return {
+        ...prevInput,
+        [e.target.name]: e.target.value
+      }
+    })
+  };
+
+  const handleChangeAddress = (e) => {
+    // setArrayAddress(prevInput => {
+    //   console.log(prevInput)
+    //   // return {
+    //   //   ...prevInput,
+    //   //   [e.target.name]: e.target.value
+    //   // }
+    // })
+    console.log(arrayAddress[0])
+  };
+
+  // ที่อยู่
+  const inputAddress = {
+    houseNo: "",
+    villageNo: "",
+    village: "",
+    lane: "",
+    road: "",
     subDistrict: "",
     district: "",
     province: "",
@@ -49,110 +73,146 @@ export const SaveAssetWithdraw = () => {
   }
   const [arrayAddress, setArrayAddress] = useState([inputAddress])
   const addAddress = () => {
-    const arr = (arrayAddress.concat({test: "1"}))
+    const arr = (arrayAddress.concat({ ...inputAddress, test: "1" }))
     setArrayAddress(arr)
     console.log(arr)
   }
 
   const delAddress = (index) => {
-    setArrayAddress(prev => {
-      return prev.splice(index, 1);
-    })
+    let clone = [...arrayAddress];
+    clone.splice(index, 1);
+    setArrayAddress(clone);
   }
 
-  const [saveAssetWithdrawTableArray, setSaveAssetWithdrawTableArray] =
-    useState([
-      {
-        index: 0,
-        inventoryNumber: '',
-        productName: '',
-        brand: '',
-        serialNumber: '',
-        supplier: '',
-        amount: '',
-        price: '',
-      },
-    ])
+  //อัพโหลดไฟล์
+  const inputDoc = useRef();
+  const [arrayDocument, setArrayDocument] = useState([])
 
-  //Main Date
-  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate)
+  const fileTypes = [
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ];
 
-  const [countRow, setCountRow] = useState(1)
-  const [countIndexArray, setCountIndexArray] = useState([0])
-  const [perPage, setPerPage] = useState(10)
-
-  // handle
-  const handleChangeID = (e) => {
-    const clone = { ...input }
-    clone.ID = e.target.value
-    setInput(clone)
-  }
-  const handleChangeBillNumber = (e) => {
-    const clone = { ...input }
-    clone.billNumber = e.target.value
-    setInput(clone)
-  }
-  const handleChangeDocumentRegistration = (e) => {
-    const clone = { ...input }
-    clone.documentRegistration = e.target.value
-    setInput(clone)
-  }
-  const handleChangeSector = (e) => {
-    const clone = { ...input }
-    clone.sector = e.target.value
-    setInput(clone)
-  }
-  const handleChangeEligiblePerson = (e) => {
-    const clone = { ...input }
-    clone.eligiblePerson = e.target.value
-    setInput(clone)
-  }
-
-  const handleChangeAllPrice = (e) => {
-    const clone = { ...input }
-    clone.allPrice = e.target.value
-    setInput(clone)
-  }
-
-  //handle bottom table
-  const handleClickIncrease = (e) => {
-    e.preventDefault()
-    setCountRow(countRow + 1)
-    setCountIndexArray([...countIndexArray, countRow])
-
-    let clone = [...saveAssetWithdrawTableArray]
-    const newCloneArray = {
-      index: countRow,
-      inventoryNumber: '',
-      productName: '',
-      brand: '',
-      serialNumber: '',
-      supplier: '',
-      amount: '',
-      price: '',
+  const handleFileChange = (e) => {
+    const fileList = e.target.files;
+    console.log(fileList);
+    const cloneFile = [...arrayDocument];
+    for (let i = 0; i < fileList.length; i++) {
+      console.log(fileList[i]);
+      // return
+      if (fileTypes.includes(fileList[i].type)) {
+        cloneFile.push({ document: fileList[i].name });
+      } else {
+        console.log('Er')
+        // toast.warn(
+        //   `${fileList[i].name} is wrong file type or size is more than 2mb.!`,
+        //   {
+        //     position: "top-right",
+        //     autoClose: 5000,
+        //     hideProgressBar: false,
+        //     closeOnClick: true,
+        //     pauseOnHover: true,
+        //     draggable: true,
+        //     progress: undefined,
+        //     theme: "light",
+        //   }
+        // );
+      }
     }
-    setSaveAssetWithdrawTableArray([...clone, newCloneArray])
-  }
+    setArrayDocument(cloneFile);
+  };
 
-  const deleteRow = (index) => {
-    if (countRow > 0) {
-      setCountRow(countRow - 1)
-    }
+  const deleteDoc = (idx) => {
+    let clone = [...arrayDocument];
+    clone.splice(idx, 1);
+    setArrayDocument(clone);
+  };
 
-    let clone = [...saveAssetWithdrawTableArray]
-    clone.splice(index, 1)
-    setSaveAssetWithdrawTableArray(clone)
+  // ความสัมพันธ์
+  const [status, setStatus] = useState("active")
+
+  const objRelation = { groupCompany: "", remark: "" }
+  const [arrayRelation, setArrayRelation] = useState([objRelation])
+  const addRelation = () => {
+    const arr = arrayRelation.concat(objRelation)
+    setArrayRelation(arr)
   }
 
   const inputClassname = "w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
 
+  const schema = yup.object().shape({
+    companyName: yup
+      .number("Must be number")
+      .required("Is required")
+    // .positive()
+    // .integer()
+    // .min(0, "Min is 0")
+    // .max(22, "max is 20")
+    ,
+    age: yup
+      .number("Must be number")
+      .required("Is required")
+  });
+
+  const { register, handleSubmit, errors, control } = useForm({
+    validationSchema: schema
+  });
+
+  const onSubmit = data => {
+    console.log(data, errors, control)
+  };
+
+  const [errorInput, setErrorInput] = useState()
+  const [errorAddress, setErrorAddress] = useState()
+  const [errorInpuBottomt, setErrorInputBottom] = useState()
+
+  const handleForm = async () => {
+    console.log(JSON.stringify({ input }), inputBottom)
+    const data = JSON.stringify({ input, inputBottom })
+    const formData = new FormData();
+    console.log(data);
+    formData.append("data", data);
+
+    const response = createMerchant(formData)
+    return
+    let errInput, errInputBottom, errAddress
+    Object.values(input).map((value) => {
+      if (errInput) return
+      if (!value) errInput = true
+    })
+    if (!arrayAddress.length) {
+      const locate = (document.getElementById("address").offsetTop)
+      window.scrollTo({ top: locate - 10, behavior: 'smooth' })
+      setArrayAddress([inputAddress])
+      errAddress = true
+    } else {
+      arrayAddress.forEach(arr => {
+        Object.entries(arr).forEach(([key, value]) => {
+          if (errAddress) return
+          if (!value) errAddress = true
+        })
+      })
+    }
+    Object.values(inputBottom).map((value) => {
+      if (errInputBottom) return
+      if (!value) errInputBottom = true
+    })
+    setErrorInput(errInput)
+    setErrorInputBottom(errInputBottom)
+    setErrorAddress(errAddress)
+    //   if (!(errInput || errAddress || errInputBottom)) setShowModalConfirm(true)
+
+
+  }
+
   return (
     <>
-      <div className="bg-background-page px-5 pt-10 pb-10">
+      <div className="bg-background-page px-5 pt-10 pb-2">
         {/* Header */}
         <div className="flex items-center">
           <Link
-            to="/assetWithdraw"
+            to="/merchant"
             className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
           >
             <BsArrowLeft className="text-lg" />
@@ -170,7 +230,7 @@ export const SaveAssetWithdraw = () => {
             </Link>
             <div className="text-text-gray">/</div>
             <Link
-              to="/assetWithdraw"
+              to="/merchant"
               className=" text-text-green underline text-xs focus:text-sky-700 focus:underline mx-2"
             >
               รายการข้อมูลหลักผู้ค้า
@@ -180,8 +240,7 @@ export const SaveAssetWithdraw = () => {
           </div>
         </div>
 
-        {/* block white top */}
-        <div className="bg-white rounded-lg mx-10 my-3 p-3">
+        <div className="bg-white rounded-lg mx-10 my-7 p-3">
           <div>ข้อมูลผู้ค้า</div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
             <div>
@@ -190,8 +249,8 @@ export const SaveAssetWithdraw = () => {
                 type="text"
                 name="ID"
                 id="ID"
-                onChange={handleChangeID}
-                value={input.ID}
+                onChange={handleChange}
+                value={input.merchantNo}
                 className={`${inputClassname}`}
               />
             </div>
@@ -201,8 +260,8 @@ export const SaveAssetWithdraw = () => {
                 type="text"
                 name="billNumber"
                 id="billNumber"
-                onChange={handleChangeBillNumber}
-                value={input.billNumber}
+                onChange={handleChange}
+                value={input.taxNumber}
                 className={`${inputClassname}`}
               />
             </div>
@@ -221,10 +280,10 @@ export const SaveAssetWithdraw = () => {
               <div className="mb-1">ชื่อบริษัท</div>
               <input
                 type="text"
-                name="sector"
-                id="sector"
-                onChange={handleChangeSector}
-                value={input.sector}
+                name="companyName"
+                control="companyName"
+                onChange={handleChange}
+                value={input.companyName}
                 className={`${inputClassname}`}
               />
             </div>
@@ -247,10 +306,11 @@ export const SaveAssetWithdraw = () => {
                   type="text"
                   name="sector"
                   id="sector"
-                  onChange={handleChangeSector}
-                  value={input.sector}
+                  onChange={handleChange}
+                  value={input.personName}
                   className={`${inputClassname}`}
-                />              </div>
+                />
+              </div>
             </div>
 
             <div>
@@ -259,8 +319,8 @@ export const SaveAssetWithdraw = () => {
                 type="text"
                 name="billNumber"
                 id="billNumber"
-                readOnly
-                value={input.selfSector}
+                onChange={handleChange}
+                value={input.telNo}
                 className={`${inputClassname}`}
               />
             </div>
@@ -270,15 +330,15 @@ export const SaveAssetWithdraw = () => {
                 type="email"
                 name="allPrice"
                 id="allPrice"
-                onChange={handleChangeAllPrice}
+                onChange={handleChange}
                 value={input.email}
                 className={`${inputClassname}`}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-            <div className="mt-1 text-sm">ที่อยู่</div>
+          <div id="address" className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
+            <div className="mt-1 text-sm" id="head-address">ที่อยู่</div>
             {arrayAddress?.map((address, index) => (
               <div className='col-span-2 border border-gray-300 rounded-md p-2'>
                 <div className="flex">
@@ -291,7 +351,7 @@ export const SaveAssetWithdraw = () => {
                       <div className='col-span-2'>
                         บ้านเลขที่
                         <input
-                          className={`${inputClassname}`}
+                          className={`${inputClassname} ${errorAddress && "border-red-500"}`}
                         />
                       </div>
                       <div>
@@ -317,6 +377,9 @@ export const SaveAssetWithdraw = () => {
                     <div>
                       ถนน
                       <input
+                        name="road"
+                        onChange={handleChangeAddress}
+                        value={address.road}
                         className={`${inputClassname}`}
                       />
                     </div>
@@ -375,8 +438,9 @@ export const SaveAssetWithdraw = () => {
                     วางไฟล์ หรือ
                   </p>
                   <button
-                    className="my-1 min-w-[10em] inline-flex justify-center  items-center py-1 px-4 border-2 border-text-green shadow-sm font-medium rounded-full text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-                  // onClick={() => inputImg.current.click()}
+                    className="my-1 min-w-[10em]  inline-flex justify-center  items-center py-1 px-4 border-2 border-text-green shadow-sm font-medium rounded-full text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                    onClick={() => inputDoc.current.click()}
+                    disabled={arrayDocument.length === 5}
                   >
                     Upload
                   </button>
@@ -385,38 +449,41 @@ export const SaveAssetWithdraw = () => {
                   type="file"
                   multiple
                   className="hidden"
-                // ref={inputImg}
-                // onChange={handleFileChange}
+                  ref={inputDoc}
+                  onChange={handleFileChange}
                 />
                 <div className="flex flex-col justify-center items-center text-text-gray text-sm">
                   <p>สามารถอัพโหลดได้หลายไฟล์</p>
                   <p>จำกัด 5 ไฟล์ ไฟล์ละไม่เกิน 2MB.</p>
+                  <p>(DOCX , PDF , XLSX)</p>
                 </div>
               </div>
-              <div className="col-span-4 sm:mt-5">
-                {/* {arrayDocument.map((el, idx) => (
+              <div className="col-span-4 sm:mt-5 max-h-60 scrollbar">
+                {arrayDocument.map((el, idx) => (
                   <div
                     key={idx}
-                    className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
+                    className="flex justify-between items-center border-b-[1px] mt-2 pb-2 mx-5"
                   >
-                    <div className="flex items-center text-text-green">
+                    <div className="flex items-center text-text-green ">
                       <img src={docIcon} className="w-4 h-4 " />
-                      <div className="ml-2 text-sm">{el.document.name}</div>
+                      <div className="ml-2 text-sm cursor-pointer">{el.document}</div>
+                      {/* กรณีชื่อยาว ล้น*/}
                     </div>
-                    <button
+                    <button hidden
                       className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
                       onClick={() => deleteDoc(idx)}
                     >
                       <IoIosClose className="text-2xl" />
                     </button>
                   </div>
-                ))} */}
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+
+        <div className="bg-white rounded-lg mx-10 mt-3 mb-7 p-3">
           <div>ข้อมูลการจัดซื้อ</div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
             <div>
@@ -426,7 +493,7 @@ export const SaveAssetWithdraw = () => {
                 name="salesDocument"
                 id="salesDocument"
                 // onChange={handleChangeSales}
-                // value={inputSale.salesDocument}
+                // value={inputBottom.}
                 // className={`${errorSale && !inputSale.salesDocument && 'border-red-500'} 
                 className={`${inputClassname}`} />
             </div>
@@ -438,7 +505,7 @@ export const SaveAssetWithdraw = () => {
                   name="salesDocument"
                   id="salesDocument"
                   // onChange={handleChangeSales}
-                  // value={inputSale.salesDocument}
+                  // value={inputBottom.}
                   className={`${inputClassname}`}
                 />
               </div>
@@ -446,19 +513,21 @@ export const SaveAssetWithdraw = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+        <div className="bg-white rounded-lg mx-10 mt-3 mb-7 p-3">
           <div>ข้อมูลบัญชี</div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
             <div>
               <div className="mb-1">เลขที่บัญชีธนาคาร</div>
               <input
                 className={`${inputClassname}`}
+                value={inputBottom.bankAccountNum}
               />
             </div>
             <div>
               <div className="mb-1">รายละเอียดบัญชีธนาคาร</div>
               <input
                 className={`${inputClassname}`}
+                value={inputBottom.detailBankAcc}
               />
             </div>
 
@@ -466,12 +535,14 @@ export const SaveAssetWithdraw = () => {
               <div className="mb-1">รหัสธนาคาร</div>
               <input
                 className={`${inputClassname}`}
+                value={inputBottom.bankCode}
               />
             </div>
             <div>
               <div className="mb-1">รหัสสาขา</div>
               <input
                 className={`${inputClassname}`}
+                value={inputBottom.branchCode}
               />
             </div>
 
@@ -479,64 +550,71 @@ export const SaveAssetWithdraw = () => {
               <div className="mb-1">เลขที่บัตรประชาชน</div>
               <input
                 className={`${inputClassname}`}
+                value={inputBottom.identificationNumber}
               />
             </div>
           </div>
         </div>
 
-        <div className="lg:grid grid-cols-5 inline gap-x-1 gap-y-3 mt-3 text-xs">
+        <div className="lg:grid grid-cols-5 inline gap-x-1 gap-y-3 text-xs">
           {/* <div className="sm:grid grid-cols-5  gap-x-1 gap-y-3 mt-3 text-xs"> */}
           {/* <div className="inline gap-x-1 gap-y-3 mt-3 text-xs"> */}
           <div className="col-span-2 bg-white rounded-lg mx-10 lg:mr-0 mt-3 mb-10 p-3">
             <div className='text-sm'>กลุ่มประเภท</div>
             <div className="grid grid-cols-1 gap-y-3 mt-3 text-xs">
               <div>
-                <input type="radio" className="border border-text-green p-2 mx-2" name="groupType" value="" />
+                <input type="radio" className="border border-text-green p-2 mx-2" 
+                name="groupType" 
+                value="" />
                 <label>เจ้าหนี้การค้าภายในประเทศ</label>
               </div>
               <div>
-                <input type="radio" className="border border-text-green p-2 mx-2" name="groupType" value="" />
+                <input type="radio" className="border border-text-green p-2 mx-2" 
+                name="groupType" 
+                value="" />
                 <label>เจ้าหนี้การค้าภายนอกประเทศ</label>
               </div>
               <div>
-                <input type="radio" className="border border-text-green p-2 mx-2" name="groupType" value="" />
+                <input type="radio" className="border border-text-green p-2 mx-2" 
+                name="groupType" 
+                value="" />
                 <label>เจ้าหนี้เฉพาะหน่วยงานย่อย</label>
               </div>
             </div>
           </div>
 
           <div className="col-span-3 bg-white rounded-lg mx-10 lg:ml-0 mt-3 mb-10 p-3">
-            <div className='flex justify-between items-end'>
+            <div className='flex justify-between items-center'>
               <div className='text-sm'>ความสัมพันธ์</div>
-              <div className='text-text-gray'>
+              <div className='text-text-gray  inline-flex items-center'>
                 สถานะ
-
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" value={""} class="sr-only peer" />
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-400"></div>
+                <label class="relative inline-flex items-center cursor-pointer ml-3">
+                  <input type="checkbox" value="" checked={status === "active"} onChange={e => setStatus(e.target.checked ? "active" : "nonActive")} class="sr-only peer" />
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-0 rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
                   <span class="ml-2 text-text-green">Active</span>
                 </label>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-              <div>
-                <div className="mb-1">กลุ่มบริษัท</div>
-                <Selector
-
-                />
+            {arrayRelation.map((element, index) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
+                <div>
+                  <div className="mb-1">กลุ่มบริษัท</div>
+                  <Selector
+                  />
+                </div>
+                <div>
+                  <input
+                    placeholder='หมายเหตุ'
+                    className={`${inputClassname} mt-5`}
+                  />
+                </div>
               </div>
-              <div>
-                <input
-                  placeholder='หมายเหตุ'
-                  className={`${inputClassname} mt-5`}
-                />
-              </div>
-            </div>
+            ))}
 
             <button
-              className="w-full mx-2 my-3 inline-flex justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-              onClick={() => inputDoc.current.click()}
+              className="w-full my-3 inline-flex justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+              onClick={addRelation}
             >
               + เพิ่มความสัมพันธ์
             </button>
@@ -564,7 +642,7 @@ export const SaveAssetWithdraw = () => {
             id="form"
             type="submit"
             className="bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-          // onClick={handleSubmit}
+            onClick={handleForm}
           >
             บันทึกข้อมูล
           </button>
@@ -575,11 +653,11 @@ export const SaveAssetWithdraw = () => {
             onSave={submit}
           />
 
-          {showModalSuccess && <ModalSuccess urlPath='/assetWithdraw' />} */}
+          {showModalSuccess && <ModalSuccess urlPath='/merchant' />} */}
         </div>
       </div>
     </>
   )
 }
 
-export default SaveAssetWithdraw
+export default SaveMerchant

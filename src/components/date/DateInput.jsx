@@ -4,8 +4,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
 import th from "date-fns/locale/th";
 import { useLocation } from "react-router-dom";
+import { useState } from "react";
 
-function DateInput({ state, setState, lable, id }) {
+function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
   const location = useLocation();
   setDefaultLocale("th", th);
   registerLocale("th", th);
@@ -36,14 +37,17 @@ function DateInput({ state, setState, lable, id }) {
     "ธันวาคม ",
   ];
 
+  const [open, setOpen] = useState(false)
+
   return (
     <>
       <div className="relative">
-        <div className="text-xs font-semibold w-32 absolute -top-2 z-10 left-2">
+        <div className="text-xs font-semibold w-32 absolute -top-2 z-10 left-2 bg-t w-max px-1">
           {lable}
         </div>
       </div>
       <DatePicker
+        // open={open}
         locale="th"
         wrapperClassName="datePicker"
         renderCustomHeader={({
@@ -119,17 +123,18 @@ function DateInput({ state, setState, lable, id }) {
         showTimeSelect
         showMonthDropdown
         showYearDropdown
+        showYearPicker={onlyYear}
         // dropdownMode="select"
         timeFormat="p"
         dateFormat="Pp"
         timeIntervals={1}
-        className="  w-full h-[38px] shadow-sm focus:border-2 focus:outline-none  focus:border-focus-blue  sm:text-xs border-[1px] border-gray-300 rounded-md pl-2"
+        className={`${error && "border-red-500"} w-full h-[38px] shadow-sm focus:border-2 focus:outline-none  focus:border-focus-blue  sm:text-xs border-[1px] border-gray-300 rounded-md pl-2`}
         selected={
           location.pathname === "/assetInformationIndex" ||
-          location.pathname === "/packageAssetInformationIndex" ||
-          location.pathname === "/borrowList" ||
-          location.pathname === "/borrowHistory"  ||
-          location.pathname === "/borrowCheckIndex"  
+            location.pathname === "/packageAssetInformationIndex" ||
+            location.pathname === "/borrowList" ||
+            location.pathname === "/borrowHistory" ||
+            location.pathname === "/borrowCheckIndex"
             ? state[id]
             : state
         }
@@ -139,7 +144,7 @@ function DateInput({ state, setState, lable, id }) {
             location.pathname === "/packageAssetInformationIndex" ||
             location.pathname === "/borrowList" ||
             location.pathname === "/borrowHistory" ||
-            location.pathname === "/borrowCheckIndex" 
+            location.pathname === "/borrowCheckIndex"
           ) {
             setState((prevState) => ({ ...prevState, [id]: date }));
           } else {
@@ -147,9 +152,11 @@ function DateInput({ state, setState, lable, id }) {
           }
           // console.log(date);
         }}
+        minDate={minDate}
       />
       <div className="items-center relative">
-        <i className="fa-regular fa-calendar absolute top-3.5 -left-6  text-black text-sm sm:text-xs"></i>
+        <i className="fa-regular fa-calendar absolute top-3.5 -left-6  text-black text-sm sm:text-xs cursor-pointer"
+          onClick={() => setOpen(!open)}></i>
       </div>
     </>
   );
