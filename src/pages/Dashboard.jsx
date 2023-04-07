@@ -1,6 +1,4 @@
 import React from 'react'
-import Users from '../components/auth/Users'
-import User from '../components/auth/User'
 
 const Dashboard = () => {
   return (

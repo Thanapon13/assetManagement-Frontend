@@ -11,8 +11,9 @@ const Selector = ({
   state,
   setState,
   id,
+  name,
   index,
-  api
+  api,
 }) => {
   let location = useLocation();
   // console.log(location.pathname)
@@ -108,10 +109,10 @@ const Selector = ({
 
   // หน่วยงาน editAssetInformation ,index search ,borrowRecord
   const handleChangeSectorInEditAssetInfo = (value) => {
-    console.log(2)
+    console.log(2);
     const clone = { ...state };
     clone.sector = value;
-    console.log(clone)
+    console.log(clone);
     setState(clone);
   };
   // หน่วยงาน assetInformation
@@ -221,6 +222,14 @@ const Selector = ({
     setState(clone);
   };
 
+  const handleChangeObject = (value) => {
+    const clone = { ...state };
+    console.log(clone);
+    clone[name] = value;
+    console.log(clone);
+    setState(clone);
+  };
+
   useEffect(() => {
     document.addEventListener("click", handleClickOutSide, true);
 
@@ -229,7 +238,6 @@ const Selector = ({
       .then((data) => {
         setData(data);
       });
-
 
     // fetchApi()
   }, []);
@@ -283,6 +291,16 @@ const Selector = ({
               ? state?.room
               : id === "ภาควิชา"
               ? state?.subSector
+              : id === "คำนำหน้า (ภาษาไทย)" ||
+                id === "คำนำหน้าชื่อ (ภาษาอังกฤษ)" ||
+                id === "รหัสประเภทบุคคลากร" ||
+                id === "โรงพยาบาลที่ออกตรวจประจำ (แพทย์ Part-time)" ||
+                id === "ย้ายมาจากโรงพยาบาล" ||
+                id === "ย้ายไปโรงพยาบาล" ||
+                id === "ประเภทของผู้ใช้" ||
+                id === "ประเภทของแพทย์" ||
+                id === "สาขาแพทย์"
+              ? state?.[name]
               : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
                 (location.pathname === "/assetInformation" ||
                   location.pathname === "/packageAssetInformation")
@@ -292,12 +310,14 @@ const Selector = ({
               : id === "หน่วยงานเจ้าของครุภัณฑ์"
               ? state?.allSector
               : id === "หน่วยงาน" &&
-                (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
+                (`/${location.pathname.split("/")[1]}` ===
+                  "/editAssetInformation" ||
+                  `/${location.pathname.split("/")[1]}` ===
+                  "/editPackageAssetInformation" ||
                   location.pathname === "/assetInformationIndex" ||
-                    location.pathname === "/borrowList" ||
+                  location.pathname === "/borrowList" ||
                   location.pathname === "/borrowRecord" ||
-                  `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
-                  )
+                  `/${location.pathname.split("/")[1]}` === "/borrowEdit")
               ? state?.sector
               : id === "หน่วยงาน" &&
                 (location.pathname === "/assetInformation" ||
@@ -366,6 +386,16 @@ const Selector = ({
             ? state?.room
             : id === "ภาควิชา"
             ? state?.subSector
+            : id === "คำนำหน้า (ภาษาไทย)" ||
+              id === "คำนำหน้าชื่อ (ภาษาอังกฤษ)" ||
+              id === "รหัสประเภทบุคคลากร" ||
+              id === "โรงพยาบาลที่ออกตรวจประจำ (แพทย์ Part-time)" ||
+              id === "ย้ายมาจากโรงพยาบาล" ||
+              id === "ย้ายไปโรงพยาบาล" ||
+              id === "ประเภทของผู้ใช้" ||
+              id === "ประเภทของแพทย์" ||
+              id === "สาขาแพทย์"
+            ? state?.[name]
             : id === "วัตถุประสงค์การขอยืม"
             ? state?.borrowPurpose
             : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
@@ -377,13 +407,15 @@ const Selector = ({
             : id === "หน่วยงานเจ้าของครุภัณฑ์"
             ? state?.allSector
             : id === "หน่วยงาน" &&
-            (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-              location.pathname === "/assetInformationIndex" ||
-              location.pathname === "/borrowList" ||
-              location.pathname === "/borrowRecord" ||
-              `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
-              )
-          ? state?.sector
+              (`/${location.pathname.split("/")[1]}` ===
+                "/editAssetInformation" ||
+                `/${location.pathname.split("/")[1]}` ===
+                "/editPackageAssetInformation" ||
+                location.pathname === "/assetInformationIndex" ||
+                location.pathname === "/borrowList" ||
+                location.pathname === "/borrowRecord" ||
+                `/${location.pathname.split("/")[1]}` === "/borrowEdit")
+            ? state?.sector
             : id === "หน่วยงาน" &&
               (location.pathname === "/assetInformation" ||
                 location.pathname === "/packageAssetInformation")
@@ -446,6 +478,16 @@ const Selector = ({
               ? state?.room
               : id === "ภาควิชา"
               ? state?.subSector
+              : id === "คำนำหน้า (ภาษาไทย)" ||
+                id === "คำนำหน้าชื่อ (ภาษาอังกฤษ)" ||
+                id === "รหัสประเภทบุคคลากร" ||
+                id === "โรงพยาบาลที่ออกตรวจประจำ (แพทย์ Part-time)" ||
+                id === "ย้ายมาจากโรงพยาบาล" ||
+                id === "ย้ายไปโรงพยาบาล" ||
+                id === "ประเภทของผู้ใช้" ||
+                id === "ประเภทของแพทย์" ||
+                id === "สาขาแพทย์"
+              ? state?.[name]
               : id === "วัตถุประสงค์การขอยืม"
               ? state?.borrowPurpose
               : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
@@ -457,13 +499,15 @@ const Selector = ({
               : id === "หน่วยงานเจ้าของครุภัณฑ์"
               ? state?.allSector
               : id === "หน่วยงาน" &&
-              (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                location.pathname === "/assetInformationIndex" ||
-                location.pathname === "/borrowList" ||
-                location.pathname === "/borrowRecord" ||
-                `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
-                )
-            ? state?.sector
+                (`/${location.pathname.split("/")[1]}` ===
+                  "/editAssetInformation" ||
+                  `/${location.pathname.split("/")[1]}` ===
+                  "/editPackageAssetInformation" ||
+                  location.pathname === "/assetInformationIndex" ||
+                  location.pathname === "/borrowList" ||
+                  location.pathname === "/borrowRecord" ||
+                  `/${location.pathname.split("/")[1]}` === "/borrowEdit")
+              ? state?.sector
               : id === "หน่วยงาน" &&
                 (location.pathname === "/assetInformation" ||
                   location.pathname === "/packageAssetInformation")
@@ -526,6 +570,16 @@ const Selector = ({
                 ? state?.room
                 : id === "ภาควิชา"
                 ? state?.subSector
+                : id === "คำนำหน้า (ภาษาไทย)" ||
+                  id === "คำนำหน้าชื่อ (ภาษาอังกฤษ)" ||
+                  id === "รหัสประเภทบุคคลากร" ||
+                  id === "โรงพยาบาลที่ออกตรวจประจำ (แพทย์ Part-time)" ||
+                  id === "ย้ายมาจากโรงพยาบาล" ||
+                  id === "ย้ายไปโรงพยาบาล" ||
+                  id === "ประเภทของผู้ใช้" ||
+                  id === "ประเภทของแพทย์" ||
+                  id === "สาขาแพทย์"
+                ? state?.[name]
                 : id === "วัตถุประสงค์การขอยืม"
                 ? state?.borrowPurpose
                 : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
@@ -537,13 +591,15 @@ const Selector = ({
                 : id === "หน่วยงานเจ้าของครุภัณฑ์"
                 ? state?.allSector
                 : id === "หน่วยงาน" &&
-                (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                  location.pathname === "/assetInformationIndex" ||
+                  (`/${location.pathname.split("/")[1]}` ===
+                    "/editAssetInformation" ||
+                    `/${location.pathname.split("/")[1]}` ===
+                    "/editPackageAssetInformation" ||
+                    location.pathname === "/assetInformationIndex" ||
                     location.pathname === "/borrowList" ||
                     location.pathname === "/borrowRecord" ||
-                    `/${location.pathname.split('/')[1]}` === "/borrowEdit"  
-                  )
-              ? state?.sector
+                    `/${location.pathname.split("/")[1]}` === "/borrowEdit")
+                ? state?.sector
                 : id === "หน่วยงาน" &&
                   (location.pathname === "/assetInformation" ||
                     location.pathname === "/packageAssetInformation")
@@ -606,6 +662,16 @@ const Selector = ({
             ? state?.room
             : id === "ภาควิชา"
             ? state?.subSector
+            : id === "คำนำหน้า (ภาษาไทย)" ||
+              id === "คำนำหน้าชื่อ (ภาษาอังกฤษ)" ||
+              id === "รหัสประเภทบุคคลากร" ||
+              id === "โรงพยาบาลที่ออกตรวจประจำ (แพทย์ Part-time)" ||
+              id === "ย้ายมาจากโรงพยาบาล" ||
+              id === "ย้ายไปโรงพยาบาล" ||
+              id === "ประเภทของผู้ใช้" ||
+              id === "ประเภทของแพทย์" ||
+              id === "สาขาแพทย์"
+            ? state?.[name]
             : id === "วัตถุประสงค์การขอยืม"
             ? state?.borrowPurpose
             : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
@@ -617,13 +683,15 @@ const Selector = ({
             : id === "หน่วยงานเจ้าของครุภัณฑ์"
             ? state?.allSector
             : id === "หน่วยงาน" &&
-            (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-              location.pathname === "/assetInformationIndex" ||
-              location.pathname === "/borrowList" ||
-              location.pathname === "/borrowRecord" ||
-              `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
-              )
-          ? state?.sector
+              (`/${location.pathname.split("/")[1]}` ===
+                "/editAssetInformation" ||
+                `/${location.pathname.split("/")[1]}` ===
+                "/editPackageAssetInformation" ||
+                location.pathname === "/assetInformationIndex" ||
+                location.pathname === "/borrowList" ||
+                location.pathname === "/borrowRecord" ||
+                `/${location.pathname.split("/")[1]}` === "/borrowEdit")
+            ? state?.sector
             : id === "หน่วยงาน" &&
               (location.pathname === "/assetInformation" ||
                 location.pathname === "/packageAssetInformation")
@@ -714,6 +782,16 @@ const Selector = ({
                   ? state?.room
                   : id === "ภาควิชา"
                   ? state?.subSector
+                  : id === "คำนำหน้า (ภาษาไทย)" ||
+                    id === "คำนำหน้าชื่อ (ภาษาอังกฤษ)" ||
+                    id === "รหัสประเภทบุคคลากร" ||
+                    id === "โรงพยาบาลที่ออกตรวจประจำ (แพทย์ Part-time)" ||
+                    id === "ย้ายมาจากโรงพยาบาล" ||
+                    id === "ย้ายไปโรงพยาบาล" ||
+                    id === "ประเภทของผู้ใช้" ||
+                    id === "ประเภทของแพทย์" ||
+                    id === "สาขาแพทย์"
+                  ? state?.[name]
                   : id === "วัตถุประสงค์การขอยืม"
                   ? state?.borrowPurpose
                   : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
@@ -725,13 +803,15 @@ const Selector = ({
                   : id === "หน่วยงานเจ้าของครุภัณฑ์"
                   ? state?.allSector
                   : id === "หน่วยงาน" &&
-                (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                  location.pathname === "/assetInformationIndex" ||
-                    location.pathname === "/borrowList" ||
-                    location.pathname === "/borrowRecord" ||
-              `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
-                  )
-              ? state?.sector
+                    (`/${location.pathname.split("/")[1]}` ===
+                      "/editAssetInformation" ||
+                      `/${location.pathname.split("/")[1]}` ===
+                      "/editPackageAssetInformation" ||
+                      location.pathname === "/assetInformationIndex" ||
+                      location.pathname === "/borrowList" ||
+                      location.pathname === "/borrowRecord" ||
+                      `/${location.pathname.split("/")[1]}` === "/borrowEdit")
+                  ? state?.sector
                   : id === "หน่วยงาน" &&
                     (location.pathname === "/assetInformation" ||
                       location.pathname === "/packageAssetInformation")
@@ -797,6 +877,16 @@ const Selector = ({
                   ? state?.room
                   : id === "ภาควิชา"
                   ? state?.subSector
+                  : id === "คำนำหน้า (ภาษาไทย)" ||
+                    id === "คำนำหน้าชื่อ (ภาษาอังกฤษ)" ||
+                    id === "รหัสประเภทบุคคลากร" ||
+                    id === "โรงพยาบาลที่ออกตรวจประจำ (แพทย์ Part-time)" ||
+                    id === "ย้ายมาจากโรงพยาบาล" ||
+                    id === "ย้ายไปโรงพยาบาล" ||
+                    id === "ประเภทของผู้ใช้" ||
+                    id === "ประเภทของแพทย์" ||
+                    id === "สาขาแพทย์"
+                  ? state?.[name]
                   : id === "วัตถุประสงค์การขอยืม"
                   ? state?.borrowPurpose
                   : id === "แทนครุภัณฑ์ที่ถูกแทงจำหน่าย" &&
@@ -808,13 +898,15 @@ const Selector = ({
                   : id === "หน่วยงานเจ้าของครุภัณฑ์"
                   ? state?.allSector
                   : id === "หน่วยงาน" &&
-                  (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
-                    location.pathname === "/assetInformationIndex" ||
-                    location.pathname === "/borrowList" ||
-                    location.pathname === "/borrowRecord" ||
-              `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
-                    )
-                ? state?.sector
+                    (`/${location.pathname.split("/")[1]}` ===
+                      "/editAssetInformation" ||
+                      `/${location.pathname.split("/")[1]}` ===
+                      "/editPackageAssetInformation" ||
+                      location.pathname === "/assetInformationIndex" ||
+                      location.pathname === "/borrowList" ||
+                      location.pathname === "/borrowRecord" ||
+                      `/${location.pathname.split("/")[1]}` === "/borrowEdit")
+                  ? state?.sector
                   : id === "หน่วยงาน" &&
                     (location.pathname === "/assetInformation" ||
                       location.pathname === "/packageAssetInformation")
@@ -876,6 +968,18 @@ const Selector = ({
                   handleChangeRoom(data?.name);
                 } else if (id === "ภาควิชา") {
                   handleChangeSubSector(data?.name);
+                } else if (
+                  id === "คำนำหน้า (ภาษาไทย)" ||
+                  id === "คำนำหน้าชื่อ (ภาษาอังกฤษ)" ||
+                  id === "รหัสประเภทบุคคลากร" ||
+                  id === "โรงพยาบาลที่ออกตรวจประจำ (แพทย์ Part-time)" ||
+                  id === "ย้ายมาจากโรงพยาบาล" ||
+                  id === "ย้ายไปโรงพยาบาล" ||
+                  id === "ประเภทของผู้ใช้" ||
+                  id === "ประเภทของแพทย์" ||
+                  id === "สาขาแพทย์"
+                ) {
+                  handleChangeObject(data?.name);
                 } else if (id === "วัตถุประสงค์การขอยืม") {
                   handleChangeBorrowPurpose(data?.name);
                 } else if (
@@ -888,12 +992,14 @@ const Selector = ({
                   handleChangeReplacedAssetNumberInEditInfo(data?.name);
                 } else if (
                   id === "หน่วยงาน" &&
-                  (`/${location.pathname.split('/')[1]}` === "/editAssetInformation" ||
+                  (`/${location.pathname.split("/")[1]}` ===
+                    "/editAssetInformation" ||
+                    `/${location.pathname.split("/")[1]}` ===
+                    "/editPackageAssetInformation" ||
                     location.pathname === "/assetInformationIndex" ||
                     location.pathname === "/borrowList" ||
                     location.pathname === "/borrowRecord" ||
-                    `/${location.pathname.split('/')[1]}` === "/borrowEdit" 
-                    )
+                    `/${location.pathname.split("/")[1]}` === "/borrowEdit")
                 ) {
                   handleChangeSectorInEditAssetInfo(data?.name);
                 } else if (

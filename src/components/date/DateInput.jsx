@@ -129,7 +129,8 @@ function DateInput({ state, setState, lable, id }) {
           location.pathname === "/packageAssetInformationIndex" ||
           location.pathname === "/borrowList" ||
           location.pathname === "/borrowHistory"  ||
-          location.pathname === "/borrowCheckIndex"  
+          location.pathname === "/borrowCheckIndex"  ||
+          location.pathname === "/addUserInformation" 
             ? state[id]
             : state
         }
@@ -139,7 +140,8 @@ function DateInput({ state, setState, lable, id }) {
             location.pathname === "/packageAssetInformationIndex" ||
             location.pathname === "/borrowList" ||
             location.pathname === "/borrowHistory" ||
-            location.pathname === "/borrowCheckIndex" 
+            location.pathname === "/borrowCheckIndex"  ||
+            location.pathname === "/addUserInformation" 
           ) {
             setState((prevState) => ({ ...prevState, [id]: date }));
           } else {

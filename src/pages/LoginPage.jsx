@@ -8,9 +8,10 @@ import { useEffect, useState, useRef } from 'react'
 
 import useAuth from '../hooks/useAuth'
 import axios from '../api/axios'
+import { adminLogin } from '../api/authApi'
 
 function LoginPage() {
-  const { setAuth, persist, setPersist } = useAuth()
+  const { login,setAuth, persist, setPersist } = useAuth()
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -19,8 +20,8 @@ function LoginPage() {
   const userRef = useRef()
   const errRef = useRef()
 
-  const [user, setUser] = useState('')
-  const [pwd, setPwd] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [errMsg, setErrMsg] = useState('')
 
   useEffect(() => {
@@ -29,7 +30,7 @@ function LoginPage() {
 
   useEffect(() => {
     setErrMsg('')
-  }, [user, pwd])
+  }, [username, password])
 
   // main state
   const [toggle, setToggle] = useState(false)
@@ -42,39 +43,49 @@ function LoginPage() {
     localStorage.setItem('persist', persist)
   }, [persist])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      const response = await axios.post(
-        '/api/auth',
-        {
-          username: user,
-          password: pwd,
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      // console.log(response?.data)
-      const { accessToken, roles } = response?.data
-      // localStorage.setItem('userProfile', JSON.stringify(apiResponse.data))
-      setAuth({ user, pwd, roles, accessToken })
-      setUser('')
-      setPwd('')
-      navigate(from, { replace: true })
-      // navigate('/dashboard')
-    } catch (error) {
-      !error?.response
-        ? setErrMsg('No Server Response')
-        : error.response?.staus === 400
-        ? setErrMsg('Missing Username or Password')
-        : error.response?.state === 401
-        ? setErrMsg('Unauthorized')
-        : setErrMsg('Login Fail')
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault()
+  //   try {
+  //     const response = await axios.post(
+  //       '/api/auth',
+  //       {
+  //         username: user,
+  //         password: password,
+  //       },
+  //       {
+  //         withCredentials: true,
+  //       }
+  //     )
+  //     // console.log(response?.data)
+  //     const { accessToken, roles } = response?.data
+  //     // localStorage.setItem('userProfile', JSON.stringify(apiResponse.data))
+  //     setAuth({ user, password, roles, accessToken })
+  //     setUser('')
+  //     setPassword('')
+  //     navigate(from, { replace: true })
+  //     // navigate('/dashboard')
+  //   } catch (error) {
+  //     !error?.response
+  //       ? setErrMsg('No Server Response')
+  //       : error.response?.staus === 400
+  //       ? setErrMsg('Missing Username or Password')
+  //       : error.response?.state === 401
+  //       ? setErrMsg('Unauthorized')
+  //       : setErrMsg('Login Fail')
 
-      errRef.current.focus()
+  //     errRef.current.focus()
+  //   }
+  // }
+
+  const handleSubmitLogin = async (e) => {
+    try {
+      e.preventDefault();
+      await login(username, password);
+    } catch (err) {
+      console.log(err)
+      // setError(err.response.data.message);
     }
-  }
+  };
 
   return (
     <div className="relative">
@@ -114,7 +125,7 @@ function LoginPage() {
               เข้าสู่ระบบ / Login
             </div>
             {/* input */}
-            <form className="text-left" onSubmit={handleSubmit}>
+            <form className="text-left" onSubmit={handleSubmitLogin}>
               <div className="text-xs text-text-gray mt-12">Username</div>
               <p ref={errRef} className={errMsg ? 'bg-red-500 ' : ' block '}>
                 {errMsg}
@@ -122,10 +133,10 @@ function LoginPage() {
               <input
                 type="text"
                 ref={userRef}
-                name="guaranteedMonth"
-                id="guaranteedMonth"
-                onChange={(e) => setUser(e.target.value)}
-                value={user}
+                name="username"
+                id="username"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
                 className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
               <div className="text-xs text-text-gray mt-6">Password</div>
@@ -134,8 +145,8 @@ function LoginPage() {
                   type={toggle ? 'text' : 'password'}
                   name="password"
                   id="password"
-                  onChange={(e) => setPwd(e.target.value)}
-                  value={pwd}
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
                   className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
                 <button
