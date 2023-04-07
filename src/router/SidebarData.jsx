@@ -119,7 +119,7 @@ export const SidebarData = [
       },
       {
         title: 'รายงานข้อมูล',
-        path: '/approvalAssetWithdraw',
+        path: '/reportMerchantInfo',
         icon: (
           <svg
             width="22"

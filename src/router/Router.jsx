@@ -54,13 +54,17 @@ import {
   ViewApprovalTransferAssetDetail,
   ViewWaitingTransferAsset,
   EditTransferAsset,
+  SaveMerchant,
+  Merchant,
+  ViewMerchant,
+  ReportMerchantInfo,
+  ViewReportMerchantInfo,
+  EditMerchant,
+
 } from "../pages";
 
 import useAuth from '../hooks/useAuth'
 import ViewBorrowApproveDetail from '../pages/ViewBorrowApproveDetail';
-import Merchant from '../pages/Merchant';
-import SaveMerchant from '../pages/SaveMerchant';
-import ViewMerchant from '../pages/ViewMerchant';
 
 const Public = () => {
   return (
@@ -124,8 +128,10 @@ const Router = () => {
         />
         <Route path="merchant" element={<Merchant />} />
         <Route path="saveMerchant" element={<SaveMerchant />} />
+        <Route path="editMerchant/:merchantId" element={<EditMerchant />} />
         <Route path="viewMerchant/:merchantId" element={<ViewMerchant />} />
-        <Route path="merchantInfo" element={<Merchant />} />
+        <Route path="reportMerchantInfo" element={<ReportMerchantInfo />} />
+        <Route path="viewReportMerchantInfo/:merchantId" element={<ViewReportMerchantInfo />} />
 
         <Route path="assetWithdraw" element={<AssetWithdraw />} />
         <Route path="saveAssetWithdraw" element={<SaveAssetWithdraw />} />

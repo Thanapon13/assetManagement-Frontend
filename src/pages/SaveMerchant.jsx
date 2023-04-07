@@ -431,7 +431,7 @@ export const SaveMerchant = () => {
 
             <div className='col-span-2 text-sm'>
               {/* <div className="grid sm:grid-cols-6 gap-6 mt-5"> */}
-              <div className="sm:col-span-4 bg-background-page px-30 rounded-lg flex flex-col justify-center items-center gap-4 h-60">
+              <div className="sm:col-span-4 bg-background-page px-30 rounded-lg flex flex-col justify-center items-center gap-4 py-6">
                 <img src={boxIcon} className="w-[50px]" />
                 <div className="text-text-green font-semibold text-center">
                   <p>
@@ -458,7 +458,7 @@ export const SaveMerchant = () => {
                   <p>(DOCX , PDF , XLSX)</p>
                 </div>
               </div>
-              <div className="col-span-4 sm:mt-5 max-h-60 scrollbar">
+              <div className="col-span-4 sm:mt-5 mb-3 max-h-60 scrollbar">
                 {arrayDocument.map((el, idx) => (
                   <div
                     key={idx}
