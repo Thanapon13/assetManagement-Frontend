@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { FaArrowLeft } from 'react-icons/fa'
 import { HiTrash } from 'react-icons/hi'
 import Selector from '../components/selector/Selector'
+import ModalConfirmSave from '../components/modal/ModalConfirmSave'
 
 const RepairTechnicianRecord = () => {
   const location = useLocation()
@@ -71,7 +72,7 @@ const RepairTechnicianRecord = () => {
         price: '',
       },
     ])
-
+  const [showModalConfirm, setShowModalConfirm] = useState(false)
   //handle bottom table
   const handleClickIncrease = (e) => {
     e.preventDefault()
@@ -429,9 +430,15 @@ const RepairTechnicianRecord = () => {
               <button className="px-4 py-2 rounded-md text-sm border border-text-green text-text-green hover:bg-green-100">
                 บันทึก
               </button>
-              <button className="px-4 py-2 rounded-md text-sm bg-text-green text-white hover:bg-green-800">
+              <button className="px-4 py-2 rounded-md text-sm bg-text-green text-white hover:bg-green-800"
+                onClick={() => setShowModalConfirm(true)}>
                 บันทึกและขออนุมัติ
               </button>
+              <ModalConfirmSave
+                isVisible={showModalConfirm}
+                onClose={() => setShowModalConfirm(false)}
+              // onSave={handleSubmit}
+              />
             </div>
           </div>
         </>

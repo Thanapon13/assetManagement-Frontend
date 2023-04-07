@@ -179,12 +179,13 @@ const BorrowList = () => {
             </svg>
             Export
           </button>
-          <button
+          <Link
+            to="/borrowRecord"
             type="button"
             className="bg-text-green text-white px-4 py-2 rounded hover:bg-green-800"
           >
             + เพิ่มใบยืมครุภัณฑ์
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -286,7 +287,7 @@ const BorrowList = () => {
       </div>
       {/* table */}
       <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
-        <div className="w-[1200px] lg:w-full lg:h-full h-[500px]">
+        <div className="w-[1200px] lg:w-full lg:h-full max-h-[50rem]">
           <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
           <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
             {/* top bar */}

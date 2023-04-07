@@ -18,7 +18,7 @@ function ScanDropdown({
             </button>
           </Menu.Button>
         </div>
-        <Menu.Items className="z-50 origin-top-right absolute right-4 mt-4 w-32  rounded-md shadow-lg text-xs bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="z-50 origin-top-right absolute right-4 mt-3 w-32  rounded-md shadow-lg text-xs bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="flex flex-col justify-around my-2 ">
             <Menu.Item>
               <button

@@ -14,6 +14,8 @@ const Selector = ({
   name,
   index,
   api,
+  isValid,
+  disabled
 }) => {
   let location = useLocation();
   // console.log(location.pathname)
@@ -245,7 +247,7 @@ const Selector = ({
     <div className=" font-medium relative w-full" ref={refDropdown}>
       <div
         onClick={() => setOpen(!open)}
-        className={` border border-gray-300 bg-white ${
+        className={`${isValid ? 'border-red-500' : 'border-gray-300'} ${disabled ? "bg-gray-200 pointer-events-none" : "cursor-pointer"} border bg-white ${
           location.pathname === "/dashboard" ? "text-md" : "text-sm"
         } rounded-lg focus:ring-blue-500 focus:border-blue-500 z-0  w-full  dark:focus:ring-blue-500 dark:focus:border-blue-500  p-2 flex items-center justify-between ${
           (

@@ -16,12 +16,14 @@ import {
   BorrowCheckIndex,
   BorrowCheckSaving,
   BorrowCheckDetail,
+  BorrowCheckApprove,
   BorrowRecord,
   BorrowApprove,
   BorrowSaving,
   BorrowApproveDetail,
   BorrowHistoryIndex,
   BorrowHistoryDetail,
+  ViewBorrowApproveDetail,
   TransferAsset,
   RepairIndex,
   RepairDetail,
@@ -35,6 +37,9 @@ import {
   EmailConfirmation,
   DefaultData,
   MerchantIndex,
+  Merchant,
+  SaveMerchant,
+  ViewMerchant,
   UserInformationIndex,
   AddUserInformation,
   ViewAssetInformation,
@@ -50,20 +55,9 @@ import {
   EditTransferAsset,
 } from "../pages";
 
-import ViewBorrowApproveDetail from "../pages/ViewBorrowApproveDetail";
-import BorrowCheckApprove from "../pages/BorrowCheckApprove";
 import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
 
-const Public = () => {
-  return (
-    <>
-      <div className=" text-8xl flex justify-center items-center w-[100vw] h-[100vh]">
-        Hi !!!!! you wrong again
-      </div>
-    </>
-  );
-};
 
 const Router = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -74,7 +68,7 @@ const Router = () => {
     <Routes>
       {isLoggedIn ? (
         <Route path="/" element={<Layout />}>
-          <Route  path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
           {/* <Route element={<RequireAuth allowedRoles={['Admin']} />}> */}
           <Route path="assetInformation" element={<AssetInformation />} />
           <Route
@@ -167,6 +161,10 @@ const Router = () => {
             path="editTransferAsset/:transferId"
             element={<EditTransferAsset />}
           />
+          <Route path="merchant" element={<Merchant />} />
+          <Route path="saveMerchant" element={<SaveMerchant />} />
+          <Route path="viewMerchant/:merchantId" element={<ViewMerchant />} />
+          <Route path="merchantInfo" element={<Merchant />} />
 
           {/* <Route path="repairDashboard" element={<RepairDashboard />} /> */}
           <Route path="transferAsset" element={<TransferAsset />} />

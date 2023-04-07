@@ -28,8 +28,8 @@ const TableBorrowList = (props) => {
             <div className="col-span-1">
               {props.search.page > 1 ? props.search.limit + idx + 1 : idx + 1}
             </div>
-            <div className="col-span-3">{item.borrowIdDoc}</div>
-            <div className="col-span-3 ">{item.sector}</div>
+            <div className="col-span-3 text-left">{item.borrowIdDoc}</div>
+            <div className="col-span-3 text-left">{item.sector}</div>
             <div className="col-span-1">
               {new Date(item.borrowDate).toLocaleDateString("th-TH", options)}
             </div>
@@ -80,7 +80,7 @@ const TableBorrowList = (props) => {
                         : item.status === "cancel" || item.status === "reject"
                         ? "bg-red-200 text-red-600  rounded-xl"
                         : "bg-text-green text-white rounded-md hover:bg-green-800"
-                    } border border-spacing-5 p-2 w-full`}
+                    } border border-spacing-5 p-2 w-full cursor-default`}
                   >
                     {item.status === "waiting"
                       ? "รออนุมัติ"

@@ -12,7 +12,7 @@ function TableBorrowRecord({
   index,
   saveAssetWithdrawTableArray,
   setSaveAssetWithdrawTableArray,
-
+  errorAssestTable,
   deleteRow,
 }) {
   const [dataProductName, setDataProductName] = useState([]);
@@ -67,7 +67,7 @@ function TableBorrowRecord({
   const handleChange = (e) => {
     const clone = [...saveAssetWithdrawTableArray];
     // console.log(clone);
-    clone[index][e.target.name] = e.target.value;
+    clone[index][e.target.name] = e.target.name === "amount" ? parseInt(e.target.value) : e.target.value;
     // console.log(e.target.value)
     // console.log(saveAssetWithdrawTableArray[index].maxQuantity)
 
@@ -169,12 +169,13 @@ function TableBorrowRecord({
           disabled={
             saveAssetWithdrawTableArray[index].amount > 1
               ? false
-              : saveAssetWithdrawTableArray[index].isFetching
-              ? false
-              : true
+              // : saveAssetWithdrawTableArray[index].isFetching
+              //   ? false
+                : true
           }
           search={search}
           setSearch={setSearch}
+          errors={errorAssestTable}
         />
       </div>
       <div className="col-span-3 ">
@@ -189,12 +190,13 @@ function TableBorrowRecord({
           disabled={
             search.assetNumber !== ""
               ? false
-              : saveAssetWithdrawTableArray[index].isFetching
-              ? false
-              : true
+              // : saveAssetWithdrawTableArray[index].isFetching
+              //   ? false
+                : true
           }
           search={search}
           setSearch={setSearch}
+          errors={errorAssestTable}
         />
       </div>
       <input
@@ -208,20 +210,22 @@ function TableBorrowRecord({
       />
       <div className="col-span-3 grid grid-cols-4 gap-5">
         <input
-          className="col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          className={`${errorAssestTable && !saveAssetWithdrawTableArray[index]?.amount && 'border-red-500'} border-gray-300 text-sm col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
           name="amount"
-          required
+          type="text" inputmode="numeric"
+          min="0"
+          // required
           disabled={
             saveAssetWithdrawTableArray[index]?.isFetching === true
               ? true
               : search.assetNumber === ""
-              ? false
-              : true
+                ? false
+                : true
           }
           onChange={handleChange}
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.amount
+            saveAssetWithdrawTableArray[index]?.amount.toLocaleString()
           }
           placeholder={saveAssetWithdrawTableArray[index]?.maxQuantity}
         />
@@ -239,7 +243,7 @@ function TableBorrowRecord({
           disabled
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.pricePerUnit
+            saveAssetWithdrawTableArray[index]?.pricePerUnit.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
           }
         />
       </div>

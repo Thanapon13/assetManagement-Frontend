@@ -56,6 +56,7 @@ const BorrowCheckSaving = () => {
 
 
   const [assetList, setAssetList] = useState([]);
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
 
   // toggle check all
   const [isChecked, setIsChecked] = useState(false);
@@ -400,9 +401,15 @@ const BorrowCheckSaving = () => {
           type="button"
           onClick={(e) => handleSubmit(e, input.borrowReturnDate)}
           className="bg-text-green hover:bg-green-800 text-white text-sm rounded-md p-2"
+          // onClick={() => setShowModalConfirm(true)}
         >
           บันทึกคืนครุภัณฑ์
         </button>
+        {/* <ModalConfirmSave
+            isVisible={showModalConfirm}
+            onClose={() => setShowModalConfirm(false)}
+            // onSave={handleSubmit}
+          /> */}
       </div>
 
       <ToastContainer />

@@ -16,6 +16,9 @@ import { useEffect } from "react";
 import RowOfTableViewSubcomponentPackageAssetInformation from "../components/table/RowOfTableViewSubcomponentPackageAssetInformation";
 import { getPackageAssetById, updatePackageAsset } from "../api/packageAssetApi";
 import OnlyDateInput from "../components/date/onlyDateInput";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
+import ModalSuccess from "../components/modal/ModalSuccess";
+import { IoIosClose } from "react-icons/io";
 
 const EditPackageAssetInformation = () => {
   const { packageAssetId } = useParams();
@@ -35,7 +38,7 @@ const EditPackageAssetInformation = () => {
   );
 
   // useState
-  const [perPage, setPerPage] = useState(10);
+  const [isLoading, setIsLoading] = useState(true)
 
   const [input, setInput] = useState({
     // ID: "",
@@ -50,7 +53,7 @@ const EditPackageAssetInformation = () => {
     model: "",
     size: "",
     quantity: 0,
-    serialNumberMachine: "",
+    // serialNumberMachine: "", //
     source: "",
     category: "",
     acquiredType: "",
@@ -58,12 +61,12 @@ const EditPackageAssetInformation = () => {
     pricePerUnit: 0,
     guaranteedMonth: "",
     purposeOfUse: "",
-    allSector: "",
-    assetGroupNumber: "แมม",
-    type4: "type4",
-    type8: "type8",
-    type13: "type13",
-
+    sector: "",
+    // allSector: "", //
+    assetGroupNumber: "",
+    type4: "",
+    type8: "",
+    type13: "",
     status: "not approve",
   });
 
@@ -82,26 +85,28 @@ const EditPackageAssetInformation = () => {
   const [qr, setQr] = useState(input?.serialNumber);
 
   // สัญญาจัดซื้อ
-  const [acquisitionMethod, setAcquisitionMethod] = useState("");
-  const [moneyType, setMoneyType] = useState("");
-  const [deliveryDocument, setDeliveryDocument] = useState("");
-  const [contractNumber, setContractNumber] = useState("");
-  const [receivedDate, setReceivedDate] = useState(todayThaiDate);
-  const [seller, setSeller] = useState("");
-  const [price, setPrice] = useState("");
-  const [billNumber, setBillNumber] = useState("");
-  const [purchaseYear, setPurchaseYear] = useState(todayThaiDate);
-  const [purchaseDate, setPurchaseDate] = useState(todayThaiDate);
-  const [documentDate, setDocumentDate] = useState(todayThaiDate);
+  const [inputContract, setInputContract] = useState({
+    acquisitionMethod: "",
+    moneyType: "",
+    deliveryDocument: "",
+    contractNumber: "",
+    receivedDate: "",
+    seller: "",
+    price: "",
+    billNumber: "",
+    purchaseYear: "",
+    purchaseDate: "",
+    documentDate: "",
+  })
 
   // การจำหน่าย
-  const [salesDocument, setSalesDocument] = useState("");
-  const [distributeDocumentDate, setDistributeDocumentDate] =
-    useState(todayThaiDate);
-  const [distributeApprovalReleaseDate, setDistributeApprovalReleaseDate] =
-    useState(todayThaiDate);
-  const [distributeStatus, setDistributeStatus] = useState("");
-  const [distributionNote, setDistributionNote] = useState("");
+  const [inputSale, setInputSale] = useState({
+    salesDocument: "",
+    distributeDocumentDate: "",
+    distributeApprovalReleaseDate: "",
+    distributeStatus: "",
+    distributionNote: ""
+  })
 
   //Show Modal
   const [showViewImageModal, setShowViewImageModal] = useState(false);
@@ -110,6 +115,8 @@ const EditPackageAssetInformation = () => {
     useState(false);
   const [scanBarcodeModal, setScanBarcodeModal] = useState(false);
   const [scanQRCodeModal, setScanQRCodeModal] = useState(false);
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [showModalSuccess, setShowModalSuccess] = useState(false);
 
   //Modal ค่าเสื่อมราคา
   const [depreciationStartDate, setDepreciationStartDate] = useState(
@@ -175,7 +182,42 @@ const EditPackageAssetInformation = () => {
   const [insuranceExpiredDate, setInsuranceExpiredDate] =
     useState(todayThaiDate);
 
+  const [invalidName, setInvalidName] = useState(false)
   // handle
+  function checkInvalidEngName() {
+    return (/[ก-ฮ]/.test(input.engProductName))
+  }
+  function checkInvalidName() {
+    return (/[A-Za-z]/.test(input.productName))
+  }
+  const handleChangeSales = (e) => {
+    const { name, value } = e.target
+    setInputSale({
+      ...inputSale,
+      [name]: value
+    })
+  };
+  const handleChangeSelectSale = (name, value) => {
+    setInputSale({
+      ...inputSale,
+      [name]: value
+    })
+  };
+  const handleChangeContract = (e) => {
+    const { name, value } = e.target
+
+    setInputContract({
+      ...inputContract,
+      [name]: value
+      // [name]: name !== "price" ? value : (+value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    })
+  };
+  const handleChangeSelectContract = (name, value) => {
+    setInputContract({
+      ...inputContract,
+      [name]: value
+    })
+  };
   const handleChangeRealAssetId = (e) => {
     const clone = { ...input };
     clone.realAssetId = e.target.value;
@@ -213,6 +255,7 @@ const EditPackageAssetInformation = () => {
   };
   const handleChangePricePerUnit = (e) => {
     const clone = { ...input };
+    // clone.pricePerUnit = (+e.target.value).toLocaleString();
     clone.pricePerUnit = e.target.value;
     setInput(clone);
   };
@@ -321,10 +364,39 @@ const EditPackageAssetInformation = () => {
     setArrayDocument(clone);
   };
 
-  const handleGenData = (e) => {};
+  const handleGenData = (e) => { };
+  // const [errorTable, setErrorTable] = useState(false)
+  const handleForm = async () => {
+    let errInput, errContract, errSale, errTable
+    console.log(input)
+    Object.values(input).map((value, index) => {
+      if (errInput) return
+      if (!value) errInput = true
+    })
+    bottomSubComponentData.map(ele => {
+      Object.values(ele).map((value, index) => {
+        const key = (Object.keys(ele)[index])
+        if (errTable) return
+        if(key === "serialNumber" || key == "pricePerUnit" || key == "asset01") {
+          if (!value) errTable = true
+        }
+      })
+    })
+    Object.values(inputContract).map((value, index) => {
+      if (errContract) return
+      if (!value) errContract = true
+    })
+    Object.entries(inputSale).forEach(([key, value], index) => {
+      if (errSale || key === "distributionNote") return
+      if (!value) errSale = true
+    })
+    console.log(errInput, errContract, errSale, errTable);
+    if (errInput) window.scrollTo({ top: 170, behavior: "smooth", });
+    // if (errTable) setErrorTable(true)
+    if (!(errInput || errContract || errSale || errTable)) setShowModalConfirm(true)
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
     const inputJSON = JSON.stringify(input);
     // const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
@@ -332,28 +404,28 @@ const EditPackageAssetInformation = () => {
     formData.append("insuranceStartDate", insuranceStartDate);
     formData.append("insuranceExpiredDate", insuranceExpiredDate);
 
-   // image file
-   const existArrayImage = [];
-   arrayImage.forEach((el) => {
-     if (el.image._id) {
-       existArrayImage.push(el.image);
-     } else {
-       formData.append("arrayImage", el.image);
-     }
-   });
-   console.log("existArrayImage",existArrayImage)
-   formData.append("existArrayImage", JSON.stringify(existArrayImage));
+    // image file
+    const existArrayImage = [];
+    arrayImage.forEach((el) => {
+      if (el.image._id) {
+        existArrayImage.push(el.image);
+      } else {
+        formData.append("arrayImage", el.image);
+      }
+    });
+    console.log("existArrayImage", existArrayImage)
+    formData.append("existArrayImage", JSON.stringify(existArrayImage));
 
-   // document file
-   const existArrayDocument = [];
-   arrayDocument.forEach((el) => {
-     if (el.document._id) {
-       existArrayDocument.push(el.document);
-     } else {
-       formData.append("arrayDocument", el.document);
-     }
-   });
-   formData.append("existArrayDocument", JSON.stringify(existArrayDocument));
+    // document file
+    const existArrayDocument = [];
+    arrayDocument.forEach((el) => {
+      if (el.document._id) {
+        existArrayDocument.push(el.document);
+      } else {
+        formData.append("arrayDocument", el.document);
+      }
+    });
+    formData.append("existArrayDocument", JSON.stringify(existArrayDocument));
 
     // formData.append("genDataJSON", genDataJSON);
     formData.append("depreciationStartDate", depreciationStartDate);
@@ -418,33 +490,34 @@ const EditPackageAssetInformation = () => {
 
 
     //สัญญาจัดซื้อ
-    formData.append("acquisitionMethod", acquisitionMethod);
-    formData.append("moneyType", moneyType);
-    formData.append("deliveryDocument", deliveryDocument);
-    formData.append("contractNumber", contractNumber);
-    formData.append("receivedDate", receivedDate);
-    formData.append("seller", seller);
-    formData.append("price", price);
-    formData.append("billNumber", billNumber);
-    formData.append("purchaseYear", purchaseYear);
-    formData.append("purchaseDate", purchaseDate);
-    formData.append("documentDate", documentDate);
+    formData.append("acquisitionMethod", inputContract.acquisitionMethod);
+    formData.append("moneyType", inputContract.moneyType);
+    formData.append("deliveryDocument", inputContract.deliveryDocument);
+    formData.append("contractNumber", inputContract.contractNumber);
+    formData.append("receivedDate", inputContract.receivedDate);
+    formData.append("seller", inputContract.seller);
+    formData.append("price", inputContract.price);
+    formData.append("billNumber", inputContract.billNumber);
+    formData.append("purchaseYear", inputContract.purchaseYear);
+    formData.append("purchaseDate", inputContract.purchaseDate);
+    formData.append("documentDate", inputContract.documentDate);
 
     //การจำหน่าย
-    formData.append("salesDocument", salesDocument);
-    formData.append("distributeDocumentDate", distributeDocumentDate);
-    formData.append(
-      "distributeApprovalReleaseDate",
-      distributeApprovalReleaseDate
-    );
-    formData.append("distributeStatus", distributeStatus);
-    formData.append("distributionNote", distributionNote);
+    formData.append("salesDocument", inputSale.salesDocument);
+    formData.append("distributeDocumentDate", inputSale.distributeDocumentDate);
+    formData.append("distributeApprovalReleaseDate", inputSale.distributeApprovalReleaseDate);
+    formData.append("distributeStatus", inputSale.distributeStatus);
+    formData.append("distributionNote", inputSale.distributionNote);
 
     //for subComponent
     const bottomSubComponentDataJSON = JSON.stringify(bottomSubComponentData);
     formData.append("bottomSubComponentDataJSON", bottomSubComponentDataJSON);
 
-    await updatePackageAsset(formData,packageAssetId);
+    const response = await updatePackageAsset(formData, packageAssetId);
+    if (response.data.message.includes("updated success")) {
+      setShowModalConfirm(false)
+      setShowModalSuccess(true)
+    }
   };
 
   useEffect(() => {
@@ -453,9 +526,6 @@ const EditPackageAssetInformation = () => {
         const res = await getPackageAssetById(packageAssetId);
         console.log(res.data.packageAsset[0]);
         const packageAsset = res.data.packageAsset[0];
-
-        setImg(packageAsset.imageArray[0].image);
-
         setInput({
           ...input,
           engProductName: packageAsset.engProductName,
@@ -475,12 +545,16 @@ const EditPackageAssetInformation = () => {
           pricePerUnit: packageAsset.pricePerUnit,
           guaranteedMonth: packageAsset.guaranteedMonth,
           purposeOfUse: packageAsset.purposeOfUse,
-          allSector: packageAsset.allSector,
+          // allSector: packageAsset.allSector || 'ast', //
           assetNumber: packageAsset.assetNumber,
           sector: packageAsset.sector,
-          asset01: packageAsset.asset01,
-          serialNumber: packageAsset.serialNumber,
+          // asset01: packageAsset.asset01 || 'as01', //
+          // serialNumber: packageAsset.serialNumber || 'srn', //
           replacedAssetNumber: packageAsset.replacedAssetNumber,
+          assetGroupNumber: packageAsset.assetGroupNumber,
+          type4: packageAsset.type4,
+          type8: packageAsset.type8,
+          type13: packageAsset.type13,
         });
         setInsuranceStartDate(new Date(packageAsset.insuranceStartDate));
         setInsuranceExpiredDate(new Date(packageAsset.insuranceExpiredDate));
@@ -563,28 +637,30 @@ const EditPackageAssetInformation = () => {
         );
 
         // สัญญาจัดซื้อ
-        setAcquisitionMethod(packageAsset.purchaseContract.acquisitionMethod);
-        setMoneyType(packageAsset.purchaseContract.moneyType);
-        setDeliveryDocument(packageAsset.purchaseContract.deliveryDocument);
-        setContractNumber(packageAsset.purchaseContract.contractNumber);
-        setReceivedDate(new Date(packageAsset.purchaseContract.receivedDate));
-        setSeller(packageAsset.purchaseContract.seller);
-        setPrice(packageAsset.purchaseContract.price);
-        setBillNumber(packageAsset.purchaseContract.billNumber);
-        setPurchaseYear(new Date(packageAsset.purchaseContract.purchaseYear));
-        setPurchaseDate(new Date(packageAsset.purchaseContract.purchaseDate));
-        setDocumentDate(new Date(packageAsset.purchaseContract.documentDate));
+        setInputContract({
+          acquisitionMethod: packageAsset.purchaseContract.acquisitionMethod,
+          moneyType: packageAsset.purchaseContract.moneyType,
+          deliveryDocument: packageAsset.purchaseContract.deliveryDocument,
+          contractNumber: packageAsset.purchaseContract.contractNumber,
+          receivedDate: new Date(packageAsset.purchaseContract.receivedDate),
+          seller: packageAsset.purchaseContract.seller,
+          price: packageAsset.purchaseContract.price,
+          billNumber: packageAsset.purchaseContract.billNumber,
+          purchaseYear: new Date(packageAsset.purchaseContract.purchaseYear),
+          purchaseDate: new Date(packageAsset.purchaseContract.purchaseDate),
+          documentDate: new Date(packageAsset.purchaseContract.documentDate),
+        })
+
         // การจำหน่าย
-        setSalesDocument(packageAsset.distribution.salesDocument);
-        setDistributeStatus(packageAsset.distribution.distributeStatus);
-        setDistributionNote(packageAsset.distribution.distributionNote);
-        setSalesDocument(packageAsset.distribution.salesDocument);
-        setDistributeDocumentDate(
-          new Date(packageAsset.distribution.distributeDocumentDate)
-        );
-        setDistributeApprovalReleaseDate(
-          new Date(packageAsset.distribution.distributeApprovalReleaseDate)
-        );
+        setInputSale({
+          salesDocument: packageAsset.distribution.salesDocument,
+          distributeDocumentDate: new Date(packageAsset.distribution.distributeDocumentDate),
+          distributeApprovalReleaseDate: new Date(packageAsset.distribution.distributeApprovalReleaseDate),
+          distributeStatus: packageAsset.distribution.distributeStatus,
+          distributionNote: packageAsset.distribution.distributionNote
+        })
+
+        if (packageAsset) setIsLoading(false)
       } catch (err) {
         console.log(err);
       }
@@ -613,7 +689,7 @@ const EditPackageAssetInformation = () => {
         {/* Header */}
         <div className="flex items-center">
           <Link
-            to="/assetInformationIndex"
+            to="/packageAssetInformationIndex"
             className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
           >
             <BsArrowLeft className="text-lg" />
@@ -634,7 +710,7 @@ const EditPackageAssetInformation = () => {
 
             <div className="text-text-gray">/</div>
             <Link
-              to="/assetInformationIndex"
+              to="/packageAssetInformationIndex"
               className=" text-text-green underline text-xs focus:text-sky-700 focus:underline ml-2"
             >
               ข้อมูลครุภัณฑ์
@@ -646,231 +722,257 @@ const EditPackageAssetInformation = () => {
           </div>
         </div>
 
-        {/* block white top */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-          <div>บันทึกใบเบิกจ่ายครุภัณฑ์</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-            {/* ชื่อครุภัณฑ์ภาษาไทย */}
-            <div>
-              <div className="mb-1">ชื่อครุภัณฑ์ภาษาไทย</div>
-              <input
-                type="text"
-                name="productName"
-                id="productName"
-                onChange={handleChangeProductName}
-                value={input.productName}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* ชื่อครุภัณฑ์ภาษาอังกฤษ */}
-            <div>
-              <div className="mb-1">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
-              <input
-                type="text"
-                name="engProductName"
-                id="engProductName"
-                onChange={handleChangeEngProductName}
-                value={input.engProductName}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
+        {isLoading
+          ? '...'
+          : <>
+            {/* block white top */}
+            <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+              <div>บันทึกใบเบิกจ่ายครุภัณฑ์</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
+                {/* ชื่อครุภัณฑ์ภาษาไทย */}
+                <div>
+                  <div className="mb-1">ชื่อครุภัณฑ์ภาษาไทย</div>
+                  <input
+                    type="text"
+                    name="productName"
+                    id="productName"
+                    onChange={handleChangeProductName}
+                    value={input.productName}
+                    className={`${!input.productName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                  {/* <div className="text-red-500 pt-1">{invalidName === "productName" ? `*โปรดระบุให้ถูกต้อง` : !input.productName && `*โปรดระบุ`}</div> */}
+                  <div className="text-red-500 pt-1">{checkInvalidName() && `*โปรดระบุให้ถูกต้อง`}</div>
+                </div>
+                {/* ชื่อครุภัณฑ์ภาษาอังกฤษ */}
+                <div>
+                  <div className="mb-1">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
+                  <input
+                    type="text"
+                    name="engProductName"
+                    id="engProductName"
+                    onChange={handleChangeEngProductName}
+                    value={input.engProductName}
+                    className={`${!input.engProductName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                  {/* <div className="text-red-500 pt-1">{invalidName === "engProductName" ? `*โปรดระบุให้ถูกต้อง` : !input.engProductName && `*โปรดระบุ`}</div> */}
+                  <div className="text-red-500 pt-1">{checkInvalidEngName() && `*โปรดระบุให้ถูกต้อง`}</div>
+                </div>
 
-            {/* ประเภทครุภัณฑ์ */}
-            <div>
-              <div className="mb-1">ประเภทครุภัณฑ์</div>
-              <input
-                type="text"
-                name="type"
-                id="type"
-                onChange={handleChangeType}
-                value={input.type}
-                className="w-full h-[38px] bg-gray-200  border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* ชนิดครุภัณฑ์ */}
-            <div>
-              <div className="mb-1">ชนิดครุภัณฑ์</div>
-              <input
-                type="text"
-                name="kind"
-                id="kind"
-                onChange={handleChangeKind}
-                value={input.kind}
-                className="w-full h-[38px] bg-gray-200  border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
+                {/* ประเภทครุภัณฑ์ */}
+                <div>
+                  <div className="mb-1">ประเภทครุภัณฑ์</div>
+                  <input
+                    type="text"
+                    name="type"
+                    id="type"
+                    onChange={handleChangeType}
+                    value={input.type}
+                    className={`${!input.type && 'border-red-500'}  w-full h-[38px] bg-gray-200  border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
+                {/* ชนิดครุภัณฑ์ */}
+                <div>
+                  <div className="mb-1">ชนิดครุภัณฑ์</div>
+                  <input
+                    type="text"
+                    name="kind"
+                    id="kind"
+                    onChange={handleChangeKind}
+                    value={input.kind}
+                    className={`${!input.kind && 'border-red-500'}  w-full h-[38px] bg-gray-200  border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
 
-            {/* ลำดับครุภัณฑ์ (ID) */}
-            <div>
-              <div className="mb-1">ลำดับครุภัณฑ์ (ID)</div>
-              <input
-                type="text"
-                name="realAssetId"
-                id="realAssetId"
-                onChange={handleChangeRealAssetId}
-                value={input.realAssetId}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
+                {/* ลำดับครุภัณฑ์ (ID) */}
+                <div>
+                  <div className="mb-1">ลำดับครุภัณฑ์ (ID)</div>
+                  <input
+                    type="text"
+                    name="realAssetId"
+                    id="realAssetId"
+                    onChange={handleChangeRealAssetId}
+                    value={input.realAssetId}
+                    className={`${!input.realAssetId && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
 
-            {/* หน่วยนับ */}
-            <div>
-              <div className="mb-1">หน่วยนับ</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"หน่วยนับ"}
-                />
-              </div>
-            </div>
+                {/* หน่วยนับ */}
+                <div>
+                  <div className="mb-1">หน่วยนับ</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"หน่วยนับ"}
+                      isValid={!input.unit}
+                    />
+                  </div>
+                </div>
 
-            {/* ยี่ห้อ */}
-            <div>
-              <div className="mb-1">ยี่ห้อ</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ยี่ห้อ"}
-                />
-              </div>
-            </div>
-            {/* รุ่น */}
-            <div>
-              <div className="mb-1">รุ่น</div>
-              <input
-                type="text"
-                name="model"
-                id="model"
-                onChange={handleChangeModel}
-                value={input.model}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
+                {/* ยี่ห้อ */}
+                <div>
+                  <div className="mb-1">ยี่ห้อ</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"ยี่ห้อ"}
+                      isValid={!input.brand}
+                    />
+                  </div>
+                </div>
+                {/* รุ่น */}
+                <div>
+                  <div className="mb-1">รุ่น</div>
+                  <input
+                    type="text"
+                    name="model"
+                    id="model"
+                    onChange={handleChangeModel}
+                    value={input.model}
+                    isValid={!input.model}
+                    className={`${!input.model && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
 
-            {/* ขนาด */}
-            <div>
-              <div className="mb-1">ขนาด</div>
-              <input
-                type="text"
-                name="size"
-                id="size"
-                onChange={handleChangeSize}
-                value={input.size}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
+                {/* ขนาด */}
+                <div>
+                  <div className="mb-1">ขนาด</div>
+                  <input
+                    type="text"
+                    name="size"
+                    id="size"
+                    onChange={handleChangeSize}
+                    value={input.size}
+                    isValid={!input.size}
+                    className={`${!input.size && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
 
-            {/* หมวดหมู่ครุภัณฑ์ */}
-            <div>
-              <div className="mb-1">หมวดหมู่ครุภัณฑ์</div>
-              <div className="flex h-[38px] ">
-                <Selector
+                {/* หมวดหมู่ครุภัณฑ์ */}
+                <div>
+                  <div className="mb-1">หมวดหมู่ครุภัณฑ์</div>
+                  <div className="flex h-[38px] ">
+                    <input
+                      type="text"
+                      name="kind"
+                      id="kind"
+                      onChange={handleChangeKind}
+                      value={input.category}
+                      className={`${!input.category && 'border-red-500'}  w-full h-[38px] bg-gray-200  border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                    />
+                    {/* <Selector
                   placeholder={"Select"}
                   state={input}
                   setState={setInput}
                   id={"หมวดหมู่ครุภัณฑ์"}
-                />
-              </div>
-            </div>
-            {/* กลุ่ม */}
-            <div>
-              <div className="mb-1">กลุ่ม</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"กลุ่ม"}
-                />
-              </div>
-            </div>
-            {/* ประเภทที่ได้มา */}
-            <div>
-              <div className="mb-1">ประเภทที่ได้มา</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ประเภทที่ได้มา"}
-                />
-              </div>
-            </div>
-            {/* แหล่งที่ได้มา */}
-            <div>
-              <div className="mb-1">แหล่งที่ได้มา</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"แหล่งที่ได้มา"}
-                />
-              </div>
-            </div>
-            {/* วัตถุประสงค์ในการใช้งาน */}
-            <div>
-              <div className="mb-1">วัตถุประสงค์ในการใช้งาน</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"วัตถุประสงค์ในการใช้งาน"}
-                />
-              </div>
-            </div>
-            {/* ราคาต่อหน่วย (บาท) */}
-            <div>
-              <div className="mb-1">ราคาต่อหน่วย (บาท)</div>
-              <input
-                type="text"
-                name="pricePerUnit"
-                id="pricePerUnit"
-                onChange={handleChangePricePerUnit}
-                value={input.pricePerUnit}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* จำนวนเดือนที่รับประกัน (เดือน) */}
-            <div>
-              <div className="mb-1">จำนวนเดือนที่รับประกัน (เดือน)</div>
-              <input
-                type="text"
-                name="guaranteedMonth"
-                id="guaranteedMonth"
-                onChange={handleChangeGuaranteedMonth}
-                value={input.guaranteedMonth}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* วันที่เริ่มรับประกัน */}
-            <div>
-              <div className="mb-1">วันที่เริ่มรับประกัน</div>
-              <div className="flex h-[38px]">
-                <DateInput
-                  state={insuranceStartDate}
-                  setState={setInsuranceStartDate}
-                />
-              </div>
-            </div>
-            {/* วันที่สิ้นสุดรับประกัน */}
-            <div>
-              <div className="mb-1">วันที่สิ้นสุดรับประกัน</div>
-              <div className="flex h-[38px]">
-                <DateInput
-                  state={insuranceExpiredDate}
-                  setState={setInsuranceExpiredDate}
-                />
-              </div>
-            </div>
+                  isValid={!input.category}
+                /> */}
+                  </div>
+                </div>
+                {/* กลุ่ม */}
+                <div>
+                  <div className="mb-1">กลุ่ม</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"กลุ่ม"}
+                      isValid={!input.group}
+                    />
+                  </div>
+                </div>
+                {/* ประเภทที่ได้มา */}
+                <div>
+                  <div className="mb-1">ประเภทที่ได้มา</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"ประเภทที่ได้มา"}
+                      isValid={!input.acquiredType}
+                    />
+                  </div>
+                </div>
+                {/* แหล่งที่ได้มา */}
+                <div>
+                  <div className="mb-1">แหล่งที่ได้มา</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"แหล่งที่ได้มา"}
+                      isValid={!input.source}
+                    />
+                  </div>
+                </div>
+                {/* วัตถุประสงค์ในการใช้งาน */}
+                <div>
+                  <div className="mb-1">วัตถุประสงค์ในการใช้งาน</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"วัตถุประสงค์ในการใช้งาน"}
+                      isValid={!input.purposeOfUse}
+                    />
+                  </div>
+                </div>
+                {/* ราคาต่อหน่วย (บาท) */}
+                <div>
+                  <div className="mb-1">ราคาต่อหน่วย (บาท)</div>
+                  <input
+                    type="number"
+                    name="pricePerUnit"
+                    id="pricePerUnit"
+                    onChange={handleChangePricePerUnit}
+                    value={(input.pricePerUnit)}
+                    className={`${!input.pricePerUnit && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
+                {/* จำนวนเดือนที่รับประกัน (เดือน) */}
+                <div>
+                  <div className="mb-1">จำนวนเดือนที่รับประกัน (เดือน)</div>
+                  <input
+                    type="text"
+                    name="guaranteedMonth"
+                    id="guaranteedMonth"
+                    onChange={handleChangeGuaranteedMonth}
+                    value={input.guaranteedMonth}
+                    className={`${!input.guaranteedMonth && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
+                {/* วันที่เริ่มรับประกัน */}
+                <div>
+                  <div className="mb-1">วันที่เริ่มรับประกัน</div>
+                  <div className="flex h-[38px]">
+                    <DateInput
+                      state={insuranceStartDate}
+                      setState={setInsuranceStartDate}
+                      error={!insuranceStartDate}
+                    />
+                  </div>
+                </div>
+                {/* วันที่สิ้นสุดรับประกัน */}
+                <div>
+                  <div className="mb-1">วันที่สิ้นสุดรับประกัน</div>
+                  <div className="flex h-[38px]">
+                    <DateInput
+                      state={insuranceExpiredDate}
+                      setState={setInsuranceExpiredDate}
+                      error={!insuranceExpiredDate}
+                    />
+                  </div>
+                </div>
 
-            {/* หน่วยงานเจ้าของครุภัณฑ์ */}
-            <div>
+                {/* หน่วยงานเจ้าของครุภัณฑ์ */}
+                {/* <div>
               <div className="mb-1">หน่วยงานเจ้าของครุภัณฑ์</div>
               <div className="flex h-[38px] ">
                 <Selector
@@ -880,60 +982,79 @@ const EditPackageAssetInformation = () => {
                   id={"หน่วยงานเจ้าของครุภัณฑ์"}
                 />
               </div>
-            </div>
+            </div> */}
 
-            {/* ประเภทครุภัณฑ์ 4 หลัก */}
-            <div>
-              <div className="mb-1">ประเภทครุภัณฑ์ 4 หลัก</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ประเภทครุภัณฑ์ 4 หลัก"}
-                />
-              </div>
-            </div>
-            {/* ประเภทครุภัณฑ์ 8 หลัก */}
-            <div>
-              <div className="mb-1">ประเภทครุภัณฑ์ 8 หลัก</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ประเภทครุภัณฑ์ 8 หลัก"}
-                />
-              </div>
-            </div>
-            {/* ประเภทครุภัณฑ์ 13 หลัก */}
-            <div>
-              <div className="mb-1">ประเภทครุภัณฑ์ 13 หลัก</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ประเภทครุภัณฑ์ 13 หลัก"}
-                />
-              </div>
-            </div>
+                {/* ประเภทครุภัณฑ์ 4 หลัก */}
+                <div>
+                  <div className="mb-1">ประเภทครุภัณฑ์ 4 หลัก</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"ประเภทครุภัณฑ์ 4 หลัก"}
+                      // isValid={!input.type4}
+                      disabled={"true"}
+                    />
+                  </div>
+                </div>
+                {/* ประเภทครุภัณฑ์ 8 หลัก */}
+                <div>
+                  <div className="mb-1">ประเภทครุภัณฑ์ 8 หลัก</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"ประเภทครุภัณฑ์ 8 หลัก"}
+                      disabled
+                    />
+                  </div>
+                </div>
+                {/* ประเภทครุภัณฑ์ 13 หลัก */}
+                <div>
+                  <div className="mb-1">ประเภทครุภัณฑ์ 13 หลัก</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"ประเภทครุภัณฑ์ 13 หลัก"}
+                      disabled
+                    />
+                  </div>
+                </div>
 
-            {/* แทนครุภัณฑ์ที่ถูกแทงจำหน่าย */}
-            <div>
-              <div className="mb-1">แทนครุภัณฑ์ที่ถูกแทงจำหน่าย</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"แทนครุภัณฑ์ที่ถูกแทงจำหน่าย"}
-                />
-              </div>
-            </div>
+                <div>
+                  <div className="mb-1">หน่วยงาน</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"หน่วยงาน"}
+                      isValid={!input.sector}
+                      index={0}
+                    />
+                  </div>
+                </div>
 
-            {/* เลขครุภัณฑ์ */}
-            <div>
+                {/* แทนครุภัณฑ์ที่ถูกแทงจำหน่าย */}
+                <div>
+                  <div className="mb-1">แทนครุภัณฑ์ที่ถูกแทงจำหน่าย</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={input}
+                      setState={setInput}
+                      id={"แทนครุภัณฑ์ที่ถูกแทงจำหน่าย"}
+                      isValid={!input.replacedAssetNumber}
+                    />
+                  </div>
+                </div>
+
+                {/* เลขครุภัณฑ์ */}
+                {/* <div>
               <div className="mb-1">เลขครุภัณฑ์</div>
               <input
                 type="text"
@@ -943,379 +1064,407 @@ const EditPackageAssetInformation = () => {
                 value={input.assetNumber}
                 className="w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
-            </div>
-            {/* รหัสกลุ่มครุภัณฑ์ */}
-            <div>
-              <div className="mb-1">รหัสกลุ่มครุภัณฑ์</div>
-              <input
-                type="text"
-                name="assetGroupNumber"
-                id="assetGroupNumber"
-                disabled
-                onChange={handleChangeAssetGroupNumber}
-                value={input.assetGroupNumber}
-                className="w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
+            </div> */}
+                {/* รหัสกลุ่มครุภัณฑ์ */}
+                <div>
+                  <div className="mb-1">รหัสกลุ่มครุภัณฑ์</div>
+                  <input
+                    type="text"
+                    name="assetGroupNumber"
+                    id="assetGroupNumber"
+                    disabled
+                    onChange={handleChangeAssetGroupNumber}
+                    value={input.assetGroupNumber}
+                    className={`${!input.assetGroupNumber && 'border-red-500'}  w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
 
-            <button
+                {/* <button
               type="button"
-              className="sm:col-start-2 sm:mt-5 text-white w-full h-[38px] px-4 py-2  rounded tracking-wider bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+              // className="sm:col-start-2 sm:mt-5 text-white w-full h-[38px] px-4 py-2  rounded tracking-wider bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+              className="sm:col-start-2 text-white w-full h-[38px] px-4 py-2  rounded tracking-wider bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
               onClick={handleGenData}
             >
               สร้างเลขครุภัณฑ์
-            </button>
-          </div>
+            </button> */}
+              </div>
 
-          {/* block white bottom */}
-          {/* bottom */}
-          <div className=" my-3 p-3">
-            <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-              <div className="w-[1000px] xl:w-full h-[300px] ">
-                <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-md">
-                  <div className="grid grid-cols-19 gap-2 text-center">
-                    <div className="ml-2">ลำดับ</div>
-                    <div className="col-span-4">เลขครุภัณฑ์</div>
-                    <div className="col-span-4">ชื่อครุภัณฑ์</div>
-                    <div className="col-span-4">Serial Number</div>
-                    <div className="col-span-2">ราคา</div>
-                    <div className="col-span-2">สท.01</div>
-                    <div className="col-span-2">สติกเกอร์</div>
+              {/* block white bottom */}
+              {/* bottom */}
+              <div className=" my-3 p-3">
+                <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
+                  <div className="w-[1000px] xl:w-full h-[300px] ">
+                    <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-md">
+                      <div className="grid grid-cols-19 gap-2 text-center">
+                        <div className="ml-2">ลำดับ</div>
+                        <div className="col-span-4">เลขครุภัณฑ์</div>
+                        <div className="col-span-4">ชื่อครุภัณฑ์</div>
+                        <div className="col-span-4">Serial Number</div>
+                        <div className="col-span-2">ราคา</div>
+                        <div className="col-span-2">สท.01</div>
+                        <div className="col-span-2">สติกเกอร์</div>
+                      </div>
+                    </div>
+
+                    {bottomSubComponentData?.map((el, idx) => {
+                      return (
+                        <RowOfTableViewSubcomponentPackageAssetInformation
+                          key={idx}
+                          index={idx}
+                          bottomSubComponentData={bottomSubComponentData}
+                          setBottomSubComponentData={setBottomSubComponentData}
+                          scanBarcodeModal={scanBarcodeModal}
+                          scanQRCodeModal={scanQRCodeModal}
+                          setScanBarcodeModal={setScanBarcodeModal}
+                          setScanQRCodeModal={setScanQRCodeModal}
+                          setIndexGenData={setIndexGenData}
+                          indexGenData={indexGenData}
+                          barcode={barcode}
+                          setBarcode={setBarcode}
+                          qr={qr}
+                          setQr={setQr}
+                          isValid={true}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
-
-                {bottomSubComponentData?.map((el, idx) => {
-                  return (
-                    <RowOfTableViewSubcomponentPackageAssetInformation
-                      key={idx}
-                      index={idx}
-                      bottomSubComponentData={bottomSubComponentData}
-                      setBottomSubComponentData={setBottomSubComponentData}
-                      scanBarcodeModal={scanBarcodeModal}
-                      scanQRCodeModal={scanQRCodeModal}
-                      setScanBarcodeModal={setScanBarcodeModal}
-                      setScanQRCodeModal={setScanQRCodeModal}
-                      setIndexGenData={setIndexGenData}
-                      indexGenData={indexGenData}
-                      barcode={barcode}
-                      setBarcode={setBarcode}
-                      qr={qr}
-                      setQr={setQr}
-                    />
-                  );
-                })}
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* ภาพครุภัณฑ์และเอกสารประกอบ */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-          {/* Header ภาพครุภัณฑ์และเอกสารประกอบ */}
-          <div className="font-semibold">ภาพครุภัณฑ์และเอกสารประกอบ</div>
-          <div className="flex text-xs mb-6">
-            <div className=" text-text-gray mr-1">รูปภาพครุภัณฑ์</div>
-            <div className=" text-button-red mr-1">*</div>
-            <div className="font-semibold">({arrayImage.length}/8 รูป) </div>
-          </div>
-          {/* image */}
-          <div className="sm:grid sm:grid-cols-6 gap-6">
-            <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4 h-96">
-              <img src={boxIcon} className="w-[50px]" />
-              <div className="text-text-green font-semibold">
-                วางรูปภาพครุภัณฑ์ หรือ
+            {/* ภาพครุภัณฑ์และเอกสารประกอบ */}
+            <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+              {/* Header ภาพครุภัณฑ์และเอกสารประกอบ */}
+              <div className="font-semibold">ภาพครุภัณฑ์และเอกสารประกอบ</div>
+              <div className="flex text-xs mb-6">
+                <div className=" text-text-gray mr-1">รูปภาพครุภัณฑ์</div>
+                <div className=" text-button-red mr-1">*</div>
+                <div className="font-semibold">({arrayImage.length}/8 รูป) </div>
               </div>
-              <button
-                className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-full text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-                onClick={() => inputImg.current.click()}
-              >
-                Upload
-              </button>
-              <input
-                type="file"
-                multiple
-                className="hidden"
-                ref={inputImg}
-                onChange={handleImageChange}
-              />
-              <div className="flex flex-col justify-center items-center">
-                <div className="text-text-gray text-sm">
-                  สามารถอัพโหลดได้หลายไฟล์
-                </div>
-                <div className="text-text-gray text-sm">
-                  จำกัด 8 ไฟล์ ไฟล์ละไม่เกิน 2MB.
-                </div>
-                <div className="text-text-gray text-sm">(JPEG , PNG , SVG)</div>
-              </div>
-              <button
-                className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-                onClick={() => setShowViewImageModal(true)}
-              >
-                <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
-                ดูรูปภาพ
-              </button>
-            </div>
-            {/* file upload image*/}
-            <div className="col-span-2 sm:mt-5">
-              {arrayImage.map((el, idx) => (
-                <div
-                  key={idx}
-                  className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
-                >
-                  <div className="flex items-center text-text-green">
-                    <img src={docIcon} className="w-4 h-4 " />
-                    <div className="ml-2 text-sm">{el.image.name}</div>
+              {/* image */}
+              <div className="sm:grid sm:grid-cols-6 gap-6">
+                <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4 h-80">
+                  <img src={boxIcon} className="w-[50px]" />
+                  <div className="text-text-green font-semibold">
+                    วางรูปภาพครุภัณฑ์ หรือ
                   </div>
                   <button
-                    className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
-                    onClick={() => deleteImg(idx)}
+                    className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-full text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                    onClick={() => inputImg.current.click()}
                   >
-                    X
+                    Upload
                   </button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-6 gap-6 mt-5">
-            {/* คู่มือและเอกสารแนบ */}
-            <div className="sm:col-span-4">
-              <div className="  bg-background-page py-10 px-30 h-40 rounded-lg flex flex-col justify-center items-center gap-4 ">
-                <div className=" font-semibold">คู่มือและเอกสารแนบ</div>
-                <button
-                  className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-                  onClick={() => inputDoc.current.click()}
-                >
-                  เพิ่มคู่มือและเอกสารแนบ
-                </button>
-                <input
-                  type="file"
-                  multiple
-                  className="hidden"
-                  ref={inputDoc}
-                  onChange={handleFileChange}
-                />
-                <div className="text-text-gray text-sm">
-                  (DOCX , PDF , XLSX){" "}
-                </div>
-              </div>
-              {/* file upload คู่มือและเอกสารแนบ*/}
-              <div className="col-span-4 sm:mt-5">
-                {arrayDocument.map((el, idx) => (
-                  <div
-                    key={idx}
-                    className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
-                  >
-                    <div className="flex items-center text-text-green">
-                      <img src={docIcon} className="w-4 h-4 " />
-                      <div className="ml-2 text-sm">{el.document.name}</div>
+                  <input
+                    type="file"
+                    multiple
+                    className="hidden"
+                    ref={inputImg}
+                    onChange={handleImageChange}
+                  />
+                  <div className="flex flex-col justify-center items-center">
+                    <div className="text-text-gray text-sm">
+                      สามารถอัพโหลดได้หลายไฟล์
                     </div>
-                    <button
-                      className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
-                      onClick={() => deleteDoc(idx)}
-                    >
-                      X
-                    </button>
+                    <div className="text-text-gray text-sm">
+                      จำกัด 8 ไฟล์ ไฟล์ละไม่เกิน 2MB.
+                    </div>
+                    <div className="text-text-gray text-sm">(JPEG , PNG , SVG)</div>
                   </div>
-                ))}
+                </div>
+                {/* file upload image*/}
+                <div className="col-span-2 sm:mt-5">
+                  <div className="h-64 overflow-y-auto scrollbar">
+                    {arrayImage.map((el, idx) => (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
+                      >
+                        <div className="flex items-center text-text-green">
+                          <img src={docIcon} className="w-4 h-4 " />
+                          <div className="ml-2 text-sm">{el.image.name}</div>
+                        </div>
+                        <button
+                          className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
+                          onClick={() => deleteImg(idx)}
+                        >
+                          <IoIosClose className="text-2xl" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  {!!arrayImage.length &&
+                    <button
+                      className="mt-2 flex mx-auto items-center py-1 px-4 border-2 border-text-green shadow-sm font-medium rounded-md text-text-green hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                      onClick={() => setShowViewImageModal(true)}
+                    >
+                      <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
+                      ดูรูปภาพ
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-6 gap-6 mt-5">
+                {/* คู่มือและเอกสารแนบ */}
+                <div className="sm:col-span-4">
+                  <div className="  bg-background-page py-10 px-30 h-40 rounded-lg flex flex-col justify-center items-center gap-4 ">
+                    <div className=" font-semibold">คู่มือและเอกสารแนบ</div>
+                    <button
+                      className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+                      onClick={() => inputDoc.current.click()}
+                    >
+                      เพิ่มคู่มือและเอกสารแนบ
+                    </button>
+                    <input
+                      type="file"
+                      multiple
+                      className="hidden"
+                      ref={inputDoc}
+                      onChange={handleFileChange}
+                    />
+                    <div className="text-text-gray text-sm">
+                      (DOCX , PDF , XLSX){" "}
+                    </div>
+                  </div>
+                  {/* file upload คู่มือและเอกสารแนบ*/}
+                  <div className="col-span-4 sm:mt-5">
+                    {arrayDocument.map((el, idx) => (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
+                      >
+                        <div className="flex items-center text-text-green">
+                          <img src={docIcon} className="w-4 h-4 " />
+                          <div className="ml-2 text-sm">{el.document.name}</div>
+                        </div>
+                        <button
+                          className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
+                          onClick={() => deleteDoc(idx)}
+                        >
+                          <IoIosClose className="text-2xl" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ค่าเสื่อมราคา */}
+                <div className="sm:col-span-2 bg-background-page py-10 px-30 h-40 rounded-lg flex flex-col justify-center items-center gap-4">
+                  <div className=" font-semibold">ค่าเสื่อมราคา</div>
+                  <DeprecationDropdown
+                    setDepreciationShowModal={setDepreciationShowModal}
+                    setAccumulateDepreciationShowModal={
+                      setAccumulateDepreciationShowModal
+                    }
+                  />
+                </div>
               </div>
             </div>
 
-            {/* ค่าเสื่อมราคา */}
-            <div className="sm:col-span-2 bg-background-page py-10 px-30 h-40 rounded-lg flex flex-col justify-center items-center gap-4">
-              <div className=" font-semibold">ค่าเสื่อมราคา</div>
-              <DeprecationDropdown
-                setDepreciationShowModal={setDepreciationShowModal}
-                setAccumulateDepreciationShowModal={
-                  setAccumulateDepreciationShowModal
-                }
-              />
-            </div>
-          </div>
-        </div>
+            {/* สัญญาจัดซื้อ */}
+            <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+              <div>สัญญาจัดซื้อ</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
+                {/* วิธีการได้มา */}
+                <div>
+                  <div className="mb-1">วิธีการได้มา</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      setState={value => handleChangeSelectContract("acquisitionMethod", value)}
+                      state={inputContract.acquisitionMethod}
+                      isValid={!inputContract.acquisitionMethod}
+                      id={"วิธีการได้มา"}
+                    />
+                  </div>
+                </div>
+                {/* ประเภทเงิน */}
+                <div>
+                  <div className="mb-1">ประเภทเงิน</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={inputContract.moneyType}
+                      setState={value => handleChangeSelectContract("moneyType", value)}
+                      isValid={!inputContract.moneyType}
+                      id={"ประเภทเงิน"}
+                    />
+                  </div>
+                </div>
+                {/* เอกสารใบส่งของ */}
+                <div>
+                  <div className="mb-1">เอกสารใบส่งของ</div>
+                  <input
+                    type="text"
+                    name="deliveryDocument"
+                    id="deliveryDocument"
+                    onChange={handleChangeContract}
+                    value={inputContract.deliveryDocument}
+                    className={`${!inputContract.deliveryDocument && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
+                {/* เลขที่สัญญา */}
+                <div>
+                  <div className="mb-1">เลขที่สัญญา</div>
+                  <input
+                    type="text"
+                    name="contractNumber"
+                    id="contractNumber"
+                    onChange={handleChangeContract}
+                    value={inputContract.contractNumber}
+                    className={`${!inputContract.contractNumber && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
 
-        {/* สัญญาจัดซื้อ */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-          <div>สัญญาจัดซื้อ</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-            {/* วิธีการได้มา */}
-            <div>
-              <div className="mb-1">วิธีการได้มา</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={acquisitionMethod}
-                  setState={setAcquisitionMethod}
-                  id={"วิธีการได้มา"}
-                />
-              </div>
-            </div>
-            {/* ประเภทเงิน */}
-            <div>
-              <div className="mb-1">ประเภทเงิน</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={moneyType}
-                  setState={setMoneyType}
-                  id={"ประเภทเงิน"}
-                />
-              </div>
-            </div>
-            {/* เอกสารใบส่งของ */}
-            <div>
-              <div className="mb-1">เอกสารใบส่งของ</div>
-              <input
-                type="text"
-                name="deliveryDocument"
-                id="deliveryDocument"
-                onChange={(e) => setDeliveryDocument(e.target.value)}
-                value={deliveryDocument}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* เลขที่สัญญา */}
-            <div>
-              <div className="mb-1">เลขที่สัญญา</div>
-              <input
-                type="text"
-                name="contractNumber"
-                id="contractNumber"
-                onChange={(e) => setContractNumber(e.target.value)}
-                value={contractNumber}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* วันที่รับมอบ */}
-            <div>
-              <div className="mb-1">วันที่รับมอบ</div>
-              <div className="flex h-[38px]">
-                <DateInput state={receivedDate} setState={setReceivedDate} />
-              </div>
-            </div>
-            {/* ผู้ขาย */}
-            <div>
-              <div className="mb-1">ผู้ขาย</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={seller}
-                  setState={setSeller}
-                  id={"ผู้ขาย"}
-                />
-              </div>
-            </div>
-            {/* ราคาซื้อ (บาท) */}
-            <div>
-              <div className="mb-1">ราคาซื้อ (บาท)</div>
-              <input
-                type="text"
-                name="price"
-                id="price"
-                onChange={(e) => setPrice(e.target.value)}
-                value={price}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* เลขที่ใบเบิก */}
-            <div>
-              <div className="mb-1">เลขที่ใบเบิก</div>
-              <input
-                type="text"
-                name="billNumber"
-                id="billNumber"
-                onChange={(e) => setBillNumber(e.target.value)}
-                value={billNumber}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* ปีที่ซื้อ */}
-            <div>
-              <div className="mb-1">ปีที่ซื้อ</div>
-              <div className="flex h-[38px]">
-                <DateInput state={purchaseYear} setState={setPurchaseYear} />
+                {/* ผู้ขาย */}
+                <div>
+                  <div className="mb-1">ผู้ขาย</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={inputContract.seller}
+                      setState={value => handleChangeSelectContract("seller", value)}
+                      isValid={!inputContract.seller}
+                      id={"ผู้ขาย"}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-1">
+                  {/* วันที่ซื้อ */}
+                  <div>
+                    <div className="mb-1">วันที่ซื้อ</div>
+                    <div className="flex h-[38px]">
+                      <DateInput state={inputContract.purchaseDate}
+                        setState={value => handleChangeSelectContract("receivedDate", value)}
+                        error={!inputContract.purchaseDate}
+                      />
+                    </div>
+                  </div>
+                  {/* วันที่รับมอบ */}
+                  <div>
+                    <div className="mb-1">วันที่รับมอบ</div>
+                    <div className="flex h-[38px]">
+                      <DateInput state={inputContract.receivedDate}
+                        setState={value => handleChangeSelectContract("receivedDate", value)}
+                        error={!inputContract.receivedDate}
+                      />
+                    </div>
+                  </div>
+                </div>
+                {/* ราคาซื้อ (บาท) */}
+                <div>
+                  <div className="mb-1">ราคาซื้อ (บาท)</div>
+                  <input
+                    type="text"
+                    name="price"
+                    id="price"
+                    onChange={handleChangeContract}
+                    value={inputContract.price}
+                    className={`${!inputContract.price && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
+                {/* เลขที่ใบเบิก */}
+                <div>
+                  <div className="mb-1">เลขที่ใบเบิก</div>
+                  <input
+                    type="text"
+                    name="billNumber"
+                    id="billNumber"
+                    onChange={handleChangeContract}
+                    value={inputContract.billNumber}
+                    className={`${!inputContract.billNumber && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
+                {/* ปีที่ซื้อ */}
+                <div>
+                  <div className="mb-1">ปีงบประมาณที่ซื้อ</div>
+                  <div className="flex h-[38px]">
+                    <DateInput onlyYear state={inputContract.purchaseYear}
+                      setState={value => handleChangeSelectContract("purchaseYear", value)}
+                      error={!inputContract.purchaseYear}
+                    />
+                  </div>
+                </div>
+
+                {/* วันที่ลงเอกสาร */}
+                <div>
+                  <div className="mb-1">วันที่ลงเอกสาร</div>
+                  <div className="flex h-[38px]">
+                    <DateInput state={inputContract.documentDate} setState={value => handleChangeSelectContract("documentDate", value)}
+                      error={!inputContract.documentDate}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* วันที่ซื้อ */}
-            <div>
-              <div className="mb-1">วันที่ซื้อ</div>
-              <div className="flex h-[38px]">
-                <DateInput state={purchaseDate} setState={setPurchaseDate} />
+            {/* การจำหน่าย */}
+            <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+              <div>การจำหน่าย</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
+                {/* เอกสารจำหน่าย */}
+                <div>
+                  <div className="mb-1">เอกสารจำหน่าย</div>
+                  <input
+                    type="text"
+                    name="salesDocument"
+                    id="salesDocument"
+                    onChange={handleChangeSales}
+                    value={inputSale.salesDocument}
+                    className={`${!inputSale.salesDocument && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
+                {/* เอกสารลงวันที่ */}
+                <div>
+                  <div className="mb-1">เอกสารลงวันที่</div>
+                  <div className="flex h-[38px]">
+                    <DateInput
+                      setState={(value) => handleChangeSelectSale("distributeDocumentDate", value)}
+                      state={inputSale.distributeDocumentDate}
+                      error={!inputSale.distributeDocumentDate}
+                    />
+                  </div>
+                </div>
+                {/* วันอนุมัติจำหน่าย */}
+                <div>
+                  <div className="mb-1">วันอนุมัติจำหน่าย</div>
+                  <div className="flex h-[38px]">
+                    <DateInput
+                      setState={(value) => handleChangeSelectSale("distributeApprovalReleaseDate", value)}
+                      state={inputSale.distributeApprovalReleaseDate}
+                      error={!inputSale.distributeApprovalReleaseDate}
+                    />
+                  </div>
+                </div>
+                {/* สถานะ */}
+                <div>
+                  <div className="mb-1">สถานะ</div>
+                  <div className="flex h-[38px] ">
+                    <Selector
+                      placeholder={"Select"}
+                      state={inputSale.distributeStatus}
+                      setState={(value) => handleChangeSelectSale("distributeStatus", value)}
+                      id={"สถานะ"}
+                      isValid={!inputSale.distributeStatus}
+                    />
+                  </div>
+                </div>
+                {/* หมายเหตุ */}
+                <div>
+                  <div className="mb-1">หมายเหตุ</div>
+                  <input
+                    type="text"
+                    name="distributionNote"
+                    id="distributionNote"
+                    onChange={handleChangeSales}
+                    value={inputSale.distributionNote}
+                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                  />
+                </div>
               </div>
             </div>
-            {/* วันที่ลงเอกสาร */}
-            <div>
-              <div className="mb-1">วันที่ลงเอกสาร</div>
-              <div className="flex h-[38px]">
-                <DateInput state={documentDate} setState={setDocumentDate} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* การจำหน่าย */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-          <div>การจำหน่าย</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-            {/* เอกสารจำหน่าย */}
-            <div>
-              <div className="mb-1">เอกสารจำหน่าย</div>
-              <input
-                type="text"
-                name="salesDocument"
-                id="salesDocument"
-                onChange={(e) => setSalesDocument(e.target.value)}
-                value={salesDocument}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            {/* เอกสารลงวันที่ */}
-            <div>
-              <div className="mb-1">เอกสารลงวันที่</div>
-              <div className="flex h-[38px]">
-                <DateInput
-                  state={distributeDocumentDate}
-                  setState={setDistributeDocumentDate}
-                />
-              </div>
-            </div>
-            {/* วันอนุมัติจำหน่าย */}
-            <div>
-              <div className="mb-1">วันอนุมัติจำหน่าย</div>
-              <div className="flex h-[38px]">
-                <DateInput
-                  state={distributeApprovalReleaseDate}
-                  setState={setDistributeApprovalReleaseDate}
-                />
-              </div>
-            </div>
-            {/* สถานะ */}
-            <div>
-              <div className="mb-1">สถานะ</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={distributeStatus}
-                  setState={setDistributeStatus}
-                  id={"สถานะ"}
-                />
-              </div>
-            </div>
-            {/* หมายเหตุ */}
-            <div>
-              <div className="mb-1">หมายเหตุ</div>
-              <input
-                type="text"
-                name="distributionNote"
-                id="distributionNote"
-                onChange={(e) => setDistributionNote(e.target.value)}
-                value={distributionNote}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-        </div>
+          </>
+        }
 
         {/* Modal */}
         <Modal
@@ -1381,28 +1530,28 @@ const EditPackageAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationStartDate}
-                          setState={setDepreciationStartDate}
-                        />
+                      <OnlyDateInput
+                        state={depreciationStartDate}
+                        setState={setDepreciationStartDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationRegisterDate}
-                          setState={setDepreciationRegisterDate}
-                        />
+                      <OnlyDateInput
+                        state={depreciationRegisterDate}
+                        setState={setDepreciationRegisterDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationReceivedDate}
-                          setState={setDepreciationReceivedDate}
-                        />
+                      <OnlyDateInput
+                        state={depreciationReceivedDate}
+                        setState={setDepreciationReceivedDate}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1485,8 +1634,8 @@ const EditPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationPresentMonth == Infinity ||
-                          depreciationPresentMonth == -Infinity ||
-                          isNaN(depreciationPresentMonth)
+                            depreciationPresentMonth == -Infinity ||
+                            isNaN(depreciationPresentMonth)
                             ? 0
                             : depreciationPresentMonth.toFixed(2)
                         }
@@ -1506,8 +1655,8 @@ const EditPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationCumulativePrice == Infinity ||
-                          depreciationCumulativePrice == -Infinity ||
-                          isNaN(depreciationCumulativePrice)
+                            depreciationCumulativePrice == -Infinity ||
+                            isNaN(depreciationCumulativePrice)
                             ? 0
                             : depreciationCumulativePrice.toFixed(2)
                         }
@@ -1527,8 +1676,8 @@ const EditPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationYearPrice == Infinity ||
-                          depreciationYearPrice == -Infinity ||
-                          isNaN(depreciationYearPrice)
+                            depreciationYearPrice == -Infinity ||
+                            isNaN(depreciationYearPrice)
                             ? 0
                             : depreciationYearPrice.toFixed(2)
                         }
@@ -1548,8 +1697,8 @@ const EditPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationRemainPrice == Infinity ||
-                          depreciationRemainPrice == -Infinity ||
-                          isNaN(depreciationRemainPrice)
+                            depreciationRemainPrice == -Infinity ||
+                            isNaN(depreciationRemainPrice)
                             ? 0
                             : depreciationRemainPrice.toFixed(2)
                         }
@@ -1574,8 +1723,8 @@ const EditPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationBookValue == Infinity ||
-                          depreciationBookValue == -Infinity ||
-                          isNaN(depreciationBookValue)
+                            depreciationBookValue == -Infinity ||
+                            isNaN(depreciationBookValue)
                             ? 0
                             : depreciationBookValue.toFixed(2)
                         }
@@ -1683,28 +1832,28 @@ const EditPackageAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationStartDate}
-                          setState={setAccumulateDepreciationStartDate}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationStartDate}
+                        setState={setAccumulateDepreciationStartDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationRegisterDate}
-                          setState={setAccumulateDepreciationRegisterDate}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationRegisterDate}
+                        setState={setAccumulateDepreciationRegisterDate}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationReceivedDate}
-                          setState={setAccumulateDepreciationReceivedDate}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationReceivedDate}
+                        setState={setAccumulateDepreciationReceivedDate}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1789,8 +1938,8 @@ const EditPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationPresentMonth == Infinity ||
-                          accumulateDepreciationPresentMonth == -Infinity ||
-                          isNaN(accumulateDepreciationPresentMonth)
+                            accumulateDepreciationPresentMonth == -Infinity ||
+                            isNaN(accumulateDepreciationPresentMonth)
                             ? 0
                             : accumulateDepreciationPresentMonth.toFixed(2)
                         }
@@ -1810,8 +1959,8 @@ const EditPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationCumulativePrice == Infinity ||
-                          accumulateDepreciationCumulativePrice == -Infinity ||
-                          isNaN(accumulateDepreciationCumulativePrice)
+                            accumulateDepreciationCumulativePrice == -Infinity ||
+                            isNaN(accumulateDepreciationCumulativePrice)
                             ? 0
                             : accumulateDepreciationCumulativePrice.toFixed(2)
                         }
@@ -1831,8 +1980,8 @@ const EditPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationYearPrice == Infinity ||
-                          accumulateDepreciationYearPrice == -Infinity ||
-                          isNaN(accumulateDepreciationYearPrice)
+                            accumulateDepreciationYearPrice == -Infinity ||
+                            isNaN(accumulateDepreciationYearPrice)
                             ? 0
                             : accumulateDepreciationYearPrice.toFixed(2)
                         }
@@ -1852,8 +2001,8 @@ const EditPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationRemainPrice == Infinity ||
-                          accumulateDepreciationRemainPrice == -Infinity ||
-                          isNaN(accumulateDepreciationRemainPrice)
+                            accumulateDepreciationRemainPrice == -Infinity ||
+                            isNaN(accumulateDepreciationRemainPrice)
                             ? 0
                             : accumulateDepreciationRemainPrice.toFixed(2)
                         }
@@ -1878,8 +2027,8 @@ const EditPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationBookValue == Infinity ||
-                          accumulateDepreciationBookValue == -Infinity ||
-                          isNaN(accumulateDepreciationBookValue)
+                            accumulateDepreciationBookValue == -Infinity ||
+                            isNaN(accumulateDepreciationBookValue)
                             ? 0
                             : accumulateDepreciationBookValue.toFixed(2)
                         }
@@ -1968,7 +2117,7 @@ const EditPackageAssetInformation = () => {
         >
           <div className=" px-10 pt-2 pb-10">
             {arrayImageURL.map((el, idx) => (
-              <img crossorigin="true" src={el} className="w-[640px] mb-5" />
+              <img key={idx} crossorigin="true" src={el} className="w-[640px] mb-5" />
             ))}
           </div>
         </Modal>
@@ -1989,10 +2138,19 @@ const EditPackageAssetInformation = () => {
             <button
               type="button"
               className="bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-              onClick={handleSubmit}
+              onClick={handleForm}
+              disabled={isLoading}
             >
               บันทึกข้อมูล
             </button>
+
+            <ModalConfirmSave
+              mode="edit"
+              isVisible={showModalConfirm}
+              onClose={() => setShowModalConfirm(false)}
+              onSave={handleSubmit}
+            />
+            {showModalSuccess && <ModalSuccess urlPath='/packageAssetInformationIndex' />}
           </div>
         </div>
       </div>

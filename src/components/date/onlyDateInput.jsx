@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { WatDatePicker } from "thaidatepicker-react";
 import { AiTwotoneCalendar } from "react-icons/ai";
 
-const onlyDateInput = ({ state, setState, disabled, id }) => {
+const onlyDateInput = ({ state, setState, disabled, id, isValid, minDate }) => {
   // const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleWatDatePickerChange = (christDate) => {
@@ -49,11 +49,12 @@ const onlyDateInput = ({ state, setState, disabled, id }) => {
           borderRadius: "6px",
           width: "100%",
           height: "38px",
-          borderColor: "rgb(209 213 219)",
+          borderColor: isValid ? "#ef4444" : "rgb(209 213 219)",
           backgroundColor: disabled ? "rgb(229 231 235)" : "",
         }} // styles for input
         // clearable={true} // true | false
         // minDate={'2020-12-26'} // supported date as string
+        minDate={minDate}
         // maxDate={dayjs().add(20, 'day')} // also supported dayjs or moment
         disabled={disabled} // true | false
         // readOnly={true} // true | false

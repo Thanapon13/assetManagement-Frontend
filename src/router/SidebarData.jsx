@@ -83,7 +83,7 @@ export const SidebarData = [
     subNav: [
       {
         title: 'รายการข้อมูลหลักผู้ค้า',
-        path: '/assetWithdraw',
+        path: '/merchant',
         icon: (
           <svg
             width="20"
@@ -101,7 +101,7 @@ export const SidebarData = [
       },
       {
         title: 'บันทึกข้อมูลหลักผู้ค้า',
-        path: '/saveAssetWithdraw',
+        path: '/saveMerchant',
         icon: (
           <svg
             width="20"
@@ -160,7 +160,7 @@ export const SidebarData = [
     subNav: [
       {
         title: 'รายการข้อมูลหลักผู้ค้า',
-        path: '/assetWithdraw',
+        path: '/merchant',
         icon: (
           <svg
             width="20"
@@ -178,7 +178,7 @@ export const SidebarData = [
       },
       {
         title: 'บันทึกข้อมูลหลักผู้ค้า',
-        path: '/saveAssetWithdraw',
+        path: '/saveMerchant',
         icon: (
           <svg
             width="20"
