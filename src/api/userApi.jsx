@@ -1,5 +1,9 @@
 import axios from "../config/axios";
 
+export function getUsersAll() {
+  return axios.get("/user");
+}
+
 export function createUser(input) {
   return axios.post("/user/create", input);
 }

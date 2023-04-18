@@ -599,15 +599,16 @@ function AddUserInformation() {
                 onChange={onChange}
                 onSelect={onSelectAddress}
                 filter={(items) =>
-                  items.filter(
-                    (item) =>
-                      // (!district || item.district.includes(district)) &&
-                      (!input?.subdistrict ||
-                        item?.subdistrict?.includes(input?.subdistrict)) &&
-                      (!input?.province ||
-                        item.province.includes(input?.province)) &&
-                      (!input?.zipcode || item?.zipcode?.includes(input?.zipcode))
-                  )
+                  console.log(items)
+                  // items.filter(
+                  //   (item) =>
+                  //     // (!district || item.district.includes(district)) &&
+                  //     (!input?.subdistrict ||
+                  //       item?.subdistrict?.includes(input?.subdistrict)) &&
+                  //     (!input?.province ||
+                  //       item.province.includes(input?.province)) &&
+                  //     (!input?.zipcode || item?.zipcode?.includes(input?.zipcode))
+                  // )
                 }
               />
             </div>
@@ -752,7 +753,7 @@ function AddUserInformation() {
           <div className="grid grid-cols-1 sm:grid-cols-4 sm:gap-x-5 gap-y-3 mt-3 text-xs">
             {/* ประเภทของผู้ใช้ */}
             <div className="col-span-2">
-              <div className="mb-1">ประเภทของผู้ใช้</div>
+              <div className="mb-1">กำหนด Role ผู้ใช้งาน</div>
               <Selector
                 placeholder={"Select"}
                 state={input}

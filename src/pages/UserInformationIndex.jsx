@@ -7,6 +7,8 @@ import { AiOutlineSearch } from "react-icons/ai";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
 import RowOfTableUserInformationIndex from "../components/table/RowOfTableUserInformationIndex";
+import { useEffect } from "react";
+import { getUsersAll } from "../api/userApi";
 
 const UserInformationIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(
@@ -62,6 +64,15 @@ const UserInformationIndex = () => {
       level: "Lv.1",
     },
   ];
+
+  useEffect(() => {
+    // const fetchUsersList = async () => {
+    //   const response = await getUsersAll()
+    //   console.log(response)
+    // }
+    // fetchUsersList()
+  },[])
+
   return (
     <div className="bg-background-page px-5 pt-10 pb-36">
       {/* Header */}
