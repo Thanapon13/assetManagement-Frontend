@@ -13,12 +13,12 @@ import { useForm } from "react-hook-form";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { createMerchant } from '../api/merchant';
+import { Spinner } from 'flowbite-react';
 
 export const EditMerchant = () => {
-  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
+  const [isLoading, setIsLoading] = useState(!true)
 
   // useState
-
   const [input, setInput] = useState({
     merchantNo: '',
     taxNumber: '',
@@ -241,8 +241,7 @@ export const EditMerchant = () => {
         </div>
 
         {isLoading
-          ? <div />
-          // <div className="mt-5 min-h-[70vh] w-full text-center"><Spinner size="xl" /></div>
+          ? <div className="mt-5 min-h-[70vh] w-full text-center"><Spinner size="xl" /></div>
           :
           <>
             <div className="bg-white rounded-lg mx-10 my-7 p-3">

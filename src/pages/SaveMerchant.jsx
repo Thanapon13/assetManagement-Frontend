@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { createMerchant } from '../api/merchant';
-import InputAddress from "react-thailand-address-autocomplete";
+import RowOfTableAddressMerchant from '../components/table/RowOfTableAddressMerchant';
 
 export const SaveMerchant = () => {
   const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
@@ -21,23 +21,27 @@ export const SaveMerchant = () => {
   // useState
 
   const [input, setInput] = useState({
-    merchantNo: '',
+    realMerchantId: '',
     taxNumber: '',
-    titleCompany: '',
+    companyPrefix: '',
     companyName: '',
-    titleName: '',
-    personName: '',
-    telNo: '',
+    prefix: '',
+    name: '',
+    phoneNumber: '',
     email: '',
   })
 
   const [inputBottom, setInputBottom] = useState({
-    bankAccountNum: "",
-    detailBankAccount: "",
+    paymentTerm: "",
+    contactName: "",
+    bankAccountNumber: "",
+    bankAccountDetail: "",
+    bankCode: "",
     bankNo: "",
-    branchCode: "",
-    identificationNumber: "",
-    groupType: "",
+    bankBranchCode: "",
+    taxpayerNumber: "",
+    idCardNumber: "",
+    creditorCategory: "",
   })
 
   const handleChange = (e) => {
@@ -50,19 +54,8 @@ export const SaveMerchant = () => {
     })
   };
 
-  const handleChangeAddress = (e) => {
-    // setArrayAddress(prevInput => {
-    //   console.log(prevInput)
-    //   // return {
-    //   //   ...prevInput,
-    //   //   [e.target.name]: e.target.value
-    //   // }
-    // })
-    console.log(arrayAddress[0])
-  };
-
   // ที่อยู่
-  const inputAddress = {
+  const objAddress = {
     houseNo: "",
     villageNo: "",
     village: "",
@@ -73,18 +66,14 @@ export const SaveMerchant = () => {
     province: "",
     postalCode: "",
   }
-  const [arrayAddress, setArrayAddress] = useState([inputAddress])
+  const [arrayAddress, setArrayAddress] = useState([objAddress])
   const addAddress = () => {
-    const arr = (arrayAddress.concat({ ...inputAddress, test: "1" }))
+    const arr = (arrayAddress.concat({ ...objAddress }))
     setArrayAddress(arr)
     console.log(arr)
   }
 
-  const delAddress = (index) => {
-    let clone = [...arrayAddress];
-    clone.splice(index, 1);
-    setArrayAddress(clone);
-  }
+
 
   //อัพโหลดไฟล์
   const inputDoc = useRef();
@@ -107,9 +96,8 @@ export const SaveMerchant = () => {
         cloneFile.push({ document: fileList[i].name });
       } else {
         console.log('Er')
-        toast.warn(
-          `${fileList[i].name} is wrong file type or size is more than 2mb.!`,
-          {
+        if (!fileTypes.includes(fileList[i].type)) {
+          toast.warn(`${fileList[i].name} is wrong file type!`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -118,8 +106,32 @@ export const SaveMerchant = () => {
             draggable: true,
             progress: undefined,
             theme: "light",
-          }
-        );
+          });
+        } else if (fileList[i].size > 2000000) {
+          toast.warn(`${fileList[i].name} has more than 2mb!`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+        // toast.warn(
+        //   `${fileList[i].name} is wrong file type or size is more than 2mb.!`,
+        //   {
+        //     position: "top-right",
+        //     autoClose: 5000,
+        //     hideProgressBar: false,
+        //     closeOnClick: true,
+        //     pauseOnHover: true,
+        //     draggable: true,
+        //     progress: undefined,
+        //     theme: "light",
+        //   }
+        // );
       }
     }
     setArrayDocument(cloneFile);
@@ -134,7 +146,7 @@ export const SaveMerchant = () => {
   // ความสัมพันธ์
   const [status, setStatus] = useState("active")
 
-  const objRelation = { groupCompany: "", remark: "" }
+  const objRelation = { companyCategory: "", note: "" }
   const [arrayRelation, setArrayRelation] = useState([objRelation])
   const addRelation = () => {
     const arr = arrayRelation.concat(objRelation)
@@ -186,7 +198,7 @@ export const SaveMerchant = () => {
     if (!arrayAddress.length) {
       const locate = (document.getElementById("address").offsetTop)
       window.scrollTo({ top: locate - 10, behavior: 'smooth' })
-      setArrayAddress([inputAddress])
+      setArrayAddress([objAddress])
       errAddress = true
     } else {
       arrayAddress.forEach(arr => {
@@ -205,16 +217,6 @@ export const SaveMerchant = () => {
     setErrorAddress(errAddress)
     //   if (!(errInput || errAddress || errInputBottom)) setShowModalConfirm(true)
   }
-
-  const onSelectAddress = ({ subdistrict, district, province, zipcode }) => {
-    
-    // setInput({
-    //   subdistrict,
-    //   district,
-    //   province,
-    //   zipcode,
-    // });
-  };
 
   return (
     <>
@@ -345,97 +347,13 @@ export const SaveMerchant = () => {
           <div id="address" className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
             <div className="mt-1 text-sm" id="head-address">ที่อยู่</div>
             {arrayAddress?.map((address, index) => (
-              <div className='col-span-2 border border-gray-300 rounded-md p-2'>
-                <div className="flex">
-                  <div className="mt-2 mr-2 flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 p-2">
-                    {index + 1}
-                  </div>
-                  {/* <div className="grid grid-cols-3 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs"> */}
-                  <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-x-4 gap-y-3 mt-3 text-xs">
-                    <div className='grid grid-cols-3 gap-x-4'>
-                      <div className='col-span-2'>
-                        บ้านเลขที่
-                        <input
-                          className={`${inputClassname} ${errorAddress && "border-red-500"}`}
-                        />
-                      </div>
-                      <div>
-                        หมู่ที่
-                        <input
-                          className={`${inputClassname}`}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      หมู่บ้าน
-                      <input
-                        className={`${inputClassname}`}
-                      />
-                    </div>
-                    <div>
-                      ซอย
-                      <input
-                        className={`${inputClassname}`}
-                      />
-                    </div>
-
-                    <div>
-                      ถนน
-                      <input
-                        name="road"
-                        onChange={handleChangeAddress}
-                        value={address.road}
-                        className={`${inputClassname}`}
-                      />
-                    </div>
-                    <div>
-                      ตำบล
-                      <Selector
-
-                      />
-                    </div>
-                    <div>
-                      อำเภอ
-                      <InputAddress
-                        address="district"
-                        value={address.district}
-                        // onChange={onChange}
-                        onSelect={onSelectAddress}
-                        filter={(items) =>
-                          items.filter(
-                            (item) =>
-                              (!district || item.district.includes(district)) &&
-                              (!subdistrict ||
-                                item.subdistrict.includes(subdistrict)) &&
-                              (!province || item.province.includes(province)) &&
-                              (!zipcode || item.zipcode.includes(zipcode))
-                          )
-                        }
-                      // style={{ width: "100% !important", display: "inline" }}
-                      />
-                    </div>
-
-                    <div>
-                      จังหวัด
-                      <Selector
-
-                      />
-                    </div>
-                    <div>
-                      รหัสไปรษณีย์
-                      <input
-                        className={`${inputClassname}`}
-                      />
-                    </div>
-
-                  </div>
-
-                  <div className='mt-1 mx-1 hover:bg-gray-200 rounded-full h-fit cursor-pointer p-1'
-                    onClick={() => delAddress(index)}>
-                    <IoIosClose className="text-2xl" />
-                  </div>
-                </div>
-              </div>
+              <RowOfTableAddressMerchant
+                index={index}
+                errorAddress={errorAddress}
+                arrayAddress={arrayAddress}
+                address={address}
+                setArrayAddress={setArrayAddress}
+              />
             ))}
 
             <div className='col-span-2 mx-3'>
