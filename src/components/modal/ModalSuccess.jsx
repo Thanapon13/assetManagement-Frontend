@@ -12,9 +12,11 @@ const ModalSuccess = ({ urlPath }) => {
     })
 
     useEffect(() => {
-        setTimeout(() => {
-            window.location.href = urlPath
-        }, 2000);
+        if (urlPath) {
+            setTimeout(() => {
+                window.location.href = urlPath
+            }, 2000);
+        }
     }, [])
 
     // return (
