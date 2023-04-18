@@ -1,5 +1,6 @@
 import React from 'react'
 import * as RiIcons from 'react-icons/ri'
+import { GrUserSettings } from "react-icons/gr";
 
 export const SidebarData = [
   {
@@ -36,7 +37,7 @@ export const SidebarData = [
         <path
           d="M0 16V13.75H2.15V1.5C2.15 1.08333 2.29583 0.729167 2.5875 0.4375C2.87917 0.145833 3.23333 0 3.65 0H19.15V1.5H3.65V13.75H9.5V16H0ZM11.975 16C11.6917 16 11.4583 15.8875 11.275 15.6625C11.0917 15.4375 11 15.1833 11 14.9V3.975C11 3.69167 11.0917 3.45833 11.275 3.275C11.4583 3.09167 11.6917 3 11.975 3H18.775C19.0917 3 19.375 3.0875 19.625 3.2625C19.875 3.4375 20 3.675 20 3.975V14.9C20 15.2167 19.8792 15.4792 19.6375 15.6875C19.3958 15.8958 19.1083 16 18.775 16H11.975ZM12.5 13.75H18.5V4.5H12.5V13.75Z"
           fill="currentColor"
-          // fill-opacity="0.6"
+        // fill-opacity="0.6"
         />
       </svg>
     ),
@@ -625,6 +626,15 @@ export const SidebarData = [
         />
       </svg>
     ),
+    iconClosed: <RiIcons.RiArrowDownSFill />,
+    iconOpened: <RiIcons.RiArrowUpSFill />,
+    subNav: [
+      {
+        title: 'กำหนด Role ',
+        path: '/setRoleIndex',
+        icon: <GrUserSettings />
+      },
+    ]
   },
   {
     title: 'ข้อมูลตั้งต้น',
@@ -643,5 +653,19 @@ export const SidebarData = [
         />
       </svg>
     ),
+    iconClosed: <RiIcons.RiArrowDownSFill />,
+    iconOpened: <RiIcons.RiArrowUpSFill />,
+    subNav: [
+      {
+        title: 'ตั้งค่าทั่วไป',
+        path: '/defaultData',
+        icon: <RiIcons.RiSettings2Line />
+      },
+      {
+        title: 'ตั้งค่าข้อมูลครุภัณฑ์',
+        path: '/defaultAsset',
+        icon: <RiIcons.RiFileSettingsLine />
+      },
+    ]
   },
 ]

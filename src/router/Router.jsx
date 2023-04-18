@@ -56,6 +56,10 @@ import {
   ReportMerchantInfo,
   ViewReportMerchantInfo,
   EditMerchant,
+  SetRoleIndex,
+  SetRole,
+  EditRole,
+  DefaultAsset,
 } from "../pages";
 
 import { useContext } from "react";
@@ -191,6 +195,12 @@ const Router = () => {
           />
 
           <Route path="defaultData" element={<DefaultData />} />
+          <Route path="defaultAsset" element={<DefaultAsset />} />
+
+          <Route path="setRoleIndex" element={<SetRoleIndex />} />
+          <Route path="setRole" element={<SetRole />} />
+          <Route path="editRole" element={<EditRole />} />
+
           <Route path="merchantIndex" element={<MerchantIndex />} />
           <Route
             path="userInformationIndex"
