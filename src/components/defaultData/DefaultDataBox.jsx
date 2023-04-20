@@ -209,7 +209,7 @@ function DefaultDataBox({ header, fieldValue }) {
       }
     })
     setIsDuplicate(isDup)
-    if (!err, !isDup) setShowModalConfirm(true)
+    if (!err && !isDup) setShowModalConfirm(true)
   }
 
   function onError(msg) {

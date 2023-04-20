@@ -251,7 +251,8 @@ function DefaultAssetBox({ header, fieldValue }) {
       }
     })
     setIsDuplicate(isDup)
-    if (!err, !isDup) setShowModalConfirm(true)
+    console.log(err)
+    if (!err && !isDup) setShowModalConfirm(true)
   }
 
   function onError(msg) {

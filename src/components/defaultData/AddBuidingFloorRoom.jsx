@@ -5,8 +5,10 @@ import ModalWarning from "../modal/ModalWarning"
 import { MdOutlineExpandLess, MdOutlineExpandMore } from 'react-icons/md'
 import { useState, useEffect } from "react";
 import { Spinner } from "flowbite-react"
+import ModalConfirmDelete from "../modal/ModalConfirmDelete"
+import { createBuilding, createOrUpdateBuilding, deleteFloorData, deleteRoomData } from "../../api/masterApi"
 
-function AddBuidingFloorRoom({ onClose, data }) {
+function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData }) {
     const [isLoading, setIsLoading] = useState(true)
     const [allData, setAllData] = useState(data)
     const [rowArray, setRowArray] = useState([]);
@@ -39,11 +41,11 @@ function AddBuidingFloorRoom({ onClose, data }) {
         // setRowArray([...clone, newCloneArray])
     }
     const handleClickIncreaseFloor = (e, index) => {
-        // const floor = allData[index].floor
+        // const floor = allData[index].floors
         const data = allData
         console.log(allData[index])
-        const newFloor = e ? [...data[index].floor, { name: "" }] : [{ name: "" }]
-        data[index].floor = newFloor
+        const newFloor = e ? [...data[index].floors, { name: "" }] : [{ name: "" }]
+        data[index].floors = newFloor
         console.log(data)
         setAllData(data)
     }
@@ -63,19 +65,48 @@ function AddBuidingFloorRoom({ onClose, data }) {
 
     const handleSubmit = () => {
         let err
-        // check empty
-        // rowArray.map(ele => {
-        //     if (err) return
-        //     if (!ele.name || (fieldValue && !ele.value)) err = true
-        // })
-        allData.map(ele => {
+        allData.map((ele, ind) => {
             if (err) return
             if (!ele.name) err = true
+            if (!ele.floors.length) {
+                err = true
+                const object = { name: ele.name, floors: [{ name: "", rooms: [{ name: "" }] }] }
+                handleChangeData(object, ind)
+            } else {
+                ele.floors.map((floor, i) => {
+                    // if (err) return
+                    if (!floor.name) err = true
+                    if (!floor.rooms.length) {
+                        err = true
+                        const object = { name: floor.name, rooms: [{ name: "" }] }
+                        const clone = allData[ind];
+                        clone.floors[i] = object;
+                        handleChangeData(clone, ind)
+                    } else {
+                        floor.rooms.map(room => {
+                            if (err) return
+                            if (!room.name) err = true
+                        })
+                    }
+                })
+            }
         })
-        console.log(allData, err)
+        let isDup
+        const nameBD = allData[0].name
+        // state change name  เพิ่ม
+        if (!modeEdit) {
+            allOfData.forEach(ele => {
+                if (nameBD == ele.name) {
+                    isDup = true
+                    return
+                }
+            })
+        }
         setError(err)
-        // if (!err) setShowModalConfirm(true)
+        setIsDuplicate(isDup)
+        if (!err && !isDup) setShowModalConfirm(true)
     }
+
 
     function onError(msg) {
         setIsLoading(false)
@@ -84,13 +115,17 @@ function AddBuidingFloorRoom({ onClose, data }) {
     }
 
     const submit = async () => {
-        setIsLoading(true)
-        // const arrayJSON = JSON.stringify(rowArray);
-        // const dataJSON = JSON.stringify(rowData);
-
-        //rowBuild
-        //rowFloor
-        //rowRoom
+        // setIsLoading(true)
+        console.log(allData)
+        const arrayJSON = JSON.stringify(allData);
+        // const response = await createBuilding({ buildingArray: allData })
+        try {
+            await createOrUpdateBuilding({ buildingObj: allData[0] })
+            setShowModalConfirm(false)
+            updateSuccess()
+        } catch (err) {
+            onError(err.response.data.message)
+        }
     }
 
     const classIncreaseButton = "h-[38px] justify-center items-center py-1 px-4 border-2 border-text-green shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none"
@@ -123,7 +158,7 @@ function AddBuidingFloorRoom({ onClose, data }) {
                     {allData.map((data, index) => (
                         <>
                             <RowBuilding key={index} data={data} index={index} error={error}
-                                handleChangeData={handleChangeData} />
+                                handleChangeData={handleChangeData} modeEdit={modeEdit} />
                         </>
                     ))}
                 </div>
@@ -141,6 +176,10 @@ function AddBuidingFloorRoom({ onClose, data }) {
                     >
                         บันทึก
                     </button>
+
+                    {showModalError && <ModalError message={showModalError} didClose={() => setShowModalError(false)} />}
+                    {isDuplicate && <ModalWarning message={`ไม่สามารถบันทึกชื่อ "อาคาร" ซ้ำกันได้`} didClose={() => setIsDuplicate(false)} />}
+
                 </div>
             </div>
         </div>
@@ -148,8 +187,8 @@ function AddBuidingFloorRoom({ onClose, data }) {
     )
 }
 
-function RowBuilding({ data, index, error, handleChangeData }) {
-    const [disabled, setDisabled] = useState(true)
+function RowBuilding({ data, index, error, handleChangeData, modeEdit }) {
+    const [disabled, setDisabled] = useState(modeEdit ? true : false)
     const [isUpdate, setIsUpdate] = useState(false)
     // const [building, setBuilding] = useState(data)
 
@@ -171,27 +210,27 @@ function RowBuilding({ data, index, error, handleChangeData }) {
 
     const onChangeFloor = (value, ind) => {
         const clone = data;
-        clone.floor[ind] = value;
+        clone.floors[ind] = value;
         handleChangeData(clone, index)
     }
 
     function handleClickIncrease() {
         const clone = data
-        clone.floor = [...data.floor, { name: "", room: [{ name: "" }] }]
+        clone.floors = [...data.floors, { name: "", rooms: [{ name: "" }] }]
         console.log(clone)
         handleChangeData(clone, index)
     }
 
     function handleDelete(value, ind) {
         const clone = data;
-        clone.floor[ind] = value;
+        clone.floors[ind] = value;
         handleChangeData(clone, index)
     }
 
     const deleteFloor = (ind) => {
         let clone = data
-        clone.floor.splice(ind, 1);
-        handleChangeData(clone,index)
+        clone.floors.splice(ind, 1);
+        handleChangeData(clone, index)
     };
 
     return (
@@ -201,7 +240,7 @@ function RowBuilding({ data, index, error, handleChangeData }) {
         ml-3 my-2`}
             >
                 <input
-                    className={`col-span-7 h-[41px] ${error && !data?.name && 'border-red-500'} ${disabled ? "bg-gray-200" : "bg-white"} border-[1px] px-2 border-gray-300 flex justify-center items-center py-2 rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                    className={`col-span-7 h-[41px] ${error && !data?.name && 'border-red-500'} ${disabled ? "bg-gray-200" : "bg-white"} border-[1px] px-2 border-gray-300 flex justify-center items-center py-2 rounded focus:border-2 focus:outline-none  focus:border-focus-blue text-sm`}
                     disabled={disabled}
                     name="name"
                     placeholder="อาคาร"
@@ -218,7 +257,7 @@ function RowBuilding({ data, index, error, handleChangeData }) {
                     />
                 </div> */}
 
-                <div className="col-span-2 inline-flex ml-3">
+                <div className={`col-span-2 inline-flex ml-3 ${!modeEdit && "hidden"}`}>
                     <button
                         className="flex justify-center items-center text-white bg-button-orange hover:bg-orange-400 rounded-lg focus:border-2 focus:outline-none  focus:bg-orange-400 w-8 h-8 py-2"
                         onClick={() => {
@@ -249,9 +288,9 @@ function RowBuilding({ data, index, error, handleChangeData }) {
                     </div>
                 </div> */}
             {/* </div> */}
-            {data.floor?.map((floor, idx) => (
+            {data.floors?.map((floor, idx) => (
                 <div className="">
-                    <RowFloor name="ชั้น" key={idx} data={floor} index={idx} error={error} handleChange={onChangeFloor} handleDelete={handleDelete} deleteFloor={deleteFloor} />
+                    <RowFloor name="ชั้น" key={idx} data={floor} index={idx} error={error} handleChange={onChangeFloor} handleDelete={handleDelete} deleteFloor={deleteFloor} modeEdit={modeEdit} />
                 </div>
             ))}
             <div className="grid grid-cols-10 gap-4 ml-2">
@@ -267,21 +306,22 @@ function RowBuilding({ data, index, error, handleChangeData }) {
                 </button>
             </div>
 
-            <hr hidden={data.floor.length <= 1} className="m-4" />
+            {/* <hr hidden={data.floors.length <= 1} className="m-4" /> */}
 
         </>
     )
 }
 
-function RowFloor({ data, index, error, handleChange, handleDelete, deleteFloor }) {
-    const [disabled, setDisabled] = useState(true)
+function RowFloor({ data, index, error, handleChange, handleDelete, deleteFloor, modeEdit }) {
+    const [disabled, setDisabled] = useState(modeEdit ? true : false)
     const [isUpdate, setIsUpdate] = useState(false)
     const [collapseAll, setCollapseAll] = useState(false)
+    const [showDelFloor, setShowDelFloor] = useState(false)
 
     useEffect(() => {
         if (error && !data[index]?.name) setDisabled(false)
         if (error) {
-            data.room?.map(ele => {
+            data.rooms?.map(ele => {
                 console.log(collapseAll)
                 if (!collapseAll) return
                 if (!ele.name) {
@@ -297,23 +337,35 @@ function RowFloor({ data, index, error, handleChange, handleDelete, deleteFloor 
         handleChange(clone, index)
     }
 
-    function onChangeRoom(value, index) {
+    function onChangeRoom(value, ind) {
         const clone = data
-        clone.room[index].name = value
+        clone.rooms[ind].name = value
         handleChange(clone, index)
     }
 
     function handleClickIncrease() {
         const clone = data
-        clone.room = [...data.room, { name: "" }]
+        clone.rooms = [...data.rooms, { name: "" }]
         handleChange(clone, index)
     }
 
     const deleteRoom = (ind) => {
         let clone = data
-        clone.room.splice(ind, 1);
+        clone.rooms.splice(ind, 1);
         handleDelete(clone, index)
     };
+
+    const delFloorDB = async () => {
+        try {
+            console.log(showDelFloor._id)
+            await deleteFloorData(showDelFloor._id)
+            deleteFloor(index)
+            setShowDelFloor(false)
+        }
+        catch {
+
+        }
+    }
 
     return (
         <>
@@ -349,9 +401,9 @@ function RowFloor({ data, index, error, handleChange, handleDelete, deleteFloor 
                             value={data && data[index]?.name}
                         /> */}
 
-                    <div className="col-span-2 ml-3 inline-flex">
+                    <div className="col-span-2 ml-3 inline-flex ">
                         <button
-                            className="flex justify-center items-center text-white bg-button-orange hover:bg-orange-400 rounded-lg focus:border-2 focus:outline-none  focus:bg-orange-400 w-8 h-8 py-2"
+                            className={`flex justify-center items-center text-white bg-button-orange hover:bg-orange-400 rounded-lg focus:border-2 focus:outline-none  focus:bg-orange-400 w-8 h-8 py-2 ${!modeEdit && "hidden"}`}
                             onClick={() => {
                                 setDisabled(false)
                             }}
@@ -370,9 +422,9 @@ function RowFloor({ data, index, error, handleChange, handleDelete, deleteFloor 
                             </svg>
                         </button>
                         <button
-                            className="ml-2 flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 py-2"
+                            className={`${modeEdit && "ml-2"} flex justify-center items-center text-white  bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 py-2`}
                             onClick={() => {
-                                deleteFloor(index);
+                                !data._id ? deleteFloor(index) : setShowDelFloor(data)
                             }}
                         >
                             <svg
@@ -388,13 +440,21 @@ function RowFloor({ data, index, error, handleChange, handleDelete, deleteFloor 
                                 />
                             </svg>
                         </button>
+                        {showDelFloor &&
+                            <ModalConfirmDelete
+                                item="ชั้น"
+                                header="ยืนยันลบข้อมูล"
+                                text={`คุณต้องการลบ "ชั้น ${showDelFloor.name}" หรือไม่?`}
+                                onClose={() => setShowDelFloor(false)}
+                                onDelete={delFloorDB} />
+                        }
                     </div>
                 </>
             </div>
 
             <div className={collapseAll && "hidden"}>
-                {data.room?.map((room, idx) => (
-                    <RowRoom name="ห้อง" key={idx} data={room} index={idx} error={error} onChangeRoom={onChangeRoom} deleteRoom={deleteRoom} />
+                {data.rooms?.map((room, idx) => (
+                    <RowRoom name="ห้อง" key={idx} data={room} index={idx} error={error} onChangeRoom={onChangeRoom} deleteRoom={deleteRoom} modeEdit={modeEdit} />
                 ))}
 
                 <div className="grid grid-cols-10 gap-4 ml-3">
@@ -414,10 +474,10 @@ function RowFloor({ data, index, error, handleChange, handleDelete, deleteFloor 
     )
 }
 
-function RowRoom({ data, index, error, onChangeRoom, deleteRoom }) {
-    const [disabled, setDisabled] = useState(true)
+function RowRoom({ data, index, error, onChangeRoom, deleteRoom, modeEdit }) {
+    const [disabled, setDisabled] = useState(modeEdit ? true : false)
     const [isUpdate, setIsUpdate] = useState(false)
-    const [collapseAll, setCollapseAll] = useState(true)
+    const [showDelRoom, setShowDelRoom] = useState(false)
     // const handleChange = (e) => {
     //     if (!isUpdate) {
     //         setIsUpdate(true)
@@ -436,6 +496,18 @@ function RowRoom({ data, index, error, onChangeRoom, deleteRoom }) {
 
     function onChange(e) {
         onChangeRoom(e.target.value, index)
+    }
+
+    const delRoomDB = async () => {
+        try {
+            console.log(data)
+            await deleteRoomData(showDelRoom._id)
+            deleteRoom(index)
+            setShowDelRoom(false)
+        }
+        catch {
+
+        }
     }
 
     return (
@@ -459,7 +531,7 @@ function RowRoom({ data, index, error, onChangeRoom, deleteRoom }) {
                         </div> */}
 
                 <input
-                    className={`col-span-6 h-[41px] ${error && !data.name && 'border-red-500'} ${disabled ? "bg-gray-200" : "bg-white"} border-[1px] px-2 border-gray-300 flex justify-center items-center py-2 rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                    className={`col-span-6 h-[41px] ${error && !data.name && 'border-red-500'} ${disabled ? "bg-gray-200" : "bg-white"} border-[1px] px-2 border-gray-300 flex justify-center items-center py-2 rounded focus:border-2 focus:outline-none  focus:border-focus-blue text-sm`}
                     disabled={disabled}
                     name="name"
                     placeholder="ห้อง"
@@ -469,7 +541,7 @@ function RowRoom({ data, index, error, onChangeRoom, deleteRoom }) {
 
                 <div className="col-span-2 ml-3 inline-flex">
                     <button
-                        className="flex justify-center items-center text-white bg-button-orange hover:bg-orange-400 rounded-lg focus:border-2 focus:outline-none  focus:bg-orange-400 w-8 h-8 py-2"
+                        className={`flex justify-center items-center text-white bg-button-orange hover:bg-orange-400 rounded-lg focus:border-2 focus:outline-none  focus:bg-orange-400 w-8 h-8 py-2 ${!modeEdit && "hidden"}`}
                         onClick={() => {
                             setDisabled(false)
                         }}
@@ -488,10 +560,8 @@ function RowRoom({ data, index, error, onChangeRoom, deleteRoom }) {
                         </svg>
                     </button>
                     <button
-                        className="ml-2 flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 py-2"
-                        onClick={() => {
-                            deleteRoom(index);
-                        }}
+                        className={`${modeEdit && "ml-2"} flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 py-2`}
+                        onClick={() => data._id ? setShowDelRoom(data) : deleteRoom(index)}
                     >
                         <svg
                             width="13"
@@ -506,6 +576,14 @@ function RowRoom({ data, index, error, onChangeRoom, deleteRoom }) {
                             />
                         </svg>
                     </button>
+
+                    {showDelRoom &&
+                        <ModalConfirmDelete
+                            item="ห้อง"
+                            text={`คุณต้องการลบ "${showDelRoom.name}" หรือไม่?`}
+                            onClose={() => setShowDelRoom(false)}
+                            onDelete={delRoomDB} />
+                    }
                 </div>
             </>
         </div>
