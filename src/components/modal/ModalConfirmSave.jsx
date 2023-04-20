@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { IoIosClose } from "react-icons/io";
 
-const ModalConfirmSave = ({ isVisible, onClose, onSave, text, header, mode }) => {
+const ModalConfirmSave = ({ isVisible, onClose, onSave, text, header, mode, confirmText }) => {
 
     const handleClose = (e) => {
         if (e.target.id === "wrapper") {
@@ -59,7 +59,7 @@ const ModalConfirmSave = ({ isVisible, onClose, onSave, text, header, mode }) =>
                                         className="ml-4 inline-flex justify-center items-center h-full py-2 px-8 border border-transparent shadow-sm text-xs font-medium rounded-md text-white bg-text-green hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
                                         onClick={() => { onSave(); setDefault() }}
                                     >
-                                        บันทึก
+                                        {confirmText || "บันทึก"}
                                     </button>
                                 </div>
                             </div>
