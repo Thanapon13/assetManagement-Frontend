@@ -325,3 +325,26 @@ export function updateMedicalField(body) {
 export function deleteMedicalField(id) {
   return axios.delete(`/medicalField/${id}`);
 }
+
+// Building Floor Room
+export function getBuildingData() {
+  return axios.get("/building/all");
+}
+export function createBuilding(body) {
+  return axios.post(`/building/create`, body);
+}
+export function createOrUpdateBuilding(body) {
+  return axios.post(`/building/createOrUpdate`, body);
+}
+// export function updateMedicalField(body) {
+//   return axios.patch(`/medicalField/update/`, body);
+// }
+export function deleteRoomData(id) {
+  return axios.delete(`/building/room/${id}`);
+}
+export function deleteFloorData(id) {
+  return axios.delete(`/building/floor/${id}`);
+}
+export function deleteBuildingData(id) {
+  return axios.delete(`/building/${id}`);
+}
