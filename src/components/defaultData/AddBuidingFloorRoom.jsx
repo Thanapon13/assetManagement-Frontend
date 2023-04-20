@@ -4,9 +4,9 @@ import ModalSuccess from "../modal/ModalSuccess"
 import ModalWarning from "../modal/ModalWarning"
 import { MdOutlineExpandLess, MdOutlineExpandMore } from 'react-icons/md'
 import { useState, useEffect } from "react";
-import { Spinner } from "flowbite-react"
 import ModalConfirmDelete from "../modal/ModalConfirmDelete"
-import { createBuilding, createOrUpdateBuilding, deleteFloorData, deleteRoomData } from "../../api/masterApi"
+import { createOrUpdateBuilding, deleteFloorData, deleteRoomData } from "../../api/masterApi"
+import { IoIosClose } from "react-icons/io";
 
 function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData }) {
     const [isLoading, setIsLoading] = useState(true)
@@ -62,8 +62,10 @@ function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData
     const [showModalError, setShowModalError] = useState(false);
     const [showPopupDelete, setShowPopupDelete] = useState(false);
     const [isDuplicate, setIsDuplicate] = useState(false);
+    const [isCancel, setIsCancle] = useState(false);
+    const [isLastFloor, setIsLastFloor] = useState();
 
-    const handleSubmit = () => {
+    const handleForm = () => {
         let err
         allData.map((ele, ind) => {
             if (err) return
@@ -91,6 +93,10 @@ function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData
                 })
             }
         })
+        return err
+    }
+    const handleSubmit = () => {
+        const err = handleForm()
         let isDup
         const nameBD = allData[0].name
         // state change name  เพิ่ม
@@ -138,56 +144,89 @@ function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData
         setAllData(clone)
     }
 
+    const handleClose = () => {
+        if (!modeEdit) {
+            onClose()
+        } else {
+            if(data == allData) {
+                onClose()
+                return
+            }
+            const res = handleForm()
+            setError(res)
+            setIsCancle(true)
+        }
+    }
+
     return (
         // <div className=" bg-white p-1 rounded-lg text-sm ">
-        <div className="overflow-y-auto scrollbar ">
-            <div className="pl-10 pr-5 pb-4 mx-auto">
-                <ModalConfirmSave
-                    isVisible={showModalConfirm}
-                    onClose={() => setShowModalConfirm(false)}
-                    // text={`คุณต้องการบันทึก "${header}" หรือไม่`}
-                    header="ยืนยันการแก้ไข"
-                    onSave={submit}
-                />
-                {showModalSuccess && <ModalSuccess />}
-                {showModalError && <ModalError message={showModalError} />}
-                {isDuplicate && <ModalWarning message={`ไม่สามารถบันทึกข้อมูล "ชื่อ" หรือ "ค่า" ซ้ำกันได้`} />}
-
-                {/* <div className={`duration-500 transition-all overflow-hidden ${collapse ? 'max-h-0 ease-out' : 'max-h-screen ease-in'}`}> */}
-                <div className="min-h-[50vh]">
-                    {allData.map((data, index) => (
-                        <>
-                            <RowBuilding key={index} data={data} index={index} error={error}
-                                handleChangeData={handleChangeData} modeEdit={modeEdit} />
-                        </>
-                    ))}
+        <>
+            <div className="flex justify-between px-4 pt-5 pb-2">
+                <div className="text-text-green text-xl font-bold self-end pl-2">
+                    {!modeEdit ? "เพิ่ม" : "แก้ไข"}อาคาร / ชั้น / ห้อง
                 </div>
 
-                <div className="flex justify-center items-center border-t-2 border-grey-300 p-4">
-                    <button
-                        className="inline-flex justify-center items-center h-full py-2 px-8 border border-transparent shadow-sm  font-medium rounded-md text-gray-700 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
-                        onClick={onClose}
-                    >
-                        ยกเลิก
-                    </button>
-                    <button
-                        className="ml-5 inline-flex justify-center items-center h-full py-2 px-8 border border-transparent shadow-sm  font-medium rounded-md text-white bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-                        onClick={handleSubmit}
-                    >
-                        บันทึก
-                    </button>
+                <button
+                    className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
+                    onClick={handleClose}
+                >
+                    <IoIosClose className="text-2xl" />
+                </button>
+            </div>
+            <div className="overflow-y-auto scrollbar ">
+                <div className="pl-10 pr-5 pb-4 mx-auto">
+                    <ModalConfirmSave
+                        isVisible={showModalConfirm}
+                        onClose={() => setShowModalConfirm(false)}
+                        // text={`คุณต้องการบันทึก "${header}" หรือไม่`}
+                        header="ยืนยันการแก้ไข"
+                        onSave={submit}
+                    />
+                    {showModalSuccess && <ModalSuccess />}
 
-                    {showModalError && <ModalError message={showModalError} didClose={() => setShowModalError(false)} />}
-                    {isDuplicate && <ModalWarning message={`ไม่สามารถบันทึกชื่อ "อาคาร" ซ้ำกันได้`} didClose={() => setIsDuplicate(false)} />}
+                    {/* <div className={`duration-500 transition-all overflow-hidden ${collapse ? 'max-h-0 ease-out' : 'max-h-screen ease-in'}`}> */}
+                    <div className="min-h-[50vh]">
+                        {allData.map((data, index) => (
+                            <>
+                                <RowBuilding key={index} data={data} index={index} error={error}
+                                    handleChangeData={handleChangeData} modeEdit={modeEdit} setIsLastFloor={setIsLastFloor} />
+                            </>
+                        ))}
+                    </div>
 
+                    <div className="flex justify-center items-center border-t-2 border-grey-300 p-4">
+                        <button
+                            className="inline-flex justify-center items-center h-full py-2 px-8 border border-transparent shadow-sm  font-medium rounded-md text-gray-700 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
+                            onClick={handleClose}
+                        >
+                            ยกเลิก
+                        </button>
+                        {isCancel && <ModalConfirmSave isVisible={isCancel} message={`ข้อมูลที่ถูกแก้ไขจะไม่ได้บันทึก`}
+                            onClose={() => setIsCancle(false)}
+                            text="ข้อมูลบางส่วนที่แก้ไขจะไม่ได้รับการบันทึก"
+                            header="ยืนยันยกเลิกการแก้ไข"
+                            confirmText="ตกลง"
+                            onSave={updateSuccess} />
+                        }
+                        <button
+                            className="ml-5 inline-flex justify-center items-center h-full py-2 px-8 border border-transparent shadow-sm  font-medium rounded-md text-white bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+                            onClick={handleSubmit}
+                        >
+                            บันทึก
+                        </button>
+
+                        {showModalError && <ModalError message={showModalError} didClose={() => setShowModalError(false)} />}
+                        {isDuplicate && <ModalWarning message={`ไม่สามารถบันทึกชื่อ "อาคาร" ซ้ำกันได้`} didClose={() => setIsDuplicate(false)} />}
+
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
         // {/* </div> */}
     )
 }
 
-function RowBuilding({ data, index, error, handleChangeData, modeEdit }) {
+function RowBuilding({ data, index, error, handleChangeData, modeEdit, setIsLastFloor }) {
     const [disabled, setDisabled] = useState(modeEdit ? true : false)
     const [isUpdate, setIsUpdate] = useState(false)
     // const [building, setBuilding] = useState(data)
@@ -290,7 +329,7 @@ function RowBuilding({ data, index, error, handleChangeData, modeEdit }) {
             {/* </div> */}
             {data.floors?.map((floor, idx) => (
                 <div className="">
-                    <RowFloor name="ชั้น" key={idx} data={floor} index={idx} error={error} handleChange={onChangeFloor} handleDelete={handleDelete} deleteFloor={deleteFloor} modeEdit={modeEdit} />
+                    <RowFloor name="ชั้น" key={idx} data={floor} index={idx} error={error} handleChange={onChangeFloor} handleDelete={handleDelete} deleteFloor={deleteFloor} modeEdit={modeEdit} setIsLastFloor={setIsLastFloor} />
                 </div>
             ))}
             <div className="grid grid-cols-10 gap-4 ml-2">
@@ -312,7 +351,7 @@ function RowBuilding({ data, index, error, handleChangeData, modeEdit }) {
     )
 }
 
-function RowFloor({ data, index, error, handleChange, handleDelete, deleteFloor, modeEdit }) {
+function RowFloor({ data, index, error, handleChange, handleDelete, deleteFloor, modeEdit, setIsLastFloor }) {
     const [disabled, setDisabled] = useState(modeEdit ? true : false)
     const [isUpdate, setIsUpdate] = useState(false)
     const [collapseAll, setCollapseAll] = useState(false)
@@ -357,7 +396,8 @@ function RowFloor({ data, index, error, handleChange, handleDelete, deleteFloor,
 
     const delFloorDB = async () => {
         try {
-            console.log(showDelFloor._id)
+            if (index == 0) setIsLastFloor(showDelFloor._id)
+            console.log('index=', index, showDelFloor._id)
             await deleteFloorData(showDelFloor._id)
             deleteFloor(index)
             setShowDelFloor(false)

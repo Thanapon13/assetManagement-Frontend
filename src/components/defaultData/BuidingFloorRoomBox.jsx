@@ -6,7 +6,6 @@ import { MdOutlineExpandLess, MdOutlineExpandMore } from 'react-icons/md'
 import { useState, useEffect, useContext } from "react";
 import { Spinner } from "flowbite-react"
 import AddBuidingFloorRoom from "./AddBuidingFloorRoom"
-import { IoIosClose } from "react-icons/io";
 import { deleteBuildingData, getBuildingData } from "../../api/masterApi"
 import ModalConfirmDelete from "../modal/ModalConfirmDelete"
 import AuthContext from "../../context/AuthProvider"
@@ -529,24 +528,11 @@ function PopupAdds({ onClose, data, modeEdit, updateSuccess, allData }) {
                 <div
                     id="wrapper"
                     className="modal fixed inset-0 bg-black bg-opacity-25 blackdrop-blur-sm flex justify-center items-center"
-                    onClick={handleClose}
+                    // onClick={handleClose} //prevent user do not wanna close \\ data is []
                 >
                     <div className="overflow-y-auto scrollbar cursor-default max-h-[95%] w-[90%] max-w-[1000px] rounded bg-red-200 z-50">
                         <div className={`mx-auto `} >
                             <div className="bg-white min-w-[50%] rounded ">
-                                <div className="flex justify-between p-4">
-                                    <div className="text-text-green text-xl font-bold self-end">
-                                        {!modeEdit ? "เพิ่ม" : "แก้ไข"}  อาคาร / ชั้น / ห้อง
-                                    </div>
-
-                                    <button
-                                        className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
-                                        onClick={close}
-                                    >
-                                        <IoIosClose className="text-2xl" />
-                                    </button>
-                                </div>
-
                                 <AddBuidingFloorRoom onClose={close} data={data} modeEdit={modeEdit} updateSuccess={updateSuccess} allOfData={allData} />
                             </div>
                         </div>
