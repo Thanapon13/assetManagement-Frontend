@@ -236,7 +236,8 @@ const BorrowEdit = () => {
         const saveData = [...assetData, ...packageAssetData]
         setCountRow(saveData.length)
         setSaveAssetWithdrawTableArray(saveData);
-        if (saveData.length) setDataBorrow(borrow)
+        // if (saveData.length) 
+        setDataBorrow(borrow)
       } catch (err) {
         console.log(err);
       }
@@ -494,7 +495,7 @@ const BorrowEdit = () => {
           </>}
       </div>
       {/* footer */}
-      <div className="bottom-0 bg-white  flex justify-end items-center gap-6 p-3 text-sm mr-3 ">
+      <div className="bottom-0 bg-white  flex justify-between items-center gap-6 p-3 text-sm mr-3 ">
         <button
           type="button"
           className=" hover:bg-gray-100 text-text-gray text-sm rounded-md py-2 px-4"
