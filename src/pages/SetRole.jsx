@@ -468,7 +468,7 @@ export const SetRole = () => {
                 </div>
 
                 {screenData.map((ele, ind) => (
-                  <div index={ind}>
+                  <div key={ind} index={ind}>
                     <ScreenAll ele={ele} permission={permission} screenData={screenData}
                       onChange={onChange}
                       onChangeSubmenu={onChangeSubmenu}

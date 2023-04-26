@@ -165,7 +165,7 @@ export const SetRoleIndex = () => {
           </div>
           {merchantTableArray?.map((ele, index) => {
             return (
-              <div
+              <div key={index}
                 className={`grid grid-cols-6 gap-2 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
               >
                 <div className="ml-2 text-center">{index + 1}</div>
