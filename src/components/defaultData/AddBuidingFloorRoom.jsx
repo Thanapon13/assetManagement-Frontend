@@ -66,7 +66,7 @@ function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData
     const [isLastFloor, setIsLastFloor] = useState();
 
     const handleForm = () => {
-        let err
+        let err, isDup
         allData.map((ele, ind) => {
             if (err) return
             if (!ele.name) err = true
@@ -77,6 +77,12 @@ function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData
             } else {
                 ele.floors.map((floor, i) => {
                     // if (err) return
+                    if (ele.floors.find((ele, ind) => ind != i && ele.name == floor.name)) {
+                        setIsDuplicate(`ชั้น ${floor.name}`)
+                        isDup = true
+                        console.log('ชั้นนนนน', floor.name, ele.floors)
+                    }
+                    if (isDup) return
                     if (!floor.name) err = true
                     if (!floor.rooms.length) {
                         err = true
@@ -85,7 +91,13 @@ function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData
                         clone.floors[i] = object;
                         handleChangeData(clone, ind)
                     } else {
-                        floor.rooms.map(room => {
+                        floor.rooms.map((room, idx) => {
+                            if (floor.rooms.find((ele, ind) => ind != idx &&ele.name == room.name)) {
+                                setIsDuplicate(`ห้อง ${room.name} ในชั้น  ${floor.name}`)
+                                isDup = true
+                                console.log(i)
+                            }
+                            if (isDup) return
                             if (err) return
                             if (!room.name) err = true
                         })
@@ -95,21 +107,22 @@ function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData
         })
         return err
     }
-    const handleSubmit = () => {
-        const err = handleForm()
+    const handleSubmit = async() => {
+        const err = await handleForm()
         let isDup
         const nameBD = allData[0].name
         // state change name  เพิ่ม
-        if (!modeEdit) {
+        if (modeEdit) {
             allOfData.forEach(ele => {
-                if (nameBD == ele.name) {
-                    isDup = true
+                if (allData[0]._id != ele._id && nameBD == ele.name) {
+                    console.log(ele.name, nameBD)
+                    isDup = "อาคาร"
                     return
                 }
             })
         }
         setError(err)
-        setIsDuplicate(isDup)
+        if (!isDuplicate) setIsDuplicate(isDup)
         if (!err && !isDup) setShowModalConfirm(true)
     }
 
@@ -148,7 +161,7 @@ function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData
         if (!modeEdit) {
             onClose()
         } else {
-            if(data == allData) {
+            if (data == allData) {
                 onClose()
                 return
             }
@@ -216,7 +229,7 @@ function AddBuidingFloorRoom({ onClose, data, modeEdit, updateSuccess, allOfData
                         </button>
 
                         {showModalError && <ModalError message={showModalError} didClose={() => setShowModalError(false)} />}
-                        {isDuplicate && <ModalWarning message={`ไม่สามารถบันทึกชื่อ "อาคาร" ซ้ำกันได้`} didClose={() => setIsDuplicate(false)} />}
+                        {isDuplicate && <ModalWarning message={`ไม่สามารถบันทึกชื่อ "${isDuplicate}" ซ้ำกันได้`} didClose={() => setIsDuplicate(false)} />}
 
                     </div>
                 </div>
