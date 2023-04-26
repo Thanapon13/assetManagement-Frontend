@@ -60,6 +60,8 @@ import {
   SetRole,
   EditRole,
   DefaultAsset,
+  HistoryTransferAsset,
+  ViewTransferAsset,
 } from "../pages";
 
 import { useContext } from "react";
@@ -168,6 +170,9 @@ const Router = () => {
             path="editTransferAsset/:transferId"
             element={<EditTransferAsset />}
           />
+          <Route path="historyTransferAsset" element={<HistoryTransferAsset />} />
+          <Route path="viewTransferAsset/:transferId" element={<ViewTransferAsset />} />
+
           <Route path="merchant" element={<Merchant />} />
           <Route path="saveMerchant" element={<SaveMerchant />} />
           <Route path="editMerchant/:merchantId" element={<EditMerchant />} />
