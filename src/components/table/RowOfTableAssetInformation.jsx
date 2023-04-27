@@ -7,6 +7,7 @@ import ReactToPrint from "react-to-print";
 import { useRef } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
+import Select from "react-select";
 
 function RowOfTableAssetInformation({
   index,
@@ -91,13 +92,27 @@ function RowOfTableAssetInformation({
 
         <div className="col-span-2">
           <div className="flex h-[38px] ">
-            <Selector
+
+            <Select
+              options={[
+                { label: "Admin", value: "Admin" },
+                { label: "Operator", value: "Operator" },
+                { label: "superAdmin", value: "Auper admin" }
+              ]}
+              // onChange={handleChange}
+              name="role"
+              // value={role}
+              // menuPlacement="auto"
+              menuPortalTarget={document.body}
+              menuPosition={'fixed'}
+            />
+            {/* <Selector
               placeholder={"Select"}
               index={index}
               state={genData}
               setState={setGenData}
               id={"หน่วยงาน"}
-            />
+            /> */}
           </div>
         </div>
 

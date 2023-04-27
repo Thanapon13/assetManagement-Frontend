@@ -1,52 +1,61 @@
 import React, { useState } from 'react'
 import DropdownModalBorrowApprove from '../dropdown/DropdownModalBorrowApprove'
+import { IoIosClose } from 'react-icons/io'
+import { rejectAllWaitingTransfer } from '../../api/transferApi'
+import DropdownRejectReason from '../dropdown/DropdownRejectReason'
 
-const ModalTransferRejectAllApprove = ({state,setState}) => {
+const ModalTransferRejectAllApprove = ({ state, setState, isFetch }) => {
   const [showModal, setShowModal] = useState(false)
   const [isAllReject, setAllReject] = useState('แยกการให้สาเหตุแต่ละรายการ')
-
-  const approveList = [
-    {
-      id: '1271',
-      agencyName: 'ภาควิชาศาสตร์มืด',
-      date: '29/12/2565',
-      time: '18:00',
-      offerDate: '9/03/2565',
-      offerTime: '9:31',
-    },
-    {
-      id: '1272',
-      agencyName: 'ภาควิชาศาสตร์มืดมิด',
-      date: '30/12/2565',
-      time: '19:00',
-      offerDate: '12/03/2565',
-      offerTime: '20:22',
-    },
-    {
-      id: '1272',
-      agencyName: 'ภาควิชาศาสตร์มืดมิด',
-      date: '30/12/2565',
-      time: '19:00',
-      offerDate: '12/03/2565',
-      offerTime: '20:22',
-    },
-    {
-      id: '1272',
-      agencyName: 'ภาควิชาศาสตร์มืดมิด',
-      date: '30/12/2565',
-      time: '19:00',
-      offerDate: '12/03/2565',
-      offerTime: '20:22',
-    },
-  ]
+  const [error, setError] = useState(false)
 
   const callback = (payload) => {
     setAllReject(payload)
   }
+
+  const handleSubmitReject = async (e) => {
+    e.preventDefault();
+    let err
+    const allReason = isAllReject == "สาเหตุแบบหลายรายการ" && state[0].reason
+    const result = state?.map((el) => {
+      if (!allReason && !el.reason) err = true
+      const modifiedPackageAssetIdArray = el.packageAssetIdArray.map((asset) => ({
+        // const modifiedPackageAssetIdArray = el.subComponentTransfer.map((asset) => ({
+        ...asset,
+        reason: allReason || el.reason,
+      }));
+
+      const modifiedAssetIdArray = el.assetIdArray.map((asset) => ({
+        ...asset,
+        reason: allReason || el.reason,
+      }));
+
+      return {
+        ...el,
+        packageAssetIdArray: modifiedPackageAssetIdArray,
+        assetIdArray: modifiedAssetIdArray,
+      };
+    })
+    console.log(result, err, allReason)
+    if (err) {
+      setError(err)
+      return
+    }
+    try {
+      await rejectAllWaitingTransfer({
+        topApproveList: (result),
+      });
+      setShowModal(false)
+      isFetch(true)
+    } catch (err) {
+      console.log(err)
+    }
+  };
+
   return (
     <>
       <button
-        className="p-2 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-200"
+        className="p-2 px-3 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-500/[.15]"
         type="button"
         onClick={() => setShowModal(true)}
       >
@@ -61,41 +70,55 @@ const ModalTransferRejectAllApprove = ({state,setState}) => {
                 {/* header */}
                 <div className="flex items-center justify-between p-5 ">
                   <h3 className="text-xl">ระบุสาเหตุที่ไม่อนุมัติ</h3>
-                  <div className="flex items-center gap-5 mr-[5vw]">
+                  {/* <div className="flex items-center gap-5 mr-[5vw] px-5">
                     <div>ประเภทการให้เหตุผล</div>
                     <DropdownModalBorrowApprove
                       callback={callback}
                       header={isAllReject}
                     />
-                  </div>
+                  </div> */}
                   <button
                     className="border-0 text-black float-right"
                     onClick={() => setShowModal(false)}
                   >
-                    <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
-                      x
+                    {/* <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full"> */}
+                    <span
+                      className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
+                    >
+                      <IoIosClose className="text-2xl" />
                     </span>
                   </button>
                 </div>
-                {/* body */}
+                {!state.length
+                  ? <div className="flex justify-center items-center h-40">
+                    ยังไม่มีรายการที่เลือก
+                  </div>
+                  : <div className="flex items-center gap-5 px-5 mb-3">
+                    <div>ประเภทการให้เหตุผล</div>
+                    <DropdownRejectReason
+                      callback={callback}
+                      header={isAllReject}
+                    />
+                  </div>
+                }
                 {isAllReject === 'แยกการให้สาเหตุแต่ละรายการ' ? (
-                  <EachReject state={state} setState={setState} />
+                  <EachReject state={state} setState={setState} error={error} />
                 ) : (
-                  <AllReject state={state} setState={setState} />
+                  <AllReject state={state} setState={setState} error={error} />
                 )}
                 {/* footer */}
                 <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
                   <button
-                    className="px-10 py-2 border-[1px] shadow-sm rounded-md "
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md hover:bg-gray-200"
                     type="button"
                     onClick={() => setShowModal(false)}
                   >
                     ยกเลิก
                   </button>
                   <button
-                    className= "p-2 px-10 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
+                    className="p-2 px-10 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={handleSubmitReject}
                   >
                     ยืนยัน
                   </button>
@@ -109,9 +132,9 @@ const ModalTransferRejectAllApprove = ({state,setState}) => {
   )
 }
 
-const EachReject = ({state,setState}) => {
+const EachReject = ({ state, setState, error }) => {
 
-    const handleReasonChange = (index) => (e) => {
+  const handleReasonChange = (index) => (e) => {
     const updatedTopApproveList = [...state];
     updatedTopApproveList[index].reason = e.target.value;
     updatedTopApproveList[index].subComponentTransfer.forEach((subComponent) => {
@@ -130,7 +153,7 @@ const EachReject = ({state,setState}) => {
                   <h1>เลขที่ ID เลขที่การยืม</h1>
                   <h1>{item.id}</h1>
                 </div>
-                <div className="flex space-x-5 mr-5">
+                <div className="flex space-x-2 mr-5">
                   <h1>{item.transferPendingDate}</h1>
                   <h1>{item.transferPendingTime}</h1>
                 </div>
@@ -144,9 +167,10 @@ const EachReject = ({state,setState}) => {
                   <label>สาเหตุที่ไม่อนุมัติ</label>
                   <input
                     type="text"
-                    placeholder="Example"
+                    // placeholder="Example"
                     onChange={handleReasonChange(idx)}
-                    className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`${error && !item.reason && "border-red-500"} border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                    value={item.reason}
                   />
                 </div>
               </div>
@@ -158,8 +182,8 @@ const EachReject = ({state,setState}) => {
   )
 }
 
-const AllReject = ({state,setState}) => {
-  const [reason,setReason] = useState("")
+const AllReject = ({ state, setState, error }) => {
+  const [reason, setReason] = useState("")
 
   const handleReasonChange = (e) => {
     setReason(e.target.value);
@@ -177,14 +201,14 @@ const AllReject = ({state,setState}) => {
 
   return (
     <>
-      <div className="flex items-center space-x-5 p-6">
+      <div className="flex items-center space-x-5 px-5">
         <label>สาเหตุที่ไม่อนุมัติ</label>
         <input
           type="text"
-          placeholder="Example"
+          // placeholder="Example"
           value={reason}
           onChange={handleReasonChange}
-          className="border-[1px] w-10/12 p-2 h-[38px]  text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+          className={`${error && !reason && "border-red-500"} border-[1px] w-9/12 p-2 h-[38px]  text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none focus:border-focus-blue`}
         />
       </div>
       {state.map((item, idx) => {
@@ -196,7 +220,7 @@ const AllReject = ({state,setState}) => {
                   <h1>เลขที่ ID เลขที่การยืม</h1>
                   <h1>{item.id}</h1>
                 </div>
-                <div className="flex space-x-5 mr-5">
+                <div className="flex space-x-2 mr-5">
                   <h1>{item.transferPendingDate}</h1>
                   <h1>{item.transferPendingTime}</h1>
                 </div>

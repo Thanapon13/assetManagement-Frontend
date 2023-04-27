@@ -1,83 +1,97 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Selector from "../components/selector/Selector";
-import RowOfTableArray from "../components/table/RowOfTableArray";
 import { HiChevronLeft } from "react-icons/hi";
 import { HiChevronRight } from "react-icons/hi";
 import { AiOutlineSearch } from "react-icons/ai";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
 import RowOfTableTransferIndex from "../components/table/RowOfTableTransferIndex";
+import SearchSelector from "../components/selector/SearchSelector";
+import Select from "react-select";
+import { useEffect } from "react";
+import { getAllTransfer, getTransferAssetBySearch } from "../api/transferApi";
+import { getSector } from "../api/masterApi";
+import ModalReasonDelete from "../components/modal/ModalReasonDelete";
 
 const TransferIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(
     new Date().toLocaleString("th-TH")
   );
 
-  // useState
-  const [perPage, setPerPage] = useState(10);
+  const status = [
+    { name: "รอการอนุมัติ", value: "waiting" },
+    { name: "อนุมัติแล้ว", value: "approve" },
+    { name: "อนุมัติบางส่วน", value: "partiallyApprove" },
+    { name: "ไม่อนุมัติ", value: "reject" },
+    { name: "แบบร่าง", value: "saveDraft" },
+    { name: "ยกเลิก", value: "cancle" }, //
+  ]
 
-  //Main Date
+  const [perPage, setPerPage] = useState(10);
   const [withdrawDate, setWithdrawDate] = useState(todayThaiDate);
 
   // data
-  let dashboardTableTransferArrayIndex = [
-    {
-      id:"100",
-      transferPendingDateTime: "12/09/2565 14.36 น.",
-      transferDocumentNumber: "202207135",
-      transferSector: "สำนักเทคโนโลยีสารสนเทศ",
-      transfereeSector: "กองงานบริาหารยา",
-      building: "อาคารเพชรรัตน์",
-      status: "waiting",
-    },
-    {
-      transferPendingDateTime: "12/09/2565 14.36 น.",
-      transferDocumentNumber: "202207135",
-      transferSector: "สำนักเทคโนโลยีสารสนเทศ",
-      transfereeSector: "กองงานบริาหารยา",
-      building: "อาคารเพชรรัตน์",
-      status: "approve",
-    },
-    {
-      transferPendingDateTime: "12/09/2565 14.36 น.",
-      transferDocumentNumber: "202207135",
-      transferSector: "สำนักเทคโนโลยีสารสนเทศ",
-      transfereeSector: "กองงานบริาหารยา",
-      building: "อาคารเพชรรัตน์",
-      status: "partiallyApprove",
-    },
-    {
-      transferPendingDateTime: "12/09/2565 14.36 น.",
-      transferDocumentNumber: "202207135",
-      transferSector: "สำนักเทคโนโลยีสารสนเทศ",
-      transfereeSector: "กองงานบริาหารยา",
-      building: "อาคารเพชรรัตน์",
-      status: "reject",
-    },
-    {
-      transferPendingDateTime: "12/09/2565 14.36 น.",
-      transferDocumentNumber: "202207135",
-      transferSector: "สำนักเทคโนโลยีสารสนเทศ",
-      transfereeSector: "กองงานบริาหารยา",
-      building: "อาคารเพชรรัตน์",
-      status: "saveDraft",
-    },
-    {
-      transferPendingDateTime: "12/09/2565 14.36 น.",
-      transferDocumentNumber: "202207135",
-      transferSector: "สำนักเทคโนโลยีสารสนเทศ",
-      transfereeSector: "กองงานบริาหารยา",
-      building: "อาคารเพชรรัตน์",
-      status: "cancel",
-    },
-  ];
+  const [search, setSearch] = useState({
+    typeTextSearch: "transferId",
+    textSearch: "",
+    status: "",
+    dateFrom: "",
+    dateTo: todayThaiDate,
+    sector: "",
+    sector: "",
+    page: "",
+    limit: 10,
+    total: 0,
+  });
+  const [transferArray, setTransferArray] = useState([])
+  const [sectorArray, setSectorArray] = useState([])
+  const [showModalDelete, setShowModalDelete] = useState(false)
+  const [reasonDelete, setReasonDelete] = useState("")
+  useEffect(() => {
+    initData()
+  }, [])
+
+  const initData = async () => {
+    const response = await getAllTransfer()
+    console.log(response.data.transfer)
+    setTransferArray(response.data.transfer)
+
+    const sector = await getSector()
+    const arrSector = []
+    sector.data.sector.map(ele => {
+      arrSector.push({ label: ele.name, value: ele.name })
+    })
+    setSectorArray(arrSector)
+  }
+
+  const handleChange = (e) => {
+    setSearch({ ...search, [e.target.name]: e.target.value })
+  };
+
+  // const handleSelect = (e, data) => {
+  //   console.log({ ...search, [data.name]: e.value })
+  //   setSearch({ ...search, [data.name]: e.value })
+  // }
+  const handleSelect = (value, label) => {
+    console.log({ ...search, [label]: value })
+    setSearch({ ...search, [label]: value })
+  }
+
+  const handleSearch = async () => {
+    const res = await getTransferAssetBySearch(search)
+    setTransferArray(res.data.transfer)
+    setSearch({
+      ...search,
+      limit: res.data.limit,
+      page: res.data.page,
+      total: res.data.total
+    })
+  }
+
   return (
-    <div className="bg-background-page px-5 pt-10 pb-36">
-      {/* Header */}
+    <div className="bg-background-page px-5 py-10 min-h-full">
       <div className="text-xl text-text-green ">รายการโอน-ย้ายครุภัณฑ์</div>
       <div className="flex justify-between items-center">
-        {/* left home */}
         <div className="flex text-xs">
           <Link
             to="/"
@@ -90,11 +104,10 @@ const TransferIndex = () => {
           <div className="text-text-gray ml-2">รายการโอน-ย้ายครุภัณฑ์</div>
         </div>
 
-        {/* right button เพิ่มใบเบิก */}
         <div className="md:flex gap-5 space-y-2 md:space-y-0">
           <button
             type="button"
-            className="bg-background-page px-4 py-2  flex items-center gap-3 text-text-green border border-text-green rounded hover:bg-green-800"
+            className="bg-background-page px-4 py-2  flex items-center gap-3 text-text-green border border-text-green rounded hover:bg-sidebar-green"
           >
             <svg
               width="22"
@@ -120,35 +133,55 @@ const TransferIndex = () => {
         </div>
       </div>
 
-      {/* search bar */}
       <div className="grid grid-cols-1 md:grid-cols-11 gap-4 items-center mt-8 mb-3 pl-5">
-        <div className="text-xs font-semibold">ค้นหาโดย</div>
-        <div className="md:col-span-2">
-          <Selector placeholder={"ID"} />
+        <div className="md:col-span-3 flex items-center">
+        <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
+          <select
+            className="ml-2 border border-gray-300  text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
+          // onChange={(e) => setPerPage(e.target.value)}
+          >
+            <option value="" selected="selected">ID</option>
+          </select>
         </div>
 
         <div className="md:col-span-5  h-[38px] relative">
+          {/* <div className="relative"> */}
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
-            // name="requestedId"
-            // id="requestedId"
             // onChange={(e) => setRequestedId(e.target.value)}
             // value={requestedId}
+            id="textSearch"
+            name="textSearch"
+            onChange={handleChange}
+            value={search.textSearch}
             placeholder="ค้นหาโดยเลขที่ใบเบิก"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
+          {/* <label for="textSearch" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Floating standard</label> */}
+          {/* </div> */}
         </div>
 
-        <div className="md:col-span-3">
-          <Selector placeholder={"สถานะ"} />
+        <div className="md:col-span-3 md:pr-10">
+          <select
+            className="md:ml-2 border text-sm border-gray-300 w-full text-gray-500 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-pointer"
+            name="status"
+            value={search.status}
+            onChange={handleChange}
+          >
+            <option value="" selected="selected">สถานะทั้งหมด</option>
+            {status.map(ele => (
+              <option value={ele.value}>{ele.name}</option>
+            ))}
+          </select>
         </div>
 
         <div className="md:col-span-2 h-full ">
           <div className="flex h-full">
             <DateInput
-              state={withdrawDate}
-              setState={setWithdrawDate}
+              id="dateFrom"
+              // state={search}
+              // setState={setSearch}
               lable="date from"
             />
           </div>
@@ -157,25 +190,38 @@ const TransferIndex = () => {
         <div className="md:col-span-2 h-full ">
           <div className="flex h-full">
             <DateInput
-              state={withdrawDate}
-              setState={setWithdrawDate}
+              id="dateTo"
+              state={search.dateTo}
+              // setState={setSearch}
               lable="date to"
             />
           </div>
         </div>
 
         <div className="md:col-span-3">
-          <Selector placeholder={"หน่วยงานที่โอน"} />
+          <SearchSelector
+            options={sectorArray}
+            placeholder={"หน่วยงานที่โอน"}
+            name={"transferSector"}
+            onChange={handleSelect}
+            floatLabel
+          />
         </div>
         <div className="md:col-span-3">
-          <Selector placeholder={"หน่วยงานรับโอน"} />
+          <SearchSelector
+            placeholder={"หน่วยงานรับโอน"}
+            options={sectorArray}
+            onChange={handleSelect}
+            name="transfereeSector"
+            floatLabel
+          />
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end pr-8">
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-            // onClick={handleSearch}
+            onClick={handleSearch}
           >
             <div className="text-xl text-white">
               <AiOutlineSearch />
@@ -184,15 +230,13 @@ const TransferIndex = () => {
         </div>
       </div>
 
-      {/* table */}
       <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
         <div className="w-[1200px] 2xl:w-full  ">
           <div>
             <div className="flex p-4">
               <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-              <div className="ml-2 text-sm">25 รายการ </div>
+              <div className="ml-2 text-sm">{transferArray?.length} รายการ </div>
             </div>
-            {/* top bar */}
             <div className="grid grid-cols-18 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
               <div className="col-span-2 ml-2">วันที่/เวลาโอน</div>
               <div className="col-span-3">เลขที่เอกสารการโอนย้าย</div>
@@ -206,29 +250,42 @@ const TransferIndex = () => {
             </div>
           </div>
           <div className="">
-            {dashboardTableTransferArrayIndex?.map((el, idx) => {
+            {transferArray?.map((ele, idx) => {
               return (
                 <RowOfTableTransferIndex
                   key={idx}
                   index={idx}
-                  id={el.id}
-                  transferPendingDateTime={el.transferPendingDateTime}
-                  transferDocumentNumber={el.transferDocumentNumber}
-                  transferSector={el.transferSector}
-                  transfereeSector={el.transfereeSector}
-                  building={el.building}
-                  status={el.status}
+                  id={ele._id}
+                  ele={ele}
+                  status={status}
+                  setShowModalDelete={setShowModalDelete}
+                // transferPendingDateTime={el.transferPendingDateTime}
+                // transferDocumentNumber={el.transferDocumentNumber}
+                // transferSector={el.transferSector}
+                // transfereeSector={el.transfereeSector}
+                // building={el.building}
+                // status={el.status}
                 />
               );
             })}
           </div>
+
+          <ModalReasonDelete isVisible={showModalDelete} textSubmit="ยกเลิกโอนย้าย"
+            reason={reasonDelete}
+            setReason={setReasonDelete}
+            onClose={() => setShowModalDelete(false)}
+          // onSubmit={value =>}
+          />
+
           <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
             <div className="flex items-end mr-10">
               <div>Rows per page:</div>
               <select
                 id="perPage"
+                name="limit"
                 className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={(e) => setPerPage(e.target.value)}
+                // onChange={(e) => setPerPage(e.target.value)}
+                onChange={handleChange}
               >
                 {/* <option value="" selected disabled hidden>
             ประเภทครุภัณฑ์
@@ -248,21 +305,22 @@ const TransferIndex = () => {
               </select>
             </div>
 
-            <div>1-{perPage} of 13</div>
+            {/* <div>1-{perPage} of 13</div> */}
+            <div>1-{search.limit} of {search.total}</div>
 
             <button
               className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-              // onClick={() => {
-              //   deleteRow(index)
-              // }}
+            // onClick={() => {
+            //   deleteRow(index)
+            // }}
             >
               <HiChevronLeft className="text-lg" />
             </button>
             <button
               className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-              // onClick={() => {
-              //   deleteRow(index)
-              // }}
+            // onClick={() => {
+            //   deleteRow(index)
+            // }}
             >
               <HiChevronRight className="text-lg" />
             </button>

@@ -42,7 +42,7 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
         placeholder={!floatLabel ? placeholder || "" : ""}
         value={valueObj}
         // menuPortalTarget={document.body} 
-        // menuPosition={'fixed'}
+        menuPosition={'fixed'}
         menuPlacement="auto"
         isDisabled={isDisabled}
         isClearable
@@ -64,7 +64,7 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
           }),
         }}
         onMenuOpen={setLabel}
-        onMenuClose={() => !value && setIsFloat(false)}
+        onMenuClose={() => !valueObj && setIsFloat(false)}
       // backspaceRemovesValue={false}
       // components={{ DropdownIndicator, IndicatorSeparator: null }}
       // controlShouldRenderValue={false}

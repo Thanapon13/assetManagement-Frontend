@@ -6,51 +6,48 @@ import { Link } from "react-router-dom";
 function RowOfTableTransferIndex({
   index,
   id,
-  transferPendingDateTime,
-  transferDocumentNumber,
-  transferSector,
-  transfereeSector,
-  building,
+  ele,
   status,
+  setShowModalDelete
 }) {
+
   return (
     <div
       className={`grid grid-cols-18 gap-2  py-2 text-xs text-center items-center justify-center border-b-[1px] border-border-gray-table bg-white`}
     >
-      <div className="col-span-2 ml-2">{transferPendingDateTime}</div>
-      <div className="col-span-3">{transferDocumentNumber}</div>
-      <div className="col-span-3 ">{transferSector}</div>
-      <div className="col-span-3">{transfereeSector}</div>
-      <div className="col-span-3">{building}</div>
+      <div className="col-span-2 ml-2">{new Date(ele.createdAt).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", our12: false })}</div>
+      <div className="col-span-3">{ele.transferDocumentNumber}</div>
+      <div className="col-span-3 text-left">{ele.transferSector}</div>
+      <div className="col-span-3 text-left">{ele.transfereeSector}</div>
+      <div className="col-span-3 text-left">{ele.building}</div>
       <div
-        className={`col-span-2 ${
-          status === "waiting"
-            ? " bg-background-light-blue text-text-blue  "
-            : status === "approve" || status === "partiallyApprove"
+        className={`col-span-2 ${ele.status === "waiting"
+          ? " bg-background-light-blue text-text-blue  "
+          : ele.status === "approve" || ele.status === "partiallyApprove"
             ? " bg-sidebar-green text-text-green    "
-            : status === "reject"
-            ? "bg-red-200 text-red-600  "
-            : status === "saveDraft"
-            ? "bg-gray-200 text-gray-600  "
-            : "bg-red-500 text-white   hover:bg-green-800"
-        } text-center  p-2 rounded-full`}
+            : ele.status === "reject"
+              ? "bg-red-200 text-red-600  "
+              : ele.status === "saveDraft"
+                ? "bg-gray-200 text-gray-600  "
+                : "bg-red-500 text-white   hover:bg-green-800"
+          } text-center  p-2 rounded-full`}
       >
-        {status === "waiting"
+        {status.find(el => el.value == ele.status)?.name || "ยกเลิก"}
+        {/* {status === "waiting"
           ? "รอการอนุมัติ"
           : status === "approve"
-          ? "อนุมัติแล้ว"
-          : status === "partiallyApprove"
-          ? "อนุมัติบางส่วน"
-          : status === "reject"
-          ? "ไม่อนุมัติ"
-          : status === "saveDraft"
-          ? "แบบร่าง"
-          : "ยกเลิก"}
+            ? "อนุมัติแล้ว"
+            : status === "partiallyApprove"
+              ? "อนุมัติบางส่วน"
+              : status === "reject"
+                ? "ไม่อนุมัติ"
+                : status === "saveDraft"
+                  ? "แบบร่าง"
+                  : "ยกเลิก"} */}
       </div>
       <div className="col-span-2 flex justify-center gap-2 mr-2">
-        {status === "waiting" ||
-       
-        status === "saveDraft" ? (
+        {ele.status === "waiting" ||
+          ele.status === "saveDraft" ? (
           <>
             <Link
               to={`/viewWaitingTransferAsset/${id}`}
@@ -59,14 +56,14 @@ function RowOfTableTransferIndex({
               <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
             </Link>
             <Link
-             to={`/editTransferAsset/${id}`}
+              to={`/editTransferAsset/${id}`}
               className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
             >
               <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
             </Link>
-            <Link
-              to="/viewAssetInformation"
+            <button
               className="border-[1px] border-red-600  focus:border-transparent shadow-sm text-sm font-medium   hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600  h-[31px] w-[31px] flex justify-center items-center rounded-md"
+              onClick={() => setShowModalDelete(true)}
             >
               <svg
                 width="15"
@@ -80,12 +77,12 @@ function RowOfTableTransferIndex({
                   fill="#EB5757"
                 />
               </svg>
-            </Link>
+            </button>
           </>
         ) : (
           <>
             <Link
-              to="/viewAssetInformation"
+              to={`/viewWaitingTransferAsset/${id}`}
               className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] px-1 flex justify-center items-center rounded-md"
             >
               <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
