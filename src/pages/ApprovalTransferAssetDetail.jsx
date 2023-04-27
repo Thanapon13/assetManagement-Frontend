@@ -3,96 +3,23 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import RowofTableApprovalTransferDetail from "../components/table/RowofTableApprovalTransferDetail";
 import { useEffect } from "react";
-import { approvePartiallyTransfer, getTransferById } from "../api/transferApi";
+import { approvePartiallyTransfer, getTransferById, rejectIndividualWaitingTransfer } from "../api/transferApi";
 import { IoIosClose } from "react-icons/io";
-import DropdownModalBorrowApprove from "../components/dropdown/DropdownModalBorrowApprove";
 import DropdownRejectReason from "../components/dropdown/DropdownRejectReason";
 
 const ApprovalTransferAssetDetail = () => {
   let { transferId } = useParams();
 
-  // const fetchData = {
-  //   transferDocumentNumber: "trf.6603/1723011",
-  //   transferSector: "ภาควิชาอายุรศาสตร์",
-  //   subSector: "งานบริหารเภสัช",
-  //   handler: "นายธรรมกร นามสมมุติ",
-  //   transfereeSector: "สำนักบริหารงานเภสัช",
-  //   building: "อาคารสำนักงานบริหารกิจการ",
-  //   floor: "7",
-  //   room: "704",
-  //   note: "",
-  //   transferPendingDate: "29/12/2565",
-  //   transferPendingTime: "18:00",
-  //   transferActiveDate: "1/1/2566",
-  //   transferActiveTime: "18:00",
-  //   firstName_recorder: "สุริวิภา",
-  //   lastName_recorder: "ภาวนาจิต",
-  //   dateTime_recorder: "12/12/2565",
-  //   firstName_courier: "สุริวิภา",
-  //   lastName_courier: "ภาวนาจิต",
-  //   dateTime_courier: "12/12/2565",
-  //   firstName_approver: "สุริวิภา",
-  //   lastName_approver: "ภาวนาจิต",
-  //   dateTime_approver: "12/12/2565",
-  //   status: "waiting",
-
-  //   reason: "",
-  //   subComponentTransfer: [
-  //     {
-  //       assetNumber: "7440-001-0001",
-  //       productName: "พัดลม hatari แบบ...",
-  //       serialNumber: "HjYn12wert434th/a",
-  //       hostSector: "สำนักคอมพิวเตอร์",
-  //       reason: "",
-  //       status: "wating",
-  //       checked: false,
-  //     },
-  //     {
-  //       assetNumber: "8440-001-0001",
-  //       productName: "พัดลม hatari แบบ...",
-  //       serialNumber: "HjYn12wert434th/a",
-  //       hostSector: "สำนักคอมพิวเตอร์",
-  //       reason: "",
-  //       status: "wating",
-  //       checked: false,
-  //     },
-  //     {
-  //       assetNumber: "9440-001-0001",
-  //       productName: "พัดลม hatari แบบ...",
-  //       serialNumber: "HjYn12wert434th/a",
-  //       hostSector: "สำนักคอมพิวเตอร์",
-  //       reason: "",
-  //       status: "wating",
-  //       checked: false,
-  //     },
-  //     {
-  //       assetNumber: "2440-001-0001",
-  //       productName: "พัดลม hatari แบบ...",
-  //       serialNumber: "HjYn12wert434th/a",
-  //       hostSector: "สำนักคอมพิวเตอร์",
-  //       reason: "",
-  //       status: "wating",
-  //       checked: false,
-  //     },
-  //   ],
-  // };
-
-  // const [data, setData] = useState(fetchData);
   const [data, setData] = useState([])
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await getTransferById(transferId)
-        console.log(res, '//*')
         const totalArr = res.data.transfer.assets.concat(res.data.transfer.packageAssets)
         totalArr.map(ele => {
           ele.checked = false
         })
         setData({
-          ...res.data.transfer,
-          subComponentTransfer: totalArr
-        })
-        console.log({
           ...res.data.transfer,
           subComponentTransfer: totalArr
         })
@@ -149,22 +76,23 @@ const ApprovalTransferAssetDetail = () => {
           if (!ele.reason) err = true
         }
         return { ...asset, reason: ele.reason }
+      } else {
+        return asset
       }
     })
 
     const modifiedPackageAssetIdArray = data.packageAssetIdArray?.map(asset => {
       if (err) return
-      if (data.subComponentTransfer.find(ele => ele._id == asset.assetId).checked == false) {
-        if (ele.checked == false) {
-          if (isAllReason == "สาเหตุแบบหลายรายการ") {
-            if (!data.reason) err = true
-          } else {
-            if (!ele.reason) err = true
-          }
-          return { ...asset, reason: ele.reason }
+      const ele = data.subComponentTransfer.find(ele => ele._id == asset.assetId)
+      if (ele.checked == false) {
+        if (isAllReason == "สาเหตุแบบหลายรายการ") {
+          if (!data.reason) err = true
+        } else {
+          if (!ele.reason) err = true
         }
-
+        return { ...asset, reason: ele.reason }
       }
+      return asset
     })
     console.log(modifiedAssetIdArray, modifiedPackageAssetIdArray)
     if (err) return err
@@ -174,10 +102,8 @@ const ApprovalTransferAssetDetail = () => {
           assetIdArray: modifiedAssetIdArray,
           packageAssetIdArray: modifiedPackageAssetIdArray
         }
-        // ...data,
-        // assetIdArray: modifiedAssetIdArray,
-        // packageAssetIdArray: modifiedPackageAssetIdArray
       })
+      window.location.href = "/approvalTransferAsset"
     } catch (error) {
       console.log(error)
     }
@@ -331,13 +257,13 @@ const ApprovalTransferAssetDetail = () => {
               fill="#CCCCCC"
             />
           </svg>
-          <div className="text-md space-y-3">
+          {/* <div className="text-md space-y-3">
             <div>ผู้แก้ไข</div>
             <div className="font-semibold">สุริวิภา ภาวนาจิต</div>
             <div className="text-sm text-text-gray">12/12/2565</div>
-          </div>
+          </div> */}
           {/* icon */}
-          <svg
+          {/* <svg
             width="63"
             height="16"
             viewBox="0 0 63 16"
@@ -348,31 +274,36 @@ const ApprovalTransferAssetDetail = () => {
               d="M62.7071 8.70711C63.0976 8.31658 63.0976 7.68342 62.7071 7.29289L56.3431 0.928932C55.9526 0.538408 55.3195 0.538408 54.9289 0.928932C54.5384 1.31946 54.5384 1.95262 54.9289 2.34315L60.5858 8L54.9289 13.6569C54.5384 14.0474 54.5384 14.6805 54.9289 15.0711C55.3195 15.4616 55.9526 15.4616 56.3431 15.0711L62.7071 8.70711ZM0 9H1.9375V7H0V9ZM5.8125 9H9.6875V7H5.8125V9ZM13.5625 9H17.4375V7H13.5625V9ZM21.3125 9H25.1875V7H21.3125V9ZM29.0625 9H32.9375V7H29.0625V9ZM36.8125 9H40.6875V7H36.8125V9ZM44.5625 9H48.4375V7H44.5625V9ZM52.3125 9H56.1875V7H52.3125V9ZM60.0625 9H62V7H60.0625V9Z"
               fill="#CCCCCC"
             />
-          </svg>
+          </svg> */}
           <div className="text-md space-y-3">
             <div>ผู้ส่งเรื่อง</div>
             <div className="font-semibold">{data.name_courier}</div>
             <div className="text-sm text-text-gray">{new Date(data.dateTime_recorder
             ).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric" })}</div>
           </div>
-          {/* icon */}
-          <svg
-            width="63"
-            height="16"
-            viewBox="0 0 63 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M62.7071 8.70711C63.0976 8.31658 63.0976 7.68342 62.7071 7.29289L56.3431 0.928932C55.9526 0.538408 55.3195 0.538408 54.9289 0.928932C54.5384 1.31946 54.5384 1.95262 54.9289 2.34315L60.5858 8L54.9289 13.6569C54.5384 14.0474 54.5384 14.6805 54.9289 15.0711C55.3195 15.4616 55.9526 15.4616 56.3431 15.0711L62.7071 8.70711ZM0 9H1.9375V7H0V9ZM5.8125 9H9.6875V7H5.8125V9ZM13.5625 9H17.4375V7H13.5625V9ZM21.3125 9H25.1875V7H21.3125V9ZM29.0625 9H32.9375V7H29.0625V9ZM36.8125 9H40.6875V7H36.8125V9ZM44.5625 9H48.4375V7H44.5625V9ZM52.3125 9H56.1875V7H52.3125V9ZM60.0625 9H62V7H60.0625V9Z"
-              fill="#CCCCCC"
-            />
-          </svg>
-          <div className="text-md space-y-3">
-            <div>ผู้อนุมัติ</div>
-            <div className="font-semibold">สุริวิภา ภาวนาจิต</div>
-            <div className="text-sm text-text-gray">12/12/2565</div>
-          </div>
+          {data.name_approver &&
+            <>
+              <svg
+                width="63"
+                height="16"
+                viewBox="0 0 63 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M62.7071 8.70711C63.0976 8.31658 63.0976 7.68342 62.7071 7.29289L56.3431 0.928932C55.9526 0.538408 55.3195 0.538408 54.9289 0.928932C54.5384 1.31946 54.5384 1.95262 54.9289 2.34315L60.5858 8L54.9289 13.6569C54.5384 14.0474 54.5384 14.6805 54.9289 15.0711C55.3195 15.4616 55.9526 15.4616 56.3431 15.0711L62.7071 8.70711ZM0 9H1.9375V7H0V9ZM5.8125 9H9.6875V7H5.8125V9ZM13.5625 9H17.4375V7H13.5625V9ZM21.3125 9H25.1875V7H21.3125V9ZM29.0625 9H32.9375V7H29.0625V9ZM36.8125 9H40.6875V7H36.8125V9ZM44.5625 9H48.4375V7H44.5625V9ZM52.3125 9H56.1875V7H52.3125V9ZM60.0625 9H62V7H60.0625V9Z"
+                  fill="#CCCCCC"
+                />
+              </svg>
+              <div className="text-md space-y-3">
+                <div>ผู้อนุมัติ</div>
+                <div className="font-semibold">{data.name_approver}</div>
+                <div className="text-sm text-text-gray">
+                  {!data.dateTime_approver ? <br /> : new Date(data.dateTime_approver).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                </div>
+              </div>
+            </>
+          }
         </div>
       </div>
     </>
@@ -381,8 +312,7 @@ const ApprovalTransferAssetDetail = () => {
 
 const ModalIndividualReject = ({ state, setState, item }) => {
   const [showModal, setShowModal] = useState(false);
-
-  console.log(state)
+  const [error, setError] = useState(false)
 
   const handleChangeArray = (e) => {
     const clone = [...state];
@@ -393,24 +323,32 @@ const ModalIndividualReject = ({ state, setState, item }) => {
   };
 
   const onChangeAllInIndexReason = (e, index) => {
-    setState((prevState) => {
-      const updatedDataTopApproveList = [...prevState];
-      updatedDataTopApproveList[index].reason = e.target.value;
-      updatedDataTopApproveList[index].subComponentTransfer?.forEach(
-        (subComponent) => (subComponent.reason = e.target.value)
-      );
-      console.log(updatedDataTopApproveList);
-      return updatedDataTopApproveList;
-    });
+    const value = e.target.value
+    state.assetIdArray?.forEach(ele => {
+      ele.reason = value
+    })
+    state.packageAssetIdArray?.forEach(ele => {
+      ele.reason = value
+    })
+    // setState((prevState) => {
+    //   const updatedDataTopApproveList = [...prevState];
+    //   updatedDataTopApproveList[index].reason = e.target.value;
+    //   updatedDataTopApproveList[index].subComponentTransfer?.forEach(
+    //     (subComponent) => (subComponent.reason = e.target.value)
+    //   );
+    //   console.log(updatedDataTopApproveList);
+    //   return updatedDataTopApproveList;
+    // });
   };
 
   const handleReject = async (e) => {
     e.preventDefault()
     try {
-      await rejectIndividualWaitingTransfer({ topApproveList: state[index] })
+      await rejectIndividualWaitingTransfer({ topApproveList: state })
       setShowModal(false)
+      window.location.href = "/approvalTransferAsset"
     } catch (err) {
-      console.log('err', state[index].reason)
+      // console.log('err', state[index].reason)
     }
   }
 
@@ -467,7 +405,7 @@ const ModalIndividualReject = ({ state, setState, item }) => {
                             type="text"
                             name="reason"
                             required
-                            className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                            className={`border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${error && !state.reason && 'border-red-500'}`}
                             onChange={(e) => onChangeAllInIndexReason(e)}
                             value={state.reason}
                           />
@@ -486,14 +424,13 @@ const ModalIndividualReject = ({ state, setState, item }) => {
                   >
                     ยกเลิก
                   </button>
-                  <Link
-                    to="/borrowApprove"
+                  <button
                     className="text-white bg-red-600 px-10 py-2 border rounded-md "
                     // type="button"
                     onClick={handleReject}
                   >
                     ยืนยัน
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
@@ -597,7 +534,6 @@ const ModalSummary = ({ state, setState, handleSubmit }) => {
                     ยกเลิก
                   </button>
                   <button
-                    to="/borrowApprove"
                     className="text-white bg-text-green px-10 py-2 border rounded-md "
                     // type="button"
                     onClick={submit}
@@ -688,7 +624,7 @@ const TableSummaryApprove = ({ subComponentTransfer }) => {
     <div className={`scrollbar overflow-y-auto min-h-[4rem] ${subComponentTransfer.find(ele => !ele.checked) ? "max-h-[20vh]" : "max-h-[40vh]"}`}>
       {subComponentTransfer.map((item, idx) => {
         return item.checked === true ? (
-          <div className="grid grid-cols-13 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+          <div key={idx} className="grid grid-cols-13 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
             <div className="col-span-1 text-center flex justify-center items-center ">
               <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
                 {idx + 1}
@@ -704,7 +640,7 @@ const TableSummaryApprove = ({ subComponentTransfer }) => {
               {item.serialNumber}
             </div>
             <div className="col-span-3 bg-gray-200 h-[42px] border-[2px] flex justify-center items-center rounded-md">
-              {item.sector}d
+              {item.sector}
             </div>
           </div>
         ) : (
@@ -725,9 +661,8 @@ const TableSummaryEachReject = ({ state, setState, error }) => {
   return (
     <div className={`scrollbar overflow-y-auto min-h-[5rem] mb-3 ${state.subComponentTransfer.find(ele => ele.checked) ? "max-h-[30vh]" : "max-h-45vh]"}`}>
       {state.subComponentTransfer.map((item, idx) => {
-        console.log(item)
         return item.checked === false ? (
-          <div className="grid grid-cols-14 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+          <div key={idx} className="grid grid-cols-14 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
             <div className="col-span-1  text-center flex justify-center items-center ">
               <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
                 {idx + 1}
@@ -768,7 +703,7 @@ const TableSummaryAllReject = ({ state, setState }) => {
     <div className={`scrollbar overflow-y-auto min-h-[4rem] ${state.subComponentTransfer.find(ele => ele.checked) ? "max-h-[20vh]" : "max-h-[40vh]"}`}>
       {state.subComponentTransfer.map((item, idx) => {
         return item.checked === false ? (
-          <div className="grid grid-cols-13 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+          <div key={idx} className="grid grid-cols-13 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
             <div className="col-span-1  text-center flex justify-center items-center ">
               <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
                 {idx + 1}

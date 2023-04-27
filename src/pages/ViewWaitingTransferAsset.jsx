@@ -16,7 +16,6 @@ const ViewWaitingTransferAsset = () => {
       try {
         const res = await getTransferById(transferId)
         const totalArr = res.data.transfer.assets.concat(res.data.transfer.packageAssets)
-        console.log(totalArr)
 
         setData({
           ...res.data.transfer,

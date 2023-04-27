@@ -42,7 +42,7 @@ function RowofTableViewWatingTransfer({ index, row }) {
         className="col-span-1 border-2 border-text-green shadow-sm rounded-md w-full justify-center py-2 hover:bg-sidebar-green items-center"
         onClick={() => {
           setShowViewImageModal(true);
-          setImgIndex(idx);
+          // setImgIndex(idx);
         }}
       >
         <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mx-2 inline" />
@@ -59,6 +59,7 @@ function RowofTableViewWatingTransfer({ index, row }) {
         <div className=" px-10 pt-2 pb-10">
           {row.imageArray?.map((el, idx) => (
             <img
+              key={idx}
               crossOrigin="true"
               src={el.imgURL}
               className="w-[640px] mb-5"

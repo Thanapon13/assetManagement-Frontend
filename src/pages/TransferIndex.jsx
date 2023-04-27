@@ -9,9 +9,10 @@ import RowOfTableTransferIndex from "../components/table/RowOfTableTransferIndex
 import SearchSelector from "../components/selector/SearchSelector";
 import Select from "react-select";
 import { useEffect } from "react";
-import { getAllTransfer, getTransferAssetBySearch } from "../api/transferApi";
+import { deleteTransfer, getAllTransfer, getTransferAssetBySearch } from "../api/transferApi";
 import { getSector } from "../api/masterApi";
 import ModalReasonDelete from "../components/modal/ModalReasonDelete";
+import { Spinner } from "flowbite-react/lib/esm";
 
 const TransferIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(
@@ -47,13 +48,13 @@ const TransferIndex = () => {
   const [sectorArray, setSectorArray] = useState([])
   const [showModalDelete, setShowModalDelete] = useState(false)
   const [reasonDelete, setReasonDelete] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     initData()
   }, [])
 
   const initData = async () => {
     const response = await getAllTransfer()
-    console.log(response.data.transfer)
     setTransferArray(response.data.transfer)
 
     const sector = await getSector()
@@ -62,6 +63,7 @@ const TransferIndex = () => {
       arrSector.push({ label: ele.name, value: ele.name })
     })
     setSectorArray(arrSector)
+    setIsLoading(false)
   }
 
   const handleChange = (e) => {
@@ -88,6 +90,19 @@ const TransferIndex = () => {
     })
   }
 
+  async function submitDelete(val) {
+    console.log(val, showModalDelete)
+    const id = showModalDelete
+    setIsLoading(true)
+    try {
+      await deleteTransfer(id)
+      // setShowModalDelete(false)
+      // initData()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div className="bg-background-page px-5 py-10 min-h-full">
       <div className="text-xl text-text-green ">รายการโอน-ย้ายครุภัณฑ์</div>
@@ -107,7 +122,7 @@ const TransferIndex = () => {
         <div className="md:flex gap-5 space-y-2 md:space-y-0">
           <button
             type="button"
-            className="bg-background-page px-4 py-2  flex items-center gap-3 text-text-green border border-text-green rounded hover:bg-sidebar-green"
+            className="bg-background-page px-4 py-2  flex items-center text-text-green border border-text-green rounded hover:bg-sidebar-green"
           >
             <svg
               width="22"
@@ -135,9 +150,9 @@ const TransferIndex = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-11 gap-4 items-center mt-8 mb-3 pl-5">
         <div className="md:col-span-3 flex items-center">
-        <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
+          <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
           <select
-            className="ml-2 border border-gray-300  text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
+            className="ml-2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
           // onChange={(e) => setPerPage(e.target.value)}
           >
             <option value="" selected="selected">ID</option>
@@ -164,14 +179,14 @@ const TransferIndex = () => {
 
         <div className="md:col-span-3 md:pr-10">
           <select
-            className="md:ml-2 border text-sm border-gray-300 w-full text-gray-500 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-pointer"
+            className="md:ml-2 border text-sm border-gray-300 w-full text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-pointer"
             name="status"
             value={search.status}
             onChange={handleChange}
           >
             <option value="" selected="selected">สถานะทั้งหมด</option>
-            {status.map(ele => (
-              <option value={ele.value}>{ele.name}</option>
+            {status.map((ele, idx) => (
+              <option key={idx} value={ele.value}>{ele.name}</option>
             ))}
           </select>
         </div>
@@ -231,101 +246,105 @@ const TransferIndex = () => {
       </div>
 
       <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
-        <div className="w-[1200px] 2xl:w-full  ">
-          <div>
-            <div className="flex p-4">
-              <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-              <div className="ml-2 text-sm">{transferArray?.length} รายการ </div>
-            </div>
-            <div className="grid grid-cols-18 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
-              <div className="col-span-2 ml-2">วันที่/เวลาโอน</div>
-              <div className="col-span-3">เลขที่เอกสารการโอนย้าย</div>
-              <div className="col-span-3">หน่วยงานที่โอน</div>
-              <div className="col-span-3">หน่วยงานรับโอน</div>
-              <div className="col-span-3">สถานที่ตั้งใหม่</div>
-              <div className="col-span-2 text-center">สถานะ</div>
-              <div className="col-span-2 text-center font-bold mr-2">
-                Action
+        {isLoading
+          ? <div className="mt-5 py-10 w-full text-center"><Spinner size="xl" /></div>
+          :
+          <div className="w-[1200px] 2xl:w-full  ">
+            <div>
+              <div className="flex p-4">
+                <div className=" text-sm text-text-gray">ผลการค้นหา </div>
+                <div className="ml-2 text-sm">{transferArray?.length} รายการ </div>
+              </div>
+              <div className="grid grid-cols-18 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
+                <div className="col-span-2 ml-2">วันที่/เวลาโอน</div>
+                <div className="col-span-3">เลขที่เอกสารการโอนย้าย</div>
+                <div className="col-span-3">หน่วยงานที่โอน</div>
+                <div className="col-span-3">หน่วยงานรับโอน</div>
+                <div className="col-span-3">สถานที่ตั้งใหม่</div>
+                <div className="col-span-2 text-center">สถานะ</div>
+                <div className="col-span-2 text-center font-bold mr-2">
+                  Action
+                </div>
               </div>
             </div>
-          </div>
-          <div className="">
-            {transferArray?.map((ele, idx) => {
-              return (
-                <RowOfTableTransferIndex
-                  key={idx}
-                  index={idx}
-                  id={ele._id}
-                  ele={ele}
-                  status={status}
-                  setShowModalDelete={setShowModalDelete}
-                // transferPendingDateTime={el.transferPendingDateTime}
-                // transferDocumentNumber={el.transferDocumentNumber}
-                // transferSector={el.transferSector}
-                // transfereeSector={el.transfereeSector}
-                // building={el.building}
-                // status={el.status}
-                />
-              );
-            })}
-          </div>
-
-          <ModalReasonDelete isVisible={showModalDelete} textSubmit="ยกเลิกโอนย้าย"
-            reason={reasonDelete}
-            setReason={setReasonDelete}
-            onClose={() => setShowModalDelete(false)}
-          // onSubmit={value =>}
-          />
-
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-end mr-10">
-              <div>Rows per page:</div>
-              <select
-                id="perPage"
-                name="limit"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                // onChange={(e) => setPerPage(e.target.value)}
-                onChange={handleChange}
-              >
-                {/* <option value="" selected disabled hidden>
-            ประเภทครุภัณฑ์
-          </option> */}
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10" selected="selected">
-                  10
-                </option>
-              </select>
+            <div className="">
+              {transferArray?.map((ele, idx) => {
+                return (
+                  <RowOfTableTransferIndex
+                    key={idx}
+                    index={idx}
+                    id={ele._id}
+                    ele={ele}
+                    status={status}
+                    setShowModalDelete={setShowModalDelete}
+                  // transferPendingDateTime={el.transferPendingDateTime}
+                  // transferDocumentNumber={el.transferDocumentNumber}
+                  // transferSector={el.transferSector}
+                  // transfereeSector={el.transfereeSector}
+                  // building={el.building}
+                  // status={el.status}
+                  />
+                );
+              })}
             </div>
 
-            {/* <div>1-{perPage} of 13</div> */}
-            <div>1-{search.limit} of {search.total}</div>
+            <ModalReasonDelete isVisible={showModalDelete} textSubmit="ยกเลิกโอนย้าย"
+              reason={reasonDelete}
+              setReason={setReasonDelete}
+              onClose={() => setShowModalDelete(false)}
+              onSubmit={submitDelete}
+            />
 
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
-            >
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
-            >
-              <HiChevronRight className="text-lg" />
-            </button>
+            <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+              <div className="flex items-end mr-10">
+                <div>Rows per page:</div>
+                <select
+                  id="perPage"
+                  name="limit"
+                  className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  // onChange={(e) => setPerPage(e.target.value)}
+                  onChange={handleChange}
+                >
+                  {/* <option value="" selected disabled hidden>
+            ประเภทครุภัณฑ์
+          </option> */}
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10" selected="selected">
+                    10
+                  </option>
+                </select>
+              </div>
+
+              {/* <div>1-{perPage} of 13</div> */}
+              <div>1-{search.limit} of {search.total}</div>
+
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
+              // onClick={() => {
+              //   deleteRow(index)
+              // }}
+              >
+                <HiChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
+              // onClick={() => {
+              //   deleteRow(index)
+              // }}
+              >
+                <HiChevronRight className="text-lg" />
+              </button>
+            </div>
           </div>
-        </div>
+        }
       </div>
     </div>
   );

@@ -33,7 +33,6 @@ const ApprovalTransferAsset = () => {
   const fetchSearchWaitingTransferList = async () => {
     try {
       const res = await getListApprovalTransferAsset(search);
-      console.log(res.data.topApproveList)
       setTopApproveList(res.data.topApproveList);
       setBottomApprovedList(res.data.bottomApproveList);
       setTotalAll(res.data.totalAll)
@@ -557,6 +556,7 @@ const ModalApproveAll = ({ selectedList, setIsFetch }) => {
 
 const ModalIndividualReject = ({ item, state, setState, index, setIsFetch }) => {
   const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleChangeArray = (e) => {
     const clone = [...state];
@@ -580,8 +580,19 @@ const ModalIndividualReject = ({ item, state, setState, index, setIsFetch }) => 
 
   const handleReject = async (e) => {
     e.preventDefault()
+    if(!state[index].reason)  {
+      setError(true)
+      return
+    }
+    const list = state[index]
+    list.assetIdArray.map(ele => {
+      ele.reason = state[index].reason
+    })
+    list.packageAssetIdArray.map(ele => {
+      ele.reason = state[index].reason
+    })
     try {
-      await rejectIndividualWaitingTransfer({ topApproveList: state[index] })
+      await rejectIndividualWaitingTransfer({ topApproveList: list })
       setIsFetch(true)
       setShowModal(false)
     } catch (err) {
@@ -641,9 +652,8 @@ const ModalIndividualReject = ({ item, state, setState, index, setIsFetch }) => 
                           <input
                             type="text"
                             name="reason"
-                            // placeholder="Example"
                             required
-                            className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                            className={`border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${error && !state[index].reason && 'border-red-500'}`}
                             onChange={(e) => onChangeAllInIndexReason(e, index)}
                             value={state[index].reason}
                           />

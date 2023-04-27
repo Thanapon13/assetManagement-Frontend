@@ -10,7 +10,7 @@ function RowofTableViewApprovalTransferDetail({
 
   return (
     <div
-      className={`p-1 grid ${row.status === "approve"
+      className={`p-1 grid ${data.status === "approve"
           ? "grid-cols-13"
           : !data.reason
             ? "grid-cols-17"

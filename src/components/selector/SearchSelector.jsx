@@ -9,7 +9,7 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
   const handleChange = (newValue, meta) => {
     setValueObj(newValue)
     const label = meta.name;
-    onChange(newValue?.value, label)
+    onChange(newValue?.value, label, newValue?.ele)
     if (!newValue.value) {
       setIsFloat(false)
     } else {
@@ -28,13 +28,19 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
     if (!value) {
       onChange("", name)
       setValueObj("")
+    } else {
+      setValueObj(value)
     }
-    console.log(valueObj)
   }, [value])
+
+  // useEffect(() => {
+  //   setValueObj(value || "")
+  // },[value])
 
   return (
     <div class="relative">
       <Select
+        // defaultValue={{ value: value, label: value }}
         id="floating"
         options={options}
         onChange={handleChange}

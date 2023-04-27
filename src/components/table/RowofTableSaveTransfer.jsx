@@ -19,7 +19,6 @@ function RowofTableSaveTransfer({
 
   useEffect(() => {
     fetchList()
-    console.log(saveTransferTableArray)
   }, [])
   const ele = saveTransferTableArray[index]
   const [search, setSearch] = useState({
@@ -33,10 +32,9 @@ function RowofTableSaveTransfer({
     const resAssetNumber = await getByAssetNumberSelector(search.assetNumber)
     const arrAsset = []
     resAssetNumber.data.asset.map(ele => {
-      console.log(ele)
       arrAsset.push({ label: ele.assetNumber, value: ele.assetNumber, ele })
     })
-    if(modeEdit) {
+    if (modeEdit) {
       // saveTransferTableArray.forEach(ele => {
       //   arrAsset.push({ label: ele.assetNumber, value: ele.assetNumber, ele })
       // })
@@ -46,28 +44,28 @@ function RowofTableSaveTransfer({
     const resProduct = await getByProductSelector(search.productName)
     const arrProduct = []
     resProduct.data.asset.map(ele => {
-      console.log(ele)
       arrProduct.push({ label: ele._id, value: ele._id, ele: ele.results })
     })
     setProductList(arrProduct)
-    console.log(saveTransferTableArray, search)
 
     // console.log( assetList?.find(list => list.value == search.assetNumber))
     assetList?.find(list => console.log(list.value, search.assetNumber))
   }
 
-  const handleNumber = async (value,label) => {
+  const handleNumber = async (value, label, ele) => {
     const clone = { ...search };
-    clone.assetNumber = e.value;
-    clone.productName = e.ele.productName;
-    clone.serialNumber = e.ele.serialNumber;
-    console.log(e.ele)
+    clone.assetNumber = value || ""
+    if (value) {
+      clone.productName = ele?.productName
+      clone.serialNumber = ele?.serialNumber
+    }
     setSearch(clone);
+    const val = saveTransferTableArray[index]
     saveTransferTableArray[index] = {
       ...clone,
-      sector: e.ele.sector,
+      sector: ele?.sector || val.sector,
       quantity: 1,
-      unit: e.ele.unit,
+      unit: ele?.unit || val.unit,
       isFetching: false
     }
 
@@ -77,20 +75,25 @@ function RowofTableSaveTransfer({
       arrProduct.push({ label: ele._id, value: ele._id })
     })
   }
-  const handleName = async (value,label) => {
+
+  const handleName = async (value, label, ele) => {
     const clone = { ...search };
-    clone.productName = e.value;
-    // console.log(clone)
-    // console.log(e.ele)
+    clone.productName = value || ""
+    if (!value) {
+      clone.assetNumber = ""
+      clone.serialNumber = ""
+    }
     setSearch(clone);
     fetchList()
+
     saveTransferTableArray[index] = {
       ...clone,
-      sector: e.ele[0].sector,
-      quantity: 1,
-      unit: e.ele[0].unit,
+      sector: ele ? ele[0].sector : "",
+      quantity: value ? 1 : "",
+      unit: ele ? ele[0].unit : "",
       //  isFetching: false
     }
+    console.log(saveTransferTableArray[index], '*********')
   }
 
   const handleChangeInventoryNumber = (e) => {
@@ -143,11 +146,8 @@ function RowofTableSaveTransfer({
           options={assetList}
           onChange={handleNumber}
           // error={error && !ele.assetNumber}
-          // value={ele.assetNumber}
-          value={modeEdit && { label: ele.assetNumber, value: ele.assetNumber } }
-
+          value={modeEdit && ele.assetNumber && { label: ele.assetNumber, value: ele.assetNumber }}
         />
-        {/* {ele.assetNumber} */}
       </div>
       <div className="col-span-3 ">
         <SearchSelector
@@ -156,8 +156,7 @@ function RowofTableSaveTransfer({
           options={productList}
           onChange={handleName}
           error={error && !ele.productName}
-          value={modeEdit && { label: ele.productName, value: ele.productName }}
-
+          value={(ele.productName) && { label: ele.productName, value: ele.productName }}
         />
       </div>
       {modeEdit &&

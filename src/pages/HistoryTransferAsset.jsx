@@ -97,7 +97,6 @@ const HistoryTransferAsset = () => {
         </div>
       </div>
 
-      {/* search bar */}
       <div className="grid grid-cols-1 md:grid-cols-11 gap-4 items-center mt-8 mb-3 pl-5">
         <div className="md:col-span-3 flex items-center">
           <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
@@ -173,82 +172,16 @@ const HistoryTransferAsset = () => {
           />
         </div>
 
-        <div className="flex justify-end pr-8 ">
+        <div className="flex justify-center">
           <button
             type="button"
-            className="flex justify-center w-full h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+            className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
             onClick={handleSearch}
           >
             <div className="text-xl text-white">
               <AiOutlineSearch />
             </div>
           </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-9 gap-4 items-center mt-8 mb-3 pl-5">
-        <div className="md:col-span-2">
-          <input
-            type="text"
-            // onChange={}
-            // value={}
-            placeholder="เลขครุภัณฑ์"
-            className="w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-          />
-        </div>
-        <div className="md:col-span-2">
-          <input
-            className="w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-            placeholder="ID"
-            type="text"
-          // onChange={}
-          // value={}
-          />
-        </div>
-        <div className="md:col-span-2">
-          <input
-            className="w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-            placeholder="เลขที่เอกสารการโอนย้าย"
-            type="text"
-          // onChange={}
-          // value={}
-          />
-        </div>
-        <div className="md:col-span-2">
-          <Selector placeholder={"หน่วยงานที่โอน"} />
-        </div>
-
-        <div className="pr-3">
-          <button
-            type="button"
-            className="flex justify-center h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-          // onClick={handleSearch}
-          >
-            <div className="flex text-white">
-              <AiOutlineSearch className="text-xl" />
-              {/* <p className="mx-2">ค้นหา</p>  */}
-            </div>
-          </button>
-        </div>
-
-        <div className="md:col-span-2 h-full ">
-          <div className="flex h-full">
-            <DateInput
-              state={withdrawDate}
-              setState={setWithdrawDate}
-              lable="date from"
-            />
-          </div>
-        </div>
-
-        <div className="md:col-span-2 h-full ">
-          <div className="flex h-full">
-            <DateInput
-              state={withdrawDate}
-              setState={setWithdrawDate}
-              lable="date to"
-            />
-          </div>
         </div>
       </div>
 

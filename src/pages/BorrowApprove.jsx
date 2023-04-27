@@ -21,7 +21,7 @@ const BorrowApprove = () => {
     dateFrom: "",
     dateTo: new Date(),
     sector: "",
-    listStatus: [],
+    listStatus: ['approve', 'reject', 'partiallyApprove'],
   });
   const [amountOfStatusList, setAmountOfStatusList] = useState({
     totalAll: 0,
@@ -190,7 +190,7 @@ const BorrowApprove = () => {
             </div>
             <div className="md:col-span-2 flex flex-col gap-y-2">
               <label className="text-text-gray">
-                หน่วยงานที่เสนอ(รหัส P4P)
+                หน่วยงานที่เสนอ (รหัส P4P)
               </label>
               {/* <select className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md">
                 <option className="">select</option>
@@ -269,7 +269,7 @@ const BorrowApprove = () => {
                 <h1 className="ml-2">เลือกทั้งหมด</h1>
               </div>
               <h1 className="">
-                เลือกแล้ว {amountOfStatusList.totalWaiting} รายการ
+                เลือกแล้ว {topApproveList.filter(ele => ele.checked).length}/{amountOfStatusList.totalWaiting} รายการ
               </h1>
             </div>
             <div className="flex space-x-5 md:space-x-10">
@@ -302,11 +302,10 @@ const BorrowApprove = () => {
             <div className="text-lg">รายการคำขอที่จัดการแล้ว</div>
             <div className="md:flex space-x-5">
               <button
-                className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${
-                  search.listStatus.includes("approve")
+                className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${search.listStatus.includes("approve")
                     ? "border-2 border-green-800 "
                     : ""
-                }`}
+                  }`}
                 onClick={() => handleListStatusChange("approve")}
               >
                 อนุมัติแล้ว
@@ -326,11 +325,10 @@ const BorrowApprove = () => {
                 </div>
               </button>
               <button
-                className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${
-                  search.listStatus.includes("reject")
+                className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${search.listStatus.includes("reject")
                     ? "border-2 border-red-800 "
                     : ""
-                }`}
+                  }`}
                 onClick={() => handleListStatusChange("reject")}
               >
                 ไม่อนุมัติ
@@ -350,11 +348,10 @@ const BorrowApprove = () => {
                 </div>
               </button>
               <button
-                className={`flex text-orange-400 bg-orange-100 p-2 border rounded-2xl  ${
-                  search.listStatus.includes("partiallyApprove")
+                className={`flex text-orange-400 bg-orange-100 p-2 border rounded-2xl  ${search.listStatus.includes("partiallyApprove")
                     ? "border-2 border-orange-800 "
                     : ""
-                }`}
+                  }`}
                 onClick={() => handleListStatusChange("partiallyApprove")}
               >
                 อนุมัติบางส่วน
@@ -486,13 +483,13 @@ const BorrowApprovedListItem = ({ data }) => {
         {data.map((item, idx) => {
           return (
             <Link key={idx} to={`/viewBorrowApproveDetail/${item._id}`}>
-              <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full">
+              <div className="bg-background-page border-[2px] rounded-md mt-5 p-3 w-full hover:shadow-md">
                 <div className="flex justify-between">
                   <div className="flex space-x-10">
                     <h1>เลขที่ ID เลขที่การยืม</h1>
                     <h1>{item.borrowIdDoc}</h1>
                   </div>
-                  <div className="flex space-x-2 mr-5 text-text-gray">
+                  <div className="flex space-x-1 mr-5 text-text-gray">
                     <h1>
                       วันที่อนุมัติ:{" "}
                       {new Date(item.borrowDate).toLocaleDateString(
@@ -531,36 +528,35 @@ const BorrowApprovedListItem = ({ data }) => {
                     </div>
                     <div className="">
                       <div
-                        className={`${
-                          item.status === "waiting"
+                        className={`${item.status === "waiting"
                             ? " bg-background-light-blue text-text-blue  rounded-xl "
                             : item.status === "approve"
-                            ? " bg-sidebar-green text-text-green  rounded-xl  "
-                            : item.status === "partiallyApprove"
-                            ? " text-orange-400 bg-orange-100 p-2 border rounded-xl  "
-                            : item.status === "watingReturnApprove"
-                            ? "bg-orange-100 text-orange-400 rounded-xl"
-                            : item.status === "cancel" ||
-                              item.status === "reject"
-                            ? "bg-red-200 text-red-600  rounded-xl"
-                            : "bg-text-green text-white rounded-md hover:bg-green-800"
-                        } border border-spacing-5 p-2 w-full`}
+                              ? " bg-sidebar-green text-text-green  rounded-xl  "
+                              : item.status === "partiallyApprove"
+                                ? " text-orange-400 bg-orange-100 p-2 border rounded-xl  "
+                                : item.status === "watingReturnApprove"
+                                  ? "bg-orange-100 text-orange-400 rounded-xl"
+                                  : item.status === "cancel" ||
+                                    item.status === "reject"
+                                    ? "bg-red-200 text-red-600  rounded-xl"
+                                    : "bg-text-green text-white rounded-md hover:bg-green-800"
+                          } border border-spacing-5 p-2 w-full`}
                       >
                         {item.status === "waiting"
                           ? "รออนุมัติ"
                           : item.status === "approve"
-                          ? "อนุมัติแล้ว"
-                          : item.status === "partiallyApprove"
-                          ? "อนุมัติบางส่วน"
-                          : item.status === "done"
-                          ? "คืนสำเร็จ"
-                          : item.status === "waitCheckReturn"
-                          ? "รอตรวจรับ"
-                          : item.status === "cancel"
-                          ? "ยกเลิก"
-                          : item.status === "reject"
-                          ? "ไม่อนุมัติ"
-                          : "บันทึกคืน"}
+                            ? "อนุมัติแล้ว"
+                            : item.status === "partiallyApprove"
+                              ? "อนุมัติบางส่วน"
+                              : item.status === "done"
+                                ? "คืนสำเร็จ"
+                                : item.status === "waitCheckReturn"
+                                  ? "รอตรวจรับ"
+                                  : item.status === "cancel"
+                                    ? "ยกเลิก"
+                                    : item.status === "reject"
+                                      ? "ไม่อนุมัติ"
+                                      : "บันทึกคืน"}
                       </div>
                     </div>
                   </div>
@@ -712,7 +708,7 @@ const ModalIndividualReject = ({
   return (
     <>
       <button
-        className="p-2 px-10 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-200"
+        className="p-2 px-10 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-500/[.15]"
         type="button"
         onClick={() => setShowModal(true)}
       >

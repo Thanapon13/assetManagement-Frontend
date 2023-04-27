@@ -17,10 +17,10 @@ const ViewApprovalTransferAssetDetail = () => {
   const [data, setData] = useState();
   const [approveArray, setApproveArray] = useState()
   const [rejectArray, setRejectArray] = useState()
+  
   useEffect(() => {
     const fetchList = async () => {
       const res = await getTransferApproveDetailById(transferId)
-      console.log(res.data.transfer);
       setData(res.data.transfer)
       setApproveArray(res.data.approveArray)
       setRejectArray(res.data.rejectArray)

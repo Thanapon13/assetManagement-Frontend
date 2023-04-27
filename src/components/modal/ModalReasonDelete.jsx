@@ -58,9 +58,6 @@ const ModalReasonDelete = ({ isVisible, header, content, textSubmit, onSubmit, o
                                     </div>
 
                                     <div className="px-5 py-4 text-base">
-
-                                        <div className="grid grid-cols-2 md:grid-cols-6 p-2">
-                                        </div>
                                         <div className="grid grid-cols-2 md:grid-cols-6 p-2">
                                             <textarea className={`${error && !reason && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
                                                 onChange={e => setReason(e.target.value)}

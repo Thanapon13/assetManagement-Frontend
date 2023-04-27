@@ -63,7 +63,7 @@ function RowOfTableTransferIndex({
             </Link>
             <button
               className="border-[1px] border-red-600  focus:border-transparent shadow-sm text-sm font-medium   hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600  h-[31px] w-[31px] flex justify-center items-center rounded-md"
-              onClick={() => setShowModalDelete(true)}
+              onClick={() => setShowModalDelete(id)}
             >
               <svg
                 width="15"

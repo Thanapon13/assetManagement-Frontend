@@ -8,6 +8,10 @@ export function getTransferById(id) {
   return axios.get(`/transfer/${id}`);
 }
 
+export function deleteTransfer(id, body) {
+  return axios.patch(`/transfer/delete/${id}`, body);
+}
+
 export function createTransfer(body) {
   return axios.post("/transfer/create", body);
 }
@@ -29,7 +33,7 @@ export function rejectIndividualWaitingTransfer(body) {
 }
 
 export function approvePartiallyTransfer(id,body) {
-  return axios.patch(`/transfer/partiallyApproveTransferApproveDetail${id}`, body);
+  return axios.patch(`/transfer/partiallyApproveTransferApproveDetail/${id}`, body);
 }
 
 export function getViewTransferApproveDetailById(id) {
