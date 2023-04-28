@@ -76,7 +76,7 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
       // controlShouldRenderValue={false}
       // hideSelectedOptions={false}
       />
-      <label for="floating" class={`${floatLabel ? "absolute" : "hidden"} ${isFloat ? "top-[.25em] bg-white" : "top-[1.25em] text-lg"} px-2 text-gray-500  duration-300 transform -translate-y-4 scale-75 z-10 origin-[0]  peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1`}>
+      <label for="floating" class={`${floatLabel ? "absolute" : "hidden"} ${isFloat ? "top-[.25em] bg-white" : "top-[1.25em] text-lg"} px-2 text-gray-500  duration-300 transform -translate-y-4 scale-75  origin-[0]  peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1`}>
         {placeholder}
       </label>
     </div>

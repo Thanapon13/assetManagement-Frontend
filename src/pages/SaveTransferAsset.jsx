@@ -16,6 +16,7 @@ import { BsArrowLeft } from "react-icons/bs";
 import ModalError from "../components/modal/ModalError"
 import ModalSuccess from "../components/modal/ModalSuccess";
 import SearchSelector from "../components/selector/SearchSelector";
+import { getByAssetNumberSelector, getByProductSelector } from "../api/assetApi";
 
 const SaveTransferAsset = () => {
   const { user } = useContext(AuthContext);
@@ -69,7 +70,40 @@ const SaveTransferAsset = () => {
 
   useEffect(() => {
     getMasterData()
+    fetchList()
   }, [])
+
+  const [assetList, setAssetList] = useState([])
+  const [productList, setProductList] = useState([])
+  const fetchList = async () => {
+    const resAssetNumber = await getByAssetNumberSelector("")
+    const arrAsset = []
+    resAssetNumber.data.asset.map(ele => {
+      arrAsset.push({ label: ele.assetNumber, value: ele.assetNumber, ele })
+    })
+    console.log(arrAsset)
+    setAssetList(arrAsset)
+    const resProduct = await getByProductSelector("")
+    const arrProduct = []
+    resProduct.data.asset.map(ele => {
+      arrProduct.push({ label: ele._id, value: ele._id, ele: ele.results })
+    })
+    setProductList(arrProduct)
+
+    assetList?.find(list => console.log(list.value, search.assetNumber))
+  }
+
+  function callbackList() {
+    console.log('5555555555', saveTransferTableArray)
+    console.log(assetList, productList)
+    let asset = [], product = []
+    saveTransferTableArray?.map(ele => {
+      asset = assetList.filter(ass => ele.assetNumber != ass.value)
+      product = productList.filter(ass => ele.productName != ass.value)
+    })
+    setAssetList(asset)
+    setProductList(product)
+  }
 
   const [sectorList, setSectorList] = useState()
   const [subSectorList, setSubSectorList] = useState()
@@ -267,7 +301,7 @@ const SaveTransferAsset = () => {
     setErrorInput(errInput)
     setErrorTable(errTable)
     console.log(errInput,errTable)
-    // if (!(errInput || errTable)) setShowModalConfirm(true)
+    if (!(errInput || errTable)) setShowModalConfirm(true)
   }
 
   const handleSubmit = async () => {
@@ -323,176 +357,181 @@ const SaveTransferAsset = () => {
           </div>
         </div>
         {/* {user && */}
-          <>
-            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
-              <div className="text-xl">การโอน-ย้ายครุภัณฑ์</div>
-              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-                <div className="flex flex-col gap-y-2 col-span-2">
-                  <label className=" text-text-gray flex">
-                    เลขที่เอกสารการโอนย้าย
-                    {/* <h1 className="text-red-500 ml-2 font-bold">*</h1> */}
-                  </label>
-                  <input
-                    // type="text"
-                    disabled
-                    className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                    value={input.transferDocumentNumber}
-                  />
-                </div>
+        <>
+          <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
+            <div className="text-xl">การโอน-ย้ายครุภัณฑ์</div>
+            <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className=" text-text-gray flex">
+                  เลขที่เอกสารการโอนย้าย
+                  {/* <h1 className="text-red-500 ml-2 font-bold">*</h1> */}
+                </label>
+                <input
+                  // type="text"
+                  disabled
+                  className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                  value={input.transferDocumentNumber}
+                />
+              </div>
 
-                <div className="flex flex-col gap-y-2 col-span-2">
-                  <div>
-                    <div className="text-text-gray mb-1">หน่วยงานผู้โอน</div>
-                    {/* <div className="flex flex-col gap-y-2 col-span-2"> */}
-                    <div className="flex h-[38px] flex-col">
-                      {/* <Select
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <div>
+                  <div className="text-text-gray mb-1">หน่วยงานผู้โอน</div>
+                  {/* <div className="flex flex-col gap-y-2 col-span-2"> */}
+                  <div className="flex h-[38px] flex-col">
+                    {/* <Select
                       options={sectorList}
                       onChange={handleSelect}
                       id="หน่วยงานผู้โอน"
                       name="transferSector"
                       value={sectorList?.find(list => list.value == input.transferSector)}
                     /> */}
-                      <SearchSelector
-                        id={"หน่วยงานผู้โอน"}
-                        options={sectorList}
-                        onChange={handleSelect}
-                        name="transferSector"
-                        error={errorInput && !input.transferSector}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-                <div className="flex flex-col gap-y-2 col-span-2">
-                  <div>
-                    <div className="text-text-gray mb-1">ภาควิชาผู้โอน</div>
-                    <div className="flex h-[38px] flex-col">
-                      <SearchSelector
-                        id="ภาควิชาผู้โอน"
-                        options={subSectorList}
-                        onChange={handleSelect}
-                        name="subSector"
-                        error={errorInput && !input.subSector}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-y-2 col-span-2">
-                  <div>
-                    <div className="text-text-gray mb-1">ผู้ดำเนินการ</div>
-                    <div className="flex h-[38px] ">
-                      <input
-                        className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
-                        onChange={handleChange}
-                        name="handler"
-                        value={input.handler}
-                        disabled
-                      />
-                    </div>
+                    <SearchSelector
+                      id={"หน่วยงานผู้โอน"}
+                      options={sectorList}
+                      onChange={handleSelect}
+                      name="transferSector"
+                      error={errorInput && !input.transferSector}
+                    />
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
-              <div className="text-xl">ข้อมูลครุภัณฑ์ที่เลือก</div>
-              <div className="overflow-x-auto scrollbar pt-4">
-                <div className="w-[1000px] lg:w-full p-2 ">
-                  <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                    <div className="grid grid-cols-13 gap-2 text-center">
-                      <div className="ml-2 col-span-1">ลำดับ</div>
-                      <div className="col-span-3">เลขครุภัณฑ์</div>
-                      <div className="col-span-3">ชื่อครุภัณฑ์</div>
-                      <div className="col-span-3">เจ้าของครุภัณฑ์</div>
-                      <div className="col-span-1">จำนวน</div>
-                      <div className="col-span-1">หน่วยนับ</div>
-                      <div className="col-span-1"></div>
-                    </div>
+            <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <div>
+                  <div className="text-text-gray mb-1">ภาควิชาผู้โอน</div>
+                  <div className="flex h-[38px] flex-col">
+                    <SearchSelector
+                      id="ภาควิชาผู้โอน"
+                      options={subSectorList}
+                      onChange={handleSelect}
+                      name="subSector"
+                      error={errorInput && !input.subSector}
+                    />
                   </div>
-                  {saveTransferTableArray?.map((el, idx) => {
-                    return (
-                      <RowofTableSaveTransfer
-                        key={idx}
-                        index={idx}
-                        saveTransferTableArray={saveTransferTableArray}
-                        setSaveTransferTableArray={setSaveTransferTableArray}
-                        deleteRow={deleteRow}
-                        error={errorTable}
-                      />
-                    );
-                  })}
-                  <button
-                    type="button"
-                    className="w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 my-2"
-                    onClick={handleClickIncrease}
-                  >
-                    + เพิ่มครุภัณฑ์
-                  </button>
-
+                </div>
+              </div>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <div>
+                  <div className="text-text-gray mb-1">ผู้ดำเนินการ</div>
+                  <div className="flex h-[38px] ">
+                    <input
+                      className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                      onChange={handleChange}
+                      name="handler"
+                      value={input.handler}
+                      disabled
+                    />
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-              <div className="text-xl">สถานที่ตั้งใหม่</div>
-              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-                <div className="flex flex-col gap-y-2 col-span-2">
-                  <label className=" text-text-gray flex">
-                    หน่วยงานที่รับโอน
-                    <h1 className="text-red-500 ml-2 font-bold">*</h1>
-                  </label>
-                  <SearchSelector
-                    id="หน่วยงานที่รับโอน"
-                    options={sectorList}
-                    onChange={handleSelect}
-                    name="transfereeSector"
-                    error={errorInput && !input.transfereeSector}
-                  />
+          <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
+            <div className="text-xl">ข้อมูลครุภัณฑ์ที่เลือก</div>
+            <div className="overflow-x-auto scrollbar pt-4">
+              <div className="w-[1000px] lg:w-full p-2 ">
+                <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+                  <div className="grid grid-cols-13 gap-2 text-center">
+                    <div className="ml-2 col-span-1">ลำดับ</div>
+                    <div className="col-span-3">เลขครุภัณฑ์</div>
+                    <div className="col-span-3">ชื่อครุภัณฑ์</div>
+                    <div className="col-span-3">เจ้าของครุภัณฑ์</div>
+                    <div className="col-span-1">จำนวน</div>
+                    <div className="col-span-1">หน่วยนับ</div>
+                    <div className="col-span-1"></div>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-y-2 col-span-2">
-                  <label className=" text-text-gray flex">
-                    อาคาร
-                    <h1 className="text-red-500 ml-2 font-bold">*</h1>
-                  </label>
-                  <SearchSelector
-                    id="อาคาร"
-                    options={buildingList}
-                    onChange={handleSelect}
-                    name="building"
-                    error={errorInput && !input.building}
-                  />
-                </div>
-              </div>
+                {saveTransferTableArray?.map((el, idx) => {
+                  return (
+                    <RowofTableSaveTransfer
+                      key={idx}
+                      index={idx}
+                      saveTransferTableArray={saveTransferTableArray}
+                      setSaveTransferTableArray={setSaveTransferTableArray}
+                      deleteRow={deleteRow}
+                      error={errorTable}
+                      assetList={assetList}
+                      productList={productList}
+                      setAssetList={setAssetList}
+                      setProductList={setProductList}
+                      callbackList={callbackList}
+                    />
+                  );
+                })}
+                <button
+                  type="button"
+                  className="w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 my-2"
+                  onClick={handleClickIncrease}
+                >
+                  + เพิ่มครุภัณฑ์
+                </button>
 
-              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-                <div className="flex flex-col gap-y-2 col-span-2">
-                  <label className="text-text-gray">ชั้น</label>
-                  <SearchSelector
-                    isDisabled={!input.building}
-                    id="ชั้น"
-                    options={floorList}
-                    onChange={handleSelect}
-                    name="floor"
-                    error={errorInput && !input.floor}
-                    value={input.floor && floorList?.find(list => list.value == input.floor)}
-                  />
-                </div>
-                <div className="flex flex-col gap-y-2 col-span-2">
-                  <label className="text-text-gray">ห้อง</label>
-                  <SearchSelector
-                    id="ห้อง"
-                    name="room"
-                    options={roomList}
-                    onChange={handleSelect}
-                    isDisabled={!input.floor}
-                    error={errorInput && !input.room}
-                    value={input?.room && roomList?.find(list => list.value == input.room)}
-                  />
-                </div>
               </div>
             </div>
-          </>
+          </div>
+
+          <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+            <div className="text-xl">สถานที่ตั้งใหม่</div>
+            <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className=" text-text-gray flex">
+                  หน่วยงานที่รับโอน
+                  <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                </label>
+                <SearchSelector
+                  id="หน่วยงานที่รับโอน"
+                  options={sectorList}
+                  onChange={handleSelect}
+                  name="transfereeSector"
+                  error={errorInput && !input.transfereeSector}
+                />
+              </div>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className=" text-text-gray flex">
+                  อาคาร
+                  <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                </label>
+                <SearchSelector
+                  id="อาคาร"
+                  options={buildingList}
+                  onChange={handleSelect}
+                  name="building"
+                  error={errorInput && !input.building}
+                />
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">ชั้น</label>
+                <SearchSelector
+                  isDisabled={!input.building}
+                  id="ชั้น"
+                  options={floorList}
+                  onChange={handleSelect}
+                  name="floor"
+                  error={errorInput && !input.floor}
+                  value={input.floor && floorList?.find(list => list.value == input.floor)}
+                />
+              </div>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">ห้อง</label>
+                <SearchSelector
+                  id="ห้อง"
+                  name="room"
+                  options={roomList}
+                  onChange={handleSelect}
+                  isDisabled={!input.floor}
+                  error={errorInput && !input.room}
+                  value={input?.room && roomList?.find(list => list.value == input.room)}
+                />
+              </div>
+            </div>
+          </div>
+        </>
         {/* } */}
       </div>
 

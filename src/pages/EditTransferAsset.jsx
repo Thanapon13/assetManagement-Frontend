@@ -17,6 +17,7 @@ import { BsArrowLeft } from "react-icons/bs";
 import ModalError from "../components/modal/ModalError"
 import ModalSuccess from "../components/modal/ModalSuccess";
 import SearchSelector from "../components/selector/SearchSelector";
+import { getByAssetNumberSelector, getByProductSelector } from "../api/assetApi";
 
 const EditTransferAsset = () => {
   const { user } = useContext(AuthContext);
@@ -56,7 +57,39 @@ const EditTransferAsset = () => {
       getMasterData(data.building, data.floor)
     }
     fetchList()
+    getLists()
   }, [])
+
+  const [assetList, setAssetList] = useState([])
+  const [productList, setProductList] = useState([])
+
+  const getLists = async () => {
+    const resAssetNumber = await getByAssetNumberSelector("")
+    const arrAsset = []
+    resAssetNumber.data.asset.map(ele => {
+      arrAsset.push({ label: ele.assetNumber, value: ele.assetNumber, ele })
+    })
+    setAssetList(arrAsset)
+    const resProduct = await getByProductSelector("")
+    const arrProduct = []
+    resProduct.data.asset.map(ele => {
+      arrProduct.push({ label: ele._id, value: ele._id, ele: ele.results })
+    })
+    setProductList(arrProduct)
+  }
+  async function callbackList() {
+    console.log('5555555555', saveTransferTableArray)
+    console.log(assetList, productList)
+    let asset = [], product = []
+    await getLists()
+    console.log(assetList)
+    saveTransferTableArray?.map(ele => {
+      asset = assetList.filter(ass => ele.assetNumber != ass.value)
+      product = productList.filter(ass => ele.productName != ass.value)
+    })
+    setAssetList(asset)
+    setProductList(product)
+  }
 
   const [sectorList, setSectorList] = useState()
   const [subSectorList, setSubSectorList] = useState()
@@ -214,18 +247,6 @@ const EditTransferAsset = () => {
         ...input,
         name_recorder: user.thaiFirstName + " " + user.thaiLastName,
         name_courier: "test",
-
-        // transferPendingDateTime: todayThaiDate,
-        // firstName_recorder: "",
-        // lastName_recorder: "",
-        // dateTime_recorder: "",
-        // firstName_courier: "",
-        // lastName_courier: "",
-        // dateTime_courier: "",
-        // firstName_approver: "",
-        // lastName_approver: "",
-        // dateTime_approver: "",
-        // status: "waiting",
       },
       saveTransferTableArray,
       deleteAssetArray
@@ -358,6 +379,9 @@ const EditTransferAsset = () => {
                         deleteRow={deleteRow}
                         modeEdit={true}
                         error={errorTable}
+                        assetList={assetList}
+                        productList={productList}
+                        callbackList={callbackList}
                       />
                     );
                   })}

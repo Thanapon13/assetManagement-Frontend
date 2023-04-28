@@ -5,7 +5,6 @@ import {
 } from "../../api/assetApi";
 import { useEffect } from "react";
 import { useState } from "react";
-import { getBuildingData } from "../../api/masterApi";
 import SearchSelector from "../selector/SearchSelector";
 
 function RowofTableSaveTransfer({
@@ -14,43 +13,46 @@ function RowofTableSaveTransfer({
   setSaveTransferTableArray,
   deleteRow,
   modeEdit,
-  error
+  error,
+  assetList,
+  productList,
+  callbackList
 }) {
 
-  useEffect(() => {
-    fetchList()
-  }, [])
+  // useEffect(() => {
+  //   fetchList()
+  // }, [])
   const ele = saveTransferTableArray[index]
   const [search, setSearch] = useState({
     assetNumber: ele.assetNumber || "",
     productName: ele.productName || "",
   });
-  const [assetList, setAssetList] = useState([])
-  const [productList, setProductList] = useState([])
+  // const [assetList, setAssetList] = useState([])
+  // const [productList, setProductList] = useState([])
 
-  const fetchList = async () => {
-    const resAssetNumber = await getByAssetNumberSelector(search.assetNumber)
-    const arrAsset = []
-    resAssetNumber.data.asset.map(ele => {
-      arrAsset.push({ label: ele.assetNumber, value: ele.assetNumber, ele })
-    })
-    if (modeEdit) {
-      // saveTransferTableArray.forEach(ele => {
-      //   arrAsset.push({ label: ele.assetNumber, value: ele.assetNumber, ele })
-      // })
-    }
-    setAssetList(arrAsset)
+  // const fetchList = async () => {
+  //   const resAssetNumber = await getByAssetNumberSelector(search.assetNumber)
+  //   const arrAsset = []
+  //   resAssetNumber.data.asset.map(ele => {
+  //     arrAsset.push({ label: ele.assetNumber, value: ele.assetNumber, ele })
+  //   })
+  //   if (modeEdit) {
+  //     // saveTransferTableArray.forEach(ele => {
+  //     //   arrAsset.push({ label: ele.assetNumber, value: ele.assetNumber, ele })
+  //     // })
+  //   }
+  //   setAssetList(arrAsset)
 
-    const resProduct = await getByProductSelector(search.productName)
-    const arrProduct = []
-    resProduct.data.asset.map(ele => {
-      arrProduct.push({ label: ele._id, value: ele._id, ele: ele.results })
-    })
-    setProductList(arrProduct)
+  //   const resProduct = await getByProductSelector(search.productName)
+  //   const arrProduct = []
+  //   resProduct.data.asset.map(ele => {
+  //     arrProduct.push({ label: ele._id, value: ele._id, ele: ele.results })
+  //   })
+  //   setProductList(arrProduct)
 
-    // console.log( assetList?.find(list => list.value == search.assetNumber))
-    assetList?.find(list => console.log(list.value, search.assetNumber))
-  }
+  //   // console.log( assetList?.find(list => list.value == search.assetNumber))
+  //   assetList?.find(list => console.log(list.value, search.assetNumber))
+  // }
 
   const handleNumber = async (value, label, ele) => {
     const clone = { ...search };
@@ -69,11 +71,12 @@ function RowofTableSaveTransfer({
       isFetching: false
     }
 
-    const resProduct = await getByProductSelector(search)
-    const arrProduct = []
-    resProduct.data.asset.map(ele => {
-      arrProduct.push({ label: ele._id, value: ele._id })
-    })
+    // const resProduct = await getByProductSelector(search)
+    // const arrProduct = []
+    // resProduct.data.asset.map(ele => {
+    //   arrProduct.push({ label: ele._id, value: ele._id })
+    // })
+    callbackList()
   }
 
   const handleName = async (value, label, ele) => {
@@ -94,33 +97,9 @@ function RowofTableSaveTransfer({
       //  isFetching: false
     }
     console.log(saveTransferTableArray[index], '*********')
+    callbackList()
   }
 
-  const handleChangeInventoryNumber = (e) => {
-    const clone = [...saveTransferTableArray];
-    // console.log(clone);
-    clone[index].inventoryNumber = e.target.value;
-    setSaveTransferTableArray(clone);
-  };
-  const handleChangeProductName = (e) => {
-    const clone = [...saveTransferTableArray];
-    // console.log(clone);
-    clone[index].productName = e.target.value;
-    setSaveTransferTableArray(clone);
-  };
-  const handleChangeSerialNumber = (e) => {
-    const clone = [...saveTransferTableArray];
-    // console.log(clone);
-    clone[index].serialNumber = e.target.value;
-    setSaveTransferTableArray(clone);
-  };
-  const handleChangeHostSector = (e) => {
-    const clone = [...saveTransferTableArray];
-    // console.log(clone);
-    clone[index].hostSector = e.target.value;
-    setSaveTransferTableArray(clone);
-  };
-  // console.log(saveTransferTableArray)
   return (
     <div
       className={` p-2 grid grid-cols-13 justify-center items-center gap-4 h-16 text-xs bg-white`}
@@ -163,7 +142,6 @@ function RowofTableSaveTransfer({
         <input
           className="col-span-2 bg-table-gray text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
           disabled
-          onChange={handleChangeSerialNumber}
           value={
             saveTransferTableArray &&
             ele?.serialNumber
@@ -173,7 +151,6 @@ function RowofTableSaveTransfer({
       <input
         className="col-span-3 bg-table-gray px-2 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
         disabled
-        onChange={handleChangeSerialNumber}
         value={
           saveTransferTableArray &&
           ele?.hostSector || ele?.sector
