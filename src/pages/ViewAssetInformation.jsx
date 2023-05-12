@@ -73,7 +73,7 @@ const ViewAssetInformation = () => {
   });
 
   // ประวัติการยืม
-  const [borrowHistoryList,setBorrowHistoryList] = useState([])
+  const [borrowHistoryList, setBorrowHistoryList] = useState([])
 
   // upload image
   const [arrayImage, setArrayImage] = useState([]);
@@ -344,7 +344,7 @@ const ViewAssetInformation = () => {
 
     const fetchBorrowHistoryByAssetId = async () => {
       const res = await getViewBorrowHistoryByAssetId(assetId);
-      const borrowHistoryArray =  res.data.borrows
+      const borrowHistoryArray = res.data.borrows
       setBorrowHistoryList(borrowHistoryArray)
       console.log("borrowHistoryArray", borrowHistoryArray);
     };
@@ -456,7 +456,7 @@ const ViewAssetInformation = () => {
         </div>
 
         {/* block white top */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-4">
           <div>ข้อมูลครุภัณฑ์</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3 text-xs">
             {/* ชื่อครุภัณฑ์ภาษาอังกฤษ */}
@@ -545,7 +545,7 @@ const ViewAssetInformation = () => {
         </div>
 
         {/* ภาพครุภัณฑ์และเอกสารประกอบ */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-4">
           {/* Header ภาพครุภัณฑ์และเอกสารประกอบ */}
           <div className="font-semibold mb-3">ภาพครุภัณฑ์และเอกสารประกอบ</div>
           <div className="lg:grid lg:grid-cols-6 gap-6">
@@ -632,7 +632,7 @@ const ViewAssetInformation = () => {
         </div>
 
         {/* สัญญาจัดซื้อ */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-4">
           <div className="font-semibold">สัญญาจัดซื้อ</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3 text-xs">
             {/* วิธีการได้มา */}
@@ -688,7 +688,7 @@ const ViewAssetInformation = () => {
         </div>
 
         {/* การจำหน่าย */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-4">
           <div className="font-semibold">การจำหน่าย</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3 text-xs">
             {/* เอกสารจำหน่าย */}
@@ -706,9 +706,9 @@ const ViewAssetInformation = () => {
             <div>
               {distributeApprovalReleaseDate !== ""
                 ? distributeApprovalReleaseDate.toLocaleDateString(
-                    "en-GB",
-                    options
-                  )
+                  "en-GB",
+                  options
+                )
                 : "-"}
             </div>
             {/* สถานะ */}
@@ -720,12 +720,11 @@ const ViewAssetInformation = () => {
           </div>
         </div>
 
-        {/* ประวัติการยืม */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-          <div className=" my-3 p-3">
-            <div className="font-semibold mb-3">ประวัติการยืม</div>
+          <div className="font-semibold mb-3">ประวัติการยืม</div>
+          {!borrowHistoryList.length ? <div className="text-center pb-5">-</div> :
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-              <div className="w-[1000px] xl:w-full h-[400px] ">
+              <div className="w-[1000px] lg:w-full max-h-[400px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
                   <div className="grid grid-cols-15 gap-2 text-center">
                     <div className="ml-2">ลำดับ</div>
@@ -757,39 +756,36 @@ const ViewAssetInformation = () => {
                 })}
               </div>
             </div>
-          </div>
+          }
         </div>
 
-        {/* ประวัติสถานที่ตั้ง */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-          <div className=" my-3 p-3">
-            <div className="font-semibold mb-3">ประวัติสถานที่ตั้ง</div>
-            <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-              <div className="w-[1000px] xl:w-full h-[400px] ">
-                <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                  <div className="grid grid-cols-12 gap-2 text-center">
-                    <div className="ml-2">ลำดับ</div>
-                    <div className="col-span-4">อาคาร</div>
-                    <div className="">ชั้น</div>
-                    <div className="col-span-2">ห้อง</div>
-                    <div className="col-span-2">วันที่ย้ายเข้า</div>
-                    <div className="col-span-2">วันที่ย้ายออก</div>
-                  </div>
+        <div className="bg-white rounded-lg mx-10 my-3 p-4">
+          <div className="font-semibold mb-3">ประวัติสถานที่ตั้ง</div>
+          <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
+            <div className="w-[1000px] lg:w-full max-h-[400px] ">
+              <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+                <div className="grid grid-cols-12 gap-2 text-center">
+                  <div className="ml-2">ลำดับ</div>
+                  <div className="col-span-4">อาคาร</div>
+                  <div className="">ชั้น</div>
+                  <div className="col-span-2">ห้อง</div>
+                  <div className="col-span-2">วันที่ย้ายเข้า</div>
+                  <div className="col-span-2">วันที่ย้ายออก</div>
                 </div>
-                {buildingData?.map((el, idx) => {
-                  return (
-                    <RowOfTableBuildingHistory
-                      key={idx}
-                      index={idx}
-                      building={buildingData[idx]?.building}
-                      floor={buildingData[idx]?.floor}
-                      room={buildingData[idx]?.room}
-                      moveInDate={buildingData[idx]?.moveInDate}
-                      moveOutDate={buildingData[idx]?.moveOutDate}
-                    />
-                  );
-                })}
               </div>
+              {buildingData?.map((el, idx) => {
+                return (
+                  <RowOfTableBuildingHistory
+                    key={idx}
+                    index={idx}
+                    building={buildingData[idx]?.building}
+                    floor={buildingData[idx]?.floor}
+                    room={buildingData[idx]?.room}
+                    moveInDate={buildingData[idx]?.moveInDate}
+                    moveOutDate={buildingData[idx]?.moveOutDate}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
@@ -967,8 +963,8 @@ const ViewAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationPresentMonth == Infinity ||
-                          depreciationPresentMonth == -Infinity ||
-                          isNaN(depreciationPresentMonth)
+                            depreciationPresentMonth == -Infinity ||
+                            isNaN(depreciationPresentMonth)
                             ? 0
                             : depreciationPresentMonth.toFixed(2)
                         }
@@ -988,8 +984,8 @@ const ViewAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationCumulativePrice == Infinity ||
-                          depreciationCumulativePrice == -Infinity ||
-                          isNaN(depreciationCumulativePrice)
+                            depreciationCumulativePrice == -Infinity ||
+                            isNaN(depreciationCumulativePrice)
                             ? 0
                             : depreciationCumulativePrice.toFixed(2)
                         }
@@ -1009,8 +1005,8 @@ const ViewAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationYearPrice == Infinity ||
-                          depreciationYearPrice == -Infinity ||
-                          isNaN(depreciationYearPrice)
+                            depreciationYearPrice == -Infinity ||
+                            isNaN(depreciationYearPrice)
                             ? 0
                             : depreciationYearPrice.toFixed(2)
                         }
@@ -1030,8 +1026,8 @@ const ViewAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationRemainPrice == Infinity ||
-                          depreciationRemainPrice == -Infinity ||
-                          isNaN(depreciationRemainPrice)
+                            depreciationRemainPrice == -Infinity ||
+                            isNaN(depreciationRemainPrice)
                             ? 0
                             : depreciationRemainPrice.toFixed(2)
                         }
@@ -1056,8 +1052,8 @@ const ViewAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationBookValue == Infinity ||
-                          depreciationBookValue == -Infinity ||
-                          isNaN(depreciationBookValue)
+                            depreciationBookValue == -Infinity ||
+                            isNaN(depreciationBookValue)
                             ? 0
                             : depreciationBookValue.toFixed(2)
                         }
@@ -1270,8 +1266,8 @@ const ViewAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationPresentMonth == Infinity ||
-                          accumulateDepreciationPresentMonth == -Infinity ||
-                          isNaN(accumulateDepreciationPresentMonth)
+                            accumulateDepreciationPresentMonth == -Infinity ||
+                            isNaN(accumulateDepreciationPresentMonth)
                             ? 0
                             : accumulateDepreciationPresentMonth.toFixed(2)
                         }
@@ -1291,8 +1287,8 @@ const ViewAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationCumulativePrice == Infinity ||
-                          accumulateDepreciationCumulativePrice == -Infinity ||
-                          isNaN(accumulateDepreciationCumulativePrice)
+                            accumulateDepreciationCumulativePrice == -Infinity ||
+                            isNaN(accumulateDepreciationCumulativePrice)
                             ? 0
                             : accumulateDepreciationCumulativePrice.toFixed(2)
                         }
@@ -1312,8 +1308,8 @@ const ViewAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationYearPrice == Infinity ||
-                          accumulateDepreciationYearPrice == -Infinity ||
-                          isNaN(accumulateDepreciationYearPrice)
+                            accumulateDepreciationYearPrice == -Infinity ||
+                            isNaN(accumulateDepreciationYearPrice)
                             ? 0
                             : accumulateDepreciationYearPrice.toFixed(2)
                         }
@@ -1333,8 +1329,8 @@ const ViewAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationRemainPrice == Infinity ||
-                          accumulateDepreciationRemainPrice == -Infinity ||
-                          isNaN(accumulateDepreciationRemainPrice)
+                            accumulateDepreciationRemainPrice == -Infinity ||
+                            isNaN(accumulateDepreciationRemainPrice)
                             ? 0
                             : accumulateDepreciationRemainPrice.toFixed(2)
                         }
@@ -1359,8 +1355,8 @@ const ViewAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationBookValue == Infinity ||
-                          accumulateDepreciationBookValue == -Infinity ||
-                          isNaN(accumulateDepreciationBookValue)
+                            accumulateDepreciationBookValue == -Infinity ||
+                            isNaN(accumulateDepreciationBookValue)
                             ? 0
                             : accumulateDepreciationBookValue.toFixed(2)
                         }

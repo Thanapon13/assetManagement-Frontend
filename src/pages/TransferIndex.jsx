@@ -177,9 +177,9 @@ const TransferIndex = () => {
           {/* </div> */}
         </div>
 
-        <div className="md:col-span-3 md:pr-10">
+        <div className="md:col-span-3 md:pr-4">
           <select
-            className="md:ml-2 border text-sm border-gray-300 w-full text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-pointer"
+            className=" border text-sm border-gray-300 w-full text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-pointer"
             name="status"
             value={search.status}
             onChange={handleChange}
@@ -232,7 +232,7 @@ const TransferIndex = () => {
           />
         </div>
 
-        <div className="flex justify-end pr-8">
+        <div className="flex justify-end pr-4">
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
