@@ -1,12 +1,14 @@
 import Selector from "../selector/Selector";
 import ScanDropdown from "../dropdown/ScanDropdown";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getSector } from "../../api/masterApi";
+import SearchSelector from "../selector/SearchSelector";
 
 function RowOfTablePackageAssetInformation({
   index,
   genData,
   setGenData,
-  errorAssestTable,
+  error,
   scanBarcodeModal,
   scanQRCodeModal,
   setScanBarcodeModal,
@@ -17,6 +19,8 @@ function RowOfTablePackageAssetInformation({
   setBarcode,
   qr,
   setQr,
+  sectorList,
+  assetList,
 }) {
 
   const onChange = (e) => {
@@ -25,6 +29,26 @@ function RowOfTablePackageAssetInformation({
       [e.target.name]: e.target.value,
     }));
   };
+
+  // const [sectorList, setSectorList] = useState([])
+  // useEffect(() => {
+  //   const getMasterData = async () => {
+  //     const sector = await getSector()
+  //     const array = []
+  //     sector.data.sector.map(ele => {
+  //       array.push({ label: ele.name, value: ele.name })
+  //     })
+  //     setSectorList(array)
+  //   }
+
+  //   getMasterData()
+  // }, [])
+
+  const handleSelect = (value, label) => {
+    const clone = [...genData];
+    clone[index] = { ...genData[index], [label]: value || ""}
+    setGenData(clone)
+  }
 
   return (
     <div>
@@ -49,29 +73,21 @@ function RowOfTablePackageAssetInformation({
         />
 
         <div className="col-span-4">
-          <div className="flex h-[38px] ">
-            <Selector
-              placeholder={"Select"}
-              index={index}
-              state={genData}
-              setState={setGenData}
-              id={"หน่วยงาน"}
-              isValid={errorAssestTable && !genData[index]?.sector}
-            />
-          </div>
+          <SearchSelector
+            options={sectorList}
+            name="sector"
+            onChange={handleSelect}
+            error={error && !genData[index]?.sector}
+            noClearButton
+          />
         </div>
 
         <div className="col-span-4">
-          <div className="flex h-[38px] ">
-            <Selector
-              placeholder={"Select"}
-              index={index}
-              state={genData}
-              setState={setGenData}
-              id={"แทนครุภัณฑ์ที่ถูกแทงจำหน่าย"}
-              isValid={errorAssestTable && !genData[index]?.replacedAssetNumber}
-            />
-          </div>
+          <SearchSelector
+            options={assetList}
+            name="replacedAssetNumber"
+            onChange={handleSelect}
+          />
         </div>
       </div>
     </div>

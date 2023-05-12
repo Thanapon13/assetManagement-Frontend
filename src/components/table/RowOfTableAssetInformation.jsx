@@ -8,6 +8,8 @@ import { useRef } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import Select from "react-select";
+import SearchSelector from "../selector/SearchSelector";
+import { getSector } from "../../api/masterApi";
 
 function RowOfTableAssetInformation({
   index,
@@ -21,6 +23,9 @@ function RowOfTableAssetInformation({
   setBarcode,
   qr,
   setQr,
+  assetList,
+  sectorList,
+  error
 }) {
   // console.log(barcode, "barcode");
 
@@ -39,7 +44,6 @@ function RowOfTableAssetInformation({
 
   const handleChangeSerialNumber = (e) => {
     const clone = [...genData];
-    // console.log(clone);
     clone[index].serialNumber = e.target.value;
     setGenData(clone);
     setBarcode(e.target.value);
@@ -55,6 +59,12 @@ function RowOfTableAssetInformation({
   //   setBarcode(genData[indexGenData]?.serialNumber);
   //   setQr(genData[indexGenData]?.serialNumber);
   // }, [indexGenData]);
+
+  const handleSelect = (value, label) => {
+    const clone = [...genData];
+    clone[index] = { ...genData[index], [label]: value }
+    if (value) setGenData(clone)
+  }
 
   return (
     <div>
@@ -75,7 +85,8 @@ function RowOfTableAssetInformation({
 
         <div className="flex relative col-span-2">
           <input
-            className="w-full text-left  pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+            className={`w-full text-left  pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
+            // ${error && !genData[index]?.serialNumber && 'border-red-500'}
             onChange={handleChangeSerialNumber}
             value={genData && genData[index]?.serialNumber}
           />
@@ -91,29 +102,20 @@ function RowOfTableAssetInformation({
         </div>
 
         <div className="col-span-2">
-          <div className="flex h-[38px] ">
-
-            <Select
-              options={[
-                { label: "Admin", value: "Admin" },
-                { label: "Operator", value: "Operator" },
-                { label: "superAdmin", value: "Auper admin" }
-              ]}
-              // onChange={handleChange}
-              name="role"
-              // value={role}
-              // menuPlacement="auto"
-              menuPortalTarget={document.body}
-              menuPosition={'fixed'}
-            />
-            {/* <Selector
+          <SearchSelector
+            options={sectorList}
+            name="sector"
+            onChange={handleSelect}
+            error={error && !genData[index]?.sector}
+            noClearButton
+          />
+          {/* <Selector
               placeholder={"Select"}
               index={index}
               state={genData}
               setState={setGenData}
               id={"หน่วยงาน"}
             /> */}
-          </div>
         </div>
 
         <input
@@ -126,7 +128,7 @@ function RowOfTableAssetInformation({
           value={genData && genData[index]?.productName}
         /> */}
         <div className="col-span-2">
-          <div className="flex h-[38px] ">
+          {/* <div className="flex h-[38px] ">
             <Selector
               placeholder={"Select"}
               index={index}
@@ -134,9 +136,14 @@ function RowOfTableAssetInformation({
               setState={setGenData}
               id={"แทนครุภัณฑ์ที่ถูกแทงจำหน่าย"}
             />
-          </div>
+          </div> */}
+          <SearchSelector
+            options={assetList}
+            name="replacedAssetNumber"
+            onChange={handleSelect}
+          // value={ && { label: , value:  }}
+          />
         </div>
-
 
         <div className="flex justify-center relative">
           <ReactToPrint
