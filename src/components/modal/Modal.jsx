@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { IoIosClose } from "react-icons/io";
+import { useEffect } from "react";
 
 function Modal({
   id,
@@ -23,12 +24,25 @@ function Modal({
   if (!isVisible) return null;
 
   const handleClose = (e) => {
-    if (e.target.id === "wrapper") onClose();
+    if (e.target.id === "wrapper") {
+      onClose()
+      setDefault()
+    }
   };
 
-  // console.log(onClose())
+  useEffect(() => {
+    if (isVisible) {
+      document.body.style.height = "100vh"
+      document.body.style.overflowY = "hidden"
+    }
+  }, [isVisible])
 
-  const handleDepreciation = () => {};
+  function setDefault() {
+    document.body.style.height = "auto"
+    document.body.style.overflowY = "auto"
+  }
+
+  const handleDepreciation = () => { };
   // console.log(id);
   return (
     <div
@@ -38,9 +52,8 @@ function Modal({
     >
       <div className="overflow-y-auto scrollbar ">
         <div
-          className={`md:w-${
-            width ? width : "[700px]"
-          } w-[100%] h-[700px] mx-auto`}
+          className={`md:w-${width ? width : "[700px]"
+            } w-[100%] h-[700px] mx-auto`}
         >
           <div className="bg-white  rounded">
             <div className="flex justify-between border-b-2 border-grey-300  p-4">
@@ -65,7 +78,7 @@ function Modal({
                 ) : null}
                 <button
                   className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-xl"
-                  onClick={() => onClose()}
+                  onClick={() => { onClose(); setDefault() }}
                 >
                   {/* X */}
                   <IoIosClose className="text-3xl" />
@@ -77,7 +90,7 @@ function Modal({
               <div className="flex justify-center items-center border-t-2 border-grey-300 p-4">
                 <button
                   className="inline-flex justify-center items-center h-full py-2 px-8 border border-transparent shadow-sm text-xs font-medium rounded-md text-gray-700 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
-                  onClick={() => onClose()}
+                  onClick={() => { onClose(); setDefault() }}
                 >
                   ยกเลิก
                 </button>
@@ -87,12 +100,12 @@ function Modal({
                     id === "เพิ่มรุปภาพ"
                       ? console.log("เพิ่มรุปภาพ")
                       : id === "ส่วนประกอบย่อย"
-                      ? (onClose(), setShowAddSubComponentShowModal(true))
-                      : id === "คู่มือ/เอกสารแนบ"
-                      ? console.log("คู่มือ/เอกสารแนบ")
-                      : id === "ค่าเสื่อมราคา"
-                      ? console.log("ค่าเสื่อมราคา")
-                      : null
+                        ? (onClose(), setShowAddSubComponentShowModal(true))
+                        : id === "คู่มือ/เอกสารแนบ"
+                          ? console.log("คู่มือ/เอกสารแนบ")
+                          : id === "ค่าเสื่อมราคา"
+                            ? console.log("ค่าเสื่อมราคา")
+                            : null
                   }
                 >
                   {id === "ส่วนประกอบย่อย" ? "+ เพิ่มข้อมูล" : "บันทึก"}

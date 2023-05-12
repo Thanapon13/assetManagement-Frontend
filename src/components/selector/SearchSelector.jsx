@@ -3,14 +3,14 @@ import React from "react";
 import { useEffect } from "react";
 import Select from "react-select";
 
-export default function SearchSelector({ options, name, onChange, error, floatLabel, placeholder, isDisabled, value }) {
+export default function SearchSelector({ options, name, onChange, error, floatLabel, placeholder, isDisabled, value, noClearButton }) {
   // const searchInput = useRef();
   const [valueObj, setValueObj] = useState(value)
   const handleChange = (newValue, meta) => {
     setValueObj(newValue)
     const label = meta.name;
     onChange(newValue?.value, label, newValue?.ele)
-    if (!newValue.value) {
+    if (!newValue?.value) {
       setIsFloat(false)
     } else {
       setIsFloat(true)
@@ -51,7 +51,7 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
         menuPosition={'fixed'}
         menuPlacement="auto"
         isDisabled={isDisabled}
-        isClearable
+        isClearable={noClearButton ? false : true}
         styles={{
           // control: (baseStyles, state) => (console.log(state)),
           control: (baseStyles, state) => ({
