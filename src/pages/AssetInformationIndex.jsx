@@ -11,6 +11,8 @@ import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
 import { deleteAsset, getAllAsset, getBySearch } from "../api/assetApi";
 import { IoIosClose } from "react-icons/io";
+import SearchSelector from "../components/selector/SearchSelector";
+import { getSector } from "../api/masterApi";
 
 const AssetInformationIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(
@@ -29,13 +31,13 @@ const AssetInformationIndex = () => {
     dateFrom: "",
     dateTo: todayThaiDate,
     sector: "",
-    page: "",
-    limit: 10,
-    total: 0,
+    // page: "",
+    // limit: 10,
+    // total: 0,
   });
 
   const [assetList, setAssetList] = useState([]);
-
+  const [sectorArray, setSectorArray] = useState([])
   // handle
   const handleChange = (e) => {
     setSearch({ ...search, [e.target.name]: e.target.value });
@@ -114,13 +116,11 @@ const AssetInformationIndex = () => {
     fetchSearchAssetList({ ...search, [e.target.name]: e.target.value });
   };
 
-
-
   // fetch all data
   const fetchAssetList = async () => {
     try {
       const res = await getAllAsset();
-      console.log(res.data.asset);
+      console.log(res.data);
       setAssetList(res.data.asset);
       setSearch({
         ...search,
@@ -134,11 +134,9 @@ const AssetInformationIndex = () => {
     }
   };
 
-  const handleDelete = async (id, remark) => {
+  const handleDelete = async (id, reason) => {
     try {
-      await deleteAsset(id);
-      // const response = await deleteAsset(id, สาเหตุที่ยกเลิก)
-      // if(response...) {}
+      await deleteAsset(id, { reason: reason })
       setShowModalDeleteAsset(false)
       fetchAssetList()
     } catch (err) {
@@ -148,11 +146,20 @@ const AssetInformationIndex = () => {
 
   useEffect(() => {
     fetchAssetList();
+    getMaster()
   }, []);
 
+  async function getMaster() {
+    const sector = await getSector()
+    const arrSector = []
+    sector.data.sector.map(ele => {
+      arrSector.push({ label: ele.name, value: ele.name })
+    })
+    setSectorArray(arrSector)
+  }
 
   return (
-    <div className="bg-background-page px-5 pt-10 pb-36">
+    <div className="bg-background-page px-5 py-10 min-h-full">
       {/* Header */}
       <div className="text-xl text-text-green ">ข้อมูลครุภัณฑ์</div>
       <div className="flex justify-between items-center">
@@ -181,9 +188,8 @@ const AssetInformationIndex = () => {
 
       {/* search bar */}
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
-        <div className="text-xs font-semibold">ค้นหาโดย</div>
+        {/* <div className="text-xs font-semibold">ค้นหาโดย</div>
         <div className="md:col-span-2">
-          {/* <Selector placeholder={"ID"} /> */}
           <select
             className="border-[1px] p-2 h-[38px] text-xs text-gray-500 sm:text-sm border-gray-300 rounded-md w-full"
             name="typeTextSearch"
@@ -193,9 +199,17 @@ const AssetInformationIndex = () => {
             <option defaultValue value="assetNumber">
               เลขครุภัณฑ์
             </option>
-            <option>all</option>
-            <option>all</option>
-            <option>all</option>
+          </select>
+        </div> */}
+        <div className="md:col-span-3 flex items-center">
+          <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
+          <select
+            className="ml-2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
+            name="typeTextSearch"
+            onChange={handleChange}
+
+          >
+            <option value="assetNumber">เลขครุภัณฑ์</option>
           </select>
         </div>
 
@@ -211,20 +225,20 @@ const AssetInformationIndex = () => {
           />
         </div>
 
-        <div className="md:col-span-3">
+        <div className="md:col-span-3 md:pr-4">
           {/* <Selector placeholder={"สถานะ"} /> */}
           <select
-            className="border-[1px] p-2 h-[38px] text-xs text-gray-500 sm:text-sm border-gray-300 rounded-md w-full"
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
             name="status"
             value={search.status}
             onChange={handleChange}
           >
             <option defaultValue value="">
-              สถานะ
+              สถานะทั้งหมด
             </option>
             <option value="inStock">ใช้งานได้</option>
             <option value="transfered">โอน</option>
-            <option value="borrowws">ยืม</option>
+            <option value="borrowed">ยืม</option>
             <option value="broken">ชำรุด</option>
             <option value="repair">ซ่อม</option>
             <option value="sell">จำหน่าย</option>
@@ -255,15 +269,22 @@ const AssetInformationIndex = () => {
         </div>
 
         <div className="md:col-span-3 ">
-          <Selector
+          {/* <Selector
             placeholder={"หน่วยงาน"}
             id={"หน่วยงาน"}
             state={search}
             setState={setSearch}
+          /> */}
+          <SearchSelector
+            options={sectorArray}
+            placeholder={"หน่วยงานที่โอน"}
+            name={"transferSector"}
+            onChange={(value, label) => setSearch({ ...search, [label]: value })}
+            floatLabel
           />
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end pr-4">
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
@@ -285,7 +306,7 @@ const AssetInformationIndex = () => {
               <div className="ml-2 text-sm">{search.total} รายการ </div>
             </div>
             {/* top bar */}
-            <div className="grid grid-cols-17 gap-5 h-12 items-center text-center text-text-black-table text-xs font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
+            <div className="grid grid-cols-16 gap-5 h-12 items-center text-center text-text-black-table text-xs font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
               <div className="ml-2">ลำดับ</div>
               <div className="col-span-3">เลขครุภัณฑ์</div>
               <div className="col-span-3">ชื่อครุภัณฑ์</div>
@@ -328,7 +349,7 @@ const AssetInformationIndex = () => {
               confirmDelete={handleDelete}
             />
           }
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+          <div className="flex justify-end gap-2 h-12 pr-5 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
             <div className="flex items-center mr-10">
               <div>Rows per page:</div>
               <select
@@ -361,7 +382,7 @@ const AssetInformationIndex = () => {
             </div>
 
             <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 my-2"
               onClick={handleFirstPage}
             >
               <CgPushChevronLeft className="text-lg" />
@@ -403,19 +424,23 @@ function ModalDeleteAsset(props) {
         <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
           <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
             <div>
-              <div className="flex items-center justify-between p-5 ">
-                <h3 className="text-xl text-text-green self-end">
+              <div className="flex items-center justify-center p-5 relative">
+                <svg width="84" height="84" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M42 0.333344C39.9167 0.333344 37.8334 1.12501 36.125 2.79168L2.79169 36.125C-0.49998 39.375 -0.49998 44.625 2.79169 47.875L36.125 81.2083C39.375 84.5 44.625 84.5 47.875 81.2083L81.2084 47.875C84.5 44.625 84.5 39.375 81.2084 36.125L47.875 2.79168C46.1667 1.12501 44.0834 0.333344 42 0.333344ZM37.8334 21.1667H46.1667V46.1667H37.8334V21.1667ZM37.8334 54.5H46.1667V62.8333H37.8334V54.5Z" fill="#EB5757" />
+                </svg>
+                <p className="text-2xl text-red-600 ml-4">
                   ลบครุภัณฑ์
-                </h3>
+                </p>
+                <div className="absolute w-full flex justify-end pr-5 mb-8">
                 <button
                   className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
-
                   onClick={() => props.close()}
                 >
                   <IoIosClose className="text-2xl" />
                 </button>
+                </div>
               </div>
-              {/* content */}
+
               <div className="px-5 py-4 text-base">
                 <div className="grid grid-cols-2  md:grid-cols-6 p-2">
                   <div className="text-text-gray flex items-center ">
@@ -431,7 +456,7 @@ function ModalDeleteAsset(props) {
                     {elem.productName}
                   </div>
                 </div>
-                {/* row 2 */}
+
                 <div className="grid grid-cols-2 md:grid-cols-6 p-2">
                   <div className="text-text-gray flex items-center">
                     หน่วยงาน
@@ -450,26 +475,26 @@ function ModalDeleteAsset(props) {
                   <div className="text-text-gray flex items-center">
                     สาเหตุที่ยกเลิก
                   </div>
-                  <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                  <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
                     onChange={e => setRemark(e.target.value)}
                   />
                 </div>
               </div>
             </div>
-            {/* footer */}
+
             <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
               <button
                 // className="px-10 py-2 border-[1px] shadow-sm rounded-md "
-                className="px-10 py-3 text-white bg-gray-400 shadow-sm rounded-md "
+                className="px-10 py-3 text-white bg-gray-400/[.8] hover:bg-gray-400 bg-[#999999] shadow-sm rounded-md "
                 type="button"
                 onClick={() => props.close()}
               >
                 ย้อนกลับ
               </button>
               <button
-                className="text-white bg-red-600 px-10 py-3 border rounded-md "
+                className="text-white hover:bg-red-600 bg-[#EB5757] px-10 py-3 border rounded-md "
                 // type="button"
-                onClick={() => remark ? props.confirmDelete(props._id, remark) : setError(true)}
+                onClick={() => remark ? props.confirmDelete(elem._id, remark) : setError(true)}
               >
                 ยืนยันลบ
               </button>
