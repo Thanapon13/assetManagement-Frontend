@@ -4,13 +4,8 @@ import Selector from "../components/selector/Selector";
 import RowOfTableArray from "../components/table/RowOfTableArray";
 import { BsArrowLeft } from "react-icons/bs";
 import { BsFillEyeFill } from "react-icons/bs";
-import { HiChevronLeft } from "react-icons/hi";
-import { HiChevronRight } from "react-icons/hi";
-import { AiOutlineSearch } from "react-icons/ai";
-import { GrDocument } from "react-icons/gr";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
-import RowOfTableAssetInformation from "../components/table/RowOfTableAssetInformation";
 import boxIcon from "../public/pics/boxIcon.png";
 import docIcon from "../public/pics/docIcon.png";
 import Modal from "../components/modal/Modal";
@@ -27,6 +22,9 @@ import OnlyDateInput from "../components/date/onlyDateInput";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import { IoIosClose } from "react-icons/io";
+import { getType13, getType4, getType8, getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getKindAll, getPurposeOfUse, getSector, getSourceData, getSubsector, getTypeData, getMoneyType } from "../api/masterApi";
+import SearchSelector from "../components/selector/SearchSelector";
+import { getByAssetNumberSelector } from "../api/assetApi";
 
 const PackageAssetInformation = () => {
   const inputImg = useRef();
@@ -44,8 +42,91 @@ const PackageAssetInformation = () => {
     new Date().toLocaleString("th-TH")
   );
 
-  // useState
-  const [perPage, setPerPage] = useState(10);
+  const [sectorList, setSectorList] = useState([])
+  const [subSectorList, setSubSectorList] = useState([])
+  const [typeList, setTypeList] = useState([])
+  const [kindList, setKindList] = useState([])
+  // หน่วยนับ
+  const [brandList, setBrandList] = useState([])
+  const [categoryList, setCategoryList] = useState([])
+  const [groupList, setGroupList] = useState([])
+  const [acquiredTypeList, setAcquiredTypeList] = useState([])
+  const [sourceList, setSourceList] = useState([])
+  const [purposeOfUseList, setPurposeOfUseList] = useState([])
+  const [acquisitionMethodList, setAcquisitionMethodList] = useState([])
+  const [moneyTypeList, setMoneyTypeList] = useState([])
+  // ผู้ขาย
+  // สถานะ?
+  const [type4List, setType4List] = useState([])
+  const [type8List, setType8List] = useState([])
+  const [type13List, setType13List] = useState([])
+  useEffect(() => {
+    getMasterData()
+  }, [])
+
+  const handleSelect = (value, label, ele) => {
+    if (label == "kind" || label == "type" || label == "category") {
+      setInput({ ...input, [label]: ele })
+    } else {
+      setInput({ ...input, [label]: value })
+    }
+  }
+
+  const getMasterData = async () => {
+    const type4 = await getType4()
+    const arrType4 = formArrayOption(type4.data.type4)
+    setType4List(arrType4)
+    const type8 = await getType8()
+    const arrType8 = formArrayOption(type8.data.type8)
+    setType8List(arrType8)
+    const type13 = await getType13()
+    const arrType13 = formArrayOption(type13.data.type13)
+    setType13List(arrType13)
+    const sector = await getSector()
+    const arrSector = formArrayOption(sector.data.sector)
+    setSectorList(arrSector)
+    const subSector = await getSubsector()
+    const arrSubSector = formArrayOption(subSector.data.subSector)
+    setSubSectorList(arrSubSector)
+    const type = await getTypeData()
+    const arrType = formArrayOption(type.data.type)
+    setTypeList(arrType)
+    const kind = await getKindAll()
+    const arrKind = formArrayOption(kind.data.kind)
+    setKindList(arrKind)
+    const brand = await getBrandData()
+    const arrBrand = formArrayOption(brand.data.brand)
+    setBrandList(arrBrand)
+    const category = await getCategory()
+    const arrCategory = formArrayOption(category.data.category)
+    setCategoryList(arrCategory)
+    const group = await getGroupData()
+    const arrGroup = formArrayOption(group.data.group)
+    setGroupList(arrGroup)
+    const acquiredType = await getAcquiredType()
+    const arrAcquiredType = formArrayOption(acquiredType.data.acquiredType)
+    setAcquiredTypeList(arrAcquiredType)
+    const source = await getSourceData()
+    const arrSource = formArrayOption(source.data.source)
+    setSourceList(arrSource)
+    const purposeOfUse = await getPurposeOfUse()
+    const arrPurposeOfUse = formArrayOption(purposeOfUse.data.purposeOfUse)
+    setPurposeOfUseList(arrPurposeOfUse)
+    const acquisitionMethod = await getAcquisitionMethod()
+    const arrAcquisitionMethod = formArrayOption(acquisitionMethod.data.acquisitionMethod)
+    setAcquisitionMethodList(arrAcquisitionMethod)
+    const moneyType = await getMoneyType()
+    const arrMoneyType = formArrayOption(moneyType.data.moneyType)
+    setMoneyTypeList(arrMoneyType)
+  }
+
+  function formArrayOption(data) {
+    const array = []
+    data.map(ele => {
+      array.push({ label: ele.name, value: ele.name, ele: ele })
+    })
+    return array
+  }
 
   const [input, setInput] = useState({
     // ID: "",
@@ -68,12 +149,11 @@ const PackageAssetInformation = () => {
     pricePerUnit: 0,
     guaranteedMonth: "",
     purposeOfUse: "",
-    assetGroupNumber: "แมม",
+    assetGroupNumber: "",
     type4: "",
     type8: "",
     type13: "",
     // allSector: "", //
-    // status: "not approve",
   });
   const [errorInput, setErrorInput] = useState(false)
   const [errorGen, setErrorGen] = useState(false)
@@ -411,29 +491,51 @@ const PackageAssetInformation = () => {
       setErrorGen(true)
     } else {
       const arr = []
+      fetchAssetList()
+      const assetGroupNumber = (+input.category.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 2 })
+        + (+input.type.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 2 })
+        + '-' + (+input.kind.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 3 })
+      setInput({
+        ...input,
+        assetGroupNumber: assetGroupNumber
+      })
       for (let i = 0; i < input.quantity; i++) {
-        console.log(i.length)
-        arr.push({ ...newGenData, assetNumber: `6300-xxx-xxx/00${i + 1}`, productName: input.productName, })
+        arr.push({
+          productName: input.productName,
+          assetNumber: assetGroupNumber + '/'
+            + (i + 1).toLocaleString(undefined, { minimumIntegerDigits: 4, useGrouping: false }),
+          sector: input.distributeToSector,
+          ...newGenData
+        })
       }
       setGenData(arr)
     }
   }
 
+  const [assetList, setAssetList] = useState([])
+  const fetchAssetList = async () => {
+    try {
+      const res = await getByProductSelector({ assetNumber: "", productName: "" })
+      console.log(res.data.asset)
+      setAssetList(res.data.asset)
+    } catch (err) {
+      console.log(err)
+    }
+  };
+
   const handleForm = async () => {
-    let errInput, errContract, errSale, errTable
+    let errInput, errContract, errSale, errTable = false
     Object.values(input).map((value, index) => {
       if (errInput) return
       if (!value) errInput = true
-      if (Object.keys(input).length == index + 1) errInput = false
+      if (Object.keys(input).length > index + 1) errInput = false
     })
     genData.map(ele => {
       Object.values(ele).map((value, index) => {
-        if (errorAssestTable) return
+        if (errTable || Object.keys(ele).length == index + 1) return
         if (!value) errTable = true
-        if (Object.keys(input).length == index + 1) errTable = false
       })
     })
-    // checkError//SubComponentTable()
     Object.values(inputContract).map((value, index) => {
       if (errContract) return
       if (!value) errContract = true
@@ -453,8 +555,15 @@ const PackageAssetInformation = () => {
     if (!(errInput || errContract || errSale || errTable)) setShowModalConfirm(true)
   }
 
-  const handleSubmit = async (e) => {
-    const inputJSON = JSON.stringify({ ...input, ...inputSale, ...inputContract });
+  const handleSubmit = async (valStatus) => {
+    const arrInput = {
+      ...input,
+      category: input.category.name,
+      kind: input.kind.name,
+      type: input.type.name,
+      status: valStatus || "not approve"
+    }
+    const inputJSON = JSON.stringify({ ...arrInput, ...inputSale, ...inputContract });
     const genDataJSON = JSON.stringify(genData);
     const bottomSubComponentDataJSON = JSON.stringify(bottomSubComponentData);
     const formData = new FormData();
@@ -667,11 +776,9 @@ const PackageAssetInformation = () => {
     setArrayImageURL(newImageUrls);
   }, [arrayImage]);
 
-  // data
   return (
     <>
       <div className="bg-background-page px-5 pt-10 pb-10">
-        {/* Header */}
         <div className="flex items-center">
           <Link
             to="/packageAssetInformationIndex"
@@ -682,7 +789,6 @@ const PackageAssetInformation = () => {
           <div className="text-xl text-text-green ">เพิ่มครุภัณฑ์เป็นชุด</div>
         </div>
         <div className="flex justify-between items-center">
-          {/* left home */}
           <div className="flex text-xs">
             <Link
               to="/"
@@ -707,7 +813,6 @@ const PackageAssetInformation = () => {
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
           <div>บันทึกใบเบิกจ่ายครุภัณฑ์</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-            {/* ชื่อครุภัณฑ์ภาษาอังกฤษ */}
             <div>
               <div className="mb-1">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
               <input
@@ -720,7 +825,6 @@ const PackageAssetInformation = () => {
               />
               <div className="text-red-500 pt-1">{invalidName === "engProductName" ? `*โปรดระบุให้ถูกต้อง` : errorGen && !input.engProductName && `*โปรดระบุ`}</div>
             </div>
-            {/* ชื่อครุภัณฑ์ภาษาไทย */}
             <div>
               <div className="mb-1">ชื่อครุภัณฑ์ภาษาไทย</div>
               <input
@@ -733,36 +837,32 @@ const PackageAssetInformation = () => {
               />
               <div className="text-red-500 pt-1">{invalidName === "productName" ? `*โปรดระบุให้ถูกต้อง` : errorGen && !input.productName && `*โปรดระบุ`}</div>
             </div>
-            {/* ประเภทครุภัณฑ์ */}
+
             <div>
               <div className="mb-1">ประเภทครุภัณฑ์</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ประเภทครุภัณฑ์"}
-                  isValid={errorInput && !input.type}
-                />
-              </div>
+              <SearchSelector
+                options={typeList}
+                name="type"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.type}
+                value={(input.type) && { label: input.type.name, value: input.type.name }}
+              />
               <div className="text-red-500 pt-1">{errorGen && !input.type && `*โปรดระบุ`}</div>
             </div>
-            {/* ชนิดครุภัณฑ์ */}
             <div>
               <div className="mb-1">ชนิดครุภัณฑ์</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ชนิดครุภัณฑ์"}
-                  isValid={errorInput && !input.kind}
-                />
-              </div>
+              <SearchSelector
+                options={kindList}
+                name="kind"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.kind}
+                value={(input.kind) && { label: input.kind.name, value: input.kind.name }}
+              />
               <div className="text-red-500 pt-1">{errorGen && !input.kind && `*โปรดระบุ`}</div>
             </div>
 
-            {/* ลำดับครุภัณฑ์ (ID) */}
             <div>
               <div className="mb-1">ลำดับครุภัณฑ์ (ID)</div>
               <input
@@ -774,8 +874,6 @@ const PackageAssetInformation = () => {
                 className={`${errorInput && !input.realAssetId && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-
-            {/* จำนวน */}
             <div className="grid grid-cols-2 gap-x-5 gap-y-3  text-xs">
               <div>
                 <div className="mb-1">จำนวน</div>
@@ -790,35 +888,28 @@ const PackageAssetInformation = () => {
                 />
                 <div className="text-red-500 pt-1">{errorGen && input.quantity == 0 && `*โปรดระบุ`}</div>
               </div>
-              {/* หน่วยนับ */}
               <div>
                 <div className="mb-1">หน่วยนับ</div>
-                <div className="flex h-[38px] ">
-                  <Selector
-                    placeholder={"Select"}
-                    state={input}
-                    setState={setInput}
-                    id={"หน่วยนับ"}
-                    isValid={errorInput && !input.unit}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* ยี่ห้อ */}
-            <div>
-              <div className="mb-1">ยี่ห้อ</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ยี่ห้อ"}
-                  isValid={errorInput && !input.brand}
+                <SearchSelector
+                  // options={}
+                  name="unit"
+                  onChange={handleSelect}
+                  noClearButton
+                  error={errorInput && !input.unit}
                 />
               </div>
             </div>
-            {/* รุ่น */}
+
+            <div>
+              <div className="mb-1">ยี่ห้อ</div>
+              <SearchSelector
+                options={brandList}
+                name="brand"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.brand}
+              />
+            </div>
             <div>
               <div className="mb-1">รุ่น</div>
               <input
@@ -830,7 +921,7 @@ const PackageAssetInformation = () => {
                 className={`${errorInput && !input.model && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-            {/* ขนาด */}
+
             <div>
               <div className="mb-1">ขนาด</div>
               <input
@@ -842,74 +933,61 @@ const PackageAssetInformation = () => {
                 className={`${errorInput && !input.size && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-
-            {/* หมวดหมู่ครุภัณฑ์ */}
             <div>
               <div className="mb-1">หมวดหมู่ครุภัณฑ์</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"หมวดหมู่ครุภัณฑ์"}
-                  isValid={errorInput && !input.category}
-                />
-              </div>
+              <SearchSelector
+                options={categoryList}
+                name="category"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.category}
+                value={(input.category) && { label: input.category.name, value: input.category.name }}
+              />
               <div className="text-red-500 pt-1">{errorGen && !input.category && `*โปรดระบุ`}</div>
             </div>
-            {/* กลุ่ม */}
+
             <div>
               <div className="mb-1">กลุ่ม</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"กลุ่ม"}
-                  isValid={errorInput && !input.group}
-                />
-              </div>
+              <SearchSelector
+                options={groupList}
+                name="group"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.group}
+              />
             </div>
-            {/* ประเภทที่ได้มา */}
             <div>
               <div className="mb-1">ประเภทที่ได้มา</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ประเภทที่ได้มา"}
-                  isValid={errorInput && !input.acquiredType}
-                />
-              </div>
+              <SearchSelector
+                options={acquiredTypeList}
+                name="acquiredType"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.acquiredType}
+              />
             </div>
-            {/* แหล่งที่ได้มา */}
+
             <div>
               <div className="mb-1">แหล่งที่ได้มา</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"แหล่งที่ได้มา"}
-                  isValid={errorInput && !input.source}
-                />
-              </div>
+              <SearchSelector
+                options={sourceList}
+                name="source"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.source}
+              />
             </div>
-            {/* วัตถุประสงค์ในการใช้งาน */}
             <div>
               <div className="mb-1">วัตถุประสงค์ในการใช้งาน</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"วัตถุประสงค์ในการใช้งาน"}
-                  isValid={errorInput && !input.purposeOfUse}
-                />
-              </div>
+              <SearchSelector
+                options={purposeOfUseList}
+                name="purposeOfUse"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.purposeOfUse}
+              />
             </div>
-            {/* ราคาต่อหน่วย (บาท) */}
+
             <div>
               <div className="mb-1">ราคาต่อหน่วย (บาท)</div>
               <input
@@ -922,7 +1000,6 @@ const PackageAssetInformation = () => {
                 className={`${errorInput && !input.pricePerUnit && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-            {/* จำนวนเดือนที่รับประกัน (เดือน) */}
             <div>
               <div className="mb-1">จำนวนเดือนที่รับประกัน (เดือน)</div>
               <input
@@ -935,7 +1012,7 @@ const PackageAssetInformation = () => {
                 className={`${errorInput && !input.guaranteedMonth && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-            {/* วันที่เริ่มรับประกัน */}
+
             <div>
               <div className="mb-1">วันที่เริ่มรับประกัน</div>
               <div className="flex h-[38px]">
@@ -945,7 +1022,6 @@ const PackageAssetInformation = () => {
                 />
               </div>
             </div>
-            {/* วันที่สิ้นสุดรับประกัน */}
             <div>
               <div className="mb-1">วันที่สิ้นสุดรับประกัน</div>
               <div className="flex h-[38px]">
@@ -957,61 +1033,48 @@ const PackageAssetInformation = () => {
               </div>
             </div>
 
-            {/* ประเภทครุภัณฑ์ 4 หลัก */}
             <div>
               <div className="mb-1">ประเภทครุภัณฑ์ 4 หลัก</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ประเภทครุภัณฑ์ 4 หลัก"}
-                  isValid={errorInput && !input.type4}
-                />
-              </div>
+              <SearchSelector
+                options={type4List}
+                name="type4"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.type4}
+              />
             </div>
-            {/* ประเภทครุภัณฑ์ 8 หลัก */}
             <div>
               <div className="mb-1">ประเภทครุภัณฑ์ 8 หลัก</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ประเภทครุภัณฑ์ 8 หลัก"}
-                  isValid={errorInput && !input.type8}
-                />
-              </div>
+              <SearchSelector
+                options={type8List}
+                name="type8"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.type8}
+              />
             </div>
-            {/* ประเภทครุภัณฑ์ 13 หลัก */}
+
             <div>
               <div className="mb-1">ประเภทครุภัณฑ์ 13 หลัก</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"ประเภทครุภัณฑ์ 13 หลัก"}
-                  isValid={errorInput && !input.type13}
-                />
-              </div>
+              <SearchSelector
+                options={type13List}
+                name="type13"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.type13}
+              />
             </div>
-
-            {/* การจ่ายครุภัณฑ์ให้หน่วยงาน */}
             <div>
               <div className="mb-1">การจ่ายครุภัณฑ์ให้หน่วยงาน</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"การจ่ายครุภัณฑ์ให้หน่วยงาน"}
-                  isValid={errorInput && !input.distributeToSector}
-                />
-              </div>
+              <SearchSelector
+                options={sectorList}
+                name="distributeToSector"
+                onChange={handleSelect}
+                noClearButton
+              // error={errorInput && !input.distributeToSector}
+              />
             </div>
 
-            {/* รหัสกลุ่มครุภัณฑ์ */}
             <div>
               <div className="mb-1">รหัสกลุ่มครุภัณฑ์</div>
               <input
@@ -1021,10 +1084,9 @@ const PackageAssetInformation = () => {
                 disabled
                 onChange={handleChange}
                 value={input.assetGroupNumber}
-                className={`${errorInput && !input.assetGroupNumber && 'border-red-500'} w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-
             <button
               type="button"
               className="sm:col-start-2 sm:mt-5 text-white w-full h-[38px] px-4 py-2  rounded tracking-wider bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
@@ -1034,7 +1096,6 @@ const PackageAssetInformation = () => {
             </button>
           </div>
 
-          {/* block white bottom */}
           <div className=" my-3 p-3">
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
               <div className="w-[800px] xl:w-full max-h-[500px] min-h-[30vh]">
@@ -1066,7 +1127,9 @@ const PackageAssetInformation = () => {
                       setBarcode={setBarcode}
                       qr={qr}
                       setQr={setQr}
-                      errorAssestTable={errorAssestTable}
+                      error={errorAssestTable}
+                      sectorList={sectorList}
+                      assetList={assetList}
                     />
                   );
                 })}
@@ -1075,16 +1138,13 @@ const PackageAssetInformation = () => {
           </div>
         </div>
 
-        {/* ภาพครุภัณฑ์และเอกสารประกอบ */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-          {/* Header ภาพครุภัณฑ์และเอกสารประกอบ */}
           <div className="font-semibold">ภาพครุภัณฑ์และเอกสารประกอบ</div>
           <div className="flex text-xs mb-6">
             <div className=" text-text-gray mr-1">รูปภาพครุภัณฑ์</div>
             <div className=" text-button-red mr-1">*</div>
             <div className="font-semibold">({arrayImage.length}/8 รูป) </div>
           </div>
-          {/* image */}
           <div className="sm:grid sm:grid-cols-6 gap-6">
             <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4 h-80">
               <img src={boxIcon} className="w-[50px]" />
@@ -1114,7 +1174,6 @@ const PackageAssetInformation = () => {
                 <div className="text-text-gray text-sm">(JPEG , PNG , SVG)</div>
               </div>
             </div>
-            {/* file upload image*/}
             <div className="col-span-2 sm:mt-3">
               <div className="h-64 overflow-y-auto scrollbar">
                 {arrayImage.map((el, idx) => (
@@ -1148,7 +1207,6 @@ const PackageAssetInformation = () => {
           </div>
 
           <div className="grid sm:grid-cols-6 gap-6 mt-5">
-            {/* คู่มือและเอกสารแนบ */}
             <div className="sm:col-span-4">
               <div className="  bg-background-page py-10 px-30 h-40 rounded-lg flex flex-col justify-center items-center gap-4 ">
                 <div className=" font-semibold">คู่มือและเอกสารแนบ</div>
@@ -1169,7 +1227,7 @@ const PackageAssetInformation = () => {
                   (DOCX , PDF , XLSX){" "}
                 </div>
               </div>
-              {/* file upload คู่มือและเอกสารแนบ*/}
+
               <div className="col-span-4 sm:mt-5">
                 {arrayDocument.map((el, idx) => (
                   <div
@@ -1192,7 +1250,6 @@ const PackageAssetInformation = () => {
             </div>
 
             <div className="sm:col-span-2 ">
-              {/* ค่าเสื่อมราคา */}
               <div className="bg-background-page py-10 px-30 h-40 rounded-lg flex flex-col justify-center items-center gap-4">
                 <div className=" font-semibold">ค่าเสื่อมราคา</div>
                 <DeprecationDropdown
@@ -1203,7 +1260,6 @@ const PackageAssetInformation = () => {
                 />
               </div>
 
-              {/* ส่วนประกอบย่อย */}
               <div className="bg-background-page py-10 px-30 h-40 rounded-lg flex flex-col justify-center items-center gap-4 mt-5">
                 <div className=" font-semibold">ส่วนประกอบย่อย{!!bottomSubComponentData.length && ` (${bottomSubComponentData.length})`}</div>
                 <button
@@ -1218,37 +1274,30 @@ const PackageAssetInformation = () => {
           </div>
         </div>
 
-        {/* สัญญาจัดซื้อ */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
           <div>สัญญาจัดซื้อ</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-            {/* วิธีการได้มา */}
             <div>
               <div className="mb-1">วิธีการได้มา</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  setState={value => handleChangeSelectContract("acquisitionMethod", value)}
-                  state={inputContract.acquisitionMethod}
-                  isValid={errorContract && !inputContract.acquisitionMethod}
-                  id={"วิธีการได้มา"}
-                />
-              </div>
+              <SearchSelector
+                options={acquisitionMethodList}
+                name="acquisitionMethod"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.acquisitionMethod}
+              />
             </div>
-            {/* ประเภทเงิน */}
             <div>
               <div className="mb-1">ประเภทเงิน</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={inputContract.moneyType}
-                  setState={value => handleChangeSelectContract("moneyType", value)}
-                  isValid={errorContract && !inputContract.moneyType}
-                  id={"ประเภทเงิน"}
-                />
-              </div>
+              <SearchSelector
+                options={moneyTypeList}
+                name="moneyType"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.moneyType}
+              />
             </div>
-            {/* เอกสารใบส่งของ */}
+
             <div>
               <div className="mb-1">เอกสารใบส่งของ</div>
               <input
@@ -1260,7 +1309,6 @@ const PackageAssetInformation = () => {
                 className={`${errorContract && !inputContract.deliveryDocument && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-            {/* เลขที่สัญญา */}
             <div>
               <div className="mb-1">เลขที่สัญญา</div>
               <input
@@ -1272,20 +1320,17 @@ const PackageAssetInformation = () => {
                 className={`${errorContract && !inputContract.contractNumber && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-            {/* ผู้ขาย */}
+
             <div>
               <div className="mb-1">ผู้ขาย</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  state={inputContract.seller}
-                  setState={value => handleChangeSelectContract("seller", value)}
-                  isValid={errorContract && !inputContract.seller}
-                  id={"ผู้ขาย"}
-                />
-              </div>
+              <SearchSelector
+                // options={sellerList}
+                name="seller"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.seller}
+              />
             </div>
-            {/* วันที่รับมอบ */}
             <div className="grid grid-cols-2 gap-1">
               <div className="mb-1">
                 วันที่ซื้อ
@@ -1306,7 +1351,7 @@ const PackageAssetInformation = () => {
                 </div>
               </div>
             </div>
-            {/* ราคาซื้อ (บาท) */}
+
             <div>
               <div className="mb-1">ราคาซื้อ (บาท)</div>
               <input
@@ -1319,7 +1364,6 @@ const PackageAssetInformation = () => {
                 className={`${errorContract && !inputContract.price && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-            {/* เลขที่ใบเบิก */}
             <div>
               <div className="mb-1">เลขที่ใบเบิก</div>
               <input
@@ -1331,7 +1375,7 @@ const PackageAssetInformation = () => {
                 className={`${errorContract && !inputContract.billNumber && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-            {/* ปีที่ซื้อ */}
+
             <div>
               <div className="mb-1">ปีงบประมาณที่ซื้อ</div>
               <div className="flex h-[38px]">
@@ -1342,9 +1386,6 @@ const PackageAssetInformation = () => {
                 />
               </div>
             </div>
-
-
-            {/* วันที่ลงเอกสาร */}
             <div>
               <div className="mb-1">วันที่ลงเอกสาร</div>
               <div className="flex h-[38px]">
@@ -1354,11 +1395,9 @@ const PackageAssetInformation = () => {
           </div>
         </div>
 
-        {/* การจำหน่าย */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
           <div>การจำหน่าย</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-            {/* เอกสารจำหน่าย */}
             <div>
               <div className="mb-1">เอกสารจำหน่าย</div>
               <input
@@ -1370,7 +1409,6 @@ const PackageAssetInformation = () => {
                 className={`${errorSale && !inputSale.salesDocument && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
-            {/* เอกสารลงวันที่ */}
             <div>
               <div className="mb-1">เอกสารลงวันที่</div>
               <div className="flex h-[38px]">
@@ -1380,7 +1418,7 @@ const PackageAssetInformation = () => {
                 />
               </div>
             </div>
-            {/* วันอนุมัติจำหน่าย */}
+
             <div>
               <div className="mb-1">วันอนุมัติจำหน่าย</div>
               <div className="flex h-[38px]">
@@ -1390,20 +1428,17 @@ const PackageAssetInformation = () => {
                 />
               </div>
             </div>
-            {/* สถานะ */}
             <div>
               <div className="mb-1">สถานะ</div>
-              <div className="flex h-[38px] ">
-                <Selector
-                  placeholder={"Select"}
-                  isValid={errorSale && !inputSale.distributeStatus}
-                  setState={(value) => handleChangeSelectSale("distributeStatus", value)}
-                  state={inputSale.distributeStatus}
-                  id={"สถานะ"}
-                />
-              </div>
+              <SearchSelector
+                // options={distributeStatusList}
+                name="distributeStatus"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.distributeStatus}
+              />
             </div>
-            {/* หมายเหตุ */}
+
             <div>
               <div className="mb-1">หมายเหตุ</div>
               <input
@@ -1418,7 +1453,6 @@ const PackageAssetInformation = () => {
           </div>
         </div>
 
-        {/* Modal */}
         <Modal
           id="ค่าเสื่อมราคา"
           isVisible={showDepreciationModal}
@@ -1438,7 +1472,6 @@ const PackageAssetInformation = () => {
         >
           <div className=" px-10 pt-2 pb-10">
             <div className="grid grid-cols-3 gap-x-5 gap-y-3 ">
-              {/* ID เลขครุภัณฑ์ */}
               <div className="">
                 <div className="mb-1 text-xs">ID ครุภัณฑ์</div>
                 <input
@@ -1450,7 +1483,6 @@ const PackageAssetInformation = () => {
                   className=" w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
-              {/* เลขครุภัณฑ์ */}
               <div className="">
                 <div className="mb-1 text-xs">เลขครุภัณฑ์</div>
                 <input
@@ -1462,7 +1494,7 @@ const PackageAssetInformation = () => {
                   className=" w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
-              {/* ชื่อครุภัณฑ์ */}
+
               <div className="">
                 <div className="mb-1 text-xs">ชื่อครุภัณฑ์</div>
                 <input
@@ -1475,7 +1507,6 @@ const PackageAssetInformation = () => {
                 />
               </div>
 
-              {/* ข้อมูลวันที่ */}
               <div className="col-span-3">
                 <div className="text-lg font-bold">ข้อมูลวันที่</div>
                 <div className="grid grid-cols-3 gap-x-8 gap-y-3 border-[1px] border-gray-300 p-5 rounded-lg">
@@ -1509,7 +1540,6 @@ const PackageAssetInformation = () => {
                 </div>
               </div>
 
-              {/* ข้อมูลราคา */}
               <div className="col-span-3">
                 <div className="text-lg font-bold">ข้อมูลราคา</div>
                 <div className="grid grid-cols-3 gap-x-8 gap-y-3 border-[1px] border-gray-300 p-5 rounded-lg">
@@ -1572,7 +1602,6 @@ const PackageAssetInformation = () => {
               </button>
             </div> */}
 
-              {/* ราคาค่าเสื่อม */}
               <div className="col-span-3">
                 <div className="text-lg font-bold">ราคาค่าเสื่อม</div>
                 <div className="grid grid-cols-2 gap-x-28 gap-y-3 border-[1px] border-gray-300 p-5 rounded-lg">
@@ -1741,7 +1770,6 @@ const PackageAssetInformation = () => {
         >
           <div className=" px-10 pt-2 pb-10">
             <div className="grid grid-cols-3 gap-x-5 gap-y-3 ">
-              {/* ID เลขครุภัณฑ์ */}
               <div className="">
                 <div className="mb-1 text-xs">ID ครุภัณฑ์</div>
                 <input
@@ -1753,7 +1781,6 @@ const PackageAssetInformation = () => {
                   className=" w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
-              {/* เลขครุภัณฑ์ */}
               <div className="">
                 <div className="mb-1 text-xs">เลขครุภัณฑ์</div>
                 <input
@@ -1765,7 +1792,7 @@ const PackageAssetInformation = () => {
                   className=" w-full h-[38px] bg-gray-200 border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
-              {/* ชื่อครุภัณฑ์ */}
+
               <div className="">
                 <div className="mb-1 text-xs">ชื่อครุภัณฑ์</div>
                 <input
@@ -1778,7 +1805,6 @@ const PackageAssetInformation = () => {
                 />
               </div>
 
-              {/* ข้อมูลวันที่ */}
               <div className="col-span-3">
                 <div className="text-lg font-bold">ข้อมูลวันที่</div>
                 <div className="grid grid-cols-3 gap-x-8 gap-y-3 border-[1px] border-gray-300 p-5 rounded-lg">
@@ -1812,7 +1838,6 @@ const PackageAssetInformation = () => {
                 </div>
               </div>
 
-              {/* ข้อมูลราคา */}
               <div className="col-span-3">
                 <div className="text-lg font-bold">ข้อมูลราคา</div>
                 <div className="grid grid-cols-3 gap-x-8 gap-y-3 border-[1px] border-gray-300 p-5 rounded-lg">
@@ -1877,7 +1902,6 @@ const PackageAssetInformation = () => {
               </button>
             </div> */}
 
-              {/* ราคาค่าเสื่อม */}
               <div className="col-span-3">
                 <div className="text-lg font-bold">ราคาค่าเสื่อม</div>
                 <div className="grid grid-cols-2 gap-x-28 gap-y-3 border-[1px] border-gray-300 p-5 rounded-lg">
@@ -2013,7 +2037,6 @@ const PackageAssetInformation = () => {
           </div>
         </Modal>
 
-        {/* Modal ส่วนประกอบย่อย */}
         <Modal
           id="ส่วนประกอบย่อย"
           isVisible={showSubComponentModal}
@@ -2112,7 +2135,6 @@ const PackageAssetInformation = () => {
           </div>
         </Modal>
 
-        {/* scan barcode */}
         <Modal
           id="scanBarcodeModal"
           isVisible={scanBarcodeModal}
@@ -2135,7 +2157,6 @@ const PackageAssetInformation = () => {
           </div>
         </Modal>
 
-        {/* scan qrcode */}
         <Modal
           id="scanQRCodeModal"
           isVisible={scanQRCodeModal}
@@ -2158,7 +2179,6 @@ const PackageAssetInformation = () => {
           </div>
         </Modal>
 
-        {/* view image */}
         <Modal
           id="showViewImageModal"
           isVisible={showViewImageModal}
@@ -2177,7 +2197,6 @@ const PackageAssetInformation = () => {
         <ToastContainer />
       </div>
 
-      {/* footer */}
       <div className="flex justify-between items-center gap-10 p-5 text-sm mr-12">
         <button
           type="button"
@@ -2188,7 +2207,7 @@ const PackageAssetInformation = () => {
         <div className="flex justify-end gap-4">
           <button
             className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-          // onClick={() => inputDoc.current.click()}
+            onClick={() => handleSubmit('saveDraft')}
           >
             บันทึกแบบร่าง
           </button>
