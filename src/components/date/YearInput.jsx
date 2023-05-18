@@ -2,8 +2,9 @@ import React from "react";
 import DatePicker from "react-datepicker";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
 import th from "date-fns/locale/th";
+import ChangeDateToBuddhist from "./ChangeDateToBuddhist";
 
-function YearInput({ state, setState }) {
+function YearInput({ state, setState, error }) {
   setDefaultLocale("th", th);
   registerLocale("th", th);
 
@@ -11,16 +12,27 @@ function YearInput({ state, setState }) {
     const length = end - start;
     return Array.from({ length }, (_, i) => start + i);
   };
+
   // คศ to พศ + อีก10ปี
   const years = range(
-    new Date().getFullYear() + 543 - 10,
-    new Date().getFullYear() + 543 + 10,
+    new Date().getFullYear() - 10,
+    new Date().getFullYear() + 10,
     1
   );
-
   return (
     <>
-      <DatePicker
+      <select
+        value={new Date((state)).getFullYear()}
+        onChange={({ target: { value } }) => setState(value)}
+        className={`${error && !state && 'border-red-500'} w-full border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+      >
+        {years.reverse().map((year) => (
+          <option key={year} value={year}>
+            {year + 543}
+          </option>
+        ))}
+      </select>
+      {/* <DatePicker
         locale="th"
         wrapperClassName="datePicker"
         dateFormat="yyyy"
@@ -66,7 +78,7 @@ function YearInput({ state, setState }) {
       />
       <div className="items-center relative">
         <i className="fa-regular fa-calendar absolute top-3.5 sm:top-2.5 -left-6  text-black text-sm sm:text-xs"></i>
-      </div>
+      </div> */}
     </>
   );
 }
