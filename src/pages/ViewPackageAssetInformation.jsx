@@ -21,33 +21,26 @@ const ViewPackageAssetInformation = () => {
   const { packageAssetId } = useParams();
   const printRef = useRef();
 
-
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
-
   let options = { day: "2-digit", month: "2-digit", year: "numeric" };
-
-  
 
   // useState
   const [perPage, setPerPage] = useState(10);
 
-  const [input,setInput] = useState({})
+  const [input, setInput] = useState({})
 
-   // upload image
-   const [arrayImage, setArrayImage] = useState([]);
-   const [arrayImageURL, setArrayImageURL] = useState([]);
-   const [img, setImg] = useState();
- 
-   // คู่มือและเอกสารแนบ
-   const [arrayDocument, setArrayDocument] = useState([]);
+  // upload image
+  const [arrayImage, setArrayImage] = useState([]);
+  const [arrayImageURL, setArrayImageURL] = useState([]);
+  const [img, setImg] = useState();
+
+  // คู่มือและเอกสารแนบ
+  const [arrayDocument, setArrayDocument] = useState([]);
 
   // subcomponent
   const [bottomSubComponentData, setBottomSubComponentData] = useState([]);
 
-    // ประวัติการยืม
-    const [borrowHistoryList,setBorrowHistoryList] = useState([])
+  // ประวัติการยืม
+  const [borrowHistoryList, setBorrowHistoryList] = useState([])
 
 
   // ประวัติสถานที่ตั้ง
@@ -214,18 +207,14 @@ const ViewPackageAssetInformation = () => {
           asset01: packageAsset.asset01,
           serialNumber: packageAsset.serialNumber,
           replacedAssetNumber: packageAsset.replacedAssetNumber,
-          type4:packageAsset.type4,
-          type8:packageAsset.type8,
-          type13:packageAsset.type13,
-          assetGroupNumber:packageAsset.assetGroupNumber
+          type4: packageAsset.type4,
+          type8: packageAsset.type8,
+          type13: packageAsset.type13,
+          assetGroupNumber: packageAsset.assetGroupNumber
         });
-        // console.log(typeof new Date("23/2/2023"))
 
-        // console.log(typeof new Date(packageAsset.insuranceStartDate));
-        // console.log( new Date(packageAsset.insuranceStartDate)?.toLocaleDateString("en-GB", options));
-        
-        setInsuranceStartDate(new Date(packageAsset.insuranceStartDate).toLocaleDateString("en-GB", options));
-        setInsuranceExpiredDate(new Date(packageAsset.insuranceExpiredDate).toLocaleDateString("en-GB", options));
+        setInsuranceStartDate(new Date(packageAsset.insuranceStartDate).toLocaleDateString("th", options));
+        setInsuranceExpiredDate(new Date(packageAsset.insuranceExpiredDate).toLocaleDateString("th", options));
 
         setQr(packageAsset.serialNumber);
         setBarcode(packageAsset.serialNumber);
@@ -301,23 +290,23 @@ const ViewPackageAssetInformation = () => {
         setMoneyType(packageAsset.purchaseContract.moneyType);
         setDeliveryDocument(packageAsset.purchaseContract.deliveryDocument);
         setContractNumber(packageAsset.purchaseContract.contractNumber);
-        setReceivedDate(new Date(packageAsset.purchaseContract.receivedDate).toLocaleDateString("en-GB", options));
+        setReceivedDate(new Date(packageAsset.purchaseContract.receivedDate).toLocaleDateString("th", options));
         setSeller(packageAsset.purchaseContract.seller);
         setPrice(packageAsset.purchaseContract.price);
         setBillNumber(packageAsset.purchaseContract.billNumber);
-        setPurchaseYear(new Date(packageAsset.purchaseContract.purchaseYear).toLocaleDateString("en-GB", options));
-        setPurchaseDate(new Date(packageAsset.purchaseContract.purchaseDate).toLocaleDateString("en-GB", options));
-        setDocumentDate(new Date(packageAsset.purchaseContract.documentDate).toLocaleDateString("en-GB", options));
+        setPurchaseYear(new Date(packageAsset.purchaseContract.purchaseYear).toLocaleDateString("th", options));
+        setPurchaseDate(new Date(packageAsset.purchaseContract.purchaseDate).toLocaleDateString("th", options));
+        setDocumentDate(new Date(packageAsset.purchaseContract.documentDate).toLocaleDateString("th", options));
         // การจำหน่าย
         setSalesDocument(packageAsset.distribution.salesDocument);
         setDistributeStatus(packageAsset.distribution.distributeStatus);
         setDistributionNote(packageAsset.distribution.distributionNote);
         setSalesDocument(packageAsset.distribution.salesDocument);
         setDistributeDocumentDate(
-          new Date(packageAsset.distribution.distributeDocumentDate).toLocaleDateString("en-GB", options)
+          new Date(packageAsset.distribution.distributeDocumentDate).toLocaleDateString("th", options)
         );
         setDistributeApprovalReleaseDate(
-          new Date(packageAsset.distribution.distributeApprovalReleaseDate).toLocaleDateString("en-GB", options)
+          new Date(packageAsset.distribution.distributeApprovalReleaseDate).toLocaleDateString("th", options)
         );
       } catch (err) {
         console.log(err);
@@ -326,7 +315,7 @@ const ViewPackageAssetInformation = () => {
 
     const fetchBorrowHistoryByPackageAssetId = async () => {
       const res = await getViewBorrowHistoryByPackageAssetId(packageAssetId);
-      const borrowHistoryArray =  res.data.borrows
+      const borrowHistoryArray = res.data.borrows
       setBorrowHistoryList(borrowHistoryArray)
       console.log("borrowHistoryArray", borrowHistoryArray);
     };
@@ -451,17 +440,17 @@ const ViewPackageAssetInformation = () => {
             {/* วัตถุประสงค์การใช้งาน */}
             <div className="text-gray-500">วัตถุประสงค์การใช้งาน</div>
             <div>{input?.purposeOfUse !== "" ? input?.purposeOfUse : "-"}</div>
-           {/* วันที่เริ่มรับประกัน */}
-           <div className="text-gray-500">วันที่เริ่มรับประกัน</div>
+            {/* วันที่เริ่มรับประกัน */}
+            <div className="text-gray-500">วันที่เริ่มรับประกัน</div>
             <div>
-              {insuranceStartDate 
+              {insuranceStartDate
                 ? insuranceStartDate
                 : "-"}
             </div>
             {/* วันที่สิ้นสุดการรับประกัน */}
             <div className="text-gray-500">วันที่สิ้นสุดการรับประกัน</div>
             <div>
-              {insuranceExpiredDate 
+              {insuranceExpiredDate
                 ? insuranceExpiredDate
                 : "-"}
             </div>
@@ -498,7 +487,7 @@ const ViewPackageAssetInformation = () => {
           {/* bottom */}
           <div className=" my-3 p-3">
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-              <div className="w-[1000px] xl:w-full h-[300px] ">
+              <div className="w-[800px] xl:w-full max-h-[300px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-md">
                   <div className="grid grid-cols-19 gap-2 text-center">
                     <div className="ml-2">ลำดับ</div>
@@ -510,7 +499,7 @@ const ViewPackageAssetInformation = () => {
                     <div className="col-span-2">สติกเกอร์</div>
                   </div>
                 </div>
-
+                {!bottomSubComponentData.length && <div className="text-center pt-5">-</div>}
                 {bottomSubComponentData?.map((el, idx) => {
                   return (
                     <RowOfTableViewSubcomponentPackageAssetInformation
@@ -549,7 +538,7 @@ const ViewPackageAssetInformation = () => {
                 <div className="h-[550px]">
                   <div className=" px-5 pt-5  pb-10">
                     {arrayImageURL.map((el, idx) => (
-                      <img key={idx}  crossOrigin="true" src={el} className="w-[640px] mb-5" />
+                      <img key={idx} crossOrigin="true" src={el} className="w-[640px] mb-5" />
                     ))}
                   </div>
                 </div>
@@ -557,55 +546,56 @@ const ViewPackageAssetInformation = () => {
             </div>
             {/* right */}
             <div className="lg:col-span-3 mt-5 lg:mt-0">
-              {/* คู่มือและเอกสารแนบ */}
-              <div className="  bg-background-page p-5 h-72 rounded-lg mb-5  gap-4 ">
+              <div className="  bg-background-page p-5 h-72 rounded-lg  mb-5 gap-4 ">
                 <div className=" font-semibold text-center mb-3">
                   คู่มือและเอกสารแนบ
                 </div>
-                {arrayDocument?.map((el, idx) => (
-                  <div
-                    key={idx}
-                    className="flex justify-between items-center mb-2 text-gray-400"
-                  >
-                    <div className="flex items-center">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 14 14"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clip-path="url(#clip0_977_14129)">
-                          <rect
-                            width="14"
-                            height="14"
-                            fill="white"
-                            fill-opacity="0.01"
-                          />
-                          <g clip-path="url(#clip1_977_14129)">
-                            <path
-                              d="M12.2495 3.93671V12.2492C12.2495 12.7133 12.0651 13.1585 11.7369 13.4866C11.4088 13.8148 10.9636 13.9992 10.4995 13.9992H3.49951C3.03538 13.9992 2.59026 13.8148 2.26207 13.4866C1.93389 13.1585 1.74951 12.7133 1.74951 12.2492V1.74921C1.74951 1.28508 1.93389 0.839958 2.26207 0.51177C2.59026 0.183581 3.03538 -0.000793457 3.49951 -0.000793457H8.31201L12.2495 3.93671ZM9.62451 3.93671C9.27641 3.93671 8.94258 3.79843 8.69643 3.55228C8.45029 3.30614 8.31201 2.9723 8.31201 2.62421V0.874207H3.49951C3.26745 0.874207 3.04489 0.966394 2.88079 1.13049C2.7167 1.29458 2.62451 1.51714 2.62451 1.74921V12.2492C2.62451 12.4813 2.7167 12.7038 2.88079 12.8679C3.04489 13.032 3.26745 13.1242 3.49951 13.1242H10.4995C10.7316 13.1242 10.9541 13.032 11.1182 12.8679C11.2823 12.7038 11.3745 12.4813 11.3745 12.2492V3.93671H9.62451Z"
-                              fill="#999999"
+                <div className="h-56 overflow-y-auto scrollbar">
+                  {arrayDocument?.map((el, idx) => (
+                    <div
+                      key={idx}
+                      className="flex justify-between items-center mb-2 text-gray-400 "
+                    >
+                      <div className="flex items-center">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g clip-path="url(#clip0_977_14129)">
+                            <rect
+                              width="14"
+                              height="14"
+                              fill="white"
+                              fill-opacity="0.01"
                             />
+                            <g clip-path="url(#clip1_977_14129)">
+                              <path
+                                d="M12.2495 3.93671V12.2492C12.2495 12.7133 12.0651 13.1585 11.7369 13.4866C11.4088 13.8148 10.9636 13.9992 10.4995 13.9992H3.49951C3.03538 13.9992 2.59026 13.8148 2.26207 13.4866C1.93389 13.1585 1.74951 12.7133 1.74951 12.2492V1.74921C1.74951 1.28508 1.93389 0.839958 2.26207 0.51177C2.59026 0.183581 3.03538 -0.000793457 3.49951 -0.000793457H8.31201L12.2495 3.93671ZM9.62451 3.93671C9.27641 3.93671 8.94258 3.79843 8.69643 3.55228C8.45029 3.30614 8.31201 2.9723 8.31201 2.62421V0.874207H3.49951C3.26745 0.874207 3.04489 0.966394 2.88079 1.13049C2.7167 1.29458 2.62451 1.51714 2.62451 1.74921V12.2492C2.62451 12.4813 2.7167 12.7038 2.88079 12.8679C3.04489 13.032 3.26745 13.1242 3.49951 13.1242H10.4995C10.7316 13.1242 10.9541 13.032 11.1182 12.8679C11.2823 12.7038 11.3745 12.4813 11.3745 12.2492V3.93671H9.62451Z"
+                                fill="#999999"
+                              />
+                            </g>
                           </g>
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_977_14129">
-                            <rect width="14" height="14" fill="white" />
-                          </clipPath>
-                          <clipPath id="clip1_977_14129">
-                            <rect width="14" height="14" fill="white" />
-                          </clipPath>
-                        </defs>
-                      </svg>
+                          <defs>
+                            <clipPath id="clip0_977_14129">
+                              <rect width="14" height="14" fill="white" />
+                            </clipPath>
+                            <clipPath id="clip1_977_14129">
+                              <rect width="14" height="14" fill="white" />
+                            </clipPath>
+                          </defs>
+                        </svg>
 
-                      <div className="ml-2 text-sm">{el.document.name}</div>
+                        <div className="ml-2 text-sm">{el.document.name}</div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
               {/* ค่าเสื่อมราคา  :  คำนวนค่าเสื่อมราคา(ปกติ) */}
-              <div className=" bg-background-page py-10 px-30 h-40 rounded-lg flex flex-col justify-center items-center gap-4">
+              <div className=" bg-background-page py-10 px-30 h-40  rounded-lg flex flex-col justify-center items-center gap-4">
                 <div className=" font-semibold">
                   ค่าเสื่อมราคา : คำนวนค่าเสื่อมราคา(ปกติ)
                 </div>
@@ -642,8 +632,8 @@ const ViewPackageAssetInformation = () => {
             {/* เลขที่ใบเบิก */}
             <div className="text-gray-500">เลขที่ใบเบิก</div>
             <div>{billNumber !== "" ? billNumber : "-"}</div>
-             {/* วันที่ซื้อ */}
-             <div className="text-gray-500">วันที่ซื้อ</div>
+            {/* วันที่ซื้อ */}
+            <div className="text-gray-500">วันที่ซื้อ</div>
             <div>
               {purchaseDate !== ""
                 ? purchaseDate
@@ -662,9 +652,7 @@ const ViewPackageAssetInformation = () => {
             {/* ปีงบประมาณที่ซื้อ */}
             <div className="text-gray-500">ปีงบประมาณที่ซื้อ</div>
             <div>
-              {purchaseYear !== ""
-                ? purchaseYear
-                : "-"}
+              {new Date((purchaseYear)).getFullYear()}
             </div>
             {/* วันที่ลงเอกสาร */}
             <div className="text-gray-500">วันที่ลงเอกสาร</div>
@@ -706,12 +694,11 @@ const ViewPackageAssetInformation = () => {
           </div>
         </div>
 
-        {/* ประวัติการยืม */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-          <div className=" my-3 p-3">
-            <div className="font-semibold mb-3">ประวัติการยืม</div>
+          <div className="font-semibold mb-3">ประวัติการยืม</div>
+          {!borrowHistoryList.length ? <div className="text-center pb-5">-</div> :
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-              <div className="w-[1000px] xl:w-full h-[400px] ">
+              <div className="w-[1000px] lg:w-full max-h-[400px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
                   <div className="grid grid-cols-15 gap-2 text-center">
                     <div className="ml-2">ลำดับ</div>
@@ -727,55 +714,52 @@ const ViewPackageAssetInformation = () => {
                 {borrowHistoryList?.map((el, idx) => {
                   return (
                     <RowOfTableBorrowHistory
-                    key={idx}
-                    index={idx}
-                    borrowIdDoc={el?.borrowIdDoc}
-                    sector={el?.sector}
-                    borrowDate={el?.borrowDate}
-                    borrowSetReturnDate={el?.borrowSetReturnDate}
-                    borrowReturnDate={el?.borrowReturnDate}
-                    handler={
-                      el?.handler
-                    }
-                    status={el?.status}
+                      key={idx}
+                      index={idx}
+                      borrowIdDoc={el?.borrowIdDoc}
+                      sector={el?.sector}
+                      borrowDate={el?.borrowDate}
+                      borrowSetReturnDate={el?.borrowSetReturnDate}
+                      borrowReturnDate={el?.borrowReturnDate}
+                      handler={
+                        el?.handler
+                      }
+                      status={el?.status}
                     />
                   );
                 })}
               </div>
             </div>
-          </div>
+          }
         </div>
 
-        {/* ประวัติสถานที่ตั้ง */}
-        <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
-          <div className=" my-3 p-3">
-            <div className="font-semibold mb-3">ประวัติสถานที่ตั้ง</div>
-            <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-              <div className="w-[1000px] xl:w-full h-[400px] ">
-                <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                  <div className="grid grid-cols-12 gap-2 text-center">
-                    <div className="ml-2">ลำดับ</div>
-                    <div className="col-span-4">อาคาร</div>
-                    <div className="">ชั้น</div>
-                    <div className="col-span-2">ห้อง</div>
-                    <div className="col-span-2">วันที่ย้ายเข้า</div>
-                    <div className="col-span-2">วันที่ย้ายออก</div>
-                  </div>
+        <div className="bg-white rounded-lg mx-10 my-3 p-4">
+          <div className="font-semibold mb-3">ประวัติสถานที่ตั้ง</div>
+          <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
+            <div className="w-[1000px] lg:w-full max-h-[400px] ">
+              <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+                <div className="grid grid-cols-12 gap-2 text-center">
+                  <div className="ml-2">ลำดับ</div>
+                  <div className="col-span-4">อาคาร</div>
+                  <div className="">ชั้น</div>
+                  <div className="col-span-2">ห้อง</div>
+                  <div className="col-span-2">วันที่ย้ายเข้า</div>
+                  <div className="col-span-2">วันที่ย้ายออก</div>
                 </div>
-                {buildingData?.map((el, idx) => {
-                  return (
-                    <RowOfTableBuildingHistory
-                      key={idx}
-                      index={idx}
-                      building={buildingData[idx]?.building}
-                      floor={buildingData[idx]?.floor}
-                      room={buildingData[idx]?.room}
-                      moveInDate={buildingData[idx]?.moveInDate}
-                      moveOutDate={buildingData[idx]?.moveOutDate}
-                    />
-                  );
-                })}
               </div>
+              {buildingData?.map((el, idx) => {
+                return (
+                  <RowOfTableBuildingHistory
+                    key={idx}
+                    index={idx}
+                    building={buildingData[idx]?.building}
+                    floor={buildingData[idx]?.floor}
+                    room={buildingData[idx]?.room}
+                    moveInDate={buildingData[idx]?.moveInDate}
+                    moveOutDate={buildingData[idx]?.moveOutDate}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
@@ -844,31 +828,31 @@ const ViewPackageAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationStartDate}
-                          setState={setDepreciationStartDate}
-                          disabled={true}
-                        />
+                      <OnlyDateInput
+                        state={depreciationStartDate}
+                        setState={setDepreciationStartDate}
+                        disabled={true}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationRegisterDate}
-                          setState={setDepreciationRegisterDate}
-                          disabled={true}
-                        />
+                      <OnlyDateInput
+                        state={depreciationRegisterDate}
+                        setState={setDepreciationRegisterDate}
+                        disabled={true}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={depreciationReceivedDate}
-                          setState={setDepreciationReceivedDate}
-                          disabled={true}
-                        />
+                      <OnlyDateInput
+                        state={depreciationReceivedDate}
+                        setState={setDepreciationReceivedDate}
+                        disabled={true}
+                      />
                     </div>
                   </div>
                 </div>
@@ -951,8 +935,8 @@ const ViewPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationPresentMonth == Infinity ||
-                          depreciationPresentMonth == -Infinity ||
-                          isNaN(depreciationPresentMonth)
+                            depreciationPresentMonth == -Infinity ||
+                            isNaN(depreciationPresentMonth)
                             ? 0
                             : depreciationPresentMonth.toFixed(2)
                         }
@@ -972,8 +956,8 @@ const ViewPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationCumulativePrice == Infinity ||
-                          depreciationCumulativePrice == -Infinity ||
-                          isNaN(depreciationCumulativePrice)
+                            depreciationCumulativePrice == -Infinity ||
+                            isNaN(depreciationCumulativePrice)
                             ? 0
                             : depreciationCumulativePrice.toFixed(2)
                         }
@@ -993,8 +977,8 @@ const ViewPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationYearPrice == Infinity ||
-                          depreciationYearPrice == -Infinity ||
-                          isNaN(depreciationYearPrice)
+                            depreciationYearPrice == -Infinity ||
+                            isNaN(depreciationYearPrice)
                             ? 0
                             : depreciationYearPrice.toFixed(2)
                         }
@@ -1014,8 +998,8 @@ const ViewPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationRemainPrice == Infinity ||
-                          depreciationRemainPrice == -Infinity ||
-                          isNaN(depreciationRemainPrice)
+                            depreciationRemainPrice == -Infinity ||
+                            isNaN(depreciationRemainPrice)
                             ? 0
                             : depreciationRemainPrice.toFixed(2)
                         }
@@ -1040,8 +1024,8 @@ const ViewPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationBookValue == Infinity ||
-                          depreciationBookValue == -Infinity ||
-                          isNaN(depreciationBookValue)
+                            depreciationBookValue == -Infinity ||
+                            isNaN(depreciationBookValue)
                             ? 0
                             : depreciationBookValue.toFixed(2)
                         }
@@ -1149,31 +1133,31 @@ const ViewPackageAssetInformation = () => {
                   <div>
                     <div className="mb-1 text-xs">วันเริ่มคิดค่าเสื่อม</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationStartDate}
-                          setState={setAccumulateDepreciationStartDate}
-                          disabled={true}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationStartDate}
+                        setState={setAccumulateDepreciationStartDate}
+                        disabled={true}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่ลงทะเบียน</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationRegisterDate}
-                          setState={setAccumulateDepreciationRegisterDate}
-                          disabled={true}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationRegisterDate}
+                        setState={setAccumulateDepreciationRegisterDate}
+                        disabled={true}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="mb-1 text-xs">วันที่รับของ</div>
                     <div className="inline-block relative w-full h-[41px]">
-                    <OnlyDateInput
-                          state={accumulateDepreciationReceivedDate}
-                          setState={setAccumulateDepreciationReceivedDate}
-                          disabled={true}
-                        />
+                      <OnlyDateInput
+                        state={accumulateDepreciationReceivedDate}
+                        setState={setAccumulateDepreciationReceivedDate}
+                        disabled={true}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1258,8 +1242,8 @@ const ViewPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationPresentMonth == Infinity ||
-                          accumulateDepreciationPresentMonth == -Infinity ||
-                          isNaN(accumulateDepreciationPresentMonth)
+                            accumulateDepreciationPresentMonth == -Infinity ||
+                            isNaN(accumulateDepreciationPresentMonth)
                             ? 0
                             : accumulateDepreciationPresentMonth.toFixed(2)
                         }
@@ -1279,8 +1263,8 @@ const ViewPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationCumulativePrice == Infinity ||
-                          accumulateDepreciationCumulativePrice == -Infinity ||
-                          isNaN(accumulateDepreciationCumulativePrice)
+                            accumulateDepreciationCumulativePrice == -Infinity ||
+                            isNaN(accumulateDepreciationCumulativePrice)
                             ? 0
                             : accumulateDepreciationCumulativePrice.toFixed(2)
                         }
@@ -1300,8 +1284,8 @@ const ViewPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationYearPrice == Infinity ||
-                          accumulateDepreciationYearPrice == -Infinity ||
-                          isNaN(accumulateDepreciationYearPrice)
+                            accumulateDepreciationYearPrice == -Infinity ||
+                            isNaN(accumulateDepreciationYearPrice)
                             ? 0
                             : accumulateDepreciationYearPrice.toFixed(2)
                         }
@@ -1321,8 +1305,8 @@ const ViewPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationRemainPrice == Infinity ||
-                          accumulateDepreciationRemainPrice == -Infinity ||
-                          isNaN(accumulateDepreciationRemainPrice)
+                            accumulateDepreciationRemainPrice == -Infinity ||
+                            isNaN(accumulateDepreciationRemainPrice)
                             ? 0
                             : accumulateDepreciationRemainPrice.toFixed(2)
                         }
@@ -1347,8 +1331,8 @@ const ViewPackageAssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationBookValue == Infinity ||
-                          accumulateDepreciationBookValue == -Infinity ||
-                          isNaN(accumulateDepreciationBookValue)
+                            accumulateDepreciationBookValue == -Infinity ||
+                            isNaN(accumulateDepreciationBookValue)
                             ? 0
                             : accumulateDepreciationBookValue.toFixed(2)
                         }

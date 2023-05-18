@@ -19,6 +19,7 @@ import OnlyDateInput from "../components/date/onlyDateInput";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import { IoIosClose } from "react-icons/io";
+import YearInput from "../components/date/YearInput";
 
 const EditPackageAssetInformation = () => {
   const { packageAssetId } = useParams();
@@ -373,7 +374,7 @@ const EditPackageAssetInformation = () => {
       Object.values(ele).map((value, index) => {
         const key = (Object.keys(ele)[index])
         if (errTable) return
-        if(key === "serialNumber" || key == "pricePerUnit" || key == "asset01") {
+        if (key === "serialNumber" || key == "pricePerUnit" || key == "asset01") {
           if (!value) errTable = true
         }
       })
@@ -642,7 +643,7 @@ const EditPackageAssetInformation = () => {
           seller: packageAsset.purchaseContract.seller,
           price: packageAsset.purchaseContract.price,
           billNumber: packageAsset.purchaseContract.billNumber,
-          purchaseYear: new Date(packageAsset.purchaseContract.purchaseYear),
+          purchaseYear: packageAsset.purchaseContract.purchaseYear,
           purchaseDate: new Date(packageAsset.purchaseContract.purchaseDate),
           documentDate: new Date(packageAsset.purchaseContract.documentDate),
         })
@@ -1375,10 +1376,15 @@ const EditPackageAssetInformation = () => {
                 <div>
                   <div className="mb-1">ปีงบประมาณที่ซื้อ</div>
                   <div className="flex h-[38px]">
-                    <DateInput onlyYear state={inputContract.purchaseYear}
+                    <YearInput
+                      state={inputContract.purchaseYear}
                       setState={value => handleChangeSelectContract("purchaseYear", value)}
                       error={!inputContract.purchaseYear}
                     />
+                    {/* <DateInput onlyYear state={inputContract.purchaseYear}
+                      setState={value => handleChangeSelectContract("purchaseYear", value)}
+                      error={!inputContract.purchaseYear}
+                    /> */}
                   </div>
                 </div>
 

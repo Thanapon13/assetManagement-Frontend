@@ -1327,7 +1327,7 @@ const EditAssetInformation = () => {
                 <div>
                   <div className="mb-1">ปีที่ซื้อ</div>
                   <div className="flex h-[38px]">
-                    <DateInput onlyYear state={inputContract.purchaseYear} setState={value => handleChangeSelectContract("purchaseYear", value)}
+                    <YearInput state={inputContract.purchaseYear} setState={value => handleChangeSelectContract("purchaseYear", value)}
                       error={!inputContract.purchaseYear} />
                   </div>
                 </div>

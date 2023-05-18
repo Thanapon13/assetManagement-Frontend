@@ -25,6 +25,7 @@ import { IoIosClose } from "react-icons/io";
 import { getType13, getType4, getType8, getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getKindAll, getPurposeOfUse, getSector, getSourceData, getSubsector, getTypeData, getMoneyType } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import { getByAssetNumberSelector } from "../api/assetApi";
+import YearInput from "../components/date/YearInput";
 
 const PackageAssetInformation = () => {
   const inputImg = useRef();
@@ -1372,10 +1373,10 @@ const PackageAssetInformation = () => {
             <div>
               <div className="mb-1">ปีงบประมาณที่ซื้อ</div>
               <div className="flex h-[38px]">
-                <DateInput
+                <YearInput
                   state={inputContract.purchaseYear}
                   setState={value => handleChangeSelectContract("purchaseYear", value)}
-                  onlyYear={true}
+                  error={!inputContract.purchaseYear}
                 />
               </div>
             </div>

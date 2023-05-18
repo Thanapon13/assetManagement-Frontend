@@ -654,7 +654,7 @@ const ViewAssetInformation = () => {
             {/* วันที่ซื้อ */}
             <div className="text-gray-500">วันที่ซื้อ</div>
             <div>
-            {ChangeDateToBuddhist(purchaseDate)}
+              {ChangeDateToBuddhist(purchaseDate)}
               {/* {purchaseDate !== ""
                 ? purchaseDate?.toLocaleDateString("en-GB", options)
                 : "-"} */}
@@ -662,7 +662,7 @@ const ViewAssetInformation = () => {
             {/* วันที่รับมอบ */}
             <div className="text-gray-500">วันที่รับมอบ</div>
             <div>
-            {ChangeDateToBuddhist(receivedDate)}
+              {ChangeDateToBuddhist(receivedDate)}
               {/* {receivedDate !== ""
                 ? receivedDate?.toLocaleDateString("en-GB", options)
                 : "-"} */}
@@ -673,7 +673,7 @@ const ViewAssetInformation = () => {
             {/* ปีงบประมาณที่ซื้อ */}
             <div className="text-gray-500">ปีงบประมาณที่ซื้อ</div>
             <div>
-            {/* {ChangeDateToBuddhist(purchaseYear)} */}
+              {new Date((purchaseYear)).getFullYear() + 543}
               {/* {purchaseYear !== ""
                 ? purchaseYear?.toLocaleDateString("en-GB", options)
                 : "-"} */}
@@ -681,7 +681,7 @@ const ViewAssetInformation = () => {
             {/* วันที่ลงเอกสาร */}
             <div className="text-gray-500">วันที่ลงเอกสาร</div>
             <div>
-            {ChangeDateToBuddhist(documentDate)}
+              {ChangeDateToBuddhist(documentDate)}
             </div>
           </div>
         </div>
@@ -696,12 +696,12 @@ const ViewAssetInformation = () => {
             {/* เอกสารลงวันที่ */}
             <div className="text-gray-500">เอกสารลงวันที่</div>
             <div>
-            {ChangeDateToBuddhist(distributeDocumentDate)}
+              {ChangeDateToBuddhist(distributeDocumentDate)}
             </div>
             {/* วันอนุมัติจำหน่าย */}
             <div className="text-gray-500">วันอนุมัติจำหน่าย</div>
             <div>
-            {ChangeDateToBuddhist(distributeApprovalReleaseDate)}
+              {ChangeDateToBuddhist(distributeApprovalReleaseDate)}
             </div>
             {/* สถานะ */}
             <div className="text-gray-500">สถานะ</div>

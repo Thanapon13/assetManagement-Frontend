@@ -21,6 +21,7 @@ import ModalSuccess from "../components/modal/ModalSuccess";
 import { IoIosClose } from "react-icons/io";
 import { getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getKindAll, getMoneyType, getPurposeOfUse, getSector, getSourceData, getSubsector, getTypeData } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
+import YearInput from "../components/date/YearInput";
 
 const AssetInformation = () => {
   const inputImg = useRef();
@@ -1306,7 +1307,7 @@ const AssetInformation = () => {
             <div>
               <div className="mb-1">ปีที่ซื้อ</div>
               <div className="flex h-[38px]">
-                <DateInput onlyYear state={inputContract.purchaseYear} setState={value => handleChangeSelectContract("purchaseYear", value)}
+                <YearInput state={inputContract.purchaseYear} setState={value => handleChangeSelectContract("purchaseYear", value)}
                 />
               </div>
             </div>
