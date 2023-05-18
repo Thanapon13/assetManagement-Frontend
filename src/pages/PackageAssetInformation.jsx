@@ -38,10 +38,6 @@ const PackageAssetInformation = () => {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ];
 
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
-
   const [sectorList, setSectorList] = useState([])
   const [subSectorList, setSubSectorList] = useState([])
   const [typeList, setTypeList] = useState([])
@@ -167,10 +163,7 @@ const PackageAssetInformation = () => {
 
   // gen เลขครุภัณฑ์
   const [genData, setGenData] = useState([])
-  const newGenData = {
-    sector: "",
-    replacedAssetNumber: "",
-  }
+
   const [errorAssestTable, setErrorAssestTable] = useState(false)
 
   // สัญญาจัดซื้อ
@@ -179,21 +172,21 @@ const PackageAssetInformation = () => {
     moneyType: "",
     deliveryDocument: "",
     contractNumber: "",
-    receivedDate: todayThaiDate,
+    receivedDate: new Date(),
     seller: "",
     price: "",
     billNumber: "",
-    purchaseYear: todayThaiDate,
-    purchaseDate: todayThaiDate,
-    documentDate: todayThaiDate,
+    purchaseYear: new Date(),
+    purchaseDate: new Date(),
+    documentDate: new Date(),
   })
   const [errorContract, setErrorContract] = useState(false)
 
   // การจำหน่าย
   const [inputSale, setInputSale] = useState({
     salesDocument: "",
-    distributeDocumentDate: todayThaiDate,
-    distributeApprovalReleaseDate: todayThaiDate,
+    distributeDocumentDate: new Date(),
+    distributeApprovalReleaseDate: new Date(),
     distributeStatus: "",
     distributionNote: ""
   })
@@ -311,9 +304,9 @@ const PackageAssetInformation = () => {
   };
 
   //Main Date
-  const [insuranceStartDate, setInsuranceStartDate] = useState(todayThaiDate);
+  const [insuranceStartDate, setInsuranceStartDate] = useState(new Date());
   const [insuranceExpiredDate, setInsuranceExpiredDate] =
-    useState(todayThaiDate);
+    useState(new Date());
 
   const [invalidName, setInvalidName] = useState(false)
   // handle
@@ -505,7 +498,7 @@ const PackageAssetInformation = () => {
           assetNumber: assetGroupNumber + '/'
             + (i + 1).toLocaleString(undefined, { minimumIntegerDigits: 4, useGrouping: false }),
           sector: input.distributeToSector,
-          ...newGenData
+          replacedAssetNumber: "",
         })
       }
       setGenData(arr)
@@ -814,18 +807,6 @@ const PackageAssetInformation = () => {
           <div>บันทึกใบเบิกจ่ายครุภัณฑ์</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
             <div>
-              <div className="mb-1">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
-              <input
-                type="text"
-                name="engProductName"
-                id="engProductName"
-                onChange={handleChange}
-                value={input.engProductName}
-                className={`${errorInput && !input.engProductName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
-              />
-              <div className="text-red-500 pt-1">{invalidName === "engProductName" ? `*โปรดระบุให้ถูกต้อง` : errorGen && !input.engProductName && `*โปรดระบุ`}</div>
-            </div>
-            <div>
               <div className="mb-1">ชื่อครุภัณฑ์ภาษาไทย</div>
               <input
                 type="text"
@@ -836,6 +817,18 @@ const PackageAssetInformation = () => {
                 className={`${errorInput && !input.productName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
               <div className="text-red-500 pt-1">{invalidName === "productName" ? `*โปรดระบุให้ถูกต้อง` : errorGen && !input.productName && `*โปรดระบุ`}</div>
+            </div>
+            <div>
+              <div className="mb-1">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
+              <input
+                type="text"
+                name="engProductName"
+                id="engProductName"
+                onChange={handleChange}
+                value={input.engProductName}
+                className={`${errorInput && !input.engProductName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+              />
+              <div className="text-red-500 pt-1">{invalidName === "engProductName" ? `*โปรดระบุให้ถูกต้อง` : errorGen && !input.engProductName && `*โปรดระบุ`}</div>
             </div>
 
             <div>

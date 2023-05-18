@@ -9,7 +9,6 @@ import DateInput from '../components/date/DateInput'
 import RowOfWithdrawTableArray from '../components/table/RowOfWithdrawTableArray'
 
 export const AssetWithdraw = () => {
-  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
 
   // useState
   const [search, setSearch] = useState({
@@ -22,7 +21,8 @@ export const AssetWithdraw = () => {
   const [perPage, setPerPage] = useState(10)
 
   //Main Date
-  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate)
+  const [withdrawDate, setWithdrawDate] = useState(new Date())
+  //* แก้ state2
 
   // data
   let withdrawTableArray = [

@@ -25,7 +25,7 @@ const BorrowList = () => {
     textSearch: "",
     status: "",
     dateFrom: "",
-    dateTo: todayThaiDate,
+    dateTo: new Date(),
     sector: "",
     page: "",
     limit: 10,

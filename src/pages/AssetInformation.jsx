@@ -34,10 +34,6 @@ const AssetInformation = () => {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ];
 
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
-
   const [typeList, setTypeList] = useState([])
   const [kindList, setKindList] = useState([])
   // หน่วยนับ
@@ -161,21 +157,21 @@ const AssetInformation = () => {
     moneyType: "",
     deliveryDocument: "",
     contractNumber: "",
-    receivedDate: todayThaiDate,
+    receivedDate: new Date(),
     seller: "",
     price: "",
     billNumber: "",
-    purchaseYear: todayThaiDate,
-    purchaseDate: todayThaiDate,
-    documentDate: todayThaiDate,
+    purchaseYear: new Date(),
+    purchaseDate: new Date(),
+    documentDate: new Date(),
   })
   const [errorContract, setErrorContract] = useState(false)
 
   // การจำหน่าย
   const [inputSale, setInputSale] = useState({
     salesDocument: "",
-    distributeDocumentDate: todayThaiDate,
-    distributeApprovalReleaseDate: todayThaiDate,
+    distributeDocumentDate: new Date(),
+    distributeApprovalReleaseDate: new Date(),
     distributeStatus: "",
     distributionNote: ""
   })
@@ -251,9 +247,9 @@ const AssetInformation = () => {
     useState(0);
 
   //Main Date
-  const [insuranceStartDate, setInsuranceStartDate] = useState(todayThaiDate);
+  const [insuranceStartDate, setInsuranceStartDate] = useState(new Date());
   const [insuranceExpiredDate, setInsuranceExpiredDate] =
-    useState(todayThaiDate);
+    useState(new Date());
 
   // handle
   const handleChange = (e) => {
@@ -488,10 +484,11 @@ const AssetInformation = () => {
       if (Object.keys(input).length > index + 1) errInput = false
     })
     genData.map(ele => {
-      Object.values(ele).map((value, index) => {
-        if (errTable || Object.keys(ele).length == index + 1) return
-        if (!value) errTable = true
-      })
+      if (!ele.sector) errTable = true
+      // Object.values(ele).map((value, index) => {
+      //   if (errTable || Object.keys(ele).length == index + 1) return
+      //   if (!value) errTable = true
+      // })
     })
     Object.values(inputContract).map((value, index) => {
       if (errContact) return

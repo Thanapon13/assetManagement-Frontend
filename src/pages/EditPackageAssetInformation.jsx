@@ -33,10 +33,6 @@ const EditPackageAssetInformation = () => {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ];
 
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
-
   // useState
   const [isLoading, setIsLoading] = useState(true)
 
@@ -178,9 +174,9 @@ const EditPackageAssetInformation = () => {
     useState(0);
 
   //Main Date
-  const [insuranceStartDate, setInsuranceStartDate] = useState(todayThaiDate);
+  const [insuranceStartDate, setInsuranceStartDate] = useState(new Date());
   const [insuranceExpiredDate, setInsuranceExpiredDate] =
-    useState(todayThaiDate);
+    useState(new Date());
 
   const [invalidName, setInvalidName] = useState(false)
   // handle
@@ -1335,7 +1331,7 @@ const EditPackageAssetInformation = () => {
                     <div className="mb-1">วันที่ซื้อ</div>
                     <div className="flex h-[38px]">
                       <DateInput state={inputContract.purchaseDate}
-                        setState={value => handleChangeSelectContract("receivedDate", value)}
+                        setState={value => handleChangeSelectContract("purchaseDate", value)}
                         error={!inputContract.purchaseDate}
                       />
                     </div>

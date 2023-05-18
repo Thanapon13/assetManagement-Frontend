@@ -30,10 +30,6 @@ const ViewAssetInformation = () => {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ];
 
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
-
   let options = { day: "2-digit", month: "2-digit", year: "numeric" };
 
   // useState
@@ -113,20 +109,20 @@ const ViewAssetInformation = () => {
   const [moneyType, setMoneyType] = useState("");
   const [deliveryDocument, setDeliveryDocument] = useState("");
   const [contractNumber, setContractNumber] = useState("");
-  const [receivedDate, setReceivedDate] = useState(todayThaiDate);
+  const [receivedDate, setReceivedDate] = useState();
   const [seller, setSeller] = useState("");
   const [price, setPrice] = useState("");
   const [billNumber, setBillNumber] = useState("");
-  const [purchaseYear, setPurchaseYear] = useState(todayThaiDate);
-  const [purchaseDate, setPurchaseDate] = useState(todayThaiDate);
-  const [documentDate, setDocumentDate] = useState(todayThaiDate);
+  const [purchaseYear, setPurchaseYear] = useState();
+  const [purchaseDate, setPurchaseDate] = useState();
+  const [documentDate, setDocumentDate] = useState();
 
   // การจำหน่าย
   const [salesDocument, setSalesDocument] = useState("");
   const [distributeDocumentDate, setDistributeDocumentDate] =
-    useState(todayThaiDate);
+    useState();
   const [distributeApprovalReleaseDate, setDistributeApprovalReleaseDate] =
-    useState(todayThaiDate);
+    useState();
   const [distributeStatus, setDistributeStatus] = useState("");
   const [distributionNote, setDistributionNote] = useState("");
 
@@ -198,9 +194,9 @@ const ViewAssetInformation = () => {
     useState(0);
 
   //Main Date
-  const [insuranceStartDate, setInsuranceStartDate] = useState(todayThaiDate);
+  const [insuranceStartDate, setInsuranceStartDate] = useState();
   const [insuranceExpiredDate, setInsuranceExpiredDate] =
-    useState(todayThaiDate);
+    useState();
 
   const { inputRef } = useBarcode({
     value: barcode,
@@ -244,8 +240,8 @@ const ViewAssetInformation = () => {
           serialNumber: asset.serialNumber,
           replacedAssetNumber: asset.replacedAssetNumber,
         });
-        setInsuranceStartDate(new Date(asset.insuranceStartDate));
-        setInsuranceExpiredDate(new Date(asset.insuranceExpiredDate));
+        setInsuranceStartDate((asset.insuranceStartDate));
+        setInsuranceExpiredDate(asset.insuranceExpiredDate);
 
         setQr(asset.serialNumber);
         setBarcode(asset.serialNumber);
@@ -268,9 +264,9 @@ const ViewAssetInformation = () => {
         setArrayDocument(cloneDoc);
 
         //Modal ค่าเสื่อมราคา
-        setDepreciationStartDate(new Date(asset.depreciationStartDate));
-        setDepreciationRegisterDate(new Date(asset.depreciationRegisterDate));
-        setDepreciationReceivedDate(new Date(asset.depreciationReceivedDate));
+        setDepreciationStartDate(asset.depreciationStartDate);
+        setDepreciationRegisterDate(asset.depreciationRegisterDate);
+        setDepreciationReceivedDate(asset.depreciationReceivedDate);
         setDepreciationPrice(asset.depreciationPrice);
         setDepreciationYearUsed(asset.depreciationYearUsed);
         setDepreciationCarcassPrice(asset.depreciationCarcassPrice);
@@ -284,13 +280,13 @@ const ViewAssetInformation = () => {
         // console.log(new Date(asset.depreciationStartDate));
         //Modal ค่าเสื่อมราคา(ผลรวมจำนวนปี)
         setAccumulateDepreciationStartDate(
-          new Date(asset.accumulateDepreciationStartDate)
+          asset.accumulateDepreciationStartDate
         );
         setAccumulateDepreciationRegisterDate(
-          new Date(asset.accumulateDepreciationRegisterDate)
+          asset.accumulateDepreciationRegisterDate
         );
         setAccumulateDepreciationReceivedDate(
-          new Date(asset.accumulateDepreciationReceivedDate)
+          asset.accumulateDepreciationReceivedDate
         );
         setAccumulateDepreciationPrice(asset.accumulateDepreciationPrice);
         setAccumulateDepreciationYearUsed(asset.accumulateDepreciationYearUsed);
@@ -319,23 +315,23 @@ const ViewAssetInformation = () => {
         setMoneyType(asset.purchaseContract.moneyType);
         setDeliveryDocument(asset.purchaseContract.deliveryDocument);
         setContractNumber(asset.purchaseContract.contractNumber);
-        setReceivedDate(new Date(asset.purchaseContract.receivedDate));
+        setReceivedDate(asset.purchaseContract.receivedDate);
         setSeller(asset.purchaseContract.seller);
         setPrice(asset.purchaseContract.price);
         setBillNumber(asset.purchaseContract.billNumber);
-        setPurchaseYear(new Date(asset.purchaseContract.purchaseYear));
-        setPurchaseDate(new Date(asset.purchaseContract.purchaseDate));
-        setDocumentDate(new Date(asset.purchaseContract.documentDate));
+        setPurchaseYear(asset.purchaseContract.purchaseYear);
+        setPurchaseDate(asset.purchaseContract.purchaseDate);
+        setDocumentDate(asset.purchaseContract.documentDate);
         // การจำหน่าย
         setSalesDocument(asset.distribution.salesDocument);
         setDistributeStatus(asset.distribution.distributeStatus);
         setDistributionNote(asset.distribution.distributionNote);
         setSalesDocument(asset.distribution.salesDocument);
         setDistributeDocumentDate(
-          new Date(asset.distribution.distributeDocumentDate)
+          asset.distribution.distributeDocumentDate
         );
         setDistributeApprovalReleaseDate(
-          new Date(asset.distribution.distributeApprovalReleaseDate)
+          asset.distribution.distributeApprovalReleaseDate
         );
       } catch (err) {
         console.log(err);
@@ -512,16 +508,18 @@ const ViewAssetInformation = () => {
             {/* วันที่เริ่มรับประกัน */}
             <div className="text-gray-500">วันที่เริ่มรับประกัน</div>
             <div>
-              {insuranceStartDate !== ""
-                ? insuranceStartDate.toLocaleDateString("en-GB", options)
-                : "-"}
+              {ChangeDateToBuddhist(insuranceStartDate)}
+              {/* {insuranceStartDate !== ""
+                ? insuranceStartDate?.toLocaleDateString("en-GB", options)
+                : "-"} */}
             </div>
             {/* วันที่สิ้นสุดการรับประกัน */}
             <div className="text-gray-500">วันที่สิ้นสุดการรับประกัน</div>
             <div>
-              {insuranceExpiredDate !== ""
-                ? insuranceExpiredDate.toLocaleDateString("en-GB", options)
-                : "-"}
+              {ChangeDateToBuddhist(insuranceExpiredDate)}
+              {/* {insuranceExpiredDate !== ""
+                ? insuranceExpiredDate?.toLocaleDateString("en-GB", options)
+                : "-"} */}
             </div>
             {/* ระยะเวลารับประกัน(เดือน) */}
             <div className="text-gray-500">ระยะเวลารับประกัน(เดือน)</div>
@@ -656,16 +654,18 @@ const ViewAssetInformation = () => {
             {/* วันที่ซื้อ */}
             <div className="text-gray-500">วันที่ซื้อ</div>
             <div>
-              {purchaseDate !== ""
-                ? purchaseDate.toLocaleDateString("en-GB", options)
-                : "-"}
+            {ChangeDateToBuddhist(purchaseDate)}
+              {/* {purchaseDate !== ""
+                ? purchaseDate?.toLocaleDateString("en-GB", options)
+                : "-"} */}
             </div>
             {/* วันที่รับมอบ */}
             <div className="text-gray-500">วันที่รับมอบ</div>
             <div>
-              {receivedDate !== ""
-                ? receivedDate.toLocaleDateString("en-GB", options)
-                : "-"}
+            {ChangeDateToBuddhist(receivedDate)}
+              {/* {receivedDate !== ""
+                ? receivedDate?.toLocaleDateString("en-GB", options)
+                : "-"} */}
             </div>
             {/* ราคาซื้อ (บาท) */}
             <div className="text-gray-500">ราคาซื้อ (บาท)</div>
@@ -673,16 +673,15 @@ const ViewAssetInformation = () => {
             {/* ปีงบประมาณที่ซื้อ */}
             <div className="text-gray-500">ปีงบประมาณที่ซื้อ</div>
             <div>
-              {purchaseYear !== ""
-                ? purchaseYear.toLocaleDateString("en-GB", options)
-                : "-"}
+            {/* {ChangeDateToBuddhist(purchaseYear)} */}
+              {/* {purchaseYear !== ""
+                ? purchaseYear?.toLocaleDateString("en-GB", options)
+                : "-"} */}
             </div>
             {/* วันที่ลงเอกสาร */}
             <div className="text-gray-500">วันที่ลงเอกสาร</div>
             <div>
-              {documentDate !== ""
-                ? documentDate.toLocaleDateString("en-GB", options)
-                : "-"}
+            {ChangeDateToBuddhist(documentDate)}
             </div>
           </div>
         </div>
@@ -697,19 +696,12 @@ const ViewAssetInformation = () => {
             {/* เอกสารลงวันที่ */}
             <div className="text-gray-500">เอกสารลงวันที่</div>
             <div>
-              {distributeDocumentDate !== ""
-                ? distributeDocumentDate.toLocaleDateString("en-GB", options)
-                : "-"}
+            {ChangeDateToBuddhist(distributeDocumentDate)}
             </div>
             {/* วันอนุมัติจำหน่าย */}
             <div className="text-gray-500">วันอนุมัติจำหน่าย</div>
             <div>
-              {distributeApprovalReleaseDate !== ""
-                ? distributeApprovalReleaseDate.toLocaleDateString(
-                  "en-GB",
-                  options
-                )
-                : "-"}
+            {ChangeDateToBuddhist(distributeApprovalReleaseDate)}
             </div>
             {/* สถานะ */}
             <div className="text-gray-500">สถานะ</div>

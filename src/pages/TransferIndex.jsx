@@ -37,7 +37,7 @@ const TransferIndex = () => {
     textSearch: "",
     status: "",
     dateFrom: "",
-    dateTo: todayThaiDate,
+    dateTo: new Date(),
     sector: "",
     sector: "",
     page: "",
@@ -195,8 +195,8 @@ const TransferIndex = () => {
           <div className="flex h-full">
             <DateInput
               id="dateFrom"
-              // state={search}
-              // setState={setSearch}
+              state={search}
+              setState={setSearch}
               lable="date from"
             />
           </div>
@@ -206,8 +206,8 @@ const TransferIndex = () => {
           <div className="flex h-full">
             <DateInput
               id="dateTo"
-              state={search.dateTo}
-              // setState={setSearch}
+              state={search}
+              setState={setSearch}
               lable="date to"
             />
           </div>

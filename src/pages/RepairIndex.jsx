@@ -12,7 +12,8 @@ const RepairIndex = () => {
   const [totalRow, setTotalRow] = useState(25)
 
   //Main Date
-  const [withdrawDate, setWithdrawDate] = useState()
+  const [withdrawDate, setWithdrawDate] = useState(new Date()) 
+  //* แก้ ใช้ state คนละตัว *
 
   // data
   let tableData = [

@@ -23,7 +23,7 @@ const BorrowHistoryIndex = () => {
     textSearch: "",
     status: "",
     dateFrom: "",
-    dateTo: todayThaiDate,
+    dateTo: new Date(),
     sector: "",
     page: "",
     limit: 10,
@@ -215,7 +215,7 @@ const BorrowHistoryIndex = () => {
               id="dateFrom"
               state={search}
               setState={setSearch}
-              lable="date from (วันที่ยืม)"
+              lable="date from"
             />
           </div>
         </div>
@@ -226,7 +226,7 @@ const BorrowHistoryIndex = () => {
               id="dateTo"
               state={search}
               setState={setSearch}
-              lable="date to (วันที่ยืม)"
+              lable="date to"
             />
           </div>
         </div>

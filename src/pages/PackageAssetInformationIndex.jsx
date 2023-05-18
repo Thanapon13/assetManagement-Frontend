@@ -15,7 +15,6 @@ import { getSector } from '../api/masterApi';
 import { IoIosClose } from 'react-icons/io';
 
 const PackageAssetInformationIndex = () => {
-  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
 
   // useState
   const [amountPage, setAmountPage] = useState(1);
@@ -26,7 +25,7 @@ const PackageAssetInformationIndex = () => {
     textSearch: "",
     status: "",
     dateFrom: "",
-    dateTo: todayThaiDate,
+    dateTo: new Date(),
     sector: "",
     page: "",
     limit: 10,

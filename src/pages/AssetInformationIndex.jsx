@@ -15,10 +15,10 @@ import SearchSelector from "../components/selector/SearchSelector";
 import { getSector } from "../api/masterApi";
 
 const AssetInformationIndex = () => {
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
-
+  // const todayThaiDate = ChangeDateToBuddhist(
+    //   new Date().toLocaleString("th-TH")
+    // );
+    const todayThaiDate = new Date()
   // useState
   const [amountPage, setAmountPage] = useState(1);
   const [showModalDeleteAsset, setShowModalDeleteAsset] = useState(false);

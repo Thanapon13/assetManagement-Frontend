@@ -27,7 +27,7 @@ const BorrowCheckIndex = () => {
     textSearch: "",
     status: "",
     dateFrom: "",
-    dateTo: todayThaiDate,
+    dateTo: new Date(),
     sector: "",
     page: "",
     limit: 10,
@@ -235,7 +235,7 @@ const BorrowCheckIndex = () => {
               id="dateFrom"
               state={search}
               setState={setSearch}
-              lable="date from (วันที่ยืม)"
+              lable="date from"
             />
           </div>
         </div>
@@ -246,7 +246,7 @@ const BorrowCheckIndex = () => {
               id="dateTo"
               state={search}
               setState={setSearch}
-              lable="date to (วันที่ยืม)"
+              lable="date to"
             />
           </div>
         </div>
