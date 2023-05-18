@@ -17,8 +17,9 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
   };
   // คศ to พศ + อีก10ปี
   const years = range(
-    new Date().getFullYear() + 543 - 10,
-    new Date().getFullYear() + 543 + 10,
+    // new Date().getFullYear() - 10,
+    new Date(new Date().setFullYear(2000)).getFullYear() - 50,
+    new Date().getFullYear() + 2,
     1
   );
 
@@ -39,11 +40,30 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
 
   const [open, setOpen] = useState(false)
 
+  function updateToBuddhist(date) {
+    const dateBuddhist = (new Date(new Date(date).setFullYear(new Date(date).getFullYear() + 543))).toLocaleString([], { hour12: false })
+    const spaceArray = dateBuddhist.split(" ");
+    const splitDate = spaceArray[0].split("/")
+    const dateFormat = splitDate[1]?.padStart(2, "0") + "/" + splitDate[0].padStart(2, "0") + "/" + splitDate[2];
+
+    const splitTime = spaceArray[1].split(":");
+    const timeFormat = splitTime[0] + ":" + splitTime[1]
+    const formatTime = dateFormat + " " + timeFormat + " น."
+
+    if (date) {
+      return formatTime.toLocaleString("th-TH")
+    }
+  }
+
+  const isDateTo_FROM = lable == "date to" || lable == "date from"
+
   return (
     <>
       <div className="relative">
-        <div className="text-xs font-semibold w-32 absolute -top-2 z-10 left-2 bg-t w-max px-1">
+        <div className="text-xs font-semibold w-32 absolute -top-2 z-10 left-2 w-max px-1">
+          {/* bg-gradient-to-t from-transparent  from-0% via-white via-1%  to-transparent to-0%  */}
           {lable}
+          {location.pathname === "/borrowHistory" || location.pathname === "/borrowCheckIndex" && ` (วันที่ยืม)`}
         </div>
       </div>
       <DatePicker
@@ -84,9 +104,9 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
                 padding: "0px 40px 0px 10px",
               }}
             >
-              {years.map((option) => (
-                <option key={option} value={option}>
-                  {option}
+              {years.reverse().map((year) => (
+                <option key={year} value={year}>
+                  {year + 543}
                 </option>
               ))}
             </select>
@@ -129,30 +149,32 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
         dateFormat="Pp"
         timeIntervals={1}
         className={`${error && "border-red-500"} w-full h-[38px] shadow-sm focus:border-2 focus:outline-none  focus:border-focus-blue  sm:text-xs border-[1px] border-gray-300 rounded-md pl-2`}
-        selected={
-          location.pathname === "/assetInformationIndex" ||
-          location.pathname === "/packageAssetInformationIndex" ||
-          location.pathname === "/borrowList" ||
-          location.pathname === "/borrowHistory"  ||
-          location.pathname === "/borrowCheckIndex"  ||
-          location.pathname === "/addUserInformation" 
-            ? state[id]
-            : state
-        }
+        // value={(new Date(new Date(state[id]).setFullYear(new Date(state[id]).getFullYear() + 543))).toLocaleString()}
+        value={updateToBuddhist(isDateTo_FROM ? state[id] : state)}
+        selected={isDateTo_FROM ? state[id] : state}
+        // selected={
+        //   location.pathname === "/assetInformationIndex" ||
+        //     location.pathname === "/packageAssetInformationIndex" ||
+        //     location.pathname === "/borrowList" ||
+        //     location.pathname === "/borrowHistory" ||
+        //     location.pathname === "/borrowCheckIndex" ||
+        //     location.pathname === "/addUserInformation"
+        //     ? state[id]
+        //     : state
+        // }
         onChange={(date) => {
           if (
             location.pathname === "/assetInformationIndex" ||
             location.pathname === "/packageAssetInformationIndex" ||
             location.pathname === "/borrowList" ||
             location.pathname === "/borrowHistory" ||
-            location.pathname === "/borrowCheckIndex"  ||
-            location.pathname === "/addUserInformation" 
+            location.pathname === "/borrowCheckIndex" ||
+            location.pathname === "/addUserInformation"
           ) {
             setState((prevState) => ({ ...prevState, [id]: date }));
           } else {
             setState(date);
           }
-          // console.log(date);
         }}
         minDate={minDate}
       />
