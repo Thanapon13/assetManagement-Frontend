@@ -23,7 +23,7 @@ function RowOfTableArray({
 
   return (
     <div
-      className={`grid grid-cols-17 gap-5 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
+      className={`grid grid-cols-16 gap-5 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
     >
       <div className="ml-2 text-center">{index+1}</div>
       <div className="col-span-3">{assetNumber}</div>

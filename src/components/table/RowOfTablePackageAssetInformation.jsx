@@ -79,6 +79,7 @@ function RowOfTablePackageAssetInformation({
             onChange={handleSelect}
             error={error && !genData[index]?.sector}
             noClearButton
+            value={genData[index]?.sector && {label: genData[index]?.sector, value: genData[index]?.sector}}
           />
         </div>
 

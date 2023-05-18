@@ -46,6 +46,6 @@ export function getPackageAssetBySearch(search) {
   return axios.get(`/packageAsset/search?${queryString}`);
 }
 
-export function deletePackageAsset(input) {
-  return axios.delete(`/packageAsset/deleteAsset/${input}`);
+export function deletePackageAsset(id, body) {
+  return axios.patch(`/packageAsset/deleteAsset/${id}`, body);
 }

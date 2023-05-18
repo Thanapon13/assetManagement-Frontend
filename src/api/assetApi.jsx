@@ -96,6 +96,6 @@ export function getQuantitySelector(search) {
   return axios.get(`/asset/searchQuantitySelector?${queryString}`);
 }
 
-export function deleteAsset(input) {
-  return axios.delete(`/asset/deleteAsset/${input}`);
+export function deleteAsset(id, body) {
+  return axios.patch(`/asset/deleteAsset/${id}`, body);
 }
