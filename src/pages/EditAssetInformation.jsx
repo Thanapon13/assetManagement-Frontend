@@ -34,6 +34,8 @@ import { useBarcode } from "@createnextapp/react-barcode";
 import QRcode from "qrcode.react";
 import { IoIosClose } from "react-icons/io";
 import { Spinner } from "flowbite-react";
+import { getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getMoneyType, getPurposeOfUse, getSector, getSourceData } from "../api/masterApi";
+import SearchSelector from "../components/selector/SearchSelector";
 
 const EditAssetInformation = () => {
   const { assetId } = useParams();
@@ -49,12 +51,76 @@ const EditAssetInformation = () => {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ];
 
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
+  const todayThaiDate = new Date()
 
   // useState
   const [isLoading, setIsLoading] = useState(true)
+  // const [typeList, setTypeList] = useState([])
+  // const [kindList, setKindList] = useState([])
+  // หน่วยนับ
+  const [brandList, setBrandList] = useState([])
+  const [categoryList, setCategoryList] = useState([])
+  const [groupList, setGroupList] = useState([])
+  const [acquiredTypeList, setAcquiredTypeList] = useState([])
+  const [sourceList, setSourceList] = useState([])
+  const [purposeOfUseList, setPurposeOfUseList] = useState([])
+  const [acquisitionMethodList, setAcquisitionMethodList] = useState([])
+  const [moneyTypeList, setMoneyTypeList] = useState([])
+  const [sectorList, setSectorList] = useState([])
+
+  useEffect(() => {
+    getMasterData()
+  }, []);
+
+  const getMasterData = async () => {
+    // const type = await getTypeData()
+    // const arrType = formArrayOption(type.data.type)
+    // setTypeList(arrType)
+    // const kind = await getKindAll()
+    // const arrKind = formArrayOption(kind.data.kind)
+    // setKindList(arrKind)
+    const brand = await getBrandData()
+    const arrBrand = formArrayOption(brand.data.brand)
+    setBrandList(arrBrand)
+    const category = await getCategory()
+    const arrCategory = formArrayOption(category.data.category)
+    setCategoryList(arrCategory)
+    const group = await getGroupData()
+    const arrGroup = formArrayOption(group.data.group)
+    setGroupList(arrGroup)
+    const acquiredType = await getAcquiredType()
+    const arrAcquiredType = formArrayOption(acquiredType.data.acquiredType)
+    setAcquiredTypeList(arrAcquiredType)
+    const source = await getSourceData()
+    const arrSource = formArrayOption(source.data.source)
+    setSourceList(arrSource)
+    const purposeOfUse = await getPurposeOfUse()
+    const arrPurposeOfUse = formArrayOption(purposeOfUse.data.purposeOfUse)
+    setPurposeOfUseList(arrPurposeOfUse)
+    const acquisitionMethod = await getAcquisitionMethod()
+    const arrAcquisitionMethod = formArrayOption(acquisitionMethod.data.acquisitionMethod)
+    setAcquisitionMethodList(arrAcquisitionMethod)
+    const moneyType = await getMoneyType()
+    const arrMoneyType = formArrayOption(moneyType.data.moneyType)
+    setMoneyTypeList(arrMoneyType)
+    const sector = await getSector()
+    const arrSector = formArrayOption(sector.data.sector)
+    setSectorList(arrSector)
+    // merchant
+    // status
+  }
+
+  function formArrayOption(data) {
+    const array = []
+    data.map(ele => {
+      array.push({ label: ele.name, value: ele.name })
+    })
+    return array
+  }
+
+  const handleSelect = (value, label) => {
+    setInput({ ...input, [label]: value })
+  }
 
   const [input, setInput] = useState({
     engProductName: "",
@@ -788,6 +854,7 @@ const EditAssetInformation = () => {
                     onChange={handleChangeType}
                     value={input.type}
                     className={`${!input.type && 'border-red-500'} w-full h-[38px] bg-gray-200  border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                    disabled
                   />
                 </div>
                 {/* ชนิดครุภัณฑ์ */}
@@ -800,6 +867,7 @@ const EditAssetInformation = () => {
                     onChange={handleChangeKind}
                     value={input.kind}
                     className={`${!input.kind && 'border-red-500'} w-full h-[38px] bg-gray-200  border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                    disabled
                   />
                 </div>
 
@@ -846,7 +914,7 @@ const EditAssetInformation = () => {
                 {/* ยี่ห้อ */}
                 <div>
                   <div className="mb-1">ยี่ห้อ</div>
-                  <div className="flex h-[38px] ">
+                  {/* <div className="flex h-[38px] ">
                     <Selector
                       placeholder={"Select"}
                       state={input}
@@ -854,7 +922,15 @@ const EditAssetInformation = () => {
                       id={"ยี่ห้อ"}
                       isValid={!input.brand}
                     />
-                  </div>
+                  </div> */}
+                  <SearchSelector
+                    options={brandList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.brand}
+                    value={{ label: input.brand, value: input.brand }}
+                  />
                 </div>
                 {/* รุ่น */}
                 <div>
@@ -872,70 +948,64 @@ const EditAssetInformation = () => {
                 {/* หมวดหมู่ครุภัณฑ์ */}
                 <div>
                   <div className="mb-1">หมวดหมู่ครุภัณฑ์</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"หมวดหมู่ครุภัณฑ์"}
-                      isValid={!input.category}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={categoryList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.category}
+                    value={{ label: input.category, value: input.category }}
+                  />
                 </div>
                 {/* กลุ่ม */}
                 <div>
                   <div className="mb-1">กลุ่ม</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"กลุ่ม"}
-                      isValid={!input.group}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={groupList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.group}
+                    value={{ label: input.group, value: input.group }}
+                  />
                 </div>
                 {/* ประเภทที่ได้มา */}
                 <div>
                   <div className="mb-1">ประเภทที่ได้มา</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"ประเภทที่ได้มา"}
-                      isValid={!input.acquiredType}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={acquiredTypeList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.acquiredType}
+                    value={{ label: input.acquiredType, value: input.acquiredType }}
+                  />
                 </div>
                 {/* แหล่งที่ได้มา */}
                 <div>
                   <div className="mb-1">แหล่งที่ได้มา</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"แหล่งที่ได้มา"}
-                      isValid={!input.source}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={sourceList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.source}
+                    value={{ label: input.source, value: input.source }}
+                  />
                 </div>
                 {/* วัตถุประสงค์ในการใช้งาน */}
                 <div>
                   <div className="mb-1">วัตถุประสงค์ในการใช้งาน</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"วัตถุประสงค์ในการใช้งาน"}
-                      isValid={!input.purposeOfUse}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={purposeOfUseList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.purposeOfUse}
+                    value={{ label: input.purposeOfUse, value: input.purposeOfUse }}
+                  />
                 </div>
                 {/* จำนวนเดือนที่รับประกัน (เดือน) */}
-
                 <div>
                   <div className="mb-1">จำนวนเดือนที่รับประกัน (เดือน)</div>
                   <input
@@ -955,7 +1025,7 @@ const EditAssetInformation = () => {
                   <div className="flex h-[38px]">
                     <DateInput
                       error={!insuranceStartDate}
-                      state={insuranceStartDate}
+                      state={(insuranceStartDate)}
                       setState={setInsuranceStartDate}
                     />
                   </div>
@@ -975,15 +1045,14 @@ const EditAssetInformation = () => {
                 {/* หน่วยงาน */}
                 <div>
                   <div className="mb-1">หน่วยงาน</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"หน่วยงาน"}
-                      isValid={!input.sector}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={sectorList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.sector}
+                    value={{ label: input.sector, value: input.sector }}
+                  />
                 </div>
 
                 {/* สท.01 */}
@@ -1015,15 +1084,14 @@ const EditAssetInformation = () => {
                 {/* แทนครุภัณฑ์ที่ถูกแทงจำหน่าย */}
                 <div>
                   <div className="mb-1">แทนครุภัณฑ์ที่ถูกแทงจำหน่าย</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"แทนครุภัณฑ์ที่ถูกแทงจำหน่าย"}
-                      isValid={!input.replacedAssetNumber}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={sectorList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.replacedAssetNumber}
+                    value={{ label: input.replacedAssetNumber, value: input.replacedAssetNumber }}
+                  />
                 </div>
               </div>
             </div>
@@ -1164,28 +1232,26 @@ const EditAssetInformation = () => {
                 {/* วิธีการได้มา */}
                 <div>
                   <div className="mb-1">วิธีการได้มา</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      setState={value => handleChangeSelectContract("acquisitionMethod", value)}
-                      state={inputContract.acquisitionMethod}
-                      isValid={!inputContract.acquisitionMethod}
-                      id={"วิธีการได้มา"}
+                    <SearchSelector
+                      options={acquisitionMethodList}
+                      name="type"
+                      onChange={handleSelect}
+                      noClearButton
+                      error={!inputContract.acquisitionMethod}
+                      value={{ label: inputContract.acquisitionMethod, value: inputContract.acquisitionMethod }}
                     />
-                  </div>
                 </div>
                 {/* ประเภทเงิน */}
                 <div>
                   <div className="mb-1">ประเภทเงิน</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={inputContract.moneyType}
-                      setState={value => handleChangeSelectContract("moneyType", value)}
-                      isValid={!inputContract.moneyType}
-                      id={"ประเภทเงิน"}
+                  <SearchSelector
+                      options={moneyTypeList}
+                      name="type"
+                      onChange={handleSelect}
+                      noClearButton
+                      error={!inputContract.moneyType}
+                      value={{ label: inputContract.moneyType, value: inputContract.moneyType }}
                     />
-                  </div>
                 </div>
                 {/* เอกสารใบส่งของ */}
                 <div>
