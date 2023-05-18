@@ -20,6 +20,8 @@ import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import { IoIosClose } from "react-icons/io";
 import YearInput from "../components/date/YearInput";
+import { getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getMoneyType, getPurposeOfUse, getSector, getSourceData, getType13, getType4, getType8 } from "../api/masterApi";
+import SearchSelector from "../components/selector/SearchSelector";
 
 const EditPackageAssetInformation = () => {
   const { packageAssetId } = useParams();
@@ -66,6 +68,74 @@ const EditPackageAssetInformation = () => {
     type13: "",
     status: "not approve",
   });
+
+  // หน่วยนับ
+  const [brandList, setBrandList] = useState([])
+  const [categoryList, setCategoryList] = useState([])
+  const [groupList, setGroupList] = useState([])
+  const [acquiredTypeList, setAcquiredTypeList] = useState([])
+  const [sourceList, setSourceList] = useState([])
+  const [purposeOfUseList, setPurposeOfUseList] = useState([])
+  const [acquisitionMethodList, setAcquisitionMethodList] = useState([])
+  const [moneyTypeList, setMoneyTypeList] = useState([])
+  const [sectorList, setSectorList] = useState([])
+  const [type4List, setType4List] = useState([])
+  const [type8List, setType8List] = useState([])
+  const [type13List, setType13List] = useState([])
+
+  const getMasterData = async () => {
+
+    const brand = await getBrandData()
+    const arrBrand = formArrayOption(brand.data.brand)
+    setBrandList(arrBrand)
+    const category = await getCategory()
+    const arrCategory = formArrayOption(category.data.category)
+    setCategoryList(arrCategory)
+    const group = await getGroupData()
+    const arrGroup = formArrayOption(group.data.group)
+    setGroupList(arrGroup)
+    const acquiredType = await getAcquiredType()
+    const arrAcquiredType = formArrayOption(acquiredType.data.acquiredType)
+    setAcquiredTypeList(arrAcquiredType)
+    const source = await getSourceData()
+    const arrSource = formArrayOption(source.data.source)
+    setSourceList(arrSource)
+    const purposeOfUse = await getPurposeOfUse()
+    const arrPurposeOfUse = formArrayOption(purposeOfUse.data.purposeOfUse)
+    setPurposeOfUseList(arrPurposeOfUse)
+    const acquisitionMethod = await getAcquisitionMethod()
+    const arrAcquisitionMethod = formArrayOption(acquisitionMethod.data.acquisitionMethod)
+    setAcquisitionMethodList(arrAcquisitionMethod)
+    const moneyType = await getMoneyType()
+    const arrMoneyType = formArrayOption(moneyType.data.moneyType)
+    setMoneyTypeList(arrMoneyType)
+    const sector = await getSector()
+    const arrSector = formArrayOption(sector.data.sector)
+    setSectorList(arrSector)
+    // merchant
+    // status
+    const type4 = await getType4()
+    const arrType4 = formArrayOption(type4.data.type4)
+    setType4List(arrType4)
+    const type8 = await getType8()
+    const arrType8 = formArrayOption(type8.data.type8)
+    setType8List(arrType8)
+    const type13 = await getType13()
+    const arrType13 = formArrayOption(type13.data.type13)
+    setType13List(arrType13)
+  }
+
+  const handleSelect = (value, label) => {
+    setInput({ ...input, [label]: value })
+  }
+
+  function formArrayOption(data) {
+    const array = []
+    data.map(ele => {
+      array.push({ label: ele.name, value: ele.name })
+    })
+    return array
+  }
 
   // subcomponent
   const [bottomSubComponentData, setBottomSubComponentData] = useState([]);
@@ -663,6 +733,7 @@ const EditPackageAssetInformation = () => {
       }
     };
     fetchPackageAssetById();
+    getMasterData()
   }, []);
 
   useEffect(() => {
@@ -722,11 +793,11 @@ const EditPackageAssetInformation = () => {
         {isLoading
           ? '...'
           : <>
-            {/* block white top */}
+
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
               <div>บันทึกใบเบิกจ่ายครุภัณฑ์</div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-                {/* ชื่อครุภัณฑ์ภาษาไทย */}
+
                 <div>
                   <div className="mb-1">ชื่อครุภัณฑ์ภาษาไทย</div>
                   <input
@@ -740,7 +811,6 @@ const EditPackageAssetInformation = () => {
                   {/* <div className="text-red-500 pt-1">{invalidName === "productName" ? `*โปรดระบุให้ถูกต้อง` : !input.productName && `*โปรดระบุ`}</div> */}
                   <div className="text-red-500 pt-1">{checkInvalidName() && `*โปรดระบุให้ถูกต้อง`}</div>
                 </div>
-                {/* ชื่อครุภัณฑ์ภาษาอังกฤษ */}
                 <div>
                   <div className="mb-1">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
                   <input
@@ -755,7 +825,6 @@ const EditPackageAssetInformation = () => {
                   <div className="text-red-500 pt-1">{checkInvalidEngName() && `*โปรดระบุให้ถูกต้อง`}</div>
                 </div>
 
-                {/* ประเภทครุภัณฑ์ */}
                 <div>
                   <div className="mb-1">ประเภทครุภัณฑ์</div>
                   <input
@@ -765,9 +834,9 @@ const EditPackageAssetInformation = () => {
                     onChange={handleChangeType}
                     value={input.type}
                     className={`${!input.type && 'border-red-500'}  w-full h-[38px] bg-gray-200  border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                    disabled
                   />
                 </div>
-                {/* ชนิดครุภัณฑ์ */}
                 <div>
                   <div className="mb-1">ชนิดครุภัณฑ์</div>
                   <input
@@ -777,6 +846,7 @@ const EditPackageAssetInformation = () => {
                     onChange={handleChangeKind}
                     value={input.kind}
                     className={`${!input.kind && 'border-red-500'}  w-full h-[38px] bg-gray-200  border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                    disabled
                   />
                 </div>
 
@@ -807,20 +877,17 @@ const EditPackageAssetInformation = () => {
                   </div>
                 </div>
 
-                {/* ยี่ห้อ */}
                 <div>
                   <div className="mb-1">ยี่ห้อ</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"ยี่ห้อ"}
-                      isValid={!input.brand}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={brandList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.brand}
+                    value={{ label: input.brand, value: input.brand }}
+                  />
                 </div>
-                {/* รุ่น */}
                 <div>
                   <div className="mb-1">รุ่น</div>
                   <input
@@ -834,7 +901,6 @@ const EditPackageAssetInformation = () => {
                   />
                 </div>
 
-                {/* ขนาด */}
                 <div>
                   <div className="mb-1">ขนาด</div>
                   <input
@@ -847,8 +913,6 @@ const EditPackageAssetInformation = () => {
                     className={`${!input.size && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
                   />
                 </div>
-
-                {/* หมวดหมู่ครุภัณฑ์ */}
                 <div>
                   <div className="mb-1">หมวดหมู่ครุภัณฑ์</div>
                   <div className="flex h-[38px] ">
@@ -859,67 +923,55 @@ const EditPackageAssetInformation = () => {
                       onChange={handleChangeKind}
                       value={input.category}
                       className={`${!input.category && 'border-red-500'}  w-full h-[38px] bg-gray-200  border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                      disabled
                     />
-                    {/* <Selector
-                  placeholder={"Select"}
-                  state={input}
-                  setState={setInput}
-                  id={"หมวดหมู่ครุภัณฑ์"}
-                  isValid={!input.category}
-                /> */}
                   </div>
                 </div>
-                {/* กลุ่ม */}
+
                 <div>
                   <div className="mb-1">กลุ่ม</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"กลุ่ม"}
-                      isValid={!input.group}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={groupList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.group}
+                    value={{ label: input.group, value: input.group }}
+                  />
                 </div>
-                {/* ประเภทที่ได้มา */}
                 <div>
                   <div className="mb-1">ประเภทที่ได้มา</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"ประเภทที่ได้มา"}
-                      isValid={!input.acquiredType}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={acquiredTypeList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.acquiredType}
+                    value={{ label: input.acquiredType, value: input.acquiredType }}
+                  />
                 </div>
-                {/* แหล่งที่ได้มา */}
+
                 <div>
                   <div className="mb-1">แหล่งที่ได้มา</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"แหล่งที่ได้มา"}
-                      isValid={!input.source}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={sourceList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.source}
+                    value={{ label: input.source, value: input.source }}
+                  />
                 </div>
-                {/* วัตถุประสงค์ในการใช้งาน */}
                 <div>
                   <div className="mb-1">วัตถุประสงค์ในการใช้งาน</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"วัตถุประสงค์ในการใช้งาน"}
-                      isValid={!input.purposeOfUse}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={purposeOfUseList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.purposeOfUse}
+                    value={{ label: input.purposeOfUse, value: input.purposeOfUse }}
+                  />
                 </div>
                 {/* ราคาต่อหน่วย (บาท) */}
                 <div>
@@ -981,73 +1033,67 @@ const EditPackageAssetInformation = () => {
               </div>
             </div> */}
 
-                {/* ประเภทครุภัณฑ์ 4 หลัก */}
                 <div>
                   <div className="mb-1">ประเภทครุภัณฑ์ 4 หลัก</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"ประเภทครุภัณฑ์ 4 หลัก"}
-                      // isValid={!input.type4}
-                      disabled={"true"}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={type4List}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.type4}
+                    value={{ label: input.type4, value: input.type4 }}
+                    isDisabled
+                  />
                 </div>
-                {/* ประเภทครุภัณฑ์ 8 หลัก */}
                 <div>
                   <div className="mb-1">ประเภทครุภัณฑ์ 8 หลัก</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"ประเภทครุภัณฑ์ 8 หลัก"}
-                      disabled
-                    />
-                  </div>
+                  <SearchSelector
+                    options={type8List}
+                    name="type8"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.type8}
+                    value={{ label: input.type8, value: input.type8 }}
+                    isDisabled
+                  />
                 </div>
-                {/* ประเภทครุภัณฑ์ 13 หลัก */}
+
                 <div>
                   <div className="mb-1">ประเภทครุภัณฑ์ 13 หลัก</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"ประเภทครุภัณฑ์ 13 หลัก"}
-                      disabled
-                    />
-                  </div>
+                  <SearchSelector
+                    options={type13List}
+                    name="type13"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.type13}
+                    value={{ label: input.type13, value: input.type13 }}
+                    isDisabled
+                  />
                 </div>
 
                 <div>
                   <div className="mb-1">หน่วยงาน</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"หน่วยงาน"}
-                      isValid={!input.sector}
-                      index={0}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={sectorList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.sector}
+                    value={{ label: input.sector, value: input.sector }}
+                  />
                 </div>
 
                 {/* แทนครุภัณฑ์ที่ถูกแทงจำหน่าย */}
                 <div>
                   <div className="mb-1">แทนครุภัณฑ์ที่ถูกแทงจำหน่าย</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"แทนครุภัณฑ์ที่ถูกแทงจำหน่าย"}
-                      isValid={!input.replacedAssetNumber}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={sectorList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.replacedAssetNumber}
+                    value={{ label: input.replacedAssetNumber, value: input.replacedAssetNumber }}
+                  />
                 </div>
 
                 {/* เลขครุภัณฑ์ */}
@@ -1170,15 +1216,16 @@ const EditPackageAssetInformation = () => {
                 </div>
                 {/* file upload image*/}
                 <div className="col-span-2 sm:mt-5">
-                  <div className="h-64 overflow-y-auto scrollbar">
+                  <div className="h-64 overflow-y-auto scrollbar text-ellipsis overflow-x-hidden">
                     {arrayImage.map((el, idx) => (
                       <div
                         key={idx}
                         className="flex justify-between items-center border-b-[1px] mt-2 pb-2"
                       >
-                        <div className="flex items-center text-text-green">
+                        <div className="flex items-center  text-text-green">
                           <img src={docIcon} className="w-4 h-4 " />
-                          <div className="ml-2 text-sm">{el.image.name}</div>
+                          <div className="ml-2 text-sm ">{el.image.name}</div>
+                          {/* <p class="text-ellipsis overflow-hidden ...">...</p> */}
                         </div>
                         <button
                           className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
@@ -1224,7 +1271,7 @@ const EditPackageAssetInformation = () => {
                     </div>
                   </div>
                   {/* file upload คู่มือและเอกสารแนบ*/}
-                  <div className="col-span-4 sm:mt-5">
+                  <div className="col-span-4 sm:mt-5 max-h-72 overflow-y-auto">
                     {arrayDocument.map((el, idx) => (
                       <div
                         key={idx}
@@ -1258,37 +1305,32 @@ const EditPackageAssetInformation = () => {
               </div>
             </div>
 
-            {/* สัญญาจัดซื้อ */}
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
               <div>สัญญาจัดซื้อ</div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
-                {/* วิธีการได้มา */}
                 <div>
                   <div className="mb-1">วิธีการได้มา</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      setState={value => handleChangeSelectContract("acquisitionMethod", value)}
-                      state={inputContract.acquisitionMethod}
-                      isValid={!inputContract.acquisitionMethod}
-                      id={"วิธีการได้มา"}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={acquisitionMethodList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!inputContract.acquisitionMethod}
+                    value={{ label: inputContract.acquisitionMethod, value: inputContract.acquisitionMethod }}
+                  />
                 </div>
-                {/* ประเภทเงิน */}
                 <div>
                   <div className="mb-1">ประเภทเงิน</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={inputContract.moneyType}
-                      setState={value => handleChangeSelectContract("moneyType", value)}
-                      isValid={!inputContract.moneyType}
-                      id={"ประเภทเงิน"}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={moneyTypeList}
+                    name="type"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!inputContract.moneyType}
+                    value={{ label: inputContract.moneyType, value: inputContract.moneyType }}
+                  />
                 </div>
-                {/* เอกสารใบส่งของ */}
+               
                 <div>
                   <div className="mb-1">เอกสารใบส่งของ</div>
                   <input
@@ -1300,7 +1342,6 @@ const EditPackageAssetInformation = () => {
                     className={`${!inputContract.deliveryDocument && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
                   />
                 </div>
-                {/* เลขที่สัญญา */}
                 <div>
                   <div className="mb-1">เลขที่สัญญา</div>
                   <input
