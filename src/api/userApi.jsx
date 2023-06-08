@@ -1,7 +1,30 @@
 import axios from "../config/axios";
 
 export function getUsersAll() {
-  return axios.get("/user");
+  return axios.get("/user/all");
+}
+
+export function getToken() {
+  return(localStorage.getItem("accessToken"))
+}
+
+export function getUserById(id) {
+  // return axios.get(`/user/${id}`);
+ 
+  const property = {
+    method: "GET",
+    // url: baseAPI + url,
+    url: `/user/${id}`,
+    // params: filter,
+    headers: {
+      Authorization: `Bearer ${ getToken() || "unknown"}`
+    }
+  }
+  return axios(property)
+}
+
+export function getSectorOfUser() {
+  return axios.get(`/user/sectorForSearch`);
 }
 
 export function createUser(input) {

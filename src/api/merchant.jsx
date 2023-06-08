@@ -19,4 +19,23 @@ export function updateMerchant(input, id) {
     },
   });
 }
- 
+
+export function getMerchantBySearch(search) {
+  function getQueryString(search) {
+    const params = Object.keys(search)
+      .filter((key) => search[key] !== "") 
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
+      )
+      .join("&");
+    return params;
+  }
+
+  const queryString = getQueryString(search);
+
+  return axios.get(`/merchant/search?${queryString}`);
+}
+
+export function getDropdownMerchant() {
+  return axios.get(`/merchant/getDropdownMerchant`)
+}

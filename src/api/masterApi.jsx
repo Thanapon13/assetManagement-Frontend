@@ -189,6 +189,19 @@ export function updateMoneyType(body) {
 export function deleteMoneyType(id) {
   return axios.delete(`/moneyType/${id}`);
 }
+// หน่วยนับ
+export function getCountingUnit() {
+  return axios.get("/countingUnit/all");
+}
+export function createCountingUnit(body) {
+  return axios.post(`/countingUnit/create`, body);
+}
+export function updateCountingUnit(body) {
+  return axios.patch(`/countingUnit/update/`, body);
+}
+export function deleteCountingUnit(id) {
+  return axios.delete(`/countingUnit/${id}`);
+}
 //
 
 //----- ทั่วไป ----//
