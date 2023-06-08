@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Selector from "../components/selector/Selector";
 import RowOfTableArray from "../components/table/RowOfTableArray";
 import { HiChevronLeft } from "react-icons/hi";
 import { HiChevronRight } from "react-icons/hi";
@@ -9,16 +8,11 @@ import { CgPushChevronLeft } from "react-icons/cg";
 import { CgPushChevronRight } from "react-icons/cg";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
-import { deleteAsset, getAllAsset, getBySearch } from "../api/assetApi";
+import { deleteAsset, getAllAsset, getBySearch, getSectorOfAsset } from "../api/assetApi";
 import { IoIosClose } from "react-icons/io";
 import SearchSelector from "../components/selector/SearchSelector";
-import { getSector } from "../api/masterApi";
 
 const AssetInformationIndex = () => {
-  // const todayThaiDate = ChangeDateToBuddhist(
-    //   new Date().toLocaleString("th-TH")
-    // );
-    const todayThaiDate = new Date()
   // useState
   const [amountPage, setAmountPage] = useState(1);
   const [showModalDeleteAsset, setShowModalDeleteAsset] = useState(false);
@@ -29,11 +23,8 @@ const AssetInformationIndex = () => {
     textSearch: "",
     status: "",
     dateFrom: "",
-    dateTo: todayThaiDate,
+    dateTo: new Date(),
     sector: "",
-    // page: "",
-    // limit: 10,
-    // total: 0,
   });
 
   const [assetList, setAssetList] = useState([]);
@@ -83,15 +74,20 @@ const AssetInformationIndex = () => {
 
   const fetchSearchAssetList = async (paginationSearchObj) => {
     try {
-
-      let res = [];
-      // console.log(paginationSearchObj);
-      if (paginationSearchObj) {
-        res = await getBySearch(paginationSearchObj);
-      } else {
-        res = await getBySearch(search);
-      }
-      console.log(res.data.asset);
+      // let options = {}
+      let options = paginationSearchObj || { ...search, page: 1, sector: search.sector || "" }
+      // if (paginationSearchObj) {
+      //   options = ({ ...paginationSearchObj, dateTo: paginationSearchObj.dateTo.toLocaleString(), dateFrom: paginationSearchObj.dateFrom.toLocaleString() });
+      // } else {
+      //   options = ({
+      //     ...search,
+      //     // dateTo: search.dateTo,
+      //     // dateFrom: search.dateFrom
+      //   });
+      // }
+      console.log(paginationSearchObj, search)
+      const res = await getBySearch(options)
+      console.log(res.data, search);
 
       // handle the response data
       setAssetList(res.data.asset);
@@ -138,22 +134,22 @@ const AssetInformationIndex = () => {
     try {
       await deleteAsset(id, { reason: reason })
       setShowModalDeleteAsset(false)
-      fetchAssetList()
+      fetchSearchAssetList() // fetchAssetList()
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    fetchAssetList();
+    fetchSearchAssetList() //fetchAssetList();
     getMaster()
   }, []);
 
   async function getMaster() {
-    const sector = await getSector()
+    const sector = await getSectorOfAsset()
     const arrSector = []
     sector.data.sector.map(ele => {
-      arrSector.push({ label: ele.name, value: ele.name })
+      arrSector.push({ label: ele.sector, value: ele.sector })
     })
     setSectorArray(arrSector)
   }
@@ -243,6 +239,7 @@ const AssetInformationIndex = () => {
             <option value="repair">ซ่อม</option>
             <option value="sell">จำหน่าย</option>
             <option value="">แทงจำหน่าย</option>
+            <option value="saveDraft">แบบร่าง</option>
           </select>
         </div>
 
@@ -278,7 +275,7 @@ const AssetInformationIndex = () => {
           <SearchSelector
             options={sectorArray}
             placeholder={"หน่วยงานที่โอน"}
-            name={"transferSector"}
+            name={"sector"}
             onChange={(value, label) => setSearch({ ...search, [label]: value })}
             floatLabel
           />
@@ -324,7 +321,7 @@ const AssetInformationIndex = () => {
             return (
               <RowOfTableArray
                 key={idx}
-                index={idx}
+                index={search.page * (search.limit) - (search.limit - idx) + 1}
                 _id={el._id}
                 realAssetId={el.realAssetId}
                 assetNumber={el.assetNumber}
@@ -339,6 +336,7 @@ const AssetInformationIndex = () => {
                 price={el.pricePerUnit}
                 // handleDelete={handleDelete}
                 handleDelete={() => setShowModalDeleteAsset(el)}
+                page={search.page}
               />
             );
           })}
@@ -349,36 +347,27 @@ const AssetInformationIndex = () => {
               confirmDelete={handleDelete}
             />
           }
-          <div className="flex justify-end gap-2 h-12 pr-5 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-center mr-10">
+          <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+            <div className="flex items-center">
               <div>Rows per page:</div>
               <select
                 id="limit"
                 name="limit"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 onChange={handlePaginationSearch}
               >
-                {/* <option value="" selected disabled hidden>
-            ประเภทครุภัณฑ์
-          </option> */}
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
                 <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
                 <option value="10" selected="selected">
                   10
                 </option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
               </select>
             </div>
 
-            <div>
-              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + assetList.length} of
-              {search.total}
+            <div className="mx-5">
+              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + assetList.length} of {search.total}
             </div>
 
             <button
@@ -432,12 +421,12 @@ function ModalDeleteAsset(props) {
                   ลบครุภัณฑ์
                 </p>
                 <div className="absolute w-full flex justify-end pr-5 mb-8">
-                <button
-                  className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
-                  onClick={() => props.close()}
-                >
-                  <IoIosClose className="text-2xl" />
-                </button>
+                  <button
+                    className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
+                    onClick={() => props.close()}
+                  >
+                    <IoIosClose className="text-2xl" />
+                  </button>
                 </div>
               </div>
 
