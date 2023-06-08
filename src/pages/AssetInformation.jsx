@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Selector from "../components/selector/Selector";
 import { BsArrowLeft } from "react-icons/bs";
 import { BsFillEyeFill } from "react-icons/bs";
@@ -11,7 +11,7 @@ import docIcon from "../public/pics/docIcon.png";
 import Modal from "../components/modal/Modal";
 import DeprecationDropdown from "../components/dropdown/DeprecationDropdown";
 import { ToastContainer, toast } from "react-toastify";
-import { createAsset, getByAssetNumberSelector, getByProductSelector } from "../api/assetApi";
+import { createAsset, getAssetById, getByAssetNumberSelector, getByProductSelector, updateAsset } from "../api/assetApi";
 import BarcodeScanner from "../components/scanner/BarcodeScanner";
 import QRscanner from "../components/scanner/QRscanner";
 import { useEffect } from "react";
@@ -19,9 +19,10 @@ import OnlyDateInput from "../components/date/onlyDateInput";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import { IoIosClose } from "react-icons/io";
-import { getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getKindAll, getMoneyType, getPurposeOfUse, getSector, getSourceData, getSubsector, getTypeData } from "../api/masterApi";
+import { getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getCountingUnit, getGroupData, getKindAll, getMoneyType, getPurposeOfUse, getSector, getSourceData, getSubsector, getTypeData } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import YearInput from "../components/date/YearInput";
+import { getDropdownMerchant } from "../api/merchant";
 
 const AssetInformation = () => {
   const inputImg = useRef();
@@ -37,7 +38,7 @@ const AssetInformation = () => {
 
   const [typeList, setTypeList] = useState([])
   const [kindList, setKindList] = useState([])
-  // หน่วยนับ
+  const [countingUnitList, setCountingUnitList] = useState([])
   const [brandList, setBrandList] = useState([])
   const [categoryList, setCategoryList] = useState([])
   const [groupList, setGroupList] = useState([])
@@ -47,13 +48,21 @@ const AssetInformation = () => {
   const [acquisitionMethodList, setAcquisitionMethodList] = useState([])
   const [moneyTypeList, setMoneyTypeList] = useState([])
   const [sectorList, setSectorList] = useState([])
-  // ผู้ขาย
+  const [merchantList, setMerchantList] = useState([])
   // สถานะ?
 
   const [List, setList] = useState([])
+  const param = useParams()
   useEffect(() => {
     getMasterData()
+    if (param) initData()
   }, []);
+
+  async function initData() {
+    const res = await getAssetById(param.id);
+    console.log(res.data.asset)
+    setInput(res.data.asset)
+  }
 
   const getMasterData = async () => {
     const type = await getTypeData()
@@ -89,6 +98,12 @@ const AssetInformation = () => {
     const sector = await getSector()
     const arrSector = formArrayOption(sector.data.sector)
     setSectorList(arrSector)
+    const countingUnit = await getCountingUnit()
+    const arrCountingUnit = formArrayOption(countingUnit.data.countingUnit)
+    setCountingUnitList(arrCountingUnit)
+    const merchantList = await getDropdownMerchant()
+    const arrMerchantList = formArrayOption(merchantList.data.merchant)
+    setMerchantList(arrMerchantList)
   }
 
   function formArrayOption(data) {
@@ -100,12 +115,12 @@ const AssetInformation = () => {
   }
 
   const handleSelect = (value, label, ele) => {
-    console.log(ele)
-    if (label == "kind" || label == "type" || label == "category") {
-      setInput({ ...input, [label]: ele })
-    } else {
-      setInput({ ...input, [label]: value })
-    }
+    console.log(ele, value)
+    // if (label == "kind" || label == "type" || label == "category") {
+    //   setInput({ ...input, [label]: ele })
+    // } else {
+    setInput({ ...input, [label]: value })
+    // }
   }
 
   const [input, setInput] = useState({
@@ -120,18 +135,17 @@ const AssetInformation = () => {
     brand: "",
     model: "",
     size: "",
-    quantity: 0,
+    quantity: "",
     // serialNumberMachine: "",
     source: "",
     category: "",
     acquiredType: "",
     group: "",
-    pricePerUnit: 0,
+    pricePerUnit: "",
     guaranteedMonth: "",
     purposeOfUse: "",
     assetGroupNumber: "",
     distributeToSector: "",
-    status: "not approve",
   });
 
   const [errorInput, setErrorInput] = useState(false)
@@ -514,13 +528,13 @@ const AssetInformation = () => {
 
   const submit = async (valStatus) => {
     // if(valStatus) setInput({...input, status: valStatus}) //*backend supp?
-    const inputJSON = JSON.stringify({ 
-      ...input, 
-      category: input.category.name,
-      kind: input.kind.name,
-      type: input.type.name,
-      status: valStatus || "not approve"
-     });
+    const inputJSON = JSON.stringify({
+      ...input,
+      // category: input.category?.name,
+      // kind: input.kind?.name,
+      // type: input.type?.name,
+      status: valStatus || "not approve",
+    });
     const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
     formData.append("input", inputJSON);
@@ -694,12 +708,18 @@ const AssetInformation = () => {
     );
     formData.append("distributeStatus", inputSale.distributeStatus);
     formData.append("distributionNote", inputSale.distributionNote);
-
-    const response = await createAsset(formData);
-    if (response.data.message.includes("created success")) {
-      setShowModalConfirm(false)
-      setShowModalSuccess(true)
+    let response
+    console.log(input, inputSale, inputContract)
+    // return
+    if (!param.id) {
+      response = await createAsset(formData)
+    } else {
+      response = await updateAsset(formData, param.id)
     }
+    // if (response.data.message.includes("created success")) {
+    setShowModalConfirm(false)
+    setShowModalSuccess(true)
+    // }
   };
 
   useEffect(() => {
@@ -802,8 +822,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.type}
-                value={(input.type) && { label: input.type.name, value: input.type.name }}
-
+                value={(input.type) && { label: input.type, value: input.type }}
               />
               {/* </div> */}
               <div className="text-red-500 pt-1">{errorGen && !input.type && `*โปรดระบุ`}</div>
@@ -817,7 +836,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.kind}
-                value={(input.kind) && { label: input.kind.name, value: input.kind.name }}
+                value={(input.kind) && { label: input.kind, value: input.kind }}
               />
               <div className="text-red-500 pt-1">{errorGen && !input.kind && `*โปรดระบุ`}</div>
             </div>
@@ -852,11 +871,12 @@ const AssetInformation = () => {
               <div>
                 <div className="mb-1">หน่วยนับ</div>
                 <SearchSelector
-                  // options={}
+                  options={countingUnitList}
                   name="unit"
                   onChange={handleSelect}
                   noClearButton
                   error={errorInput && !input.unit}
+                  value={(input.unit) && { label: input.unit.name || input.unit, value: input.unit.name || input.unit }}
                 />
               </div>
             </div>
@@ -869,6 +889,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.brand}
+                value={(input.brand) && { label: input.brand, value: input.brand }}
               />
             </div>
             <div>
@@ -902,7 +923,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.category}
-                value={(input.category) && { label: input.category.name, value: input.category.name }}
+                value={(input.category) && { label: input.category, value: input.category }}
               />
               <div className="text-red-500 pt-1">{errorGen && !input.category && `*โปรดระบุ`}</div>
             </div>
@@ -915,6 +936,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.group}
+                value={(input.group) && { label: input.group, value: input.group }}
               />
             </div>
 
@@ -926,6 +948,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.acquiredType}
+                value={(input.acquiredType) && { label: input.acquiredType, value: input.acquiredType }}
               />
             </div>
             <div>
@@ -936,6 +959,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.source}
+                value={(input.source) && { label: input.source, value: input.source }}
               />
             </div>
 
@@ -947,6 +971,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.purposeOfUse}
+                value={(input.purposeOfUse) && { label: input.purposeOfUse, value: input.purposeOfUse }}
               />
             </div>
             <div>
@@ -992,6 +1017,7 @@ const AssetInformation = () => {
                 <DateInput
                   state={insuranceExpiredDate}
                   setState={setInsuranceExpiredDate}
+                  minDate={insuranceStartDate}
                 />
               </div>
             </div>
@@ -1003,7 +1029,8 @@ const AssetInformation = () => {
                 name="distributeToSector"
                 onChange={handleSelect}
                 noClearButton
-              // error={errorInput && !input.distributeToSector}
+                error={errorInput && !input.distributeToSector}
+                value={(input.distributeToSector) && { label: input.distributeToSector, value: input.distributeToSector }}
               />
             </div>
 
@@ -1209,9 +1236,10 @@ const AssetInformation = () => {
               <SearchSelector
                 options={acquisitionMethodList}
                 name="acquisitionMethod"
-                onChange={handleSelect}
+                onChange={value => handleChangeSelectContract("acquisitionMethod", value)}
                 noClearButton
-                error={errorInput && !input.acquisitionMethod}
+                error={errorContract && !inputContract.acquisitionMethod}
+                value={(inputContract.acquisitionMethod) && { label: inputContract.acquisitionMethod, value: inputContract.acquisitionMethod }}
               />
               {/* <div className="flex h-[38px] ">
                 <Selector
@@ -1230,9 +1258,10 @@ const AssetInformation = () => {
               <SearchSelector
                 options={moneyTypeList}
                 name="moneyType"
-                onChange={handleSelect}
+                onChange={value => handleChangeSelectContract("moneyType", value)}
                 noClearButton
-                error={errorInput && !input.moneyType}
+                error={errorContract && !inputContract.moneyType}
+                value={(inputContract.moneyType) && { label: inputContract.moneyType, value: inputContract.moneyType }}
               />
             </div>
 
@@ -1269,11 +1298,13 @@ const AssetInformation = () => {
             <div>
               <div className="mb-1">ผู้ขาย</div>
               <SearchSelector
-                // options={sellerList}
+                options={merchantList}
                 name="seller"
-                onChange={handleSelect}
+                // onChange={handleSelect}
+                onChange={value => handleChangeSelectContract("seller", value)}
                 noClearButton
-                error={errorInput && !input.seller}
+                error={errorContract && !inputContract.seller}
+                value={(inputContract.seller) && { label: inputContract.seller, value: inputContract.seller }}
               />
             </div>
 
@@ -1384,10 +1415,13 @@ const AssetInformation = () => {
               </div> */}
               <SearchSelector
                 // options={distributeStatusList}
+                options={[{ label: "(ทดสอบ)", value: "(ทดสอบ)" }]}
                 name="distributeStatus"
-                onChange={handleSelect}
+                // onChange={handleSelect}
+                onChange={value => handleChangeSelectSale("distributeStatus", value)}
                 noClearButton
-                error={errorInput && !input.distributeStatus}
+                error={errorSale && !inputSale.distributeStatus}
+                value={(inputSale.distributeStatus) && { label: inputSale.distributeStatus, value: inputSale.distributeStatus }}
               />
             </div>
             <div>
@@ -2055,7 +2089,7 @@ const AssetInformation = () => {
         </button>
         <div className="flex justify-end gap-4">
           <button
-            className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+            className="disabled:text-gray-400  disabled:border-gray-300 inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  not-disabled:hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
             onClick={() => submit('saveDraft')}
           >
             บันทึกแบบร่าง
