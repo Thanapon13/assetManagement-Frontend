@@ -1,7 +1,7 @@
 import { Spinner } from "flowbite-react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { createAcquiredType, createAcquisitionMethod, createBrand, createCategory, createGroup, createKindData, createMoneyType, createPurposeOfUse, createSector, createSourceData, createType13, createType4, createType8, createTypeData, deleteAcquiredType, deleteAcquisitionMethod, deleteBrand, deleteCategory, deleteGroup, deleteKindData, deleteMoneyType, deletePurposeOfUse, deleteSourceData, deleteType13, deleteType4, deleteType8, deleteTypeData, getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getKindAll, getMoneyType, getPurposeOfUse, getSector, getSourceData, getType13, getType4, getType8, getTypeData, updateAcquiredType, updateAcquisitionMethod, updateBrand, updateCategory, updateGroup, updateKindData, updateMoneyType, updatePurposeOfUse, updateSector, updateSourceData, updateType13, updateType4, updateType8, updateTypeData } from "../../api/masterApi";
+import { createAcquiredType, createAcquisitionMethod, createBrand, createCategory, createCountingUnit, createGroup, createKindData, createMoneyType, createPurposeOfUse, createSector, createSourceData, createType13, createType4, createType8, createTypeData, deleteAcquiredType, deleteAcquisitionMethod, deleteBrand, deleteCategory, deleteCountingUnit, deleteGroup, deleteKindData, deleteMoneyType, deletePurposeOfUse, deleteSourceData, deleteType13, deleteType4, deleteType8, deleteTypeData, getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getCountingUnit, getGroupData, getKindAll, getMoneyType, getPurposeOfUse, getSector, getSourceData, getType13, getType4, getType8, getTypeData, updateAcquiredType, updateAcquisitionMethod, updateBrand, updateCategory, updateCountingUnit, updateGroup, updateKindData, updateMoneyType, updatePurposeOfUse, updateSector, updateSourceData, updateType13, updateType4, updateType8, updateTypeData } from "../../api/masterApi";
 import ModalConfirmSave from "../modal/ModalConfirmSave";
 import ModalSuccess from "../modal/ModalSuccess";
 import RowOfTableDefaultDataBox from "../table/RowOfTableDefaultDataBox";
@@ -65,12 +65,16 @@ function DefaultAssetBox({ header, fieldValue }) {
         break;
       case "วิธีการได้มา":
         const acquisitionMethod = await getAcquisitionMethod()
-        console.log(acquisitionMethod);
+        // console.log(acquisitionMethod);
         setRowData(acquisitionMethod.data.acquisitionMethod)
         break;
       case "ประเภทเงิน":
         const moneyType = await getMoneyType()
         setRowData(moneyType.data.moneyType)
+        break;
+      case "หน่วยนับ":
+        const countingUnit = await getCountingUnit()
+        setRowData(countingUnit.data.countingUnit)
         break;
       // case "สิ้นสภาพการเป็นครุภัณฑ์":
       //   console.log(rowArray)
@@ -205,6 +209,14 @@ function DefaultAssetBox({ header, fieldValue }) {
       case "ประเภทเงิน":
         try {
           await deleteMoneyType(id)
+          refreshList()
+        } catch (err) {
+          setIsLoading(false)
+        }
+        break;
+      case "หน่วยนับ":
+        try {
+          await deleteCountingUnit(id)
           refreshList()
         } catch (err) {
           setIsLoading(false)
@@ -367,7 +379,7 @@ function DefaultAssetBox({ header, fieldValue }) {
         console.log(rowArray)
         break;
       case "แหล่งที่ได้มา":
-           try {
+        try {
           if (isUpdate) await updateSourceData({ sourceArray: dataJSON })
           if (rowArray.length) await createSourceData({ sourceArray: arrayJSON })
           refreshList()
@@ -376,7 +388,7 @@ function DefaultAssetBox({ header, fieldValue }) {
         }
         break;
       case "วัตถุประสงค์ในการใช้งาน":
-           try {
+        try {
           if (isUpdate) await updatePurposeOfUse({ purposeOfUseArray: dataJSON })
           if (rowArray.length) await createPurposeOfUse({ purposeOfUseArray: arrayJSON })
           refreshList()
@@ -385,9 +397,18 @@ function DefaultAssetBox({ header, fieldValue }) {
         }
         break;
       case "ประเภทเงิน":
-           try {
+        try {
           if (isUpdate) await updateMoneyType({ moneyTypeArray: dataJSON })
           if (rowArray.length) await createMoneyType({ moneyTypeArray: arrayJSON })
+          refreshList()
+        } catch (err) {
+          onError(err.response.data.message)
+        }
+        break;
+      case "หน่วยนับ":
+        try {
+          if (isUpdate) await updateCountingUnit({ countingUnitArray: dataJSON })
+          if (rowArray.length) await createCountingUnit({ countingUnitArray: arrayJSON })
           refreshList()
         } catch (err) {
           onError(err.response.data.message)

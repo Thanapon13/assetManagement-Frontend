@@ -39,6 +39,7 @@ function DefaultData() {
         <DefaultAssetBox header={"วัตถุประสงค์ในการใช้งาน"} />
         <DefaultAssetBox header={"วิธีการได้มา"} />
         <DefaultAssetBox header={"ประเภทเงิน"} />
+        <DefaultAssetBox header={"หน่วยนับ"} />
         {/* <DefaultAssetBox header={"สิ้นสภาพการเป็นครุภัณฑ์"} /> */}
         {/* </div> */}
       </div>
