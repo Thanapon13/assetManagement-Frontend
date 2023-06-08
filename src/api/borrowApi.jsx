@@ -221,3 +221,6 @@ export function getViewBorrowHistoryByPackageAssetId(id) {
   return axios.get(`/borrow/viewBorrowHistoryByPackageAssetId/${id}`);
 }
 
+export function getSectorOfBorrow() {
+  return axios.get(`/borrow/sectorForSearch`);
+}

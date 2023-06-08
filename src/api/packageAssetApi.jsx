@@ -49,3 +49,7 @@ export function getPackageAssetBySearch(search) {
 export function deletePackageAsset(id, body) {
   return axios.patch(`/packageAsset/deleteAsset/${id}`, body);
 }
+
+export function getSectorOfPackageAsset() {
+  return axios.get(`/packageAsset/sectorForSearch`);
+}

@@ -99,3 +99,7 @@ export function getQuantitySelector(search) {
 export function deleteAsset(id, body) {
   return axios.patch(`/asset/deleteAsset/${id}`, body);
 }
+
+export function getSectorOfAsset() {
+  return axios.get(`/asset/sectorForSearch`);
+}

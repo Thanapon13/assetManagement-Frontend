@@ -72,3 +72,10 @@ export function getBySearchTransferHistory(search) {
 export function getTransferHistoryById(id) {
   return axios.get(`/transfer/${id}`)
 }
+
+export function getSectorOfTransfer() {
+  return axios.get(`/transfer/transferSectorForSearch`);
+}
+export function getSectorOfTransferee() {
+  return axios.get(`/transfer/transfereeSectorForSearch`);
+}
