@@ -38,7 +38,8 @@ const onlyDateInput = ({ state, setState, disabled, id, isValid, minDate }) => {
             "/viewBorrowApproveDetail" ||
           `/${location.pathname.split("/")[1]}` === "/borrowCheckSaving" ||
           `/${location.pathname.split("/")[1]}` === "/borrowCheckApprove" ||
-          location.pathname === "/addUserInformation"
+          location.pathname === "/addUserInformation" || 
+          `/${location.pathname.split("/")[1]}` === "/editUserInformation"
             ? state[id]
             : state
         } // Can be replace with string or dayjs object (e.g. "2020-12-31" or `dayjs()`)

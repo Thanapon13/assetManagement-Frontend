@@ -150,8 +150,8 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
         timeIntervals={1}
         className={`${error && "border-red-500"} w-full h-[38px] shadow-sm focus:border-2 focus:outline-none  focus:border-focus-blue  sm:text-xs border-[1px] border-gray-300 rounded-md pl-2`}
         // value={(new Date(new Date(state[id]).setFullYear(new Date(state[id]).getFullYear() + 543))).toLocaleString()}
-        value={updateToBuddhist(isDateTo_FROM ? state[id] : state)}
-        selected={isDateTo_FROM ? state[id] : state}
+        value={updateToBuddhist(isDateTo_FROM ? state[id] : id ? state[id] : state)}
+        selected={isDateTo_FROM ? state[id] : id ? state[id] : state}
         // selected={
         //   location.pathname === "/assetInformationIndex" ||
         //     location.pathname === "/packageAssetInformationIndex" ||
