@@ -34,8 +34,9 @@ import { useBarcode } from "@createnextapp/react-barcode";
 import QRcode from "qrcode.react";
 import { IoIosClose } from "react-icons/io";
 import { Spinner } from "flowbite-react";
-import { getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getMoneyType, getPurposeOfUse, getSector, getSourceData } from "../api/masterApi";
+import { getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getCountingUnit, getGroupData, getMoneyType, getPurposeOfUse, getSector, getSourceData } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
+import { getDropdownMerchant } from "../api/merchant";
 
 const EditAssetInformation = () => {
   const { assetId } = useParams();
@@ -57,7 +58,7 @@ const EditAssetInformation = () => {
   const [isLoading, setIsLoading] = useState(true)
   // const [typeList, setTypeList] = useState([])
   // const [kindList, setKindList] = useState([])
-  // หน่วยนับ
+  const [countingUnitList, setCountingUnitList] = useState([])
   const [brandList, setBrandList] = useState([])
   const [categoryList, setCategoryList] = useState([])
   const [groupList, setGroupList] = useState([])
@@ -67,7 +68,7 @@ const EditAssetInformation = () => {
   const [acquisitionMethodList, setAcquisitionMethodList] = useState([])
   const [moneyTypeList, setMoneyTypeList] = useState([])
   const [sectorList, setSectorList] = useState([])
-
+  const [merchantList, setMerchantList] = useState([])
   useEffect(() => {
     getMasterData()
   }, []);
@@ -79,6 +80,9 @@ const EditAssetInformation = () => {
     // const kind = await getKindAll()
     // const arrKind = formArrayOption(kind.data.kind)
     // setKindList(arrKind)
+    const countingUnit = await getCountingUnit()
+    const arrCountingUnit = formArrayOption(countingUnit.data.countingUnit)
+    setCountingUnitList(arrCountingUnit)
     const brand = await getBrandData()
     const arrBrand = formArrayOption(brand.data.brand)
     setBrandList(arrBrand)
@@ -106,7 +110,9 @@ const EditAssetInformation = () => {
     const sector = await getSector()
     const arrSector = formArrayOption(sector.data.sector)
     setSectorList(arrSector)
-    // merchant
+    const merchantList = await getDropdownMerchant()
+    const arrMerchantList = formArrayOption(merchantList.data.merchant)
+    setMerchantList(arrMerchantList)
     // status
   }
 
@@ -607,7 +613,7 @@ const EditAssetInformation = () => {
         const asset = res.data.asset;
         console.log(asset.allSector)
 
-        setImg(asset.imageArray[0].image);
+        setImg(asset.imageArray[0]?.image);
 
         await setInput({
           ...input,
@@ -632,12 +638,11 @@ const EditAssetInformation = () => {
           assetNumber: asset.assetNumber,
           sector: asset.sector,
           asset01: asset.asset01,
-          serialNumber: asset.serialNumber,
+          serialNumber: asset.serialNumber || "",
           replacedAssetNumber: asset.replacedAssetNumber,
         });
         setInsuranceStartDate(new Date(asset.insuranceStartDate))
         setInsuranceExpiredDate(new Date(asset.insuranceExpiredDate))
-
         const fetchImages = asset.imageArray;
         const clone = [...arrayImage];
         for (let el of fetchImages) {
@@ -884,18 +889,16 @@ const EditAssetInformation = () => {
               />
             </div> */}
 
-                {/* หน่วยนับ */}
                 <div>
                   <div className="mb-1">หน่วยนับ</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"หน่วยนับ"}
-                      isValid={!input.unit}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={countingUnitList}
+                    name="unit"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.unit}
+                    value={{ label: input.unit, value: input.unit }}
+                  />
                 </div>
 
                 {/* ขนาด */}
@@ -925,7 +928,7 @@ const EditAssetInformation = () => {
                   </div> */}
                   <SearchSelector
                     options={brandList}
-                    name="type"
+                    name="brand"
                     onChange={handleSelect}
                     noClearButton
                     error={!input.brand}
@@ -950,7 +953,7 @@ const EditAssetInformation = () => {
                   <div className="mb-1">หมวดหมู่ครุภัณฑ์</div>
                   <SearchSelector
                     options={categoryList}
-                    name="type"
+                    name="category"
                     onChange={handleSelect}
                     noClearButton
                     error={!input.category}
@@ -962,7 +965,7 @@ const EditAssetInformation = () => {
                   <div className="mb-1">กลุ่ม</div>
                   <SearchSelector
                     options={groupList}
-                    name="type"
+                    name="group"
                     onChange={handleSelect}
                     noClearButton
                     error={!input.group}
@@ -974,7 +977,7 @@ const EditAssetInformation = () => {
                   <div className="mb-1">ประเภทที่ได้มา</div>
                   <SearchSelector
                     options={acquiredTypeList}
-                    name="type"
+                    name="acquiredType"
                     onChange={handleSelect}
                     noClearButton
                     error={!input.acquiredType}
@@ -986,7 +989,7 @@ const EditAssetInformation = () => {
                   <div className="mb-1">แหล่งที่ได้มา</div>
                   <SearchSelector
                     options={sourceList}
-                    name="type"
+                    name="source"
                     onChange={handleSelect}
                     noClearButton
                     error={!input.source}
@@ -998,7 +1001,7 @@ const EditAssetInformation = () => {
                   <div className="mb-1">วัตถุประสงค์ในการใช้งาน</div>
                   <SearchSelector
                     options={purposeOfUseList}
-                    name="type"
+                    name="purposeOfUse"
                     onChange={handleSelect}
                     noClearButton
                     error={!input.purposeOfUse}
@@ -1047,7 +1050,7 @@ const EditAssetInformation = () => {
                   <div className="mb-1">หน่วยงาน</div>
                   <SearchSelector
                     options={sectorList}
-                    name="type"
+                    name="sector"
                     onChange={handleSelect}
                     noClearButton
                     error={!input.sector}
@@ -1086,7 +1089,7 @@ const EditAssetInformation = () => {
                   <div className="mb-1">แทนครุภัณฑ์ที่ถูกแทงจำหน่าย</div>
                   <SearchSelector
                     options={sectorList}
-                    name="type"
+                    name="replacedAssetNumber"
                     onChange={handleSelect}
                     noClearButton
                     error={!input.replacedAssetNumber}
@@ -1232,26 +1235,26 @@ const EditAssetInformation = () => {
                 {/* วิธีการได้มา */}
                 <div>
                   <div className="mb-1">วิธีการได้มา</div>
-                    <SearchSelector
-                      options={acquisitionMethodList}
-                      name="type"
-                      onChange={handleSelect}
-                      noClearButton
-                      error={!inputContract.acquisitionMethod}
-                      value={{ label: inputContract.acquisitionMethod, value: inputContract.acquisitionMethod }}
-                    />
+                  <SearchSelector
+                    options={acquisitionMethodList}
+                    name="acquisitionMethod"
+                    onChange={value => handleChangeSelectContract("acquisitionMethod", value)}
+                    noClearButton
+                    error={!inputContract.acquisitionMethod}
+                    value={{ label: inputContract.acquisitionMethod, value: inputContract.acquisitionMethod }}
+                  />
                 </div>
                 {/* ประเภทเงิน */}
                 <div>
                   <div className="mb-1">ประเภทเงิน</div>
                   <SearchSelector
-                      options={moneyTypeList}
-                      name="type"
-                      onChange={handleSelect}
-                      noClearButton
-                      error={!inputContract.moneyType}
-                      value={{ label: inputContract.moneyType, value: inputContract.moneyType }}
-                    />
+                    options={moneyTypeList}
+                    name="moneyType"
+                    onChange={value => handleChangeSelectContract("moneyType", value)}
+                    noClearButton
+                    error={!inputContract.moneyType}
+                    value={{ label: inputContract.moneyType, value: inputContract.moneyType }}
+                  />
                 </div>
                 {/* เอกสารใบส่งของ */}
                 <div>
@@ -1285,18 +1288,17 @@ const EditAssetInformation = () => {
                     />
                   </div>
                 </div>
-                {/* ผู้ขาย */}
+
                 <div>
                   <div className="mb-1">ผู้ขาย</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={inputContract.seller}
-                      setState={value => handleChangeSelectContract("seller", value)}
-                      isValid={!inputContract.seller}
-                      id={"ผู้ขาย"}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={merchantList}
+                    name="seller"
+                    onChange={value => handleChangeSelectContract("seller", value)}
+                    noClearButton
+                    error={!inputContract.seller}
+                    value={{ label: inputContract.seller, value: inputContract.seller }}
+                  />
                 </div>
                 {/* ราคาซื้อ (บาท) */}
                 <div>
@@ -1392,17 +1394,14 @@ const EditAssetInformation = () => {
                 {/* สถานะ */}
                 <div>
                   <div className="mb-1">สถานะ</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      // state={distributeStatus}
-                      // setState={setDistributeStatus}
-                      isValid={!inputSale.distributeStatus}
-                      setState={(value) => handleChangeSelectSale("distributeStatus", value)}
-                      state={inputSale.distributeStatus}
-                      id={"สถานะ"}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={[{ label: "(ทดสอบ)", value: "(ทดสอบ)" }]}
+                    name="distributeStatus"
+                    onChange={value => handleChangeSelectSale("distributeStatus", value)}
+                    noClearButton
+                    error={!inputSale.distributeStatus}
+                    value={{ label: inputSale.distributeStatus, value: inputSale.distributeStatus }}
+                  />
                 </div>
                 {/* หมายเหตุ */}
                 <div>
