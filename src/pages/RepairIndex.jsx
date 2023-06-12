@@ -5,132 +5,60 @@ import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { BsFillPencilFill, BsFillEyeFill } from 'react-icons/bs'
 import DateInput from '../components/date/DateInput'
+import { useEffect } from 'react'
+import { getRepairBySearch, getSectorOfRepair } from '../api/repairApi'
+import SearchSelector from '../components/selector/SearchSelector'
 
 const RepairIndex = () => {
-  // useState
   const [perPage, setPerPage] = useState(10)
   const [totalRow, setTotalRow] = useState(25)
-
-  //Main Date
-  const [withdrawDate, setWithdrawDate] = useState(new Date()) 
+  const [withdrawDate, setWithdrawDate] = useState(new Date())
+  const [search, setSearch] = useState({
+    typeTextSearch: "assetNumber",
+    textSearch: "",
+    status: "",
+    dateFrom: "",
+    dateTo: new Date(),
+    sector: "",
+  });
   //* แก้ ใช้ state คนละตัว *
+  const [data, setData] = useState([])
+  const [sectorArray, setSectorArray] = useState([])
 
-  // data
-  let tableData = [
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'waitApprove',
-      repairCostList: [
-        {
-          list: 'รางไฟ',
-          quannity: '1',
-          unit: '-',
-          pricePerUnit: '3000',
-          totalPrice: '3000',
-        },
-        {
-          list: 'สายไฟ 220v outside wire 2.5sqm',
-          quannity: '10',
-          unit: 'เมตร',
-          pricePerUnit: '200',
-          totalPrice: '2000',
-        },
-        {
-          list: 'switch relay 220v to 12v for sn.7103671688',
-          quannity: '1',
-          unit: 'ตัว',
-          pricePerUnit: '6300',
-          totalPrice: '6300',
-        },
-      ],
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'waitTechnicianConfirm',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'inProgress',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'inProgress',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'draftRepair',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'waitApprove',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'waitApprove',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'done',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'done',
-    },
-    {
-      informRepairDate: '12/09/2565 14:36 น.',
-      informRepairIdDoc: '20212334512',
-      assetIdCode: '7440-0036-032/1512',
-      repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-      agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-      repairSender: 'ศรีตรัง',
-      repairStatus: 'cancel',
-    },
-  ]
+  useEffect(() => {
+    fetchList()
+    getMaster()
+  }, [])
+
+  async function fetchList() {
+    const res = await getRepairBySearch()
+    setData(res.data.repair)
+    console.log(res.data.repair)
+    setSearch({
+      ...search,
+      page: res.data.page,
+      limit: res.data.limit,
+      total: res.data.total,
+    })
+  }
+
+  async function getMaster() {
+    const sector = await getSectorOfRepair()
+    const arrSector = []
+    sector.data.sector.map(ele => {
+      arrSector.push({ label: ele.sector, value: ele.sector })
+    })
+    setSectorArray(arrSector)
+  }
+
+  const handlePagination = (e) => {
+    setSearch({ ...search, [e.target.name]: e.target.value })
+    fetchList({ ...search, [e.target.name]: e.target.value })
+  }
+
+  const handleChange = (e) => {
+    setSearch({ ...search, [e.target.name]: e.target.value })
+  }
 
   return (
     <div className="bg-background-page px-5 pt-5 pb-36 ">
@@ -195,14 +123,30 @@ const RepairIndex = () => {
         </div>
 
         <div className="md:col-span-3">
-          <Selector placeholder={'สถานะ'} />
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+            name="status"
+            value={search.status}
+            onChange={handleChange}
+          >
+            <option defaultValue value="">
+              สถานะทั้งหมด
+            </option>
+            <option value="waitTechnicianConfirm">รอช่างรับงาน</option>
+            <option value="inProgress">ดำเนินการ</option>
+            <option value="waiting">รอตรวจรับ</option>
+            <option value="complete">เสร็จสิ้น</option>
+            <option value="cancel">ยกเลิก</option>
+            <option value="draft">แบบร่าง</option>
+          </select>
         </div>
 
         <div className="md:col-span-3 h-full ">
           <div className="flex h-full">
             <DateInput
-              state={withdrawDate}
-              setState={setWithdrawDate}
+              id="dateFrom"
+              state={search}
+              setState={setSearch}
               lable="date from"
             />
           </div>
@@ -211,22 +155,29 @@ const RepairIndex = () => {
         <div className="md:col-span-3 h-full ">
           <div className="flex h-full">
             <DateInput
-              state={withdrawDate}
-              setState={setWithdrawDate}
+              id="dateTo"
+              state={search}
+              setState={setSearch}
               lable="date to"
             />
           </div>
         </div>
 
         <div className="md:col-span-3">
-          <Selector placeholder={'ฝ่าย/กลุ่มงาน'} />
+          <SearchSelector
+            options={sectorArray}
+            placeholder={"หน่วยงานที่โอน"}
+            name={"sector"}
+            onChange={(value, label) => setSearch({ ...search, [label]: value })}
+            floatLabel
+          />
         </div>
 
         <div className="flex justify-end">
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-            // onClick={handleSearch}
+          // onClick={handleSearch}
           >
             <div className="text-xl text-white">
               <AiOutlineSearch />
@@ -234,49 +185,44 @@ const RepairIndex = () => {
           </button>
         </div>
       </div>
-      {/* table */}
+
       <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
         <div className="w-[1200px] lg:w-full lg:h-full h-[500px]">
-          <div className="text-sm">ผลการค้นหา {totalRow} รายการ</div>
+          <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
           <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
-            {/* top bar */}
             <div className="grid grid-cols-12 gap-2 h-12 items-center text-center">
               <div className="col-span-1">วันที่แจ้ง</div>
               <div className="col-span-2">เลขที่ใบแจ้งซ่อม</div>
-              <div className="col-span-1">รหัสครุภัณฑ์</div>
-              <div className="col-span-3">รายละเอียด</div>
+              <div className="col-span-2">รหัสครุภัณฑ์</div>
+              <div className="col-span-2">รายละเอียด</div>
               <div className="col-span-1">หน่วยงานที่ส่งซ่อม</div>
               <div className="col-span-1">ผู้ส่งซ่อม</div>
               <div className="col-span-1">สถานะ</div>
               <div className="col-span-2">Action</div>
             </div>
           </div>
-          <TableRepairIndex data={tableData} />
+          <TableRepairIndex data={data} />
 
           <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
             <div className="flex mr-10 items-center">
               <div>Rows per page:</div>
               <select
-                id="perPage"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                onChange={(e) => setPerPage(e.target.value)}
+                id="limit"
+                name="limit"
+                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                onChange={handlePagination}
               >
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
                 <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10" defaultValue="selected">
-                  10
-                </option>
+                <option value="10" selected="selected"> 10 </option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
               </select>
             </div>
 
-            <div>1-{perPage} of 13</div>
+            <div className="mx-5">
+              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + data.length} of {search.total}
+            </div>
 
             <button className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
               <HiChevronLeft className="text-lg" />
@@ -312,49 +258,45 @@ const TableRepairIndex = (props) => {
             key={idx}
             className={`grid grid-cols-12 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
-            <div className="col-span-1">{item.informRepairDate}</div>
+            <div className="col-span-1">{new Date(item.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.</div>
             <div className="col-span-2">{item.informRepairIdDoc}</div>
-            <div className="col-span-1 ">{item.assetIdCode}</div>
-            <div className="col-span-3">{item.repairDetail}</div>
-            <div className="col-span-1">{item.agencySendRepair}</div>
-            <div className="col-span-1 ">{item.repairSender}</div>
+            <div className="col-span-2">{item.assetNumber}</div>
+            <div className="col-span-2">{item.problemDetail}</div>
+            <div className="col-span-1">{item.hostSector}</div>
+            <div className="col-span-1 ">{item.name_courier}</div>
             <div className="col-span-1">
               <div className="flex justify-center">
-                <div
-                  //   type="button"
-                  // to={`/borrowSaving/${ID}`}
-                  onClick={() => handleClick(item.repairStatus)}
-                  className={`${
-                    item.repairStatus === 'waitTechnicianConfirm'
-                      ? 'bg-sky-200 text-blue-600 rounded-full border-sky-200'
-                      : item.repairStatus === 'inProgress'
+                <div onClick={() => handleClick(item.status)}
+                  className={`${item.status === 'waitTechnicianConfirm'
+                    ? 'bg-sky-200 text-blue-600 rounded-full border-sky-200'
+                    : item.status === 'inProgress'
                       ? 'bg-yellow-300 text-yellow-700 border-yellow-300 rounded-full'
-                      : item.repairStatus === 'waitApprove'
-                      ? ' bg-purple-600 border-purple-600 text-white rounded-full'
-                      : item.repairStatus === 'draftRepair'
-                      ? ' bg-gray-300 border-gray-300 text-black rounded-full'
-                      : item.repairStatus === 'done'
-                      ? 'bg-sidebar-green text-text-green  rounded-full border-sidebar-green '
-                      : 'bg-red-200 text-red-600 rounded-full border-red-200'
-                  } border border-spacing-5 p-2 w-full`}
+                      : item.status === 'waiting'
+                        ? ' bg-purple-600 border-purple-600 text-white rounded-full'
+                        : item.status === 'draft'
+                          ? ' bg-gray-300 border-gray-300 text-black rounded-full'
+                          : item.status === 'complete'
+                            ? 'bg-text-green/[.15] text-text-green  rounded-full border-sidebar-green '
+                            : 'bg-red-200 text-red-600 rounded-full border-red-200'
+                    } border border-spacing-5 p-2 w-full`}
                 >
-                  {item.repairStatus === 'waitTechnicianConfirm'
+                  {item.status === 'waitTechnicianConfirm'
                     ? 'รอช่างรับงาน'
-                    : item.repairStatus === 'inProgress'
-                    ? 'ดำเนินการ'
-                    : item.repairStatus === 'waitApprove'
-                    ? 'รอตรวจรับ'
-                    : item.repairStatus === 'draftRepair'
-                    ? 'แบบร่าง'
-                    : item.repairStatus === 'done'
-                    ? 'เสร็จสิ้น'
-                    : 'ยกเลิก'}
+                    : item.status === 'inProgress'
+                      ? 'ดำเนินการ'
+                      : item.status === 'waiting'
+                        ? 'รอตรวจรับ'
+                        : item.status === 'draft'
+                          ? 'แบบร่าง'
+                          : item.status === 'complete'
+                            ? 'เสร็จสิ้น'
+                            : 'ยกเลิก'}
                 </div>
               </div>
             </div>
             <div className="col-span-2 grid grid-cols-2 items-center">
               <div className="flex justify-center col-span-2">
-                {item.repairStatus === 'waitTechnicianConfirm' ? (
+                {item.status === 'waitTechnicianConfirm' ? (
                   <div className="flex gap-1">
                     <Link
                       to="repairDetail"
@@ -372,7 +314,7 @@ const TableRepairIndex = (props) => {
                     </Link>
                     <ModalCancel />
                   </div>
-                ) : item.repairStatus === 'inProgress' ? (
+                ) : item.status === 'inProgress' ? (
                   <div className="flex gap-1">
                     <Link
                       to="repairDetail"
@@ -383,7 +325,7 @@ const TableRepairIndex = (props) => {
                       <h1>ดูรายละเอียด</h1>
                     </Link>
                   </div>
-                ) : item.repairStatus === 'draftRepair' ? (
+                ) : item.status === 'draft' ? (
                   <div className="flex gap-1">
                     <Link
                       to="repairDetail"
@@ -401,7 +343,7 @@ const TableRepairIndex = (props) => {
                     </Link>
                     <ModalCancel />
                   </div>
-                ) : item.repairStatus === 'waitApprove' ? (
+                ) : item.status === 'waiting' ? (
                   <div className="flex gap-3">
                     <Link
                       to="repairDetail"
@@ -417,7 +359,7 @@ const TableRepairIndex = (props) => {
                 ) : (
                   <div className="flex gap-1">
                     <Link
-                      to="borrowDetail"
+                      to="/borrowDetail"
                       className="border-[1px] gap-2 border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[120px] flex justify-center items-center rounded-md"
                     >
                       <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
