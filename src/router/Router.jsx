@@ -32,6 +32,10 @@ import {
   RepairTechnicianIndex,
   RepairTechnicianRecord,
   RepairTechnicianDetail,
+  HistoryRepair,
+  HistoryRepairIndex,
+  RepairOutsourceIndex,
+  RepairOutsource,
   LoginPage,
   ForgotPassword,
   EmailConfirmation,
@@ -199,6 +203,10 @@ const Router = () => {
             path="repairTechnicianIndex/repairTechnicianDetail"
             element={<RepairTechnicianDetail />}
           />
+          <Route path="historyRepairIndex" element={<HistoryRepairIndex />} />
+          <Route path="historyRepair/:id" element={<HistoryRepair />} />
+          <Route path="repairOutsourceIndex" element={<RepairOutsourceIndex />} />
+          <Route path="repairOutsource/:id" element={<RepairOutsource />} />
 
           <Route path="defaultData" element={<DefaultData />} />
           <Route path="defaultAsset" element={<DefaultAsset />} />
@@ -214,19 +222,22 @@ const Router = () => {
           />
           <Route path="addUserInformation" element={<AddUserInformation />} />
           <Route path="editUserInformation/:userId" element={<EditUserInformation />} />
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
+          <Route path="/" element={<Dashboard />} />
         </Route>
       ) : (
         <Route path="/" element={<PublicLayout />}>
           {/* public routes */}
           {/* <Route index element={<Public />} /> */}
           {/* <Route index element={<Navigate to="/login" />} /> */}
-          <Route path="login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
           {/* <Route path="signup" element={<SignupPage />} /> */}
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="emailConfirmation" element={<EmailConfirmation />} />
           {/* <Route path="changePassword/:word" element={<ChangePasswordPage />} /> */}
-          <Route path="*" element={<Navigate to="/login" />} />
+          {/* <Route path="*" element={<Navigate to="/login" />} /> */}
+          <Route path="/" element={<LoginPage />} />
+
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
         </Route>
       )}
