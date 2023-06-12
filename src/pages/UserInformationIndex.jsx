@@ -8,70 +8,43 @@ import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
 import RowOfTableUserInformationIndex from "../components/table/RowOfTableUserInformationIndex";
 import { useEffect } from "react";
-import { getUsersAll } from "../api/userApi";
+import { getSectorOfUser, getUsersAll } from "../api/userApi";
+import { getSector } from "../api/masterApi";
+import SearchSelector from "../components/selector/SearchSelector";
 
 const UserInformationIndex = () => {
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
+  const [search, setSearch] = useState({
+    typeTextSearch: "assetNumber",
+    textSearch: "",
+    status: "",
+    sector: "",
+  });
+  const [sectorArray, setSectorArray] = useState([])
+  async function getMaster() {
+    const sector = await getSectorOfUser()
+    const arrSector = []
+    sector.data.sector.map(ele => {
+      arrSector.push({ label: ele.sector, value: ele.sector })
+    })
+    setSectorArray(arrSector)
+  }
 
   // useState
   const [perPage, setPerPage] = useState(10);
 
   //Main Date
-  const [withdrawDate, setWithdrawDate] = useState(todayThaiDate);
+  const [withdrawDate, setWithdrawDate] = useState();
 
-  // data
-  let userInformationIndexTableArray = [
-    {
-      userId: "6582301719",
-      thaiFirstName: "ปราโมทย์",
-      thaiLastName: "จิตแจ่มใส",
-      sector: "กองอำนวยการกลาง",
-      lastLoginDate: "19/12/2565",
-      level: "Lv.1",
-    },
-    {
-      userId: "6582301719",
-      thaiFirstName: "ปราโมทย์",
-      thaiLastName: "จิตแจ่มใส",
-      sector: "กองอำนวยการกลาง",
-      lastLoginDate: "19/12/2565",
-      level: "Lv.1",
-    },
-    {
-      userId: "6582301719",
-      thaiFirstName: "ปราโมทย์",
-      thaiLastName: "จิตแจ่มใส",
-      sector: "กองอำนวยการกลาง",
-      lastLoginDate: "19/12/2565",
-      level: "Lv.1",
-    },
-    {
-      userId: "6582301719",
-      thaiFirstName: "ปราโมทย์",
-      thaiLastName: "จิตแจ่มใส",
-      sector: "กองอำนวยการกลาง",
-      lastLoginDate: "19/12/2565",
-      level: "Lv.1",
-    },
-    {
-      userId: "6582301719",
-      thaiFirstName: "ปราโมทย์",
-      thaiLastName: "จิตแจ่มใส",
-      sector: "กองอำนวยการกลาง",
-      lastLoginDate: "19/12/2565",
-      level: "Lv.1",
-    },
-  ];
-
+  const [data, setData] = useState([])
   useEffect(() => {
-    // const fetchUsersList = async () => {
-    //   const response = await getUsersAll()
-    //   console.log(response)
-    // }
-    // fetchUsersList()
-  },[])
+    const fetchUsersList = async () => {
+      const response = await getUsersAll()
+      console.log(response.data)
+      setData(response.data)
+    }
+    fetchUsersList()
+    getMaster()
+  }, [])
 
   return (
     <div className="bg-background-page px-5 pt-10 pb-36">
@@ -94,7 +67,7 @@ const UserInformationIndex = () => {
         <div className="mt-4 sm:mt-0 flex justify-end gap-4">
           <button
             className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-            // onClick={() => inputDoc.current.click()}
+          // onClick={() => inputDoc.current.click()}
           >
             <svg
               width="16"
@@ -122,35 +95,45 @@ const UserInformationIndex = () => {
         </div>
       </div>
 
-      {/* search bar */}
-      <div className="grid grid-cols-1 md:grid-cols-11 gap-4 items-center mt-8 mb-3 pl-5">
-        <div className="text-xs font-semibold">ค้นหาโดย</div>
-        <div className="md:col-span-2">
-          <Selector placeholder={"รหัสผู้ใช้งาน"} />
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-3 items-center mt-8 mb-5 pl-3">
+        <div className="md:col-span-3 flex items-center">
+          <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
+          <select
+            className="ml-2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
+            name="typeTextSearch"
+          // onChange={handleChange}
+          >
+            <option value="assetNumber">รหัสผู้ใช้งาน</option>
+          </select>
         </div>
 
         <div className="md:col-span-4  h-[38px] relative">
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
-            // name="requestedId"
-            // id="requestedId"
-            // onChange={(e) => setRequestedId(e.target.value)}
-            // value={requestedId}
+            name="textSearch"
+            // onChange={handleChange}
+            value={search.textSearch}
             placeholder="รหัสผู้ใช้งาน"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
         </div>
 
-        <div className="md:col-span-3">
-          <Selector placeholder={"หน่วยงาน"} />
-        </div>
+        <div className="md:col-span-3 flex gap-2">
+          <div className="w-full">
+            <SearchSelector
+              options={sectorArray}
+              placeholder={"หน่วยงาน"}
+              name={"sector"}
+              onChange={(value, label) => setSearch({ ...search, [label]: value })}
+              floatLabel
+            />
+          </div>
 
-        <div className="flex justify-end">
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-            // onClick={handleSearch}
+          // onClick={handleSearch}
           >
             <div className="text-xl text-white">
               <AiOutlineSearch />
@@ -165,7 +148,7 @@ const UserInformationIndex = () => {
           <div>
             <div className="flex p-4">
               <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-              <div className="ml-2 text-sm">25 รายการ </div>
+              <div className="ml-2 text-sm">{data.length} รายการ </div>
             </div>
             {/* top bar */}
             <div className="grid grid-cols-13 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
@@ -180,61 +163,56 @@ const UserInformationIndex = () => {
               </div>
             </div>
           </div>
-          {userInformationIndexTableArray?.map((el, idx) => {
+          {data?.map((el, idx) => {
             return (
               <RowOfTableUserInformationIndex
                 key={idx}
                 index={idx}
-                userId={el.userId}
+                _id={el._id}
+                userId={el.username}
                 thaiFirstName={el.thaiFirstName}
                 thaiLastName={el.thaiLastName}
                 sector={el.sector}
-                lastLoginDate={el.lastLoginDate}
-                level={el.level}
+                lastLoginDate={el.lastRevisionDateTime}
+                level={el.role} //* ?
               />
             );
           })}
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex  items-center mr-10">
+
+          <div className="flex justify-end gap-2 h-12 pr-8 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+            <div className="flex items-center mr-10">
               <div>Rows per page:</div>
               <select
-                id="perPage"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={(e) => setPerPage(e.target.value)}
+                id="limit"
+                name="limit"
+                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              // onChange={handlePaginationSearch}
               >
-                {/* <option value="" selected disabled hidden>
-            ประเภทครุภัณฑ์
-          </option> */}
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
                 <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10" selected="selected">
-                  10
-                </option>
+                <option value="10" selected="selected">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
               </select>
             </div>
 
-            <div>1-{perPage} of 13</div>
+            <div className="mx-5">
+              {/* {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + transferArray.length} of {search.total} */}
+            </div>
 
             <button
               className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-              // onClick={() => {
-              //   deleteRow(index)
-              // }}
+            // onClick={() => {
+            //   deleteRow(index)
+            // }}
             >
               <HiChevronLeft className="text-lg" />
             </button>
             <button
               className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-              // onClick={() => {
-              //   deleteRow(index)
-              // }}
+            // onClick={() => {
+            //   deleteRow(index)
+            // }}
             >
               <HiChevronRight className="text-lg" />
             </button>

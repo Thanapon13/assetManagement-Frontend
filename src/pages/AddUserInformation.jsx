@@ -9,11 +9,10 @@ import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import OnlyDateInput from "../components/date/onlyDateInput";
 import InputAddress from "react-thailand-address-autocomplete";
 import { createUser } from "../api/userApi";
+import { getDoctorType, getEngPrefix, getMedicalField, getThaiPrefix } from "../api/masterApi";
+import SearchSelector from "../components/selector/SearchSelector";
 
 function AddUserInformation() {
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
 
   const [input, setInput] = useState({
     thaiPrefix: "",
@@ -63,7 +62,7 @@ function AddUserInformation() {
     medicalField: "",
     // บันทึกเหตุการณ์
 
-    dateTimeRecord: todayThaiDate,
+    dateTimeRecord: new Date(),
     dateTimeModify: "",
     dateTimeUpdatePassword: "",
     userEndDateTime: "",
@@ -74,8 +73,38 @@ function AddUserInformation() {
     status: false,
   });
 
-
   const [toggle, setToggle] = useState(false);
+
+  useEffect(() => {
+    getMasterData()
+  }, []);
+
+  function formArrayOption(data) {
+    const array = []
+    data?.map(ele => {
+      array.push({ label: ele.name, value: ele.name, ele: ele })
+    })
+    return array
+  }
+  const [thaiPrefixList, setThaiPrefixList] = useState([])
+  const [engPrefixList, setEngPrefixList] = useState([])
+  const [doctorTypeList, setDoctorTypeList] = useState([])
+  const [medicalFieldList, setMedicalFieldList] = useState([])
+
+  const getMasterData = async () => {
+    const thaiPrefix = await getThaiPrefix()
+    const arrThaiPrefix = formArrayOption(thaiPrefix.data.thaiPrefix)
+    setThaiPrefixList(arrThaiPrefix)
+    const engPrefix = await getEngPrefix()
+    const arrEngPrefix = formArrayOption(engPrefix.data.engPrefix)
+    setEngPrefixList(arrEngPrefix)
+    const doctorType = await getDoctorType()
+    const arrDoctorType = formArrayOption(doctorType.data.docterType)
+    setDoctorTypeList(arrDoctorType)
+    const medicalField = await getMedicalField()
+    const arrMedicalField = formArrayOption(medicalField.data.medicalField)
+    setMedicalFieldList(arrMedicalField)
+  }
 
   const onChange = (e) => {
     if (e.target.name === "status") {
@@ -93,17 +122,24 @@ function AddUserInformation() {
   };
 
   const onSelectAddress = ({ subdistrict, district, province, zipcode }) => {
-    setInput({...input, subdistrict, district, province, zipcode });
+    setInput({ ...input, subdistrict, district, province, zipcode });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(input);
-    const inputJSON = JSON.stringify(input);
+    const inputJSON = JSON.stringify({...input, role: "role"});
     await createUser({
       input: inputJSON,
     });
   };
+
+  const handleSelect = (value, label) => {
+    setInput({ ...input, [label]: value })
+    // const clone = [...input];
+    // clone[index] = { ...input[index], [label]: value }
+    // if (value) setInput(clone)
+  }
 
   return (
     <form>
@@ -146,18 +182,26 @@ function AddUserInformation() {
           <div className="font-semibold">ข้อมูลทั่วไป</div>
           {/* 2 row */}
           <div className="grid grid-cols-1 md:grid-cols-5 md:gap-x-5 gap-y-3 mt-3 text-xs">
-            {/* คำนำหน้า (ภาษาไทย) */}
+
             <div className="w-full">
               <div className="mb-1">คำนำหน้า (ภาษาไทย)</div>
-              <Selector
+              {/* <Selector
                 placeholder={"Select"}
                 state={input}
                 setState={setInput}
                 id={"คำนำหน้า (ภาษาไทย)"}
                 name="thaiPrefix"
+              /> */}
+              <SearchSelector
+                options={thaiPrefixList}
+                name="thaiPrefix"
+                onChange={handleSelect}
+                // error={error && !genData[index]?.sector}
+                noClearButton
+              // value={input?.thaiPrefix && { label: input?.thaiPrefix, value: input?.thaiPrefix }}
               />
             </div>
-            {/* ชื่อ (ภาษาไทย) */}
+
             <div className="col-span-2">
               <div className="mb-1 md:mb-5 lg:mb-1 ">ชื่อ (ภาษาไทย)</div>
               <input
@@ -169,7 +213,7 @@ function AddUserInformation() {
                 className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
             </div>
-            {/* นามสกุล (ภาษาไทย) */}
+
             <div className="col-span-2">
               <div className="mb-1 md:mb-5 lg:mb-1 ">นามสกุล (ภาษาไทย)</div>
               <input
@@ -182,15 +226,16 @@ function AddUserInformation() {
               />
             </div>
 
-            {/* คำนำหน้าชื่อ (ภาษาอังกฤษ) */}
+
             <div>
               <div className="mb-1">คำนำหน้าชื่อ (ภาษาอังกฤษ)</div>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"คำนำหน้าชื่อ (ภาษาอังกฤษ)"}
+              <SearchSelector
+                options={engPrefixList}
                 name="engPrefix"
+                onChange={handleSelect}
+                // error={error && !input?.engPrefix}
+                noClearButton
+              // value={input?.engPrefix && { label: input?.engPrefix, value: input?.engPrefix }}
               />
             </div>
             {/* คำนำหน้าชื่อ (ภาษาอังกฤษ) */}
@@ -235,14 +280,26 @@ function AddUserInformation() {
             {/* เพศ */}
             <div className="">
               <div className="mb-1">เพศ</div>
-              <input
+              <select
+                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+                name="status"
+                value={input?.sex}
+                onChange={e => setInput({ ...input, sex: e.target.value })}
+              >
+                <option defaultValue value="">
+                  Select
+                </option>
+                <option value="male">ชาย</option>
+                <option value="female">หญิง</option>
+              </select>
+              {/* <input
                 type="text"
                 name="sex"
                 id="sex"
                 onChange={onChange}
                 value={input?.sex}
                 className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+              /> */}
             </div>
             {/* วัน / เดือน / ปี เกิด */}
             <div className="col-span-2">
@@ -255,8 +312,8 @@ function AddUserInformation() {
                 />
               </div>
             </div>
-             {/* รหัสผู้ใช้งาน (Username) */}
-             <div className="col-span-2">
+            {/* รหัสผู้ใช้งาน (Username) */}
+            <div className="col-span-2">
               <div className="mb-1">รหัสผู้ใช้งาน (Username)</div>
               <input
                 type="text"
@@ -302,7 +359,7 @@ function AddUserInformation() {
                 className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               /> */}
             </div>
-           
+
             {/* วันที่เริ่มใช้งานรหัส */}
             <div className="col-span-2">
               <div className="mb-1">วันที่เริ่มใช้งานรหัส</div>
@@ -762,33 +819,33 @@ function AddUserInformation() {
                 name={"userType"}
               />
             </div>
-            {/* ประเภทของแพทย์ */}
+
             <div className="col-span-2">
               <div className="mb-1">ประเภทของแพทย์</div>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"ประเภทของแพทย์"}
-                name={"docterType"}
+              <SearchSelector
+                options={doctorTypeList}
+                name="docterType"
+                onChange={handleSelect}
+                // error={error && !input?.docterType}
+                noClearButton
+              // value={input?.docterType && { label: input?.docterType, value: input?.docterType }}
               />
             </div>
 
-            {/* สาขาแพทย์ */}
             <div className="col-span-2">
               <div className="mb-1">สาขาแพทย์</div>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"สาขาแพทย์"}
-                name={"medicalField"}
+              <SearchSelector
+                options={medicalFieldList}
+                name="medicalField"
+                onChange={handleSelect}
+                // error={error && !input?.medicalField}
+                noClearButton
+              // value={input?.medicalField && { label: input?.medicalField, value: input?.medicalField }}
               />
             </div>
           </div>
         </div>
 
-        {/* บันทึกเหตุการณ์ */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
           <div className="font-semibold">บันทึกเหตุการณ์</div>
           <div className="grid grid-cols-1 sm:grid-cols-4 sm:gap-x-5 gap-y-3 mt-3 text-xs">
@@ -811,7 +868,7 @@ function AddUserInformation() {
                 />
               </div>
             </div>
-            {/* วัน-เวลาที่แก้ไขข้อมูลล่าสุด */}
+
             <div className="col-span-2">
               <div className="mb-1">วัน-เวลาที่แก้ไขข้อมูลล่าสุด</div>
               <div className="flex h-[38px]">
@@ -823,7 +880,7 @@ function AddUserInformation() {
               </div>
             </div>
 
-            {/* อัพเดทรหัสผ่านล่าสุด */}
+
             <div className="col-span-2">
               <div className="mb-1">อัพเดทรหัสผ่านล่าสุด</div>
               <div className="flex h-[38px]">
@@ -834,7 +891,7 @@ function AddUserInformation() {
                 />
               </div>
             </div>
-            {/* วันที่สิ้นสุดการใช้งานของผู้ใช้ */}
+
             <div className="col-span-2">
               <div className="mb-1">วันที่สิ้นสุดการใช้งานของผู้ใช้</div>
               <div className="flex h-[38px]">
@@ -845,7 +902,7 @@ function AddUserInformation() {
                 />
               </div>
             </div>
-            {/* วันเวลาที่ PACS มาดึงข้อมูล */}
+
             <div className="col-span-2">
               <div className="mb-1">วันเวลาที่ PACS มาดึงข้อมูล</div>
               <div className="flex h-[38px]">
@@ -856,7 +913,7 @@ function AddUserInformation() {
                 />
               </div>
             </div>
-            {/* รหัสผู้แก้ไขข้อมูลล่าสุด */}
+
             <div className="col-span-2">
               <div className="mb-1">รหัสผู้แก้ไขข้อมูลล่าสุด</div>
               <div className="flex h-[38px]">
@@ -867,7 +924,7 @@ function AddUserInformation() {
                 />
               </div>
             </div>
-            {/* หมายเหตุ */}
+
             <div className="col-span-2">
               <div className="mb-1">หมายเหตุ</div>
               <input
@@ -902,23 +959,23 @@ function AddUserInformation() {
             </div>
           </div>
         </div>
-
         {/* <ToastContainer /> */}
       </div>
+
       {/* footer */}
-      <div className="bottom-0 bg-white  flex justify-end items-center gap-10 p-3 text-sm mr-3 ">
+      <div className="bottom-0 bg-white  flex justify-between items-center gap-10 p-3 text-sm mx-5 ">
         <button
           type="button"
-          className="border-[2px] hover:bg-gray-100 text-black text-sm rounded-md p-2"
+          className="px-8 hover:bg-gray-100 text-black text-sm rounded-md p-2  text-gray-700"
         >
           ยกเลิก
         </button>
         <button
           type="submit"
-          className="bg-text-green hover:bg-green-800 text-white text-sm rounded-md p-2"
+          className="bg-text-green hover:bg-green-800 text-white text-sm rounded-md p-2 px-8"
           onClick={handleSubmit}
         >
-          บันทึกขอยืมครุภัณฑ์
+          บันทึก
         </button>
       </div>
     </form>
