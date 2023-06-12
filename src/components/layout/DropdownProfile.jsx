@@ -13,7 +13,7 @@ const DropdownProfile = () => {
 
   const signOut =  () => {
     logout();
-    navigate("/logout")
+    navigate("/")
   };
 
   const handleOnClick = () => {
