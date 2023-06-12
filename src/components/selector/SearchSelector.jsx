@@ -38,7 +38,7 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
   // },[value])
 
   return (
-    <div class="relative">
+    <div className="relative">
       <Select
         // defaultValue={{ value: value, label: value }}
         id="floating"
@@ -62,6 +62,7 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
             cursor: 'pointer',
             borderColor: state.isHovered && 'initial',
             borderColor: !isDisabled && error && 'red',
+            // background: isDisabled && '#E5E7EB',
           }),
           valueContainer: (baseStyles, state) => ({
             ...baseStyles,
@@ -76,7 +77,7 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
       // controlShouldRenderValue={false}
       // hideSelectedOptions={false}
       />
-      <label for="floating" class={`${floatLabel ? "absolute" : "hidden"} ${isFloat ? "top-[.25em] bg-white" : "top-[1.25em] text-lg"} px-2 text-gray-500  duration-300 transform -translate-y-4 scale-75  origin-[0]  peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1`}>
+      <label for="floating" className={`${floatLabel ? "absolute" : "hidden"} ${isFloat ? "top-[.25em] bg-white" : "top-[1.25em] text-lg"} px-2 text-gray-500  duration-300 transform -translate-y-4 scale-75  origin-[0]  peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1`}>
         {placeholder}
       </label>
     </div>

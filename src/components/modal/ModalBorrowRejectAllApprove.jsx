@@ -59,7 +59,7 @@ const ModalBorrowRejectAllApprove = ({
   return (
     <>
       <button
-        className="p-2 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-200"
+        className="p-2 px-3 border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-500/[.15]"
         type="button"
         onClick={() => setShowModal(true)}
       >
