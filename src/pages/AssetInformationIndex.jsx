@@ -347,54 +347,57 @@ const AssetInformationIndex = () => {
               confirmDelete={handleDelete}
             />
           }
-          <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-center">
-              <div>Rows per page:</div>
-              <select
-                id="limit"
-                name="limit"
-                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={handlePaginationSearch}
+          {!assetList.length
+            ? <center className='p-5'>-</center>
+            : <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+              <div className="flex items-center">
+                <div>Rows per page:</div>
+                <select
+                  id="limit"
+                  name="limit"
+                  className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handlePaginationSearch}
+                >
+                  <option value="5">5</option>
+                  <option value="10" selected="selected">
+                    10
+                  </option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+
+              <div className="mx-5">
+                {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + assetList.length} of {search.total}
+              </div>
+
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 my-2"
+                onClick={handleFirstPage}
               >
-                <option value="5">5</option>
-                <option value="10" selected="selected">
-                  10
-                </option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
+                <CgPushChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handlePageDecrease}
+              >
+                <HiChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handlePageIncrease}
+              >
+                <HiChevronRight className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handleLastPage}
+              >
+                <CgPushChevronRight className="text-lg font-bold" />
+              </button>
             </div>
-
-            <div className="mx-5">
-              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + assetList.length} of {search.total}
-            </div>
-
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 my-2"
-              onClick={handleFirstPage}
-            >
-              <CgPushChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handlePageDecrease}
-            >
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handlePageIncrease}
-            >
-              <HiChevronRight className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handleLastPage}
-            >
-              <CgPushChevronRight className="text-lg font-bold" />
-            </button>
-          </div>
+          }
         </div>
       </div>
     </div>
@@ -460,14 +463,16 @@ function ModalDeleteAsset(props) {
                     {elem.pricePerUnit}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-6 p-2">
-                  <div className="text-text-gray flex items-center">
-                    สาเหตุที่ยกเลิก
+                {elem.status != "saveDraft" &&
+                  <div className="grid grid-cols-2 md:grid-cols-6 p-2">
+                    <div className="text-text-gray flex items-center">
+                      สาเหตุที่ยกเลิก
+                    </div>
+                    <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                      onChange={e => setRemark(e.target.value)}
+                    />
                   </div>
-                  <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
-                    onChange={e => setRemark(e.target.value)}
-                  />
-                </div>
+                }
               </div>
             </div>
 
@@ -483,7 +488,11 @@ function ModalDeleteAsset(props) {
               <button
                 className="text-white hover:bg-red-600 bg-[#EB5757] px-10 py-3 border rounded-md "
                 // type="button"
-                onClick={() => remark ? props.confirmDelete(elem._id, remark) : setError(true)}
+                onClick={() => {
+                  elem.status == "saveDraft" 
+                  ? props.confirmDelete(elem._id)
+                  : remark ? props.confirmDelete(elem._id, remark) : setError(true)
+                }}
               >
                 ยืนยันลบ
               </button>

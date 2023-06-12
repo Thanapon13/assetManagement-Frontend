@@ -610,9 +610,7 @@ const EditAssetInformation = () => {
       try {
         const res = await getAssetById(assetId);
         console.log(res.data.asset);
-        const asset = res.data.asset;
-        console.log(asset.allSector)
-
+        const asset = res.data.asset[0]
         setImg(asset.imageArray[0]?.image);
 
         await setInput({
@@ -753,6 +751,7 @@ const EditAssetInformation = () => {
         setIsLoading(false)
       } catch (err) {
         console.log(err);
+        setIsLoading(false)
       }
     }
     fetchAssetById();
@@ -1091,9 +1090,7 @@ const EditAssetInformation = () => {
                     options={sectorList}
                     name="replacedAssetNumber"
                     onChange={handleSelect}
-                    noClearButton
-                    error={!input.replacedAssetNumber}
-                    value={{ label: input.replacedAssetNumber, value: input.replacedAssetNumber }}
+                    value={input.replacedAssetNumber && { label: input.replacedAssetNumber, value: input.replacedAssetNumber }}
                   />
                 </div>
               </div>

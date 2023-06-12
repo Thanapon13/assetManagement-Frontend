@@ -55,13 +55,13 @@ const AssetInformation = () => {
   const param = useParams()
   useEffect(() => {
     getMasterData()
-    if (param) initData()
+    if (param.id) initData()
   }, []);
 
   async function initData() {
     const res = await getAssetById(param.id);
     console.log(res.data.asset)
-    setInput(res.data.asset)
+    setInput(res.data.asset[0])
   }
 
   const getMasterData = async () => {
@@ -708,9 +708,8 @@ const AssetInformation = () => {
     );
     formData.append("distributeStatus", inputSale.distributeStatus);
     formData.append("distributionNote", inputSale.distributionNote);
+    
     let response
-    console.log(input, inputSale, inputContract)
-    // return
     if (!param.id) {
       response = await createAsset(formData)
     } else {
@@ -1028,8 +1027,7 @@ const AssetInformation = () => {
                 options={sectorList}
                 name="distributeToSector"
                 onChange={handleSelect}
-                noClearButton
-                error={errorInput && !input.distributeToSector}
+                // error={errorInput && !input.distributeToSector}
                 value={(input.distributeToSector) && { label: input.distributeToSector, value: input.distributeToSector }}
               />
             </div>
