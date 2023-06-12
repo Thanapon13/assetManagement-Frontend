@@ -39,27 +39,8 @@ const ViewPackageAssetInformation = () => {
   // subcomponent
   const [bottomSubComponentData, setBottomSubComponentData] = useState([]);
 
-  // ประวัติการยืม
   const [borrowHistoryList, setBorrowHistoryList] = useState([])
-
-
-  // ประวัติสถานที่ตั้ง
-  const [buildingData, setBuildingData] = useState([
-    {
-      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
-      floor: "12",
-      room: "ห้องรับรองพิเศษ",
-      moveInDate: "19/04/2564",
-      moveOutDate: "8/09/2564",
-    },
-    {
-      building: "อาคารภูมิรัตน์ 100 ปีเฉลิมพระเกียรติ",
-      floor: "12",
-      room: "ห้องรับรองพิเศษ",
-      moveInDate: "19/04/2564",
-      moveOutDate: "8/09/2564",
-    },
-  ]);
+  const [buildingData, setBuildingData] = useState([])
 
   const [indexGenData, setIndexGenData] = useState(0);
   const [barcode, setBarcode] = useState(input?.serialNumber);
@@ -69,27 +50,26 @@ const ViewPackageAssetInformation = () => {
 
   // สัญญาจัดซื้อ
   const [acquisitionMethod, setAcquisitionMethod] = useState(
-    "เสนอราคาฝ่ายจัดซื้อ"
+    ""
   );
-  const [moneyType, setMoneyType] = useState("เงินสด");
-  const [deliveryDocument, setDeliveryDocument] =
-    useState("65-390113(2)/10824");
-  const [contractNumber, setContractNumber] = useState("เอกสาร");
-  const [receivedDate, setReceivedDate] = useState("27/12/2565");
-  const [seller, setSeller] = useState("Banana It");
-  const [price, setPrice] = useState("22,000.00");
-  const [billNumber, setBillNumber] = useState("จ.ค 651213082");
-  const [purchaseYear, setPurchaseYear] = useState("27/12/2565");
-  const [purchaseDate, setPurchaseDate] = useState("27/12/2565");
-  const [documentDate, setDocumentDate] = useState("27/12/2565");
+  const [moneyType, setMoneyType] = useState("");
+  const [deliveryDocument, setDeliveryDocument] = useState("");
+  const [contractNumber, setContractNumber] = useState("");
+  const [receivedDate, setReceivedDate] = useState("");
+  const [seller, setSeller] = useState("");
+  const [price, setPrice] = useState("");
+  const [billNumber, setBillNumber] = useState("");
+  const [purchaseYear, setPurchaseYear] = useState("");
+  const [purchaseDate, setPurchaseDate] = useState("");
+  const [documentDate, setDocumentDate] = useState("");
 
   // การจำหน่าย
   const [salesDocument, setSalesDocument] = useState("");
   const [distributeDocumentDate, setDistributeDocumentDate] =
-    useState("27/12/2565");
+    useState("");
   const [distributeApprovalReleaseDate, setDistributeApprovalReleaseDate] =
-    useState("27/12/2565");
-  const [distributeStatus, setDistributeStatus] = useState("ใช้งานได้");
+    useState("");
+  const [distributeStatus, setDistributeStatus] = useState("");
   const [distributionNote, setDistributionNote] = useState("");
 
   //Show Modal
@@ -160,9 +140,9 @@ const ViewPackageAssetInformation = () => {
     useState(0);
 
   //Main Date
-  const [insuranceStartDate, setInsuranceStartDate] = useState("27/12/2565");
+  const [insuranceStartDate, setInsuranceStartDate] = useState("");
   const [insuranceExpiredDate, setInsuranceExpiredDate] =
-    useState("27/12/2565");
+    useState("");
 
 
   const { inputRef } = useBarcode({
@@ -179,42 +159,41 @@ const ViewPackageAssetInformation = () => {
         console.log(res?.data?.packageAsset[0]);
         const packageAsset = res.data.packageAsset[0];
 
+        setImg(packageAsset.imageArray[0]?.image);
+        setInput(packageAsset)
+        // setInput({
+        //   ...input,
+        //   engProductName: packageAsset.engProductName,
+        //   productName: packageAsset.productName,
+        //   type: packageAsset.type,
+        //   kind: packageAsset.kind,
+        //   realAssetId: packageAsset.realAssetId,
+        //   unit: packageAsset.unit,
+        //   brand: packageAsset.brand,
+        //   model: packageAsset.model,
+        //   size: packageAsset.size,
+        //   quantity: packageAsset.quantity,
+        //   source: packageAsset.source,
+        //   category: packageAsset.category,
+        //   acquiredType: packageAsset.acquiredType,
+        //   group: packageAsset.group,
+        //   pricePerUnit: packageAsset.pricePerUnit,
+        //   guaranteedMonth: packageAsset.guaranteedMonth,
+        //   purposeOfUse: packageAsset.purposeOfUse,
+        //   allSector: packageAsset.allSector,
+        //   assetNumber: packageAsset.assetNumber,
+        //   sector: packageAsset.sector,
+        //   asset01: packageAsset.asset01,
+        //   serialNumber: packageAsset.serialNumber,
+        //   replacedAssetNumber: packageAsset.replacedAssetNumber,
+        //   type4: packageAsset.type4,
+        //   type8: packageAsset.type8,
+        //   type13: packageAsset.type13,
+        //   assetGroupNumber: packageAsset.assetGroupNumber
+        // });
 
-        setImg(packageAsset.imageArray[0].image);
-
-        setInput({
-          ...input,
-          engProductName: packageAsset.engProductName,
-          productName: packageAsset.productName,
-          type: packageAsset.type,
-          kind: packageAsset.kind,
-          realAssetId: packageAsset.realAssetId,
-          unit: packageAsset.unit,
-          brand: packageAsset.brand,
-          model: packageAsset.model,
-          size: packageAsset.size,
-          quantity: packageAsset.quantity,
-          source: packageAsset.source,
-          category: packageAsset.category,
-          acquiredType: packageAsset.acquiredType,
-          group: packageAsset.group,
-          pricePerUnit: packageAsset.pricePerUnit,
-          guaranteedMonth: packageAsset.guaranteedMonth,
-          purposeOfUse: packageAsset.purposeOfUse,
-          allSector: packageAsset.allSector,
-          assetNumber: packageAsset.assetNumber,
-          sector: packageAsset.sector,
-          asset01: packageAsset.asset01,
-          serialNumber: packageAsset.serialNumber,
-          replacedAssetNumber: packageAsset.replacedAssetNumber,
-          type4: packageAsset.type4,
-          type8: packageAsset.type8,
-          type13: packageAsset.type13,
-          assetGroupNumber: packageAsset.assetGroupNumber
-        });
-
-        setInsuranceStartDate(new Date(packageAsset.insuranceStartDate).toLocaleDateString("th", options));
-        setInsuranceExpiredDate(new Date(packageAsset.insuranceExpiredDate).toLocaleDateString("th", options));
+        setInsuranceStartDate(packageAsset.insuranceStartDate);
+        setInsuranceExpiredDate(packageAsset.insuranceExpiredDate);
 
         setQr(packageAsset.serialNumber);
         setBarcode(packageAsset.serialNumber);
@@ -345,7 +324,7 @@ const ViewPackageAssetInformation = () => {
         {/* Header */}
         <div className="flex items-center mr-10">
           <Link
-            to="/assetInformationIndex"
+            to="/packageAssetInformationIndex"
             className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
           >
             <BsArrowLeft className="text-lg" />
@@ -375,7 +354,9 @@ const ViewPackageAssetInformation = () => {
             <div className="text-text-gray ml-2">รายละเอียดครุภัณฑ์เป็นชุด</div>
           </div>
 
-
+          {input?.status == 'saveDraft'
+            && <div className="text-sm bg-gray-200 py-2 rounded-full px-4">แบบร่าง</div>
+          }
           <div ref={printRef} className="absolute -z-10">
             {barcode !== "" ? (
               <canvas id="mybarcode" ref={inputRef} className="w-full" />
@@ -398,67 +379,63 @@ const ViewPackageAssetInformation = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3 text-xs">
             {/* ชื่อครุภัณฑ์ภาษาไทย */}
             <div className="text-gray-500">ชื่อครุภัณฑ์ภาษาไทย</div>
-            <div>{input?.productName !== "" ? input?.productName : "-"}</div>
+            <div>{input?.productName ? input?.productName : "-"}</div>
             {/* ชื่อครุภัณฑ์ภาษาอังกฤษ */}
             <div className="text-gray-500">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
             <div>
-              {input?.engProductName !== "" ? input?.engProductName : "-"}
+              {input?.engProductName ? input?.engProductName : "-"}
             </div>
             {/* ประเภทครุภัณฑ์ */}
             <div className="text-gray-500">ประเภทครุภัณฑ์</div>
-            <div>{input?.type !== "" ? input?.type : "-"}</div>
+            <div>{input?.type ? input?.type : "-"}</div>
             {/* ชนิดครุภัณฑ์ */}
             <div className="text-gray-500">ชนิดครุภัณฑ์</div>
-            <div>{input?.kind !== "" ? input?.kind : "-"}</div>
+            <div>{input?.kind ? input?.kind : "-"}</div>
             {/* ยี่ห้อ */}
             <div className="text-gray-500">ยี่ห้อ</div>
-            <div>{input?.brand !== "" ? input?.brand : "-"}</div>
+            <div>{input?.brand ? input?.brand : "-"}</div>
             {/* รุ่น */}
             <div className="text-gray-500">รุ่น</div>
-            <div>{input?.model !== "" ? input?.model : "-"}</div>
+            <div>{input?.model ? input?.model : "-"}</div>
             {/* ขนาด */}
             <div className="text-gray-500">ขนาด</div>
-            <div>{input?.size !== "" ? input?.size : "-"}</div>
+            <div>{input?.size ? input?.size : "-"}</div>
             {/* หน่วยนับ */}
             <div className="text-gray-500">หน่วยนับ</div>
-            <div>{input?.unit !== "" ? input?.unit : "-"}</div>
+            <div>{input?.unit ? input?.unit : "-"}</div>
             {/* กลุ่ม */}
             <div className="text-gray-500">กลุ่ม</div>
-            <div>{input?.group !== "" ? input?.group : "-"}</div>
+            <div>{input?.group ? input?.group : "-"}</div>
             {/* หมวด */}
             <div className="text-gray-500">หมวด</div>
-            <div>{input?.category !== "" ? input?.category : "-"}</div>
+            <div>{input?.category ? input?.category : "-"}</div>
             {/* หน่วยงาน */}
             <div className="text-gray-500">หน่วยงาน</div>
-            <div>{input?.sector !== "" ? input?.sector : "-"}</div>
+            <div>{input?.sector ? input?.sector : "-"}</div>
             {/* ประเภทที่ได้มา */}
             <div className="text-gray-500">ประเภทที่ได้มา</div>
-            <div>{input?.acquiredType !== "" ? input?.acquiredType : "-"}</div>
+            <div>{input?.acquiredType ? input?.acquiredType : "-"}</div>
             {/* แหล่งที่ได้มา */}
             <div className="text-gray-500">แหล่งที่ได้มา</div>
-            <div>{input?.source !== "" ? input?.source : "-"}</div>
+            <div>{input?.source ? input?.source : "-"}</div>
             {/* วัตถุประสงค์การใช้งาน */}
             <div className="text-gray-500">วัตถุประสงค์การใช้งาน</div>
-            <div>{input?.purposeOfUse !== "" ? input?.purposeOfUse : "-"}</div>
+            <div>{input?.purposeOfUse ? input?.purposeOfUse : "-"}</div>
             {/* วันที่เริ่มรับประกัน */}
             <div className="text-gray-500">วันที่เริ่มรับประกัน</div>
             <div>
-              {insuranceStartDate
-                ? insuranceStartDate
-                : "-"}
+              {insuranceStartDate ? new Date(insuranceStartDate).toLocaleDateString('th', options) : '-'}
             </div>
             {/* วันที่สิ้นสุดการรับประกัน */}
             <div className="text-gray-500">วันที่สิ้นสุดการรับประกัน</div>
             <div>
-              {insuranceExpiredDate
-                ? insuranceExpiredDate
-                : "-"}
+              {insuranceExpiredDate ? new Date(insuranceExpiredDate).toLocaleDateString('th', options) : '-'}
             </div>
 
             {/* ระยะเวลารับประกัน(เดือน) */}
             <div className="text-gray-500">ระยะเวลารับประกัน(เดือน)</div>
             <div>
-              {input?.guaranteedMonth !== "" ? input?.guaranteedMonth : "-"}
+              {input?.guaranteedMonth ? input?.guaranteedMonth : "-"}
             </div>
             {/* ประเภทครุภัณฑ์ 4 หลัก */}
             <div className="text-gray-500">ประเภทครุภัณฑ์ 4 หลัก</div>
@@ -472,14 +449,14 @@ const ViewPackageAssetInformation = () => {
             {/* แทนครุภัณฑ์ที่ถูกแทงจำหน่าย */}
             <div className="text-gray-500">แทนครุภัณฑ์ที่ถูกแทงจำหน่าย</div>
             <div>
-              {input?.replacedAssetNumber !== ""
+              {input?.replacedAssetNumber
                 ? input?.replacedAssetNumber
                 : "-"}
             </div>
             {/* รหัสกลุ่มครุภัณฑ์ */}
             <div className="text-gray-500">รหัสกลุ่มครุภัณฑ์</div>
             <div>
-              {input?.assetGroupNumber !== "" ? input?.assetGroupNumber : "-"}
+              {input?.assetGroupNumber ? input?.assetGroupNumber : "-"}
             </div>
           </div>
 
@@ -616,26 +593,26 @@ const ViewPackageAssetInformation = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3 text-xs">
             {/* วิธีการได้มา */}
             <div className="text-gray-500">วิธีการได้มา</div>
-            <div>{acquisitionMethod !== "" ? acquisitionMethod : "-"}</div>
+            <div>{acquisitionMethod ? acquisitionMethod : "-"}</div>
             {/* ประเภทเงิน */}
             <div className="text-gray-500">ประเภทเงิน</div>
-            <div>{moneyType !== "" ? moneyType : "-"}</div>
+            <div>{moneyType ? moneyType : "-"}</div>
             {/* เลขที่สัญญา */}
             <div className="text-gray-500">เลขที่สัญญา</div>
-            <div>{contractNumber !== "" ? contractNumber : "-"}</div>
+            <div>{contractNumber ? contractNumber : "-"}</div>
             {/* เอกสารใบส่งของ */}
             <div className="text-gray-500">เอกสารใบส่งของ</div>
-            <div>{deliveryDocument !== "" ? deliveryDocument : "-"}</div>
+            <div>{deliveryDocument ? deliveryDocument : "-"}</div>
             {/* ผู้ขาย */}
             <div className="text-gray-500">ผู้ขาย</div>
-            <div>{seller !== "" ? seller : "-"}</div>
+            <div>{seller ? seller : "-"}</div>
             {/* เลขที่ใบเบิก */}
             <div className="text-gray-500">เลขที่ใบเบิก</div>
-            <div>{billNumber !== "" ? billNumber : "-"}</div>
+            <div>{billNumber ? billNumber : "-"}</div>
             {/* วันที่ซื้อ */}
             <div className="text-gray-500">วันที่ซื้อ</div>
             <div>
-              {purchaseDate !== ""
+              {purchaseDate
                 ? purchaseDate
                 : "-"}
             </div>
@@ -648,11 +625,11 @@ const ViewPackageAssetInformation = () => {
             </div>
             {/* ราคาซื้อ (บาท) */}
             <div className="text-gray-500">ราคาซื้อ (บาท)</div>
-            <div>{price !== "" ? price : "-"}</div>
+            <div>{price ? price : "-"}</div>
             {/* ปีงบประมาณที่ซื้อ */}
             <div className="text-gray-500">ปีงบประมาณที่ซื้อ</div>
             <div>
-              {new Date((purchaseYear)).getFullYear()}
+              {new Date((purchaseYear)).getFullYear()} {purchaseYear}
             </div>
             {/* วันที่ลงเอกสาร */}
             <div className="text-gray-500">วันที่ลงเอกสาร</div>
@@ -670,27 +647,27 @@ const ViewPackageAssetInformation = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3 text-xs">
             {/* เอกสารจำหน่าย */}
             <div className="text-gray-500">เอกสารจำหน่าย</div>
-            <div>{salesDocument !== "" ? salesDocument : "-"}</div>
+            <div>{salesDocument ? salesDocument : "-"}</div>
             {/* เอกสารลงวันที่ */}
             <div className="text-gray-500">เอกสารลงวันที่</div>
             <div>
-              {distributeDocumentDate !== ""
+              {distributeDocumentDate
                 ? distributeDocumentDate
                 : "-"}
             </div>
             {/* วันอนุมัติจำหน่าย */}
             <div className="text-gray-500">วันอนุมัติจำหน่าย</div>
             <div>
-              {distributeApprovalReleaseDate !== ""
+              {distributeApprovalReleaseDate
                 ? distributeApprovalReleaseDate
                 : "-"}
             </div>
             {/* สถานะ */}
             <div className="text-gray-500">สถานะ</div>
-            <div>{distributeStatus !== "" ? distributeStatus : "-"}</div>
+            <div>{distributeStatus ? distributeStatus : "-"}</div>
             {/* หมายเหตุ */}
             <div className="text-gray-500">หมายเหตุ</div>
-            <div>{distributionNote !== "" ? distributionNote : "-"}</div>
+            <div>{distributionNote ? distributionNote : "-"}</div>
           </div>
         </div>
 
@@ -735,33 +712,35 @@ const ViewPackageAssetInformation = () => {
 
         <div className="bg-white rounded-lg mx-10 my-3 p-4">
           <div className="font-semibold mb-3">ประวัติสถานที่ตั้ง</div>
-          <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-            <div className="w-[1000px] lg:w-full max-h-[400px] ">
-              <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                <div className="grid grid-cols-12 gap-2 text-center">
-                  <div className="ml-2">ลำดับ</div>
-                  <div className="col-span-4">อาคาร</div>
-                  <div className="">ชั้น</div>
-                  <div className="col-span-2">ห้อง</div>
-                  <div className="col-span-2">วันที่ย้ายเข้า</div>
-                  <div className="col-span-2">วันที่ย้ายออก</div>
+          {!borrowHistoryList.length ? <div className="text-center pb-5">-</div> :
+            <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
+              <div className="w-[1000px] lg:w-full max-h-[400px] ">
+                <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+                  <div className="grid grid-cols-12 gap-2 text-center">
+                    <div className="ml-2">ลำดับ</div>
+                    <div className="col-span-4">อาคาร</div>
+                    <div className="">ชั้น</div>
+                    <div className="col-span-2">ห้อง</div>
+                    <div className="col-span-2">วันที่ย้ายเข้า</div>
+                    <div className="col-span-2">วันที่ย้ายออก</div>
+                  </div>
                 </div>
+                {buildingData?.map((el, idx) => {
+                  return (
+                    <RowOfTableBuildingHistory
+                      key={idx}
+                      index={idx}
+                      building={buildingData[idx]?.building}
+                      floor={buildingData[idx]?.floor}
+                      room={buildingData[idx]?.room}
+                      moveInDate={buildingData[idx]?.moveInDate}
+                      moveOutDate={buildingData[idx]?.moveOutDate}
+                    />
+                  );
+                })}
               </div>
-              {buildingData?.map((el, idx) => {
-                return (
-                  <RowOfTableBuildingHistory
-                    key={idx}
-                    index={idx}
-                    building={buildingData[idx]?.building}
-                    floor={buildingData[idx]?.floor}
-                    room={buildingData[idx]?.room}
-                    moveInDate={buildingData[idx]?.moveInDate}
-                    moveOutDate={buildingData[idx]?.moveOutDate}
-                  />
-                );
-              })}
             </div>
-          </div>
+          }
         </div>
 
         {/* Modal */}

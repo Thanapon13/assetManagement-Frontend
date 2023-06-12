@@ -9,7 +9,7 @@ import { CgPushChevronRight } from "react-icons/cg";
 import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
 import DateInput from '../components/date/DateInput'
 import RowOfTablePackageIndex from '../components/table/RowOfTablePackageIndex'
-import { deletePackageAsset, getAllPackageAsset, getPackageAssetBySearch } from "../api/packageAssetApi";
+import { deletePackageAsset, getAllPackageAsset, getPackageAssetBySearch, getSectorOfPackageAsset } from "../api/packageAssetApi";
 import SearchSelector from '../components/selector/SearchSelector';
 import { getSector } from '../api/masterApi';
 import { IoIosClose } from 'react-icons/io';
@@ -87,7 +87,7 @@ const PackageAssetInformationIndex = () => {
       if (paginationSearchObj) {
         res = await getPackageAssetBySearch(paginationSearchObj);
       } else {
-        res = await getPackageAssetBySearch(search);
+        res = await getPackageAssetBySearch({ ...search, page: 1, sector: search.sector || "" });
       }
       console.log(res.data.packageAsset);
 
@@ -150,10 +150,10 @@ const PackageAssetInformationIndex = () => {
 
   const [sectorArray, setSectorArray] = useState([])
   async function getMaster() {
-    const sector = await getSector()
+    const sector = await getSectorOfPackageAsset()
     const arrSector = []
     sector.data.sector.map(ele => {
-      arrSector.push({ label: ele.name, value: ele.name })
+      arrSector.push({ label: ele.sector, value: ele.sector })
     })
     setSectorArray(arrSector)
   }
@@ -226,6 +226,7 @@ const PackageAssetInformationIndex = () => {
             <option value="repair">ซ่อม</option>
             <option value="sell">จำหน่าย</option>
             <option value="">แทงจำหน่าย</option>
+            <option value="saveDraft">แบบร่าง</option>
           </select>
         </div>
 
@@ -255,7 +256,7 @@ const PackageAssetInformationIndex = () => {
           <SearchSelector
             options={sectorArray}
             placeholder={"หน่วยงานที่โอน"}
-            name={"transferSector"}
+            name={"sector"}
             onChange={(value, label) => setSearch({ ...search, [label]: value })}
             floatLabel
           />
@@ -300,7 +301,7 @@ const PackageAssetInformationIndex = () => {
             return (
               <RowOfTablePackageIndex
                 key={idx}
-                index={idx}
+                index={search.page * (search.limit) - (search.limit - idx) + 1}
                 _id={el._id}
                 realAssetId={el.realAssetId}
                 assetNumber={el.assetNumber}
@@ -324,63 +325,57 @@ const PackageAssetInformationIndex = () => {
               confirmDelete={handleDelete}
             />
           }
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-center mr-10">
-              <div>Rows per page:</div>
-              <select
-                id="limit"
-                name="limit"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={handlePaginationSearch}
+          {!packageAssetList.length
+            ? <center className='p-5'>-</center>
+            : <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+              <div className="flex items-center">
+                <div>Rows per page:</div>
+                <select
+                  id="limit"
+                  name="limit"
+                  className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handlePaginationSearch}
+                >
+                  <option value="5">5</option>
+                  <option value="10" selected="selected">
+                    10
+                  </option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+
+              <div className="mx-5">
+                {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + packageAssetList.length} of {search.total}
+              </div>
+
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handleFirstPage}
               >
-                {/* <option value="" selected disabled hidden>
-            ประเภทครุภัณฑ์
-          </option> */}
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10" selected="selected">
-                  10
-                </option>
-              </select>
+                <CgPushChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handlePageDecrease}
+              >
+                <HiChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handlePageIncrease}
+              >
+                <HiChevronRight className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handleLastPage}
+              >
+                <CgPushChevronRight className="text-lg font-bold" />
+              </button>
             </div>
-
-            <div>
-              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + packageAssetList.length} of
-              {search.total}
-            </div>
-
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handleFirstPage}
-            >
-              <CgPushChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handlePageDecrease}
-            >
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handlePageIncrease}
-            >
-              <HiChevronRight className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handleLastPage}
-            >
-              <CgPushChevronRight className="text-lg font-bold" />
-            </button>
-          </div>
+          }
         </div>
       </div>
     </div>
@@ -447,14 +442,16 @@ function ModalDeleteAsset(props) {
                     {elem.pricePerUnit}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-6 p-2">
-                  <div className="text-text-gray flex items-center">
-                    สาเหตุที่ยกเลิก
+                {elem.status != "saveDraft" &&
+                  <div className="grid grid-cols-2 md:grid-cols-6 p-2">
+                    <div className="text-text-gray flex items-center">
+                      สาเหตุที่ยกเลิก
+                    </div>
+                    <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                      onChange={e => setRemark(e.target.value)}
+                    />
                   </div>
-                  <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
-                    onChange={e => setRemark(e.target.value)}
-                  />
-                </div>
+                }
               </div>
             </div>
 

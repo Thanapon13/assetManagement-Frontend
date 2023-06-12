@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Selector from "../components/selector/Selector";
 import RowOfTableArray from "../components/table/RowOfTableArray";
 import { BsArrowLeft } from "react-icons/bs";
@@ -11,7 +11,7 @@ import docIcon from "../public/pics/docIcon.png";
 import Modal from "../components/modal/Modal";
 import DeprecationDropdown from "../components/dropdown/DeprecationDropdown";
 import { ToastContainer, toast } from "react-toastify";
-import { createPackageAsset } from "../api/packageAssetApi";
+import { createPackageAsset, getPackageAssetById, updatePackageAsset } from "../api/packageAssetApi";
 import BarcodeScanner from "../components/scanner/BarcodeScanner";
 import QRscanner from "../components/scanner/QRscanner";
 import { useEffect } from "react";
@@ -22,10 +22,11 @@ import OnlyDateInput from "../components/date/onlyDateInput";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import { IoIosClose } from "react-icons/io";
-import { getType13, getType4, getType8, getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getKindAll, getPurposeOfUse, getSector, getSourceData, getSubsector, getTypeData, getMoneyType } from "../api/masterApi";
+import { getType13, getType4, getType8, getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getKindAll, getPurposeOfUse, getSector, getSourceData, getSubsector, getTypeData, getMoneyType, getCountingUnit } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import { getByAssetNumberSelector } from "../api/assetApi";
 import YearInput from "../components/date/YearInput";
+import { getDropdownMerchant } from "../api/merchant";
 
 const PackageAssetInformation = () => {
   const inputImg = useRef();
@@ -43,7 +44,7 @@ const PackageAssetInformation = () => {
   const [subSectorList, setSubSectorList] = useState([])
   const [typeList, setTypeList] = useState([])
   const [kindList, setKindList] = useState([])
-  // หน่วยนับ
+  const [countingUnitList, setCountingUnitList] = useState([])
   const [brandList, setBrandList] = useState([])
   const [categoryList, setCategoryList] = useState([])
   const [groupList, setGroupList] = useState([])
@@ -52,21 +53,26 @@ const PackageAssetInformation = () => {
   const [purposeOfUseList, setPurposeOfUseList] = useState([])
   const [acquisitionMethodList, setAcquisitionMethodList] = useState([])
   const [moneyTypeList, setMoneyTypeList] = useState([])
-  // ผู้ขาย
+  const [merchantList, setMerchantList] = useState([])
   // สถานะ?
   const [type4List, setType4List] = useState([])
   const [type8List, setType8List] = useState([])
   const [type13List, setType13List] = useState([])
+
+  const param = useParams()
   useEffect(() => {
     getMasterData()
+    if (param.id) initData()
   }, [])
+  
+  async function initData() {
+    const res = await getPackageAssetById(param.id);
+    console.log(res.data.packageAsset)
+    setInput(res.data.packageAsset[0])
+  }
 
   const handleSelect = (value, label, ele) => {
-    if (label == "kind" || label == "type" || label == "category") {
-      setInput({ ...input, [label]: ele })
-    } else {
-      setInput({ ...input, [label]: value })
-    }
+    setInput({ ...input, [label]: value })
   }
 
   const getMasterData = async () => {
@@ -115,6 +121,12 @@ const PackageAssetInformation = () => {
     const moneyType = await getMoneyType()
     const arrMoneyType = formArrayOption(moneyType.data.moneyType)
     setMoneyTypeList(arrMoneyType)
+    const countingUnit = await getCountingUnit()
+    const arrCountingUnit = formArrayOption(countingUnit.data.countingUnit)
+    setCountingUnitList(arrCountingUnit)
+    const merchantList = await getDropdownMerchant()
+    const arrMerchantList = formArrayOption(merchantList.data.merchant)
+    setMerchantList(arrMerchantList)
   }
 
   function formArrayOption(data) {
@@ -546,15 +558,16 @@ const PackageAssetInformation = () => {
     setErrorContract(errContract)
     setErrorSale(errSale)
     if (errInput) window.scrollTo({ top: 170, behavior: "smooth", });
+    console.log(errInput , errContract , errSale , errTable, inputContract, inputSale)
     if (!(errInput || errContract || errSale || errTable)) setShowModalConfirm(true)
   }
 
   const handleSubmit = async (valStatus) => {
     const arrInput = {
       ...input,
-      category: input.category.name,
-      kind: input.kind.name,
-      type: input.type.name,
+      // category: input.category.name,
+      // kind: input.kind.name,
+      // type: input.type.name,
       status: valStatus || "not approve"
     }
     const inputJSON = JSON.stringify({ ...arrInput, ...inputSale, ...inputContract });
@@ -752,11 +765,16 @@ const PackageAssetInformation = () => {
     formData.append("distributeStatus", inputSale.distributeStatus);
     formData.append("distributionNote", inputSale.distributionNote);
 
-    const response = await createPackageAsset(formData);
-    if (response.data.message.includes("created successful")) {
+    let response
+    if (!param.id) {
+      response = await createPackageAsset(formData)
+    } else {
+      response = await updatePackageAsset(formData, param.id)
+    }
+    // if (response.data.message.includes("created successful")) {
       setShowModalConfirm(false)
       setShowModalSuccess(true)
-    }
+    // }
   };
 
   useEffect(() => {
@@ -840,7 +858,7 @@ const PackageAssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.type}
-                value={(input.type) && { label: input.type.name, value: input.type.name }}
+                value={(input.type) && { label: input.type, value: input.type }}
               />
               <div className="text-red-500 pt-1">{errorGen && !input.type && `*โปรดระบุ`}</div>
             </div>
@@ -852,7 +870,7 @@ const PackageAssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.kind}
-                value={(input.kind) && { label: input.kind.name, value: input.kind.name }}
+                value={(input.kind) && { label: input.kind, value: input.kind }}
               />
               <div className="text-red-500 pt-1">{errorGen && !input.kind && `*โปรดระบุ`}</div>
             </div>
@@ -885,7 +903,7 @@ const PackageAssetInformation = () => {
               <div>
                 <div className="mb-1">หน่วยนับ</div>
                 <SearchSelector
-                  // options={}
+                  options={countingUnitList}
                   name="unit"
                   onChange={handleSelect}
                   noClearButton
@@ -935,7 +953,7 @@ const PackageAssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.category}
-                value={(input.category) && { label: input.category.name, value: input.category.name }}
+                value={(input.category) && { label: input.category, value: input.category }}
               />
               <div className="text-red-500 pt-1">{errorGen && !input.category && `*โปรดระบุ`}</div>
             </div>
@@ -1064,7 +1082,6 @@ const PackageAssetInformation = () => {
                 options={sectorList}
                 name="distributeToSector"
                 onChange={handleSelect}
-                noClearButton
               // error={errorInput && !input.distributeToSector}
               />
             </div>
@@ -1276,7 +1293,7 @@ const PackageAssetInformation = () => {
               <SearchSelector
                 options={acquisitionMethodList}
                 name="acquisitionMethod"
-                onChange={handleSelect}
+                onChange={(value) => handleChangeSelectContract("acquisitionMethod", value)}
                 noClearButton
                 error={errorInput && !input.acquisitionMethod}
               />
@@ -1286,7 +1303,7 @@ const PackageAssetInformation = () => {
               <SearchSelector
                 options={moneyTypeList}
                 name="moneyType"
-                onChange={handleSelect}
+                onChange={(value) => handleChangeSelectContract("moneyType", value)}
                 noClearButton
                 error={errorInput && !input.moneyType}
               />
@@ -1318,11 +1335,11 @@ const PackageAssetInformation = () => {
             <div>
               <div className="mb-1">ผู้ขาย</div>
               <SearchSelector
-                // options={sellerList}
+                  options={merchantList}
                 name="seller"
-                onChange={handleSelect}
+                onChange={(value) => handleChangeSelectContract("seller", value)}
                 noClearButton
-                error={errorInput && !input.seller}
+                error={errorContract && !inputContract.seller}
               />
             </div>
             <div className="grid grid-cols-2 gap-1">
@@ -1426,10 +1443,11 @@ const PackageAssetInformation = () => {
               <div className="mb-1">สถานะ</div>
               <SearchSelector
                 // options={distributeStatusList}
+                options={[{ label: "(สถานะ)", value: "(สถานะ)" }]}
                 name="distributeStatus"
-                onChange={handleSelect}
+                onChange={(value) => handleChangeSelectSale("distributeStatus", value)}
                 noClearButton
-                error={errorInput && !input.distributeStatus}
+                error={errorSale && !inputSale.distributeStatus}
               />
             </div>
 

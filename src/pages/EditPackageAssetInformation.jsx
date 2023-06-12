@@ -20,8 +20,10 @@ import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import { IoIosClose } from "react-icons/io";
 import YearInput from "../components/date/YearInput";
-import { getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getGroupData, getMoneyType, getPurposeOfUse, getSector, getSourceData, getType13, getType4, getType8 } from "../api/masterApi";
+import { getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getCountingUnit, getGroupData, getMoneyType, getPurposeOfUse, getSector, getSourceData, getType13, getType4, getType8 } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
+import { Spinner } from "flowbite-react";
+import { getDropdownMerchant } from "../api/merchant";
 
 const EditPackageAssetInformation = () => {
   const { packageAssetId } = useParams();
@@ -69,7 +71,7 @@ const EditPackageAssetInformation = () => {
     status: "not approve",
   });
 
-  // หน่วยนับ
+  const [countingUnitList, setCountingUnitList] = useState([])
   const [brandList, setBrandList] = useState([])
   const [categoryList, setCategoryList] = useState([])
   const [groupList, setGroupList] = useState([])
@@ -82,9 +84,12 @@ const EditPackageAssetInformation = () => {
   const [type4List, setType4List] = useState([])
   const [type8List, setType8List] = useState([])
   const [type13List, setType13List] = useState([])
+  const [merchantList, setMerchantList] = useState([])
 
   const getMasterData = async () => {
-
+    const countingUnit = await getCountingUnit()
+    const arrCountingUnit = formArrayOption(countingUnit.data.countingUnit)
+    setCountingUnitList(arrCountingUnit)
     const brand = await getBrandData()
     const arrBrand = formArrayOption(brand.data.brand)
     setBrandList(arrBrand)
@@ -112,7 +117,9 @@ const EditPackageAssetInformation = () => {
     const sector = await getSector()
     const arrSector = formArrayOption(sector.data.sector)
     setSectorList(arrSector)
-    // merchant
+    const merchantList = await getDropdownMerchant()
+    const arrMerchantList = formArrayOption(merchantList.data.merchant)
+    setMerchantList(arrMerchantList)
     // status
     const type4 = await getType4()
     const arrType4 = formArrayOption(type4.data.type4)
@@ -727,9 +734,11 @@ const EditPackageAssetInformation = () => {
           distributionNote: packageAsset.distribution.distributionNote
         })
 
-        if (packageAsset) setIsLoading(false)
+        // if (packageAsset) 
+        setIsLoading(false)
       } catch (err) {
         console.log(err);
+        setIsLoading(false)
       }
     };
     fetchPackageAssetById();
@@ -737,7 +746,6 @@ const EditPackageAssetInformation = () => {
   }, []);
 
   useEffect(() => {
-    // console.log(2);
     if (arrayImage.length < 1) return;
     const newImageUrls = [];
     arrayImage.forEach((img) => {
@@ -791,7 +799,7 @@ const EditPackageAssetInformation = () => {
         </div>
 
         {isLoading
-          ? '...'
+          ?<div className="mt-5 min-h-[70vh] w-full text-center"><Spinner size="xl" /></div>
           : <>
 
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
@@ -866,15 +874,14 @@ const EditPackageAssetInformation = () => {
                 {/* หน่วยนับ */}
                 <div>
                   <div className="mb-1">หน่วยนับ</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={input}
-                      setState={setInput}
-                      id={"หน่วยนับ"}
-                      isValid={!input.unit}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={countingUnitList}
+                    name="unit"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.unit}
+                    value={{ label: input.unit, value: input.unit }}
+                  />
                 </div>
 
                 <div>
@@ -1044,6 +1051,11 @@ const EditPackageAssetInformation = () => {
                     value={{ label: input.type4, value: input.type4 }}
                     isDisabled
                   />
+                  {/* <input
+                    disabled
+                    value={input.type4}
+                    className={`${!input.type4 && 'border-red-500'}  w-full h-[38px] bg-gray-200 pl-2 rounded-md`}
+                  /> */}
                 </div>
                 <div>
                   <div className="mb-1">ประเภทครุภัณฑ์ 8 หลัก</div>
@@ -1056,6 +1068,11 @@ const EditPackageAssetInformation = () => {
                     value={{ label: input.type8, value: input.type8 }}
                     isDisabled
                   />
+                  {/* <input
+                    value={input.type8}
+                    className={`${!input.type8 && 'border-red-500'}  w-full h-[38px] bg-gray-200 pl-2 rounded-md`}
+                    disabled
+                  /> */}
                 </div>
 
                 <div>
@@ -1069,6 +1086,11 @@ const EditPackageAssetInformation = () => {
                     value={{ label: input.type13, value: input.type13 }}
                     isDisabled
                   />
+                  {/* <input
+                    disabled
+                    value={input.type13}
+                    className={`${!input.type13 && 'border-red-500'}  w-full h-[38px] bg-gray-200 pl-2 rounded-md`}
+                  /> */}
                 </div>
 
                 <div>
@@ -1090,9 +1112,7 @@ const EditPackageAssetInformation = () => {
                     options={sectorList}
                     name="type"
                     onChange={handleSelect}
-                    noClearButton
-                    error={!input.replacedAssetNumber}
-                    value={{ label: input.replacedAssetNumber, value: input.replacedAssetNumber }}
+                    value={input.replacedAssetNumber && { label: input.replacedAssetNumber, value: input.replacedAssetNumber }}
                   />
                 </div>
 
@@ -1271,7 +1291,7 @@ const EditPackageAssetInformation = () => {
                     </div>
                   </div>
                   {/* file upload คู่มือและเอกสารแนบ*/}
-                  <div className="col-span-4 sm:mt-5 max-h-72 overflow-y-auto">
+                  <div className="col-span-4 sm:mt-5 max-h-72 overflow-y-auto scrollbar">
                     {arrayDocument.map((el, idx) => (
                       <div
                         key={idx}
@@ -1357,15 +1377,14 @@ const EditPackageAssetInformation = () => {
                 {/* ผู้ขาย */}
                 <div>
                   <div className="mb-1">ผู้ขาย</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={inputContract.seller}
-                      setState={value => handleChangeSelectContract("seller", value)}
-                      isValid={!inputContract.seller}
-                      id={"ผู้ขาย"}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={merchantList}
+                    name="seller"
+                    onChange={value => handleChangeSelectContract("seller", value)}
+                    noClearButton
+                    error={!inputContract.seller}
+                    value={{ label: inputContract.seller, value: inputContract.seller }}
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-1">
                   {/* วันที่ซื้อ */}
@@ -1397,7 +1416,7 @@ const EditPackageAssetInformation = () => {
                     name="price"
                     id="price"
                     onChange={handleChangeContract}
-                    value={inputContract.price}
+                    value={inputContract.price?.toLocaleString("en-US", { style: "currency", currency: "THB" }).replace("THB", "")}
                     className={`${!inputContract.price && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
                   />
                 </div>
@@ -1482,15 +1501,14 @@ const EditPackageAssetInformation = () => {
                 {/* สถานะ */}
                 <div>
                   <div className="mb-1">สถานะ</div>
-                  <div className="flex h-[38px] ">
-                    <Selector
-                      placeholder={"Select"}
-                      state={inputSale.distributeStatus}
-                      setState={(value) => handleChangeSelectSale("distributeStatus", value)}
-                      id={"สถานะ"}
-                      isValid={!inputSale.distributeStatus}
-                    />
-                  </div>
+                  <SearchSelector
+                    options={[{ label: '(test)', value: '(test)' }]}
+                    name="distributeStatus"
+                    onChange={value => handleChangeSelectSale("distributeStatus", value)}
+                    noClearButton
+                    error={!inputSale.distributeStatus}
+                    value={{ label: inputSale.distributeStatus, value: inputSale.distributeStatus }}
+                  />
                 </div>
                 {/* หมายเหตุ */}
                 <div>
