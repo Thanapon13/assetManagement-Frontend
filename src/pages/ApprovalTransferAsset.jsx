@@ -258,83 +258,86 @@ const ApprovalTransferAsset = () => {
               <div className=" text-lg">รายการคำขอที่จัดการแล้ว</div>
               {/* <div className="inline-flex mt-2">
                 <div className="inline-flex items-center space-x-10"> */}
-                  {!!bottomApprovedList.length &&
-                    <div className="inline-flex space-x-5 md:ml-5 mt-2">
-                      <button
-                        className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${search.listStatus.includes("approve")
-                          ? "border-2 border-green-800 "
-                          : ""
-                          } `}
-                        onClick={() => handleListStatusChange("approve")}
+              {!!bottomApprovedList.length &&
+                <div className="inline-flex space-x-5 md:ml-5 mt-2">
+                  <button
+                    className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${search.listStatus.includes("approve")
+                      ? "border-2 border-green-800 "
+                      : ""
+                      } `}
+                    onClick={() => handleListStatusChange("approve")}
+                  >
+                    อนุมัติแล้ว
+                    <div className="ml-2 ">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        อนุมัติแล้ว
-                        <div className="ml-2 ">
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
-                              fill="#38821D"
-                            />
-                          </svg>
-                        </div>
-                      </button>
-                      <button
-                        className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${search.listStatus.includes("reject")
-                          ? "border-2 border-red-800 "
-                          : ""
-                          }`}
-                        onClick={() => handleListStatusChange("reject")}
-                      >
-                        ไม่อนุมัติ
-                        <div className="ml-2">
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
-                              fill="#CE4646"
-                            />
-                          </svg>
-                        </div>
-                      </button>
-                      <button
-                        className={`flex text-orange-400 bg-orange-100 p-2 border rounded-2xl  ${search.listStatus.includes("partiallyApprove")
-                          ? "border-2 border-orange-800 "
-                          : ""
-                          }`}
-                        onClick={() => handleListStatusChange("partiallyApprove")}
-                      >
-                        อนุมัติบางส่วน
-                        <div className="ml-2">
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
-                              fill="#F2994A"
-                            />
-                          </svg>
-                        </div>
-                      </button>
+                        <path
+                          d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                          fill="#38821D"
+                        />
+                      </svg>
                     </div>
-                  }
-                {/* </div>
+                  </button>
+                  <button
+                    className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${search.listStatus.includes("reject")
+                      ? "border-2 border-red-800 "
+                      : ""
+                      }`}
+                    onClick={() => handleListStatusChange("reject")}
+                  >
+                    ไม่อนุมัติ
+                    <div className="ml-2">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                          fill="#CE4646"
+                        />
+                      </svg>
+                    </div>
+                  </button>
+                  <button
+                    className={`flex text-orange-400 bg-orange-100 p-2 border rounded-2xl  ${search.listStatus.includes("partiallyApprove")
+                      ? "border-2 border-orange-800 "
+                      : ""
+                      }`}
+                    onClick={() => handleListStatusChange("partiallyApprove")}
+                  >
+                    อนุมัติบางส่วน
+                    <div className="ml-2">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                          fill="#F2994A"
+                        />
+                      </svg>
+                    </div>
+                  </button>
+                </div>
+              }
+              {/* </div>
               </div> */}
             </div>
-            <TransferBottomApprovedListItem data={bottomApprovedList} />
+            {!bottomApprovedList.length
+              ? <center className='p-5'>-</center>
+              : <TransferBottomApprovedListItem data={bottomApprovedList} />
+            }
           </div>
         </div>
       </div>
@@ -580,7 +583,7 @@ const ModalIndividualReject = ({ item, state, setState, index, setIsFetch }) => 
 
   const handleReject = async (e) => {
     e.preventDefault()
-    if(!state[index].reason)  {
+    if (!state[index].reason) {
       setError(true)
       return
     }

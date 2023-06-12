@@ -9,7 +9,7 @@ import RowOfTableTransferIndex from "../components/table/RowOfTableTransferIndex
 import SearchSelector from "../components/selector/SearchSelector";
 import Select from "react-select";
 import { useEffect } from "react";
-import { deleteTransfer, getAllTransfer, getTransferAssetBySearch } from "../api/transferApi";
+import { deleteTransfer, getAllTransfer, getSectorOfTransfer, getSectorOfTransferee, getTransferAssetBySearch } from "../api/transferApi";
 import { getSector } from "../api/masterApi";
 import ModalReasonDelete from "../components/modal/ModalReasonDelete";
 import { Spinner } from "flowbite-react/lib/esm";
@@ -39,13 +39,13 @@ const TransferIndex = () => {
     dateFrom: "",
     dateTo: new Date(),
     sector: "",
-    sector: "",
     page: "",
     limit: 10,
     total: 0,
   });
   const [transferArray, setTransferArray] = useState([])
-  const [sectorArray, setSectorArray] = useState([])
+  const [transferSectorArray, setTransferSectorArray] = useState([])
+  const [transfereeSectorArray, setTransfereeSectorArray] = useState([])
   const [showModalDelete, setShowModalDelete] = useState(false)
   const [reasonDelete, setReasonDelete] = useState("")
   const [isLoading, setIsLoading] = useState(true)
@@ -57,12 +57,18 @@ const TransferIndex = () => {
     const response = await getAllTransfer()
     setTransferArray(response.data.transfer)
 
-    const sector = await getSector()
-    const arrSector = []
-    sector.data.sector.map(ele => {
-      arrSector.push({ label: ele.name, value: ele.name })
+    const sectorTransfer = await getSectorOfTransfer()
+    const transferSector = []
+    sectorTransfer.data.transferSector.map(ele => {
+      transferSector.push({ label: ele.transferSector, value: ele.transferSector })
     })
-    setSectorArray(arrSector)
+    setTransferSectorArray(transferSector)
+    const sectorTransferee = await getSectorOfTransferee()
+    const transfereeSector = []
+    sectorTransferee.data.transfereeSector.map(ele => {
+      transfereeSector.push({ label: ele.transfereeSector, value: ele.transfereeSector })
+    })
+    setTransfereeSectorArray(transfereeSector)
     setIsLoading(false)
   }
 
@@ -215,7 +221,7 @@ const TransferIndex = () => {
 
         <div className="md:col-span-3">
           <SearchSelector
-            options={sectorArray}
+            options={transferSectorArray}
             placeholder={"หน่วยงานที่โอน"}
             name={"transferSector"}
             onChange={handleSelect}
@@ -225,7 +231,7 @@ const TransferIndex = () => {
         <div className="md:col-span-3">
           <SearchSelector
             placeholder={"หน่วยงานรับโอน"}
-            options={sectorArray}
+            options={transfereeSectorArray}
             onChange={handleSelect}
             name="transfereeSector"
             floatLabel
@@ -249,7 +255,7 @@ const TransferIndex = () => {
         {isLoading
           ? <div className="mt-5 py-10 w-full text-center"><Spinner size="xl" /></div>
           :
-          <div className="w-[1200px] 2xl:w-full  ">
+          <div className="w-[1100px] 2xl:w-full  ">
             <div>
               <div className="flex p-4">
                 <div className=" text-sm text-text-gray">ผลการค้นหา </div>
@@ -294,55 +300,47 @@ const TransferIndex = () => {
               onClose={() => setShowModalDelete(false)}
               onSubmit={submitDelete}
             />
+            {!transferArray.length
+              ? <center className='p-5'>-</center>
+              : <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+                <div className="flex items-center">
+                  <div>Rows per page:</div>
+                  <select
+                    id="limit"
+                    name="limit"
+                    className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  // onChange={handlePaginationSearch}
+                  >
+                    <option value="5">5</option>
+                    <option value="10" selected="selected">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
 
-            <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-              <div className="flex items-end mr-10">
-                <div>Rows per page:</div>
-                <select
-                  id="perPage"
-                  name="limit"
-                  className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  // onChange={(e) => setPerPage(e.target.value)}
-                  onChange={handleChange}
+                <div className="mx-5">
+                  {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + transferArray.length} of {search.total}
+                </div>
+
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
+                // onClick={() => {
+                //   deleteRow(index)
+                // }}
                 >
-                  {/* <option value="" selected disabled hidden>
-            ประเภทครุภัณฑ์
-          </option> */}
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10" selected="selected">
-                    10
-                  </option>
-                </select>
+                  <HiChevronLeft className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
+                // onClick={() => {
+                //   deleteRow(index)
+                // }}
+                >
+                  <HiChevronRight className="text-lg" />
+                </button>
               </div>
-
-              {/* <div>1-{perPage} of 13</div> */}
-              <div>1-{search.limit} of {search.total}</div>
-
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-              // onClick={() => {
-              //   deleteRow(index)
-              // }}
-              >
-                <HiChevronLeft className="text-lg" />
-              </button>
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-              // onClick={() => {
-              //   deleteRow(index)
-              // }}
-              >
-                <HiChevronRight className="text-lg" />
-              </button>
-            </div>
+            }
           </div>
         }
       </div>

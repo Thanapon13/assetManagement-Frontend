@@ -316,6 +316,7 @@ const EditTransferAsset = () => {
                         name="transferSector"
                         error={errorInput && !input.transferSector}
                         value={sectorList?.find(list => list.value == input.transferSector)}
+                        noClearButton
                       />
                     </div>
                   </div>
@@ -334,6 +335,7 @@ const EditTransferAsset = () => {
                         name="subSector"
                         error={errorInput && !input.subSector}
                         value={subSectorList?.find(list => list.value == input.subSector)}
+                        noClearButton
                       />
                     </div>
                   </div>
@@ -411,6 +413,7 @@ const EditTransferAsset = () => {
                     name="transfereeSector"
                     error={errorInput && !input.transfereeSector}
                     value={sectorList?.find(list => list.value == input.transfereeSector)}
+                    noClearButton
                   />
                 </div>
                 <div className="flex flex-col gap-y-2 col-span-2">
@@ -425,6 +428,7 @@ const EditTransferAsset = () => {
                     name="building"
                     error={errorInput && !input.building}
                     value={input?.building && buildingList?.find(list => list.value == input.building)}
+                    noClearButton
                   />
                 </div>
               </div>
@@ -439,6 +443,7 @@ const EditTransferAsset = () => {
                     name="floor"
                     error={errorInput && !input.floor}
                     value={input.floor && floorList?.find(list => list.value == input.floor)}
+                    noClearButton
                   />
                 </div>
                 <div className="flex flex-col gap-y-2 col-span-2">
@@ -451,6 +456,7 @@ const EditTransferAsset = () => {
                     isDisabled={!input.floor}
                     error={errorInput && !input.room}
                     value={input?.room && roomList?.find(list => list.value == input.room)}
+                    noClearButton
                   />
                 </div>
               </div>

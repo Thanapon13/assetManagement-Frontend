@@ -392,6 +392,7 @@ const SaveTransferAsset = () => {
                       onChange={handleSelect}
                       name="transferSector"
                       error={errorInput && !input.transferSector}
+                      noClearButton
                     />
                   </div>
                 </div>
@@ -408,6 +409,7 @@ const SaveTransferAsset = () => {
                       onChange={handleSelect}
                       name="subSector"
                       error={errorInput && !input.subSector}
+                      noClearButton
                     />
                   </div>
                 </div>
@@ -487,6 +489,7 @@ const SaveTransferAsset = () => {
                   onChange={handleSelect}
                   name="transfereeSector"
                   error={errorInput && !input.transfereeSector}
+                  noClearButton
                 />
               </div>
               <div className="flex flex-col gap-y-2 col-span-2">
@@ -500,6 +503,7 @@ const SaveTransferAsset = () => {
                   onChange={handleSelect}
                   name="building"
                   error={errorInput && !input.building}
+                  noClearButton
                 />
               </div>
             </div>
@@ -515,6 +519,7 @@ const SaveTransferAsset = () => {
                   name="floor"
                   error={errorInput && !input.floor}
                   value={input.floor && floorList?.find(list => list.value == input.floor)}
+                  noClearButton
                 />
               </div>
               <div className="flex flex-col gap-y-2 col-span-2">
@@ -527,6 +532,7 @@ const SaveTransferAsset = () => {
                   isDisabled={!input.floor}
                   error={errorInput && !input.room}
                   value={input?.room && roomList?.find(list => list.value == input.room)}
+                  noClearButton
                 />
               </div>
             </div>

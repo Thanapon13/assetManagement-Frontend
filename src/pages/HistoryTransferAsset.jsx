@@ -36,7 +36,6 @@ const HistoryTransferAsset = () => {
     dateFrom: "",
     dateTo: new Date(),
     sector: "",
-    sector: "",
     page: "",
     limit: 10,
     total: 0,
