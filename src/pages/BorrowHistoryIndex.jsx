@@ -198,16 +198,16 @@ const BorrowHistoryIndex = () => {
         </div>
 
         <div className="md:col-span-3 ">
-              <BorrowHistorySectorSelector
-                placeholder={"หน่วยงาน"}
-                state={search}
-                setState={setSearch}
-                search={search}
-                setSearch={setSearch}
-                id={"sector"}
-                data={sectorList}
-              />
-            </div>
+          <BorrowHistorySectorSelector
+            placeholder={"หน่วยงาน"}
+            state={search}
+            setState={setSearch}
+            search={search}
+            setSearch={setSearch}
+            id={"sector"}
+            data={sectorList}
+          />
+        </div>
 
         <div className="md:col-span-3 h-full ">
           <div className="flex h-full">
@@ -246,7 +246,7 @@ const BorrowHistoryIndex = () => {
 
       {/* table */}
       <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
-        <div className="w-[1000px] xl:w-full xl:h-full h-[500px]">
+        <div className="w-[1000px] xl:w-full xl:h-full ">
           <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
           <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
             {/* top bar */}
@@ -261,62 +261,64 @@ const BorrowHistoryIndex = () => {
             </div>
           </div>
           <TableBorrowHistory data={borrowList} search={search} />
-          {/* pagination */}
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex mr-10 items-center">
-              <div>Rows per page:</div>
-              <select
-                id="limit"
-                name="limit"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                onChange={handlePaginationSearch}
+          {!borrowList.length
+            ? <center className='p-5'>-</center>
+            : <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+              <div className="flex mr-10 items-center">
+                <div>Rows per page:</div>
+                <select
+                  id="limit"
+                  name="limit"
+                  className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  onChange={handlePaginationSearch}
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10" selected="selected">
+                    10
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                {search.limit * (search.page - 1) + 1}-
+                {search.limit * (search.page - 1) + borrowList.length} of{" "}
+                {search.total}
+              </div>
+
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handleFirstPage}
               >
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10" selected="selected">
-                  10
-                </option>
-              </select>
+                <CgPushChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handlePageDecrease}
+              >
+                <HiChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handlePageIncrease}
+              >
+                <HiChevronRight className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handleLastPage}
+              >
+                <CgPushChevronRight className="text-lg font-bold" />
+              </button>
             </div>
-
-            <div>
-              {search.limit * (search.page - 1) + 1}-
-              {search.limit * (search.page - 1) + borrowList.length} of{" "}
-              {search.total}
-            </div>
-
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handleFirstPage}
-            >
-              <CgPushChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handlePageDecrease}
-            >
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handlePageIncrease}
-            >
-              <HiChevronRight className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handleLastPage}
-            >
-              <CgPushChevronRight className="text-lg font-bold" />
-            </button>
-          </div>
+          }
         </div>
       </div>
     </div>
@@ -350,9 +352,9 @@ const TableBorrowHistory = (props) => {
             <div className="col-span-1 ">
               {item.borrowReturnDate
                 ? new Date(item.borrowReturnDate).toLocaleDateString(
-                    "th-TH",
-                    options
-                  )
+                  "th-TH",
+                  options
+                )
                 : "-"}
             </div>
             <div className="col-span-1 flex justify-center">

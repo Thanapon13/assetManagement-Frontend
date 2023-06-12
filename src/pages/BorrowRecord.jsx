@@ -7,13 +7,16 @@ import OnlyDateInput from "../components/date/onlyDateInput";
 import { createBorrow } from "../api/borrowApi";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 import ModalSuccess from "../components/modal/ModalSuccess";
+import { getBuildingData, getPurposeOfUse, getSector, getSubsector } from "../api/masterApi";
+import SearchSelector from "../components/selector/SearchSelector";
+import { BsArrowLeft } from "react-icons/bs";
 
 const BorrowRecord = () => {
   const [countRow, setCountRow] = useState(1);
 
   const [input, setInput] = useState({
     // ข้อมูลการยืม
-    borrowIdDoc: 1,
+    borrowIdDoc: 'x',
     pricePerDay: "0",
     borrowDate: new Date(),
     borrowSetReturnDate: "",
@@ -51,7 +54,6 @@ const BorrowRecord = () => {
   const [showModalSuccess, setShowModalSuccess] = useState(false);
   //handle bottom table
   const newSaveAssetWithdrawTableArray = {
-    index: countRow,
     assetNumber: "",
     productName: "",
     brand: "",
@@ -61,6 +63,72 @@ const BorrowRecord = () => {
     maxQuantity: 0,
     isPackage: false,
   };
+
+  const [sectorList, setSectorList] = useState([])
+  const [subSectorList, setSubSectorList] = useState([])
+  const [purposeOfUseList, setPurposeOfUseList] = useState([])
+  const [buildingList, setBuildingList] = useState()
+  const [floorList, setFloorList] = useState()
+  const [roomList, setRoomList] = useState()
+
+  useEffect(() => {
+    getMasterData()
+  }, [])
+
+  const getMasterData = async () => {
+    const sector = await getSector()
+    const arrSector = formArrayOption(sector.data.sector)
+    setSectorList(arrSector)
+    const subSector = await getSubsector()
+    const arrSubSector = formArrayOption(subSector.data.subSector)
+    setSubSectorList(arrSubSector)
+    const purposeOfUse = await getPurposeOfUse()
+    const arrPurposeOfUse = formArrayOption(purposeOfUse.data.purposeOfUse)
+    setPurposeOfUseList(arrPurposeOfUse)
+    const building = await getBuildingData()
+    const arrBuilding = formArrayOption(building.data)
+    setBuildingList(arrBuilding)
+  }
+
+  const handleSelect = (value, label, ele) => {
+    setInput({ ...input, [label]: value })
+  }
+
+  function formArrayOption(data) {
+    const array = []
+    data.map(ele => {
+      array.push({ label: ele.name, value: ele.name, ele: ele })
+    })
+    return array
+  }
+
+  useEffect(() => {
+    buildingList?.map((list) => {
+      if (list.value == input.building) {
+        const floors = []
+        list.ele.floors.forEach(floor => {
+          floors.push({ label: floor.name, value: floor.name, ele: floor })
+        })
+        setFloorList(floors)
+      }
+    })
+    handleSelect({ value: "" }, { name: "floor" })
+    handleSelect({ value: "" }, { name: "room" })
+    console.log(input)
+  }, [input.building])
+
+  useEffect(() => {
+    floorList?.map((list) => {
+      if (list.value == input.floor) {
+        const rooms = []
+        list.ele.rooms.forEach(room => {
+          rooms.push({ label: room.name, value: room.name })
+        })
+        setRoomList(rooms)
+      }
+    })
+    handleSelect({ value: "" }, { name: "room" })
+  }, [input.floor])
 
   const handleClickIncrease = (e) => {
     e.preventDefault();
@@ -133,6 +201,7 @@ const BorrowRecord = () => {
     })
     setErrorInput(errInput)
     setErrorAssestTable(errAssetTable)
+    console.log(errInput, errAssetTable, saveAssetWithdrawTableArray)
     if (!(errInput || errAssetTable)) setShowModalConfirm(true)
   }
 
@@ -160,7 +229,7 @@ const BorrowRecord = () => {
       input: inputJSON,
       saveAssetWithdrawTableArray: saveAssetWithdrawTableArrayJSON,
     });
-    
+
     if (!response.data.message) {
       setShowModalConfirm(false)
       setShowModalSuccess(true)
@@ -192,10 +261,19 @@ const BorrowRecord = () => {
   return (
     <>
       {/* body */}
-      <div className="bg-background-page pt-5 p-3">
+      <div className="bg-background-page px-5 pt-10 pb-10">
         {/* Header */}
-        <div className="text-2xl text-text-green ">บันทึกใบยืมครุภัณฑ์</div>
-        <div className="flex pt-3">
+        <div className="flex items-center">
+          <Link
+            to="/borrowList"
+            className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
+          >
+            <BsArrowLeft className="text-lg" />
+          </Link>
+          <div className="text-2xl text-text-green ">บันทึกใบยืมครุภัณฑ์</div>
+        </div>
+
+        <div className="flex">
           {/* left home */}
           <div className="flex text-xs">
             <Link
@@ -260,23 +338,25 @@ const BorrowRecord = () => {
             </div>
           </div>
         </div>
-        {/* รายการครุภัณฑ์ที่เลือก */}
+
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
           <div className="text-xl">รายการครุภัณฑ์ที่เลือก</div>
           {/* table */}
           <div className="overflow-x-auto scrollbar pt-4">
             <div className="w-[1000px] lg:w-full p-2 min-h-[30vh]">
               <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                <div className="grid grid-cols-12 gap-2 text-center">
-                  <div className="ml-2 col-span-1 ">ลำดับ</div>
-                  <div className="col-span-2">เลขครุภัณฑ์</div>
+                <div className="grid grid-cols-13 gap-2 text-center">
+                  {/* <div className="col-span-2 grid grid-cols-3 gap-5 "> */}
+                    <div className="ml-2 col-span-1 ">ลำดับ</div>
+                    <div className="col-span-2 ">เลขครุภัณฑ์</div>
+                  {/* </div> */}
                   <div className="col-span-3">ชื่อครุภัณฑ์</div>
                   <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
-                  <div className="col-span-3 grid grid-cols-4 gap-5">
-                    <div className="col-span-1">จำนวน</div>
-                    <div className="col-span-1">หน่วยนับ</div>
-                    <div className="col-span-2">จำนวนเงิน (บาท)</div>
-                  </div>
+                  {/* <div className="col-span-3 grid grid-cols-4 gap-5"> */}
+                  <div className="col-span-1">จำนวน</div>
+                  <div className="col-span-1">หน่วยนับ</div>
+                  <div className="col-span-2">จำนวนเงิน (บาท)</div>
+                  {/* </div> */}
                 </div>
               </div>
               {saveAssetWithdrawTableArray?.map((el, idx) => {
@@ -315,22 +395,22 @@ const BorrowRecord = () => {
                   <h1 className="text-red-500 ml-2 font-bold">*</h1>
                 </label>
               </div>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"หน่วยงาน"}
-                isValid={errorInput && !input.sector}
+              <SearchSelector
+                options={sectorList}
+                name="sector"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.sector}
               />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className="text-text-gray">ภาควิชา</label>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"ภาควิชา"}
-                isValid={errorInput && !input.subSector}
+              <SearchSelector
+                options={subSectorList}
+                name="subSector"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.subSector}
               />
             </div>
           </div>
@@ -338,19 +418,18 @@ const BorrowRecord = () => {
           <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className=" text-text-gray">วัตถุประสงค์การขอยืม</label>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"วัตถุประสงค์การขอยืม"}
-                isValid={errorInput && !input.borrowPurpose}
+              <SearchSelector
+                options={purposeOfUseList}
+                name="borrowPurpose"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.borrowPurpose}
               />
             </div>
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className=" text-text-gray">ผู้ดำเนินการ</label>
               <input
                 type="text"
-                placeholder="Example"
                 name="handler"
                 value={input.handler}
                 onChange={handleChange}
@@ -359,42 +438,45 @@ const BorrowRecord = () => {
             </div>
           </div>
         </div>
-        {/* สถานที่ตั้งใหม่ */}
+
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
           <div className="text-xl">สถานที่ตั้งใหม่</div>
-          {/* Row 1 ชื่อ */}
           <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
             <div className="flex flex-col gap-y-2 col-span-2">
               <label className=" text-text-gray flex">
                 อาคาร
                 <h1 className="text-red-500 ml-2 font-bold">*</h1>
               </label>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"อาคาร"}
-                isValid={errorInput && !input.building}
+              <SearchSelector
+                options={buildingList}
+                name="building"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.building}
               />
             </div>
             <div className="flex flex-col gap-y-2 col-span-1">
               <label className="text-text-gray">ชั้น</label>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"ชั้น"}
-                isValid={errorInput && !input.floor}
+              <SearchSelector
+                isDisabled={!input.building}
+                options={floorList}
+                onChange={handleSelect}
+                name="floor"
+                noClearButton
+                error={errorInput && !input.floor}
+                value={input.floor && floorList?.find(list => list.value == input.floor)}
               />
             </div>
             <div className="flex flex-col gap-y-2 col-span-1">
               <label className="text-text-gray">ห้อง</label>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"ห้อง"}
-                isValid={errorInput && !input.room}
+              <SearchSelector
+                noClearButton
+                name="room"
+                options={roomList}
+                onChange={handleSelect}
+                isDisabled={!input.floor}
+                error={errorInput && !input.room}
+                value={input?.room && roomList?.find(list => list.value == input.room)}
               />
             </div>
           </div>

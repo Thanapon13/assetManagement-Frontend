@@ -9,12 +9,12 @@ import { CgPushChevronLeft } from "react-icons/cg";
 import { CgPushChevronRight } from "react-icons/cg";
 import DateInput from "../components/date/DateInput";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import { getAllBorrow, getBorrowBySearch } from "../api/borrowApi";
+import { getAllBorrow, getBorrowBySearch, getSectorOfBorrow } from "../api/borrowApi";
+import SearchSelector from "../components/selector/SearchSelector";
+import { getSectorOfAsset } from "../api/assetApi";
 
 const BorrowList = () => {
-  const todayThaiDate = ChangeDateToBuddhist(
-    new Date().toLocaleString("th-TH")
-  );
+  const [sectorArray, setSectorArray] = useState([])
 
   // useState
   const [amountPage, setAmountPage] = useState(1);
@@ -143,7 +143,17 @@ const BorrowList = () => {
 
   useEffect(() => {
     fetchBorrowList();
+    getMaster()
   }, []);
+
+  async function getMaster() {
+    const sector = await getSectorOfBorrow()
+    const arrSector = []
+    sector.data.sector.map(ele => {
+      arrSector.push({ label: ele.sector, value: ele.sector })
+    })
+    setSectorArray(arrSector)
+  }
 
   return (
     <div className="bg-background-page px-5 pt-5 pb-36 ">
@@ -203,9 +213,6 @@ const BorrowList = () => {
             <option defaultValue value="borrowIdDoc">
               เลขที่เอกสารการยืม
             </option>
-            <option>all</option>
-            <option>all</option>
-            <option>all</option>
           </select>
         </div>
 
@@ -265,11 +272,12 @@ const BorrowList = () => {
         </div>
 
         <div className="md:col-span-3 ">
-          <Selector
+          <SearchSelector
+            options={sectorArray}
             placeholder={"หน่วยงาน"}
-            id={"หน่วยงาน"}
-            state={search}
-            setState={setSearch}
+            name={"transferSector"}
+            onChange={(value, label) => setSearch({ ...search, [label]: value })}
+            floatLabel
           />
         </div>
 
@@ -291,9 +299,9 @@ const BorrowList = () => {
           <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
           <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
             {/* top bar */}
-            <div className="grid grid-cols-12 gap-2 h-12 items-center text-center">
+            <div className="grid grid-cols-11 gap-2 h-12 items-center text-center">
               <div className="col-span-1">ลำดับ</div>
-              <div className="col-span-3">เลขที่เอกสารการยืม</div>
+              <div className="col-span-2">เลขที่เอกสารการยืม</div>
               <div className="col-span-3">หน่วยงานที่ยืม</div>
               <div className="col-span-1">วันที่ยืม</div>
               <div className="col-span-1">กำหนดคืน</div>
@@ -301,65 +309,58 @@ const BorrowList = () => {
               <div className="col-span-2">Action</div>
             </div>
           </div>
-          <TableBorrowList data={borrowList} search={search}/>
+          <TableBorrowList data={borrowList} search={search} />
+          {!borrowList.length
+            ? <center className='p-5'>-</center>
+            : <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+              <div className="flex items-center">
+                <div>Rows per page:</div>
+                <select
+                  id="limit"
+                  name="limit"
+                  className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handlePaginationSearch}
+                >
+                  <option value="5">5</option>
+                  <option value="10" selected="selected">
+                    10
+                  </option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
 
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-center mr-10">
-              <div>Rows per page:</div>
-              <select
-                id="limit"
-                name="limit"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={handlePaginationSearch}
+              <div className="mx-5">
+                {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + borrowList.length} of {search.total}
+              </div>
+
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handleFirstPage}
               >
-                {/* <option value="" selected disabled hidden>
-            ประเภทครุภัณฑ์
-          </option> */}
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10" selected="selected">
-                  10
-                </option>
-              </select>
+                <CgPushChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handlePageDecrease}
+              >
+                <HiChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handlePageIncrease}
+              >
+                <HiChevronRight className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handleLastPage}
+              >
+                <CgPushChevronRight className="text-lg font-bold" />
+              </button>
             </div>
-
-            <div>
-              {search.limit * (search.page - 1) + 1}-
-              {search.limit * (search.page - 1) + borrowList.length} of {search.total}
-            </div>
-
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handleFirstPage}
-            >
-              <CgPushChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handlePageDecrease}
-            >
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handlePageIncrease}
-            >
-              <HiChevronRight className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handleLastPage}
-            >
-              <CgPushChevronRight className="text-lg font-bold" />
-            </button>
-          </div>
+          }
         </div>
       </div>
     </div>

@@ -13,6 +13,7 @@ import {
 } from "../api/borrowApi";
 import ApproveSectorSelector from "../components/selector/ApproveSectorSelector";
 import { id } from "date-fns/locale";
+import { Spinner } from "flowbite-react";
 
 const BorrowApprove = () => {
   let options = { day: "2-digit", month: "2-digit", year: "numeric" };
@@ -35,7 +36,7 @@ const BorrowApprove = () => {
   const boxStyle = {
     boxStatus: `p-2 rounded-md flex flex-col items-center border-[2px] shadow-md`,
   };
-
+  const [isFetch, setIsFetch] = useState(true)
   const [topApproveList, setTopApproveList] = useState([]);
   const [bottomApprovedList, setBottomApprovedList] = useState([]);
 
@@ -51,8 +52,10 @@ const BorrowApprove = () => {
       // console.log("bottom",res.data.bottomApproveList);
       setTopApproveList(res.data.topApproveList);
       setBottomApprovedList(res.data.bottomApproveList);
+      setIsFetch(false)
     } catch (err) {
       console.log(err);
+      setIsFetch(false)
     }
   };
 
@@ -258,33 +261,36 @@ const BorrowApprove = () => {
             </div>
           </div>
           {/* header approve list */}
-          <div className="flex justify-between mt-5 pt-5 border-t-2">
-            <div className="flex items-center space-x-5">
-              <div className="flex">
-                <input
-                  type="checkbox"
-                  onChange={() => handleAllCheckboxChange(topApproveList)}
-                  className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
-                />
-                <h1 className="ml-2">เลือกทั้งหมด</h1>
+          {!topApproveList.length
+            ? <div className="mt-5 py-10 w-full text-center">{isFetch ? <Spinner size="xl" /> : "ยังไม่มีรายการรออนุมัติ"}</div>
+            : <div className="flex justify-between mt-5 pt-5 border-t-2">
+              <div className="flex items-center space-x-5">
+                <div className="flex">
+                  <input
+                    type="checkbox"
+                    onChange={() => handleAllCheckboxChange(topApproveList)}
+                    className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
+                  />
+                  <h1 className="ml-2">เลือกทั้งหมด</h1>
+                </div>
+                <h1 className="">
+                  เลือกแล้ว {topApproveList.filter(ele => ele.checked).length}/{amountOfStatusList.totalWaiting} รายการ
+                </h1>
               </div>
-              <h1 className="">
-                เลือกแล้ว {topApproveList.filter(ele => ele.checked).length}/{amountOfStatusList.totalWaiting} รายการ
-              </h1>
+              <div className="flex space-x-3">
+                <ModalBorrowRejectAllApprove
+                  state={topApproveList}
+                  setState={setTopApproveList}
+                  fetchFirstBorrowApproveData={fetchFirstBorrowApproveData}
+                />
+                <ModalApproveAll
+                  state={topApproveList}
+                  setState={setTopApproveList}
+                  handleApproveAllWaitingList={handleApproveAllWaitingList}
+                />
+              </div>
             </div>
-            <div className="flex space-x-5 md:space-x-10">
-              <ModalBorrowRejectAllApprove
-                state={topApproveList}
-                setState={setTopApproveList}
-                fetchFirstBorrowApproveData={fetchFirstBorrowApproveData}
-              />
-              <ModalApproveAll
-                state={topApproveList}
-                setState={setTopApproveList}
-                handleApproveAllWaitingList={handleApproveAllWaitingList}
-              />
-            </div>
-          </div>
+          }
           {/* approve list item */}
           <div className="mt-3">
             <BorrowApproveListItem
@@ -300,81 +306,86 @@ const BorrowApprove = () => {
           {/* header */}
           <div className="flex items-center space-x-10">
             <div className="text-lg">รายการคำขอที่จัดการแล้ว</div>
-            <div className="md:flex space-x-5">
-              <button
-                className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${search.listStatus.includes("approve")
+            {!!bottomApprovedList.length &&
+              <div className="md:flex space-x-5">
+                <button
+                  className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${search.listStatus.includes("approve")
                     ? "border-2 border-green-800 "
                     : ""
-                  }`}
-                onClick={() => handleListStatusChange("approve")}
-              >
-                อนุมัติแล้ว
-                <div className="ml-2">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
-                      fill="#38821D"
-                    />
-                  </svg>
-                </div>
-              </button>
-              <button
-                className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${search.listStatus.includes("reject")
+                    }`}
+                  onClick={() => handleListStatusChange("approve")}
+                >
+                  อนุมัติแล้ว
+                  <div className="ml-2">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                        fill="#38821D"
+                      />
+                    </svg>
+                  </div>
+                </button>
+                <button
+                  className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${search.listStatus.includes("reject")
                     ? "border-2 border-red-800 "
                     : ""
-                  }`}
-                onClick={() => handleListStatusChange("reject")}
-              >
-                ไม่อนุมัติ
-                <div className="ml-2">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
-                      fill="#CE4646"
-                    />
-                  </svg>
-                </div>
-              </button>
-              <button
-                className={`flex text-orange-400 bg-orange-100 p-2 border rounded-2xl  ${search.listStatus.includes("partiallyApprove")
+                    }`}
+                  onClick={() => handleListStatusChange("reject")}
+                >
+                  ไม่อนุมัติ
+                  <div className="ml-2">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                        fill="#CE4646"
+                      />
+                    </svg>
+                  </div>
+                </button>
+                <button
+                  className={`flex text-orange-400 bg-orange-100 p-2 border rounded-2xl  ${search.listStatus.includes("partiallyApprove")
                     ? "border-2 border-orange-800 "
                     : ""
-                  }`}
-                onClick={() => handleListStatusChange("partiallyApprove")}
-              >
-                อนุมัติบางส่วน
-                <div className="ml-2">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
-                      fill="#F2994A"
-                    />
-                  </svg>
-                </div>
-              </button>
-            </div>
+                    }`}
+                  onClick={() => handleListStatusChange("partiallyApprove")}
+                >
+                  อนุมัติบางส่วน
+                  <div className="ml-2">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                        fill="#F2994A"
+                      />
+                    </svg>
+                  </div>
+                </button>
+              </div>
+            }
           </div>
           {/* approved list item */}
           <div className="mt-3">
-            <BorrowApprovedListItem data={bottomApprovedList} />
+          {!bottomApprovedList.length
+            ? <center className='p-5'>-</center>
+            : <BorrowApprovedListItem data={bottomApprovedList} />
+          }
           </div>
         </div>
       </div>
@@ -407,7 +418,7 @@ const BorrowApproveListItem = (props) => {
   };
   return (
     <div className="overflow-x-auto overflow-y-auto scrollbar ">
-      <div className=" h-[500px] ">
+      <div className="">
         {props.state.map((item, idx) => {
           return (
             <div key={idx} className="flex items-center space-x-3">
@@ -479,7 +490,7 @@ const BorrowApprovedListItem = ({ data }) => {
   };
   return (
     <div className="overflow-x-auto overflow-y-auto scrollbar ">
-      <div className=" h-[500px] ">
+      <div className="">
         {data.map((item, idx) => {
           return (
             <Link key={idx} to={`/viewBorrowApproveDetail/${item._id}`}>
@@ -529,17 +540,17 @@ const BorrowApprovedListItem = ({ data }) => {
                     <div className="">
                       <div
                         className={`${item.status === "waiting"
-                            ? " bg-background-light-blue text-text-blue  rounded-xl "
-                            : item.status === "approve"
-                              ? " bg-sidebar-green text-text-green  rounded-xl  "
-                              : item.status === "partiallyApprove"
-                                ? " text-orange-400 bg-orange-100 p-2 border rounded-xl  "
-                                : item.status === "watingReturnApprove"
-                                  ? "bg-orange-100 text-orange-400 rounded-xl"
-                                  : item.status === "cancel" ||
-                                    item.status === "reject"
-                                    ? "bg-red-200 text-red-600  rounded-xl"
-                                    : "bg-text-green text-white rounded-md hover:bg-green-800"
+                          ? " bg-background-light-blue text-text-blue  rounded-xl "
+                          : item.status === "approve"
+                            ? " bg-sidebar-green text-text-green  rounded-xl  "
+                            : item.status === "partiallyApprove"
+                              ? " text-orange-400 bg-orange-100 p-2 border rounded-xl  "
+                              : item.status === "watingReturnApprove"
+                                ? "bg-orange-100 text-orange-400 rounded-xl"
+                                : item.status === "cancel" ||
+                                  item.status === "reject"
+                                  ? "bg-red-200 text-red-600  rounded-xl"
+                                  : "bg-text-green text-white rounded-md hover:bg-green-800"
                           } border border-spacing-5 p-2 w-full`}
                       >
                         {item.status === "waiting"
@@ -576,7 +587,7 @@ const ModalApproveAll = ({ state, setState, handleApproveAllWaitingList }) => {
   return (
     <>
       <button
-        className="p-2 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
+        className="p-2 px-3 border-[2px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
         type="button"
         onClick={() => setShowModal(true)}
       >
