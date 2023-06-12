@@ -24,7 +24,7 @@ function RowOfTableTransferIndex({
         className={`col-span-2 ${ele.status === "waiting"
           ? " bg-background-light-blue text-text-blue  "
           : ele.status === "approve" || ele.status === "partiallyApprove"
-            ? " bg-sidebar-green text-text-green    "
+            ? "bg-text-green/[.15] text-text-green    "
             : ele.status === "reject"
               ? "bg-red-200 text-red-600  "
               : ele.status === "saveDraft"

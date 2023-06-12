@@ -23,12 +23,12 @@ const TableBorrowList = (props) => {
         return (
           <div
             key={idx}
-            className={`grid grid-cols-12 gap-2 h-12 pt-2  text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
+            className={`grid grid-cols-11 gap-2 h-12 pt-2  text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
             <div className="col-span-1">
               {props.search.page > 1 ? props.search.limit + idx + 1 : idx + 1}
             </div>
-            <div className="col-span-3 text-left">{item.borrowIdDoc}</div>
+            <div className="col-span-2 text-left">{item.borrowIdDoc}</div>
             <div className="col-span-3 text-left">{item.sector}</div>
             <div className="col-span-1">
               {new Date(item.borrowDate).toLocaleDateString("th-TH", options)}

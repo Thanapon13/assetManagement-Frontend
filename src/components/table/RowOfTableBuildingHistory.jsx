@@ -29,7 +29,7 @@ function RowOfTableBuildingHistory({
         </div>
 
         <input
-          className="col-span-4 bg-gray-200 text-center flex justify-center items-center  py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          className="col-span-4 bg-gray-200 px-2 flex justify-center items-center  py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
           disabled
           value={building}
         />
@@ -40,22 +40,22 @@ function RowOfTableBuildingHistory({
         />
         <div className="flex relative col-span-2">
           <input
-            className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+            className="w-full text-center bg-gray-200 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             value={room}
           />
         </div>
         <div className="flex relative col-span-2">
           <input
-            className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+            className="w-full text-center bg-gray-200 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             disabled
-            value={moveInDate}
+            value={moveInDate && new Date(moveInDate).toLocaleDateString('th')}
           />
         </div>
         <div className="flex relative col-span-2">
           <input
-            className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+            className="w-full text-center bg-gray-200 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             disabled
-            value={moveOutDate}
+            value={moveOutDate && new Date(moveOutDate).toLocaleDateString('th')}
           />
         </div>
       </div>
