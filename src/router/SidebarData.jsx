@@ -518,6 +518,15 @@ export const SidebarData = [
         ),
       },
       {
+        title: 'อนุมัติซ่อม',
+        path: '/',
+        icon: (
+          <svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.2998 18C1.8998 18 1.5498 17.85 1.2498 17.55C0.949805 17.25 0.799805 16.9 0.799805 16.5V1.5C0.799805 1.1 0.949805 0.75 1.2498 0.45C1.5498 0.15 1.8998 0 2.2998 0H19.6998C20.0998 0 20.4498 0.15 20.7498 0.45C21.0498 0.75 21.1998 1.1 21.1998 1.5V16.5C21.1998 16.9 21.0498 17.25 20.7498 17.55C20.4498 17.85 20.0998 18 19.6998 18H2.2998ZM3.9998 14H8.9998V12H3.9998V14ZM13.5498 12L18.4998 7.05L17.0748 5.625L13.5498 9.175L12.1248 7.75L10.7248 9.175L13.5498 12ZM3.9998 10H8.9998V8H3.9998V10ZM3.9998 6H8.9998V4H3.9998V6Z" fill="#999999" />
+          </svg>
+        ),
+      },
+      {
         title: 'ลงบันทึกรายละเอียด',
         path: '/repairTechnicianIndex',
         icon: (
@@ -536,26 +545,8 @@ export const SidebarData = [
         ),
       },
       {
-        title: 'บันทึกจ้างซ่อม',
-        path: '/',
-        icon: (
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 14 19"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0 19V2.375C0 1.975 0.15 1.625 0.45 1.325C0.75 1.025 1.1 0.875 1.5 0.875H12.5C12.9 0.875 13.25 1.025 13.55 1.325C13.85 1.625 14 1.975 14 2.375V19L7 16L0 19Z"
-              fill="currentColor"
-            />
-          </svg>
-        ),
-      },
-      {
         title: 'ตรวจสอบการจ้างซ่อม',
-        path: '/',
+        path: '/repairOutsourceIndex',
         icon: (
           <svg
             width="20"
@@ -573,7 +564,7 @@ export const SidebarData = [
       },
       {
         title: 'ประวัติการซ่อม',
-        path: '/',
+        path: '/historyRepairIndex',
         icon: (
           <svg
             width="20"
