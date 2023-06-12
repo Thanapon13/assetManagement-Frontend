@@ -11,6 +11,8 @@ import InputAddress from "react-thailand-address-autocomplete";
 import { createUser } from "../api/userApi";
 import { getDoctorType, getEngPrefix, getMedicalField, getThaiPrefix } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
+import ModalSuccess from "../components/modal/ModalSuccess";
 
 function AddUserInformation() {
 
@@ -58,7 +60,7 @@ function AddUserInformation() {
     facebook: "",
     // ตำแหน่ง
     userType: "",
-    docterType: "",
+    doctorType: "",
     medicalField: "",
     // บันทึกเหตุการณ์
 
@@ -74,7 +76,8 @@ function AddUserInformation() {
   });
 
   const [toggle, setToggle] = useState(false);
-
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [showModalSuccess, setShowModalSuccess] = useState(false);
   useEffect(() => {
     getMasterData()
   }, []);
@@ -125,10 +128,25 @@ function AddUserInformation() {
     setInput({ ...input, subdistrict, district, province, zipcode });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [errorInput, setErrorInput] = useState(false)
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    let errInput
+    Object.values(input).map((value, index) => {
+      if (errInput) return
+      if (!value) errInput = true
+      if (Object.keys(input).length > index + 1) errInput = false
+    })
+    if (errInput) {
+      setErrorInput(true)
+    } else {
+      setShowModalConfirm(true)
+    }
+  }
+
+  const submit = async (e) => {
     console.log(input);
-    const inputJSON = JSON.stringify({...input, role: "role"});
+    const inputJSON = JSON.stringify({ ...input });
     await createUser({
       input: inputJSON,
     });
@@ -185,18 +203,11 @@ function AddUserInformation() {
 
             <div className="w-full">
               <div className="mb-1">คำนำหน้า (ภาษาไทย)</div>
-              {/* <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"คำนำหน้า (ภาษาไทย)"}
-                name="thaiPrefix"
-              /> */}
               <SearchSelector
                 options={thaiPrefixList}
                 name="thaiPrefix"
                 onChange={handleSelect}
-                // error={error && !genData[index]?.sector}
+                error={errorInput && !input.thaiPrefix}
                 noClearButton
               // value={input?.thaiPrefix && { label: input?.thaiPrefix, value: input?.thaiPrefix }}
               />
@@ -210,7 +221,7 @@ function AddUserInformation() {
                 id="thaiFirstName"
                 onChange={onChange}
                 value={input?.thaiFirstName}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.thaiFirstName && 'border-red-500'} `}
               />
             </div>
 
@@ -222,7 +233,7 @@ function AddUserInformation() {
                 id="thaiLastName"
                 onChange={onChange}
                 value={input?.thaiLastName}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.thaiLastName && 'border-red-500'} `}
               />
             </div>
 
@@ -233,7 +244,7 @@ function AddUserInformation() {
                 options={engPrefixList}
                 name="engPrefix"
                 onChange={handleSelect}
-                // error={error && !input?.engPrefix}
+                error={errorInput && !input?.engPrefix}
                 noClearButton
               // value={input?.engPrefix && { label: input?.engPrefix, value: input?.engPrefix }}
               />
@@ -249,7 +260,7 @@ function AddUserInformation() {
                 id="engFirstName"
                 onChange={onChange}
                 value={input?.engFirstName}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.engFirstName && 'border-red-500'} `}
               />
             </div>
             {/* นามสกุล (ภาษาอังกฤษ) */}
@@ -261,7 +272,7 @@ function AddUserInformation() {
                 id="engLastName"
                 onChange={onChange}
                 value={input?.engLastName}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.engLastName && 'border-red-500'} `}
               />
             </div>
 
@@ -274,14 +285,14 @@ function AddUserInformation() {
                 id="idCard"
                 onChange={onChange}
                 value={input?.idCard}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.idCard && 'border-red-500'} `}
               />
             </div>
             {/* เพศ */}
             <div className="">
               <div className="mb-1">เพศ</div>
               <select
-                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+                className={`border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full  ${errorInput && !input.sex && 'border-red-500'} `}
                 name="status"
                 value={input?.sex}
                 onChange={e => setInput({ ...input, sex: e.target.value })}
@@ -292,14 +303,6 @@ function AddUserInformation() {
                 <option value="male">ชาย</option>
                 <option value="female">หญิง</option>
               </select>
-              {/* <input
-                type="text"
-                name="sex"
-                id="sex"
-                onChange={onChange}
-                value={input?.sex}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              /> */}
             </div>
             {/* วัน / เดือน / ปี เกิด */}
             <div className="col-span-2">
@@ -309,6 +312,7 @@ function AddUserInformation() {
                   state={input}
                   setState={setInput}
                   id={"birthDate"}
+                  isValid={errorInput && !input.birthDate}
                 />
               </div>
             </div>
@@ -321,7 +325,7 @@ function AddUserInformation() {
                 id="username"
                 onChange={onChange}
                 value={input?.username}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue  ${errorInput && !input.username && 'border-red-500'} `}
               />
             </div>
             {/* รหัสผ่าน (Password) */}
@@ -334,7 +338,7 @@ function AddUserInformation() {
                   id="password"
                   onChange={onChange}
                   value={input?.password}
-                  className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                  className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue  ${errorInput && !input.password && 'border-red-500'} `}
                 />
                 <button
                   className=" absolute top-1/2 right-0 transform -translate-x-1/2 -translate-y-1/2"
@@ -368,6 +372,7 @@ function AddUserInformation() {
                   state={input}
                   setState={setInput}
                   id={"passwordStartDate"}
+                  isValid={errorInput && input.passwordStartDate}
                 />
               </div>
             </div>
@@ -379,6 +384,7 @@ function AddUserInformation() {
                   state={input}
                   setState={setInput}
                   id={"passwordEndDate"}
+                  isValid={errorInput && input.passwordEndDate}
                 />
               </div>
             </div>
@@ -398,7 +404,7 @@ function AddUserInformation() {
                 id="employeeId"
                 onChange={onChange}
                 value={input?.employeeId}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue  ${errorInput && !input.employeeId && 'border-red-500'} `}
               />
             </div>
             {/* เลขที่ใบประกอบวิชาชีพ */}
@@ -410,7 +416,7 @@ function AddUserInformation() {
                 id="professionalLicenseNumber"
                 onChange={onChange}
                 value={input?.professionalLicenseNumber}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.professionalLicenseNumber && 'border-red-500'} `}
               />
             </div>
 
@@ -425,7 +431,7 @@ function AddUserInformation() {
                 id="sector"
                 onChange={onChange}
                 value={input?.sector}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.sector && 'border-red-500'} `}
               />
             </div>
             {/* รหัสสาขาทางการแพทย์ */}
@@ -437,7 +443,7 @@ function AddUserInformation() {
                 id="medicalBranchCode"
                 onChange={onChange}
                 value={input?.medicalBranchCode}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue  ${errorInput && !input.medicalBranchCode && 'border-red-500'} `}
               />
             </div>
 
@@ -450,7 +456,7 @@ function AddUserInformation() {
                 id="thaiPosition"
                 onChange={onChange}
                 value={input?.thaiPosition}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue  ${errorInput && !input.thaiPosition && 'border-red-500'} `}
               />
             </div>
             {/* ตำแหน่งของผู้ใช้งานระบบ (ภาษาอังกฤษ) */}
@@ -462,7 +468,7 @@ function AddUserInformation() {
                 id="engPosition"
                 onChange={onChange}
                 value={input?.engPosition}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.engPosition && 'border-red-500'} `}
               />
             </div>
 
@@ -538,7 +544,7 @@ function AddUserInformation() {
                   id="houseNo"
                   onChange={onChange}
                   value={input?.houseNo}
-                  className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                  className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.houseNo && 'border-red-500'} `}
                 />
               </div>
               {/* หมู่ที่ */}
@@ -550,7 +556,7 @@ function AddUserInformation() {
                   id="villageNo"
                   onChange={onChange}
                   value={input?.villageNo}
-                  className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                  className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.villageNo && 'border-red-500'} `}
                 />
               </div>
             </div>
@@ -563,7 +569,7 @@ function AddUserInformation() {
                 id="soi"
                 onChange={onChange}
                 value={input?.soi}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.soi && 'border-red-500'} `}
               />
             </div>
             {/* ซอย (แยก) */}
@@ -575,7 +581,7 @@ function AddUserInformation() {
                 id="separatedSoi"
                 onChange={onChange}
                 value={input?.separatedSoi}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.separatedSoi && 'border-red-500'} `}
               />
             </div>
             {/* ถนน */}
@@ -587,7 +593,7 @@ function AddUserInformation() {
                 id="road"
                 onChange={onChange}
                 value={input?.road}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.road && 'border-red-500'} `}
               />
             </div>
             {/* หมู่บ้าน */}
@@ -599,7 +605,7 @@ function AddUserInformation() {
                 id="village"
                 onChange={onChange}
                 value={input?.village}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.village && 'border-red-500'} `}
               />
             </div>
             {/* เขต / อำเภอ */}
@@ -748,7 +754,7 @@ function AddUserInformation() {
                 id="email"
                 onChange={onChange}
                 value={input?.email}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.email && 'border-red-500'} `}
               />
             </div>
             {/* เบอร์มือถือ */}
@@ -760,7 +766,7 @@ function AddUserInformation() {
                 id="phoneNumber"
                 onChange={onChange}
                 value={input?.phoneNumber}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.email && 'border-red-500'} `}
               />
             </div>
 
@@ -824,9 +830,9 @@ function AddUserInformation() {
               <div className="mb-1">ประเภทของแพทย์</div>
               <SearchSelector
                 options={doctorTypeList}
-                name="docterType"
+                name="doctorType"
                 onChange={handleSelect}
-                // error={error && !input?.docterType}
+                error={errorInput && !input?.doctorType}
                 noClearButton
               // value={input?.docterType && { label: input?.docterType, value: input?.docterType }}
               />
@@ -838,7 +844,7 @@ function AddUserInformation() {
                 options={medicalFieldList}
                 name="medicalField"
                 onChange={handleSelect}
-                // error={error && !input?.medicalField}
+                error={errorInput && !input?.medicalField}
                 noClearButton
               // value={input?.medicalField && { label: input?.medicalField, value: input?.medicalField }}
               />
@@ -909,7 +915,7 @@ function AddUserInformation() {
                 <DateInput
                   state={input}
                   setState={setInput}
-                  id={"userEndDate"}
+                  id={"PACSDateTime"}
                 />
               </div>
             </div>
@@ -978,6 +984,12 @@ function AddUserInformation() {
           บันทึก
         </button>
       </div>
+      <ModalConfirmSave
+        isVisible={showModalConfirm}
+        onClose={() => setShowModalConfirm(false)}
+        onSave={submit}
+      />
+      {showModalSuccess && <ModalSuccess urlPath='/userInformationIndex' />}
     </form>
   );
 }

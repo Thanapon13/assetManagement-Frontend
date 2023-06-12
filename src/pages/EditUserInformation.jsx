@@ -11,6 +11,8 @@ import InputAddress from "react-thailand-address-autocomplete";
 import { createUser, getUserById } from "../api/userApi";
 import { getDoctorType, getEngPrefix, getMedicalField, getThaiPrefix } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
+import ModalSuccess from "../components/modal/ModalSuccess";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
 function EditUserInformation() {
   const [isLoading, setIsLoading] = useState(true)
@@ -83,7 +85,17 @@ function EditUserInformation() {
   const initData = async () => {
     const response = await getUserById(userId)
     console.log(response.data.user)
-    setInput(response.data.user)
+    const dataUser = response.data.user
+    setInput({
+      ...dataUser,
+      birthDate: new Date(dataUser.birthDate),
+      dateTimeModify: new Date(dataUser.dateTimeModify),
+      dateTimeRecord: new Date(dataUser.dateTimeRecord),
+      dateTimeUpdatePassword: new Date(dataUser.dateTimeUpdatePassword),
+      passwordEndDate: new Date(dataUser.passwordEndDate),
+      passwordStartDate: new Date(dataUser.passwordStartDate),
+      PACSDateTime: new Date(dataUser.PACSDateTime),
+    })
     setIsLoading(false)
   }
 
@@ -133,7 +145,25 @@ function EditUserInformation() {
     setInput({ ...input, subdistrict, district, province, zipcode });
   };
 
-  const handleSubmit = async (e) => {
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [showModalSuccess, setShowModalSuccess] = useState(false);
+  // const [errorInput, setErrorInput] = useState(false)
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    let errInput
+    Object.values(input).map((value, index) => {
+      if (errInput) return
+      if (!value) errInput = true
+      if (Object.keys(input).length > index + 1) errInput = false
+    })
+    if (errInput) {
+      console.log(errInput, input) // setErrorInput(true)
+    } else {
+      setShowModalConfirm(true)
+    }
+  }
+
+  const submit = async () => {
     e.preventDefault();
     console.log(input);
     const inputJSON = JSON.stringify(input);
@@ -203,9 +233,9 @@ function EditUserInformation() {
                     options={thaiPrefixList}
                     name="thaiPrefix"
                     onChange={handleSelect}
-                    // error={error && !genData[index]?.sector}
+                    error={!input.thaiPrefix}
                     noClearButton
-                  value={input?.thaiPrefix && { label: input?.thaiPrefix, value: input?.thaiPrefix }}
+                    value={input?.thaiPrefix && { label: input?.thaiPrefix, value: input?.thaiPrefix }}
                   />
                 </div>
 
@@ -217,7 +247,7 @@ function EditUserInformation() {
                     id="thaiFirstName"
                     onChange={onChange}
                     value={input?.thaiFirstName}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.thaiFirstName && 'border-red-500'} `}
                   />
                 </div>
 
@@ -229,7 +259,7 @@ function EditUserInformation() {
                     id="thaiLastName"
                     onChange={onChange}
                     value={input?.thaiLastName}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.thaiLastName && 'border-red-500'} `}
                   />
                 </div>
 
@@ -240,9 +270,9 @@ function EditUserInformation() {
                     options={engPrefixList}
                     name="engPrefix"
                     onChange={handleSelect}
-                    // error={error && !input?.engPrefix}
+                    error={!input?.engPrefix}
                     noClearButton
-                  value={input?.engPrefix && { label: input?.engPrefix, value: input?.engPrefix }}
+                    value={input?.engPrefix && { label: input?.engPrefix, value: input?.engPrefix }}
                   />
                 </div>
                 <div className="col-span-2">
@@ -255,7 +285,7 @@ function EditUserInformation() {
                     id="engFirstName"
                     onChange={onChange}
                     value={input?.engFirstName}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.engFirstName && 'border-red-500'} `}
                   />
                 </div>
                 <div className="col-span-2">
@@ -266,7 +296,7 @@ function EditUserInformation() {
                     id="engLastName"
                     onChange={onChange}
                     value={input?.engLastName}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.engLastName && 'border-red-500'} `}
                   />
                 </div>
 
@@ -278,13 +308,13 @@ function EditUserInformation() {
                     id="idCard"
                     onChange={onChange}
                     value={input?.idCard}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.idCard && 'border-red-500'} `}
                   />
                 </div>
                 <div className="">
                   <div className="mb-1">เพศ</div>
                   <select
-                    className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+                    className={`border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full  ${!input.sex && 'border-red-500'} `}
                     name="status"
                     value={input?.sex}
                     onChange={e => setInput({ ...input, sex: e.target.value })}
@@ -295,23 +325,16 @@ function EditUserInformation() {
                     <option value="male">ชาย</option>
                     <option value="female">หญิง</option>
                   </select>
-                  {/* <input
-                type="text"
-                name="sex"
-                id="sex"
-                onChange={onChange}
-                value={input?.sex}
-                className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              /> */}
                 </div>
                 <div className="col-span-2">
                   <div className="mb-1">วัน / เดือน / ปี เกิด</div>
                   <div className="flex h-[38px]">
-                    {/* <OnlyDateInput
+                    <OnlyDateInput
                       state={input}
                       setState={setInput}
                       id={"birthDate"}
-                    /> */}
+                      isValid={!input.birthDate}
+                    />
                   </div>
                 </div>
 
@@ -323,7 +346,7 @@ function EditUserInformation() {
                     id="username"
                     onChange={onChange}
                     value={input?.username}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue  ${!input.username && 'border-red-500'} `}
                   />
                 </div>
                 <div className="col-span-2">
@@ -335,7 +358,7 @@ function EditUserInformation() {
                       id="password"
                       onChange={onChange}
                       value={input?.password}
-                      className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                      className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue  ${!input.password && 'border-red-500'} `}
                     />
                     <button
                       className=" absolute top-1/2 right-0 transform -translate-x-1/2 -translate-y-1/2"
@@ -361,26 +384,26 @@ function EditUserInformation() {
               /> */}
                 </div>
 
-                {/* วันที่เริ่มใช้งานรหัส */}
                 <div className="col-span-2">
                   <div className="mb-1">วันที่เริ่มใช้งานรหัส</div>
                   <div className="flex h-[38px]">
-                    {/* <OnlyDateInput
+                    <OnlyDateInput
                       state={input}
                       setState={setInput}
                       id={"passwordStartDate"}
-                    /> */}
+                      isValid={input.passwordStartDate}
+                    />
                   </div>
                 </div>
-                {/* วันที่สิ้นสุดการใช้งานรหัส */}
                 <div className="col-span-2">
                   <div className="mb-1">วันที่สิ้นสุดการใช้งานรหัส</div>
                   <div className="flex h-[38px]">
-                    {/* <OnlyDateInput
+                    <OnlyDateInput
                       state={input}
                       setState={setInput}
                       id={"passwordEndDate"}
-                    /> */}
+                      isValid={input.passwordEndDate}
+                    />
                   </div>
                 </div>
               </div>
@@ -399,7 +422,7 @@ function EditUserInformation() {
                     id="employeeId"
                     onChange={onChange}
                     value={input?.employeeId}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue  ${!input.employeeId && 'border-red-500'} `}
                   />
                 </div>
                 {/* เลขที่ใบประกอบวิชาชีพ */}
@@ -411,7 +434,7 @@ function EditUserInformation() {
                     id="professionalLicenseNumber"
                     onChange={onChange}
                     value={input?.professionalLicenseNumber}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.professionalLicenseNumber && 'border-red-500'} `}
                   />
                 </div>
 
@@ -426,7 +449,7 @@ function EditUserInformation() {
                     id="sector"
                     onChange={onChange}
                     value={input?.sector}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.sector && 'border-red-500'} `}
                   />
                 </div>
                 {/* รหัสสาขาทางการแพทย์ */}
@@ -438,7 +461,7 @@ function EditUserInformation() {
                     id="medicalBranchCode"
                     onChange={onChange}
                     value={input?.medicalBranchCode}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue  ${!input.medicalBranchCode && 'border-red-500'} `}
                   />
                 </div>
 
@@ -451,7 +474,7 @@ function EditUserInformation() {
                     id="thaiPosition"
                     onChange={onChange}
                     value={input?.thaiPosition}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue  ${!input.thaiPosition && 'border-red-500'} `}
                   />
                 </div>
                 {/* ตำแหน่งของผู้ใช้งานระบบ (ภาษาอังกฤษ) */}
@@ -463,7 +486,7 @@ function EditUserInformation() {
                     id="engPosition"
                     onChange={onChange}
                     value={input?.engPosition}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.engPosition && 'border-red-500'} `}
                   />
                 </div>
 
@@ -539,7 +562,7 @@ function EditUserInformation() {
                       id="houseNo"
                       onChange={onChange}
                       value={input?.houseNo}
-                      className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                      className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.houseNo && 'border-red-500'} `}
                     />
                   </div>
                   {/* หมู่ที่ */}
@@ -551,7 +574,7 @@ function EditUserInformation() {
                       id="villageNo"
                       onChange={onChange}
                       value={input?.villageNo}
-                      className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                      className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.villageNo && 'border-red-500'} `}
                     />
                   </div>
                 </div>
@@ -564,7 +587,7 @@ function EditUserInformation() {
                     id="soi"
                     onChange={onChange}
                     value={input?.soi}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.soi && 'border-red-500'} `}
                   />
                 </div>
                 {/* ซอย (แยก) */}
@@ -576,7 +599,7 @@ function EditUserInformation() {
                     id="separatedSoi"
                     onChange={onChange}
                     value={input?.separatedSoi}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.separatedSoi && 'border-red-500'} `}
                   />
                 </div>
                 {/* ถนน */}
@@ -588,7 +611,7 @@ function EditUserInformation() {
                     id="road"
                     onChange={onChange}
                     value={input?.road}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.road && 'border-red-500'} `}
                   />
                 </div>
                 {/* หมู่บ้าน */}
@@ -600,7 +623,7 @@ function EditUserInformation() {
                     id="village"
                     onChange={onChange}
                     value={input?.village}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.village && 'border-red-500'} `}
                   />
                 </div>
                 {/* เขต / อำเภอ */}
@@ -749,7 +772,7 @@ function EditUserInformation() {
                     id="email"
                     onChange={onChange}
                     value={input?.email}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.email && 'border-red-500'} `}
                   />
                 </div>
                 {/* เบอร์มือถือ */}
@@ -761,7 +784,7 @@ function EditUserInformation() {
                     id="phoneNumber"
                     onChange={onChange}
                     value={input?.phoneNumber}
-                    className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                    className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.email && 'border-red-500'} `}
                   />
                 </div>
 
@@ -825,11 +848,11 @@ function EditUserInformation() {
                   <div className="mb-1">ประเภทของแพทย์</div>
                   <SearchSelector
                     options={doctorTypeList}
-                    name="docterType"
+                    name="doctorType"
                     onChange={handleSelect}
                     // error={error && !input?.docterType}
                     noClearButton
-                  value={input?.docterType && { label: input?.docterType, value: input?.docterType }}
+                    value={input?.doctorType && { label: input?.doctorType, value: input?.docterType }}
                   />
                 </div>
 
@@ -839,9 +862,9 @@ function EditUserInformation() {
                     options={medicalFieldList}
                     name="medicalField"
                     onChange={handleSelect}
-                    // error={error && !input?.medicalField}
+                    error={!input?.medicalField}
                     noClearButton
-                  value={input?.medicalField && { label: input?.medicalField, value: input?.medicalField }}
+                    value={input?.medicalField && { label: input?.medicalField, value: input?.medicalField }}
                   />
                 </div>
               </div>
@@ -862,22 +885,22 @@ function EditUserInformation() {
               className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
             /> */}
                   <div className="flex h-[38px]">
-                    {/* <DateInput
+                    <DateInput
                       state={input}
                       setState={setInput}
                       id={"dateTimeRecord"}
-                    /> */}
+                    />
                   </div>
                 </div>
 
                 <div className="col-span-2">
                   <div className="mb-1">วัน-เวลาที่แก้ไขข้อมูลล่าสุด</div>
                   <div className="flex h-[38px]">
-                    {/* <DateInput
+                    <DateInput
                       state={input}
                       setState={setInput}
                       id={"dateTimeModify"}
-                    /> */}
+                    />
                   </div>
                 </div>
 
@@ -885,33 +908,33 @@ function EditUserInformation() {
                 <div className="col-span-2">
                   <div className="mb-1">อัพเดทรหัสผ่านล่าสุด</div>
                   <div className="flex h-[38px]">
-                    {/* <DateInput
+                    <DateInput
                       state={input}
                       setState={setInput}
                       id={"dateTimeUpdatePassword"}
-                    /> */}
+                    />
                   </div>
                 </div>
 
                 <div className="col-span-2">
                   <div className="mb-1">วันที่สิ้นสุดการใช้งานของผู้ใช้</div>
                   <div className="flex h-[38px]">
-                    {/* <DateInput
+                    <DateInput
                       state={input}
                       setState={setInput}
                       id={"PACSDateTime"}
-                    /> */}
+                    />
                   </div>
                 </div>
 
                 <div className="col-span-2">
                   <div className="mb-1">วันเวลาที่ PACS มาดึงข้อมูล</div>
                   <div className="flex h-[38px]">
-                    {/* <DateInput
+                    <DateInput
                       state={input}
                       setState={setInput}
-                      id={"userEndDate"}
-                    /> */}
+                      id={"PACSDateTime"}
+                    />
                   </div>
                 </div>
 
@@ -981,6 +1004,12 @@ function EditUserInformation() {
           บันทึกการแก้ไข
         </button>
       </div>
+      <ModalConfirmSave
+        isVisible={showModalConfirm}
+        onClose={() => setShowModalConfirm(false)}
+        onSave={submit}
+      />
+      {showModalSuccess && <ModalSuccess urlPath='/userInformationIndex' />}
     </form>
   );
 }
