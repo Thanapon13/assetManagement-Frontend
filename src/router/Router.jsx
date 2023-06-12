@@ -39,6 +39,7 @@ import {
   MerchantIndex,
   UserInformationIndex,
   AddUserInformation,
+  EditUserInformation,
   ViewAssetInformation,
   EditAssetInformation,
   ViewPackageAssetInformation,
@@ -67,19 +68,18 @@ import {
 import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
 
-
 const Router = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const { user } = useContext(AuthContext);
-
-  console.log(user);
+  // console.log(user);
   return (
     <Routes>
       {isLoggedIn ? (
         <Route path="/" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
           {/* <Route element={<RequireAuth allowedRoles={['Admin']} />}> */}
-          <Route path="assetInformation" element={<AssetInformation />} />
+          <Route path="assetInformation/" element={<AssetInformation />} />
+          <Route path="assetInformation/:id" element={<AssetInformation />} />
           <Route
             path="assetInformationIndex"
             element={<AssetInformationIndex />}
@@ -101,6 +101,7 @@ const Router = () => {
             path="packageAssetInformation"
             element={<PackageAssetInformation />}
           />
+          <Route path="packageAssetInformation/:id" element={<PackageAssetInformation />} />
           <Route
             path="viewPackageAssetInformation/:packageAssetId"
             element={<ViewPackageAssetInformation />}
@@ -212,6 +213,7 @@ const Router = () => {
             element={<UserInformationIndex />}
           />
           <Route path="addUserInformation" element={<AddUserInformation />} />
+          <Route path="editUserInformation/:userId" element={<EditUserInformation />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Route>
       ) : (
