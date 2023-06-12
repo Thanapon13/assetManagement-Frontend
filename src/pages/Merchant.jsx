@@ -6,7 +6,7 @@ import { HiChevronRight } from 'react-icons/hi'
 import { AiOutlineSearch } from 'react-icons/ai'
 import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
 import DateInput from '../components/date/DateInput'
-import { getAllMerchant } from '../api/merchant'
+import { getAllMerchant, getMerchantBySearch } from '../api/merchant'
 import RowOfMerchantTableArray from '../components/table/RowOfMerchantTableArray'
 
 export const Merchant = () => {
@@ -26,70 +26,33 @@ export const Merchant = () => {
   const [merchantDate, setmerchantDate] = useState(todayThaiDate)
 
   // data
-  let merchantTableArray = [
-    {
-      ID: '84745',
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-  ]
+  const [data, setData] = useState([])
+  const [amountPage, setAmountPage] = useState(1)
 
-  // const fetchMerchantList = async () => {
-  //   try {
-  //     const res = await getAllMerchant();
-  //     console.log('RES', res);
-  //     // setAssetList(res.data.asset);
-  //     // setSearch({
-  //     //   ...search,
-  //     //   page: res.data.page,
-  //     //   limit: res.data.limit,
-  //     //   total: res.data.total,
-  //     // });
-  //     // setAmountPage(Math.ceil(res.data.total / res.data.limit));
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const initData = async () => {
+    try {
+      const res = await getMerchantBySearch(search)
+      setData(res.data.merchant)
+      setSearch({
+        ...search,
+        page: res.data.page,
+        limit: res.data.limit,
+        total: res.data.total,
+      });
+      setAmountPage(Math.ceil(res.data.total / res.data.limit));
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
-    // fetchAssetWithdrawList();
-  }, []);
+    initData()
+  }, [])
+
+  const handlePaginationSearch = (e) => {
+    setSearch({ ...search, [e.target.name]: e.target.value })
+    fetchSearchAssetList({ ...search, [e.target.name]: e.target.value })
+  };
 
   return (
     <div className="bg-background-page px-5 pt-10 pb-36">
@@ -138,31 +101,33 @@ export const Merchant = () => {
         </div>
       </div>
 
-      {/* search bar */}
-      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
-        <div className="text-xs font-semibold">ค้นหาโดย</div>
-        <div className="md:col-span-2">
-          <Selector placeholder={'เลขที่โอน'} />
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-3 items-center mt-8 mb-5 pl-3">
+        <div className="md:col-span-3 flex items-center">
+          <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
+          <select
+            className="ml-2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
+            name="typeTextSearch"
+          // onChange={handleChange}
+          >
+            <option value="assetNumber">เลขที่โอน</option>
+          </select>
         </div>
 
-        <div className="md:col-span-4 h-[38px] relative">
+        <div className="md:col-span-4  h-[38px] relative">
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
-            // name="requestedId"
-            // id="requestedId"
-            // onChange={(e) => setRequestedId(e.target.value)}
-            // value={requestedId}
+            name="textSearch"
+            // onChange={handleChange}
+            value={search.textSearch}
             placeholder="เลขที่โอน"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
         </div>
 
-        <div className="md:col-span-2">
+        <div className="md:col-span-3 flex gap-2">
           <Selector placeholder={'อาคาร'} />
-        </div>
 
-        <div className="flex justify-end">
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
@@ -181,63 +146,53 @@ export const Merchant = () => {
           <div>
             <div className="flex p-4">
               <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-              <div className="ml-2 text-sm">25 รายการ </div>
+              <div className="ml-2 text-sm">{data.length} รายการ </div>
             </div>
             {/* top bar */}
-            <div className="grid grid-cols-15 gap-2 h-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-t-lg border-b-[1px] border-border-gray-table">
+            <div className="grid grid-cols-14 gap-2 h-12 items-center text-center text-text-black-table text-xs font-semibold bg-white rounded-t-lg border-b-[1px] border-border-gray-table ml-2">
               <div className="">รหัสผู้ค้า</div>
               <div className="col-span-2">คำนำหน้าบริษัท</div>
               <div className="col-span-3">ชื่อบริษัทผู้ค้า</div>
-              <div className="col-span-3">กลุ่มประเภท</div>
+              <div className="col-span-2">กลุ่มประเภท</div>
               <div className="col-span-2">ชื่อผู้ติดต่อ</div>
               <div className="col-span-2">สถานะ</div>
-              <div className="col-span-2 text-center font-bold mr-2">
+              <div className="col-span-2  font-bold mr-2">
                 Action
               </div>
             </div>
           </div>
-          {merchantTableArray?.map((el, idx) => {
+          {data?.map((ele, idx) => {
             return (
               <RowOfMerchantTableArray
                 key={idx}
+                ele={ele}
                 index={idx}
-                billNumber={el.billNumber}
-                documentRegistration={el.documentRegistration}
-                sector={el.sector}
-                withdrawDate={el.withdrawDate}
-                allPrice={el.allPrice}
-                count={el.count}
-                _id={el._id}
+                page={search.page}
               />
             )
           })}
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-center mr-10">
+          <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+            <div className="flex items-center">
               <div>Rows per page:</div>
               <select
-                id="perPage"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={(e) => setPerPage(e.target.value)}
+                id="limit"
+                name="limit"
+                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                onChange={handlePaginationSearch}
               >
-                {/* <option value="" selected disabled hidden>
-            ประเภทครุภัณฑ์
-          </option> */}
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
                 <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
                 <option value="10" selected="selected">
                   10
                 </option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
               </select>
             </div>
 
-            <div>1-{perPage} of 13</div>
+            <div className="mx-5">
+              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + data.length} of {search.total}
+            </div>
 
             <button
               className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"

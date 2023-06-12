@@ -5,14 +5,32 @@ import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { BsFillEyeFill, BsFillPencilFill } from "react-icons/bs"
 import { IoMdTrash } from "react-icons/io"
+import { getSector } from '../api/masterApi'
+import SearchSelector from '../components/selector/SearchSelector'
 
 export const SetRoleIndex = () => {
+  // const [search, setSearch] = useState({
+  //   inventoryNumber: '',
+  //   wordSearch: '',
+  //   department: '',
+  //   sector: '',
+  // })
   const [search, setSearch] = useState({
-    inventoryNumber: '',
-    wordSearch: '',
-    department: '',
-    sector: '',
-  })
+    typeTextSearch: "assetNumber",
+    textSearch: "",
+    status: "",
+    sector: "",
+  });
+  const [sectorArray, setSectorArray] = useState([])
+  async function getMaster() {
+    const sector = await getSector()
+    const arrSector = []
+    sector.data.sector.map(ele => {
+      arrSector.push({ label: ele.name, value: ele.name })
+    })
+    setSectorArray(arrSector)
+  }
+
   const [perPage, setPerPage] = useState(10)
 
   // data
@@ -79,6 +97,7 @@ export const SetRoleIndex = () => {
 
   useEffect(() => {
     // fetchAssetWithdrawList();
+    getMaster()
   }, []);
 
   return (
@@ -108,31 +127,41 @@ export const SetRoleIndex = () => {
         </div>
       </div>
 
-      {/* search bar */}
-      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
-        <div className="text-xs font-semibold">ค้นหาโดย</div>
-        <div className="md:col-span-2">
-          <Selector placeholder={'รหัสผู้ใช้งาน'} />
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-3 items-center mt-8 mb-5 pl-3">
+        <div className="md:col-span-3 flex items-center">
+          <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
+          <select
+            className="ml-2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
+            name="typeTextSearch"
+          // onChange={handleChange}
+          >
+            <option value="assetNumber">รหัสผู้ใช้งาน</option>
+          </select>
         </div>
 
-        <div className="md:col-span-4 h-[38px] relative">
+        <div className="md:col-span-4  h-[38px] relative">
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
-            // name="requestedId"
-            // id="requestedId"
-            // onChange={(e) => setRequestedId(e.target.value)}
-            // value={requestedId}
+            name="textSearch"
+            // onChange={handleChange}
+            value={search.textSearch}
             placeholder="รหัสผู้ใช้งาน"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
         </div>
 
-        <div className="md:col-span-2">
-          <Selector placeholder={'หน่วยงาน'} />
-        </div>
+        <div className="md:col-span-3 flex gap-2">
+          <div className="w-full">
+            <SearchSelector
+              options={sectorArray}
+              placeholder={"หน่วยงาน"}
+              name={"sector"}
+              onChange={(value, label) => setSearch({ ...search, [label]: value })}
+              floatLabel
+            />
+          </div>
 
-        <div className="flex justify-end">
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
@@ -192,25 +221,17 @@ export const SetRoleIndex = () => {
                 className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 onChange={(e) => setPerPage(e.target.value)}
               >
-                {/* <option value="" selected disabled hidden>
-            ประเภทครุภัณฑ์
-          </option> */}
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10" selected="selected">
-                  10
-                </option>
-              </select>
-            </div>
+               <option value="5">5</option>
+                  <option value="10" selected="selected">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
 
-            <div>1-{perPage} of 13</div>
+              <div className="mx-5">
+                {/* {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + transferArray.length} of {search.total} */}
+              </div>
 
             <button
               className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
