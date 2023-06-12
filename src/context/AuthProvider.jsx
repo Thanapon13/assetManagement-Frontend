@@ -24,8 +24,8 @@ export const AuthProvider = ({ children }) => {
         const token = getAccessToken();
         if (token) {
           const decoded = jwt_decode(token, JWT_SECRET);
-          console.log("decoded", decoded);
-          console.log(decoded.id.user);
+          // console.log("decoded", decoded);
+          // console.log(decoded.id.user);
           setUser(decoded.id.user);
         }
       } catch (err) {
