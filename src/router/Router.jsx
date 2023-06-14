@@ -75,11 +75,11 @@ import AuthContext from "../context/AuthProvider";
 const Router = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const { user } = useContext(AuthContext);
-  // console.log(user);
+  const menu = user?.roleId?.accessScreen || []
   return (
     <Routes>
       {isLoggedIn ? (
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={<Layout menu={menu} />}>
           <Route path="dashboard" element={<Dashboard />} />
           {/* <Route element={<RequireAuth allowedRoles={['Admin']} />}> */}
           <Route path="assetInformation/" element={<AssetInformation />} />
@@ -213,7 +213,7 @@ const Router = () => {
 
           <Route path="setRoleIndex" element={<SetRoleIndex />} />
           <Route path="setRole" element={<SetRole />} />
-          <Route path="editRole" element={<EditRole />} />
+          <Route path="editRole/:id" element={<EditRole />} />
 
           <Route path="merchantIndex" element={<MerchantIndex />} />
           <Route
