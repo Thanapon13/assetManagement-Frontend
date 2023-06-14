@@ -6,7 +6,7 @@ import {
   setAccessToken,
 } from "../services/localStorage";
 import jwt_decode from "jwt-decode";
-import { adminLogin } from "../api/authApi";
+import { adminLogin, userLogin } from "../api/authApi";
 import { useEffect } from "react";
 
 const AuthContext = createContext({});
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     // const res = await axios.post("/auth/users/login", { username, password });
-    const res = await adminLogin({ username, password });
+    const res = await userLogin({ username, password });
     const token = res.data.token;
     setAccessToken(token);
     const decoded = jwt_decode(token, JWT_SECRET);
