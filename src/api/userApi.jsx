@@ -101,19 +101,20 @@ export function getByProductSelector(search) {
   return axios.get(`/asset/searchProductSelector?${queryString}`);
 }
 
+function getQueryString(search) {
+  const params = Object.keys(search)
+    .filter((key) => search[key] !== "") // remove empty values
+    .map(
+      (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
+    )
+    .join("&");
+    console.log(params)
+  return params;
+}
+
 export function getQuantitySelector(search) {
-  function getQueryString(search) {
-    const params = Object.keys(search)
-      .filter((key) => search[key] !== "") // remove empty values
-      .map(
-        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
-      )
-      .join("&");
-    return params;
-  }
 
   const queryString = getQueryString(search);
-
   // console.log(queryString)
 
   return axios.get(`/asset/searchQuantitySelector?${queryString}`);
@@ -121,4 +122,31 @@ export function getQuantitySelector(search) {
 
 export function deleteAsset(input) {
   return axios.delete(`/asset/deleteAsset/${input}`);
+}
+
+
+export function getAllRole() {
+  return axios.get(`/role/all`);
+}
+
+export function getRoleById(id) {
+  return axios.get(`/role/${id}`);
+}
+
+export function createRole(body) {
+  return axios.post(`/role/create`, body);
+}
+
+export function editRole(body, id) {
+  return axios.patch(`/role/update/${id}`, body);
+}
+
+export function getRoleBySearch(options) {
+  let option = "?"
+  for (const key in options) {
+    if (Object.hasOwnProperty.call(options, key)) {
+      option += key + "=" + options[key] + "&"
+    }
+  }
+  return axios.get(`/role/search${option}`);
 }
