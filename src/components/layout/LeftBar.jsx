@@ -6,9 +6,8 @@ import { SidebarData } from '../../router/SidebarData'
 import { IconContext } from 'react-icons/lib'
 import SubMenu from './SubMenu'
 
-const LeftBar = ({ children }) => {
+const LeftBar = ({ menu }) => {
   const [showMenu, setShowMenu] = useState(true)
-
   const handleShowMenu = () => setShowMenu(!showMenu)
 
   return (
@@ -17,13 +16,14 @@ const LeftBar = ({ children }) => {
         {/* menu */}
         <div className="flex">
           <div
-            className={`${
-              showMenu ? 'left-0 ' : '-left-full '
-            } w-[250px] bg-white h-screen duration-300 `}
+            className={`${showMenu ? 'left-0 ' : '-left-full '
+              } w-[250px] bg-white h-screen duration-300 `}
           >
             <div>
               {SidebarData.map((item, index) => {
-                return <SubMenu item={item} key={index} />
+                if (menu.find(ele => ele.order == item.order)) {
+                  return <SubMenu item={item} key={index} />
+                }
               })}
             </div>
           </div>

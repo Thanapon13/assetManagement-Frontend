@@ -56,7 +56,7 @@ const DropdownProfile = () => {
             <button
               type="button"
               onClick={signOut}
-              className="text-left mr-20 block px-4 py-2 text-sm text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700"
+              className="text-left mr-20 block px-4 py-2 text-sm text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700 w-full"
             >
               LogOut
             </button>
