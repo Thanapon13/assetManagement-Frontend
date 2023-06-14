@@ -7,16 +7,12 @@ import { BsFillEyeFill, BsFillPencilFill } from "react-icons/bs"
 import { IoMdTrash } from "react-icons/io"
 import { getSector } from '../api/masterApi'
 import SearchSelector from '../components/selector/SearchSelector'
+import { getAllRole, getRoleBySearch } from '../api/userApi'
+import { CgPushChevronLeft, CgPushChevronRight } from 'react-icons/cg'
 
 export const SetRoleIndex = () => {
-  // const [search, setSearch] = useState({
-  //   inventoryNumber: '',
-  //   wordSearch: '',
-  //   department: '',
-  //   sector: '',
-  // })
   const [search, setSearch] = useState({
-    typeTextSearch: "assetNumber",
+    typeTextSearch: "",
     textSearch: "",
     status: "",
     sector: "",
@@ -31,74 +27,38 @@ export const SetRoleIndex = () => {
     setSectorArray(arrSector)
   }
 
-  const [perPage, setPerPage] = useState(10)
+  const [data, setData] = useState([])
 
-  // data
-  let merchantTableArray = [
-    {
-      ID: '84745',
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-  ]
 
-  // const fetchMerchantList = async () => {
-  //   try {
-  //     const res = await getAllMerchant();
-  //     console.log('RES', res);
-  //     // setAssetList(res.data.asset);
-  //     // setSearch({
-  //     //   ...search,
-  //     //   page: res.data.page,
-  //     //   limit: res.data.limit,
-  //     //   total: res.data.total,
-  //     // });
-  //     // setAmountPage(Math.ceil(res.data.total / res.data.limit));
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const fetchLists = async () => {
+    try {
+      const res = await getRoleBySearch(search);
+      setData(res.data.role);
+      setSearch({
+        ...search,
+        page: res.data.page,
+        limit: res.data.limit,
+        total: res.data.total,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    // fetchAssetWithdrawList();
+    fetchLists()
     getMaster()
   }, []);
+
+  const handlePagination = (e) => {
+    setSearch({ ...search, [e.target.name]: e.target.value })
+    fetchLists({ ...search, [e.target.name]: e.target.value })
+  };
+
+  const handlePage = (num) => {
+    setSearch({ ...search, page: num })
+    fetchLists({ ...search, page: num })
+  };
 
   return (
     <div className="bg-background-page px-5 pt-10 pb-5">
@@ -174,13 +134,12 @@ export const SetRoleIndex = () => {
         </div>
       </div>
 
-      {/* table */}
       <div className="bg-white rounded-lg my-3 overflow-x-auto scrollbar">
-        <div className="w-[1200px] lg:w-full h-[500px] ">
+        <div className="w-[600px] lg:w-full h-[500px] ">
           <div>
             <div className="flex p-4">
               <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-              <div className="ml-2 text-sm">25 รายการ </div>
+              <div className="ml-2 text-sm">{search.total} รายการ </div>
             </div>
 
             <div className="grid grid-cols-6 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
@@ -192,17 +151,16 @@ export const SetRoleIndex = () => {
               </div>
             </div>
           </div>
-          {merchantTableArray?.map((ele, index) => {
+          {data?.map((ele, index) => {
             return (
               <div key={index}
                 className={`grid grid-cols-6 gap-2 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
               >
                 <div className="ml-2 text-center">{index + 1}</div>
-                <div className="col-span-2">{ }</div>
-                <div className="col-span-2">{ }</div>
+                <div className="col-span-4">{ele.roleName}</div>
                 <div className="col-span-1 flex justify-center gap-2 mr-2">
                   <Link
-                    to={`/editRole/`}
+                    to={`/editRole/${ele._id}`}
                     className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
                     <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
                   </Link>
@@ -213,41 +171,58 @@ export const SetRoleIndex = () => {
               </div>
             )
           })}
-          <div className="flex justify-end gap-2 h-12 pr-8 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-center mr-10">
+          <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+            <div className="flex items-center">
               <div>Rows per page:</div>
               <select
-                id="perPage"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={(e) => setPerPage(e.target.value)}
+                id="limit"
+                name="limit"
+                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                onChange={handlePagination}
               >
-               <option value="5">5</option>
-                  <option value="10" selected="selected">10</option>
-                  <option value="20">20</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
-              </div>
+                <option value="5">5</option>
+                <option value="10" selected="selected">
+                  10
+                </option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
 
-              <div className="mx-5">
-                {/* {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + transferArray.length} of {search.total} */}
-              </div>
+            <div className="mx-5">
+              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + data.length} of {search.total}
+            </div>
 
             <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 my-2"
+              onClick={() => {
+                if (1 == search.page) return
+                handlePage(1)
+              }}
+            >
+              <CgPushChevronLeft className="text-lg" />
+            </button>
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={() => handlePage(search.page - 1)}
             >
               <HiChevronLeft className="text-lg" />
             </button>
             <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={() => handlePage(search.page + 1)}
             >
               <HiChevronRight className="text-lg" />
+            </button>
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={() => {
+                if (search.page == search.limit) return
+                handlePage(search.limit)
+              }}
+            >
+              <CgPushChevronRight className="text-lg font-bold" />
             </button>
           </div>
         </div>

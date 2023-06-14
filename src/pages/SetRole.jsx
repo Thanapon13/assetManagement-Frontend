@@ -7,6 +7,7 @@ import { BsArrowLeft } from "react-icons/bs";
 import { useEffect } from 'react';
 import { Spinner } from 'flowbite-react';
 import { MdOutlineExpandLess, MdOutlineExpandMore } from 'react-icons/md'
+import { createRole } from '../api/userApi';
 
 export const SetRole = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -18,10 +19,12 @@ export const SetRole = () => {
         {
           "name": "dashboard",
           // "main": true,
-          "url": "/dashboard"
+          "url": "/dashboard",
+          order: 0
         },
         {
           "name": "asset",
+          order: 1,
           submenu: [
             {
               "name": "assetInformationIndex",
@@ -47,6 +50,7 @@ export const SetRole = () => {
         },
         {
           "name": "package",
+          order: 2,
           submenu: [
             {
               "name": "packageAssetInformationIndex",
@@ -71,7 +75,56 @@ export const SetRole = () => {
           ]
         },
         {
+          "name": "merchant",
+          order: 3,
+          submenu: [
+            {
+              "name": "merchantIndex",
+              "main": true,
+              "url": "/merchantIndex"
+            },
+            {
+              "name": "merchant",
+              "main": "/merchantIndex",
+              "url": "/merchant"
+            },
+            {
+              "name": "saveMerchant",
+              "main": "/merchantIndex",
+              "url": "/saveMerchant"
+            },
+            {
+              "name": "editMerchant",
+              "main": "/merchantIndex",
+              "url": "/editMerchant"
+            },
+            {
+              "name": "viewMerchant",
+              "main": "/merchantIndex",
+              "url": "/viewMerchant"
+            },
+            {
+              "name": "reportMerchantInfo",
+              "main": "/merchantIndex",
+              "url": "/reportMerchantInfo"
+            },
+            {
+              "name": "viewReportMerchantInfo",
+              "main": "/merchantIndex",
+              "url": "/viewReportMerchantInfo"
+            },
+          ]
+        },
+        //   {
+        //     // จัดการคลัง
+        //     order: 4,
+        //   }
+        // {  // เบิกจ่ายครุภัณฑ์
+        //     order: 5,
+        //   }
+        {
           "name": "assetWithdraw",
+          order: 6,
           submenu: [
             {
               "name": "assetWithdraw",
@@ -85,8 +138,10 @@ export const SetRole = () => {
             },
           ]
         },
+
         {
           "name": "borrow",
+          order: 7,
           submenu: [
             {
               "name": "borrowList",
@@ -147,6 +202,7 @@ export const SetRole = () => {
         },
         {
           "name": "transfer",
+          order: 8,
           submenu: [
             {
               "name": "transferIndex",
@@ -196,47 +252,8 @@ export const SetRole = () => {
           ]
         },
         {
-          "name": "merchant",
-          submenu: [
-            {
-              "name": "merchantIndex",
-              "main": true,
-              "url": "/merchantIndex"
-            },
-            {
-              "name": "merchant",
-              "main": "/merchantIndex",
-              "url": "/merchant"
-            },
-            {
-              "name": "saveMerchant",
-              "main": "/merchantIndex",
-              "url": "/saveMerchant"
-            },
-            {
-              "name": "editMerchant",
-              "main": "/merchantIndex",
-              "url": "/editMerchant"
-            },
-            {
-              "name": "viewMerchant",
-              "main": "/merchantIndex",
-              "url": "/viewMerchant"
-            },
-            {
-              "name": "reportMerchantInfo",
-              "main": "/merchantIndex",
-              "url": "/reportMerchantInfo"
-            },
-            {
-              "name": "viewReportMerchantInfo",
-              "main": "/merchantIndex",
-              "url": "/viewReportMerchantInfo"
-            },
-          ]
-        },
-        {
           "name": "repair",
+          order: 9,
           submenu: [
             {
               "name": "repairIndex",
@@ -277,6 +294,7 @@ export const SetRole = () => {
         },
         {
           "name": "master",
+          order: 10,
           submenu: [
             {
               "name": "defaultData",
@@ -314,8 +332,7 @@ export const SetRole = () => {
       if (!checkAll) {
         element.submenu?.map(sub => {
           if (!permission.find(val => val == sub.name)) {
-            array.push(sub.name)
-            console.log(sub.name)
+            array.push({ name: sub.name, order: element.order })
           }
         })
         console.log(array)
@@ -332,9 +349,9 @@ export const SetRole = () => {
     }
   }
   const onChangeSubmenu = (check, value) => {
-    console.log(check, value)
+    console.log(check)
     if (check) {
-      const arr = permission.filter(ele => (ele != value))
+      const arr = permission.filter(ele => (ele.name != value.name))
       setPermission(arr)
     } else {
       const array = permission.concat(value)
@@ -348,9 +365,9 @@ export const SetRole = () => {
       // screenData.map(ele => all.push(ele.name))
       screenData.map(ele => {
         if (!ele.submenu) {
-          all.push(ele.name)
+          all.push({ name: ele.name, order: ele.order })
         } else {
-          ele.submenu.forEach(sub => all.push(sub.name))
+          ele.submenu.forEach(sub => all.push({ name: sub.name, order: ele.order }))
         }
       })
       console.log(all)
@@ -361,9 +378,9 @@ export const SetRole = () => {
   }
 
   const [collapseAll, setCollapseAll] = useState(false)
-  // useState
+
   const [input, setInput] = useState({
-    engRole: '',
+    // engRole: '',
     role: '',
   })
 
@@ -382,13 +399,22 @@ export const SetRole = () => {
   const [showModalSuccess, setShowModalSuccess] = useState(false);
 
   const handleForm = async () => {
-    let errInput
-    Object.values(input).map((value) => {
-      if (errInput) return
-      if (!value) errInput = true
+    // let errInput
+    // Object.values(input).map((value) => {
+    //   if (errInput) return
+    //   if (!value) errInput = true
+    // })
+    // setError(errInput)
+    console.log(input, permission.length)
+    if (input.role && permission.length) setShowModalConfirm(true)
+  }
+
+  async function submit() {
+    const res = await createRole({
+      name: input.role,
+      screen: permission
     })
-    setError(errInput)
-    if (!(errInput)) setShowModalConfirm(true)
+    setShowModalSuccess(true)
   }
   const allScreenLength = () => {
     let num = 0
@@ -399,7 +425,6 @@ export const SetRole = () => {
         num += ele.submenu.length
       }
     })
-    console.log(num)
     return num
   }
 
@@ -505,9 +530,9 @@ export const SetRole = () => {
           <ModalConfirmSave
             isVisible={showModalConfirm}
             onClose={() => setShowModalConfirm(false)}
-          // onSave={submit}
+            onSave={submit}
           />
-          {showModalSuccess && <ModalSuccess urlPath='/merchant' />}
+          {showModalSuccess && <ModalSuccess urlPath='/setRoleIndex' />}
         </div>
       </div>
     </>
@@ -547,8 +572,8 @@ function ScreenAll(props) {
     setCheckAll(num === ele.submenu.length)
   }
 
-  const onChangeSub = (check, name) => {
-    onChangeSubmenu(check, name)
+  const onChangeSub = (check, name, order) => {
+    onChangeSubmenu(check, { name: name, order: order })
     if (!checkAll) {
       findCheckAll(permission.concat(name))
     } else {
@@ -583,13 +608,13 @@ function ScreenAll(props) {
       </div>
       <div className={`ml-5 duration-500 transition-all overflow-hidden ${collapse ? 'max-h-0 ease-out' : 'max-h-screen ease-in'}`}>
         {ele.submenu?.map((submenu, index) => {
-          const check = permission.find(el => el === submenu.name)
+          const check = permission.find(el => el.name === submenu.name)
           return (
             <div key={index} className={`ml-5 my-1 ${checkMain && 'text-black'} hover:cursor-pointer hover:text-black`}
-              onClick={() => onChangeSub(check, submenu.name)} >
+              onClick={() => onChangeSub(check, submenu.name, ele.order)} >
               <input type="checkbox" checked={check} value={submenu.name} className='mx-2 rounded'
-                onChange={() => onChangeSub(check, submenu.name)} />
-              {submenu.name} {check && '/'}
+                onChange={() => onChangeSub(check, submenu.name, ele.order)} />
+              {submenu.name}
             </div>
           )
         })}
