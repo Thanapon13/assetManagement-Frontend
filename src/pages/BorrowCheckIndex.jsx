@@ -13,6 +13,7 @@ import {
   getBorrowCheckSector,
 } from "../api/borrowApi";
 import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
+import SearchSelector from "../components/selector/SearchSelector";
 
 const BorrowCheckIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(
@@ -200,18 +201,6 @@ const BorrowCheckIndex = () => {
           />
         </div>
 
-        <div className="md:col-span-3 ">
-          <BorrowHistorySectorSelector
-            placeholder={"หน่วยงาน"}
-            state={search}
-            setState={setSearch}
-            search={search}
-            setSearch={setSearch}
-            id={"sector"}
-            data={sectorList}
-          />
-        </div>
-
         <div className="md:col-span-3">
           <select
             className="border-[1px] p-2 h-[38px] text-xs text-gray-500 sm:text-sm border-gray-300 rounded-md w-full"
@@ -249,6 +238,25 @@ const BorrowCheckIndex = () => {
               lable="date to"
             />
           </div>
+        </div>
+
+        <div className="md:col-span-3 ">
+          {/* <BorrowHistorySectorSelector
+            placeholder={"หน่วยงาน"}
+            state={search}
+            setState={setSearch}
+            search={search}
+            setSearch={setSearch}
+            id={"sector"}
+            data={sectorList}
+          /> */}
+            <SearchSelector
+            options={sectorList}
+            placeholder={"หน่วยงาน"}
+            name={"sector"}
+            onChange={(value, label) => setSearch({ ...search, [label]: value })}
+            floatLabel
+          />
         </div>
 
         <div className="flex justify-end">

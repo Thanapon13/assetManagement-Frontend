@@ -9,6 +9,7 @@ import DateInput from "../components/date/DateInput";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import { getBorrowHistorySector, getBySearchBorrowHistory } from "../api/borrowApi";
 import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
+import SearchSelector from "../components/selector/SearchSelector";
 
 const BorrowHistoryIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(
@@ -198,14 +199,12 @@ const BorrowHistoryIndex = () => {
         </div>
 
         <div className="md:col-span-3 ">
-          <BorrowHistorySectorSelector
+          <SearchSelector
+            options={sectorList}
             placeholder={"หน่วยงาน"}
-            state={search}
-            setState={setSearch}
-            search={search}
-            setSearch={setSearch}
-            id={"sector"}
-            data={sectorList}
+            name={"sector"}
+            onChange={(value, label) => setSearch({ ...search, [label]: value })}
+            floatLabel
           />
         </div>
 
