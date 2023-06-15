@@ -7,6 +7,7 @@ import {
 import AssetNumberSelector from "../selector/AssetNumberSelector";
 import ProductNameSelector from "../selector/ProductNameSelector";
 import { ToastContainer, toast } from "react-toastify";
+import SearchSelector from "../selector/SearchSelector";
 
 function TableBorrowRecord({
   index,
@@ -14,6 +15,9 @@ function TableBorrowRecord({
   setSaveAssetWithdrawTableArray,
   errorAssestTable,
   deleteRow,
+  assetList,
+  productList,
+  callbackList
 }) {
   const [dataProductName, setDataProductName] = useState([]);
   const [dataAssetNumber, setDataAssetNumber] = useState([]);
@@ -126,30 +130,74 @@ function TableBorrowRecord({
     }
   };
 
-  // fetch all data asset
-  const fetchAssetList = async () => {
-    try {
-      const res = await getByProductSelector(search);
-      console.log(res.data.asset);
-      setDataProductName(res.data.asset);
-      const resAssetNumber = await getByAssetNumberSelector(search);
-      console.log(resAssetNumber.data.asset);
-      setDataAssetNumber(resAssetNumber.data.asset);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  useEffect(() => {
-    fetchAssetList();
-  }, []);
+  // // fetch all data asset
+  // const fetchAssetList = async () => {
+  //   try {
+  //     const res = await getByProductSelector(search);
+  //     console.log(res.data.asset);
+  //     setDataProductName(res.data.asset);
+  //     const resAssetNumber = await getByAssetNumberSelector(search);
+  //     console.log(resAssetNumber.data.asset);
+  //     setDataAssetNumber(resAssetNumber.data.asset);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchAssetList();
+  // }, []);
 
   useEffect(() => {
     fetchAssetListByProductName(search);
   }, [search.productName]);
 
+  const ele = saveAssetWithdrawTableArray[index]
+
+  const handleNumber = async (value, label, ele) => {
+    const clone = { ...search };
+    clone.assetNumber = value || ""
+    if (value) {
+      clone.productName = ele?.productName
+      clone.serialNumber = ele?.serialNumber
+    }
+    setSearch(clone);
+    const val = saveAssetWithdrawTableArray[index]
+    saveAssetWithdrawTableArray[index] = {
+      ...clone,
+      sector: ele?.sector || val.sector,
+      quantity: 1,
+      unit: ele?.unit || val.unit,
+      isFetching: false
+    }
+
+    console.log(saveAssetWithdrawTableArray)
+    callbackList()
+  }
+
+  const handleName = async (value, label, ele) => {
+    const clone = { ...search };
+    clone.productName = value || ""
+    if (!value) {
+      clone.assetNumber = ""
+      clone.serialNumber = ""
+    }
+    setSearch(clone);
+    // fetchList()
+
+    saveAssetWithdrawTableArray[index] = {
+      ...clone,
+      sector: ele ? ele[0].sector : "",
+      quantity: value ? 1 : "",
+      unit: ele ? ele[0].unit : "",
+      //  isFetching: false
+    }
+    console.log(saveAssetWithdrawTableArray[index], '*********')
+    callbackList()
+  }
+
   return (
     <div
-      className={` p-2 grid grid-cols-12 justify-center items-center gap-4 h-16 text-xs bg-white`}
+      className={` p-2 grid grid-cols-13 justify-center items-center gap-4 h-16 text-xs bg-white`}
     >
       <div className="col-span-1 ml-2 text-center flex justify-center items-center ">
         <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
@@ -158,7 +206,15 @@ function TableBorrowRecord({
       </div>
 
       <div className="col-span-2 ">
-        <AssetNumberSelector
+      <SearchSelector
+          id="เลขครุภัณฑ์"
+          name="assetNumber"
+          options={assetList}
+          onChange={handleNumber}
+          // error={error && !ele.assetNumber}
+          value={ele.assetNumber && { label: ele.assetNumber, value: ele.assetNumber }}
+        />
+        {/* <AssetNumberSelector
           placeholder={"Select"}
           state={saveAssetWithdrawTableArray}
           setState={setSaveAssetWithdrawTableArray}
@@ -176,10 +232,18 @@ function TableBorrowRecord({
           search={search}
           setSearch={setSearch}
           errors={errorAssestTable}
-        />
+        /> */}
       </div>
       <div className="col-span-3 ">
-        <ProductNameSelector
+      <SearchSelector
+          id="ชื่อครุภัณฑ์"
+          name="productName"
+          options={productList}
+          onChange={handleName}
+          // error={error && !ele.productName}
+          value={(ele.productName) && { label: ele.productName, value: ele.productName }}
+        />
+        {/* <ProductNameSelector
           placeholder={"Select"}
           state={saveAssetWithdrawTableArray}
           setState={setSaveAssetWithdrawTableArray}
@@ -197,7 +261,7 @@ function TableBorrowRecord({
           search={search}
           setSearch={setSearch}
           errors={errorAssestTable}
-        />
+        /> */}
       </div>
       <input
         className="col-span-2 bg-table-gray text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
@@ -208,7 +272,7 @@ function TableBorrowRecord({
           saveAssetWithdrawTableArray[index]?.brand
         }
       />
-      <div className="col-span-3 grid grid-cols-4 gap-5">
+      {/* <div className="col-span-3 grid grid-cols-4 gap-5"> */}
         <input
           className={`${errorAssestTable && !saveAssetWithdrawTableArray[index]?.amount && 'border-red-500'} border-gray-300 text-sm col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
           name="amount"
@@ -225,7 +289,7 @@ function TableBorrowRecord({
           onChange={handleChange}
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.amount.toLocaleString()
+            saveAssetWithdrawTableArray[index]?.amount?.toLocaleString()
           }
           placeholder={saveAssetWithdrawTableArray[index]?.maxQuantity}
         />
@@ -243,10 +307,10 @@ function TableBorrowRecord({
           disabled
           value={
             saveAssetWithdrawTableArray &&
-            saveAssetWithdrawTableArray[index]?.pricePerUnit.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            saveAssetWithdrawTableArray[index]?.pricePerUnit?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
           }
         />
-      </div>
+      {/* </div> */}
       <div className="flex justify-center items-center">
         <button
           className="flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 "

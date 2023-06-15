@@ -10,6 +10,7 @@ import ModalSuccess from "../components/modal/ModalSuccess";
 import { getBuildingData, getPurposeOfUse, getSector, getSubsector } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import { BsArrowLeft } from "react-icons/bs";
+import { getByAssetNumberSelector, getByProductSelector } from "../api/assetApi";
 
 const BorrowRecord = () => {
   const [countRow, setCountRow] = useState(1);
@@ -73,6 +74,7 @@ const BorrowRecord = () => {
 
   useEffect(() => {
     getMasterData()
+    fetchLists()
   }, [])
 
   const getMasterData = async () => {
@@ -92,6 +94,38 @@ const BorrowRecord = () => {
 
   const handleSelect = (value, label, ele) => {
     setInput({ ...input, [label]: value })
+  }
+
+  const [assetList, setAssetList] = useState([])
+  const [productList, setProductList] = useState([])
+  const fetchLists = async () => {
+    const resAssetNumber = await getByAssetNumberSelector("")
+    const arrAsset = []
+    resAssetNumber.data.asset.map(ele => {
+      arrAsset.push({ label: ele.assetNumber, value: ele.assetNumber, ele })
+    })
+    console.log(arrAsset)
+    setAssetList(arrAsset)
+    const resProduct = await getByProductSelector("")
+    const arrProduct = []
+    resProduct.data.asset.map(ele => {
+      arrProduct.push({ label: ele._id, value: ele._id, ele: ele.results })
+    })
+    setProductList(arrProduct)
+
+    assetList?.find(list => console.log(list.value, search.assetNumber))
+  }
+
+  function callbackList() {
+    console.log('saveAssetWithdrawTableArray', saveAssetWithdrawTableArray)
+    console.log(assetList, productList)
+    let asset = [], product = []
+    saveAssetWithdrawTableArray?.map(ele => {
+      asset = assetList.filter(ass => ele.assetNumber != ass.value)
+      product = productList.filter(ass => ele.productName != ass.value)
+    })
+    setAssetList(asset)
+    setProductList(product)
   }
 
   function formArrayOption(data) {
@@ -368,6 +402,9 @@ const BorrowRecord = () => {
                     setSaveAssetWithdrawTableArray={setSaveAssetWithdrawTableArray}
                     deleteRow={deleteRow}
                     errorAssestTable={errorAssestTable}
+                    assetList={assetList}
+                    productList={productList}
+                    callbackList={callbackList}
                   />
                 );
               })}

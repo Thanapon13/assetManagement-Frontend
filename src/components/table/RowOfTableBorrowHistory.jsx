@@ -37,40 +37,37 @@ function RowOfTableBorrowHistory({
         </div>
 
         <input
-          className="col-span-2 bg-gray-200 text-center flex justify-center items-center  py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          className="col-span-2 bg-gray-200 text-left flex justify-center items-center p-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
           disabled
           value={borrowIdDoc}
         />
         <input
-          className="col-span-2 bg-gray-200 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+          className="col-span-2 bg-gray-200 text-left flex justify-center items-center p-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
           disabled
           value={handler}
         />
         <div className="flex relative col-span-2">
           <input
-            className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+            className="w-full text-left bg-gray-200 flex justify-center items-center p-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             value={sector}
           />
         </div>
         <div className="flex relative col-span-2">
           <input
-            className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+            className="w-full text-center bg-gray-200  flex justify-center items-center p-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             disabled
             value={`${
               borrowDate 
-                ? new Date(borrowDate).toLocaleDateString(
-                  "th-TH",
-                  options
-                )
-                : "-"
-            }${" "}${borrowDate  ? "," : ""}${" "} ${borrowDate ? new Date(borrowDate).toLocaleTimeString("th-TH",hoursOptions)
+                ? new Date(borrowDate).toLocaleDateString( "th-TH", options )
+            //     : "-"
+            // }${" "}${borrowDate  ? "," : ""}${" "} ${borrowDate ? new Date(borrowDate).toLocaleTimeString("th-TH",hoursOptions)
               : ""
           }`}
           />
         </div>
         <div className="flex relative col-span-2">
           <input
-            className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+            className="w-full text-center bg-gray-200  flex justify-center items-center p-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             disabled
             value={`${
               borrowSetReturnDate 
@@ -78,15 +75,15 @@ function RowOfTableBorrowHistory({
                   "th-TH",
                   options
                 )
-                : "-"
-            }${" "}${borrowSetReturnDate  ? "," : ""}${" "} ${borrowSetReturnDate ? new Date(borrowSetReturnDate).toLocaleTimeString("th-TH",hoursOptions)
+            //     : "-"
+            // }${" "}${borrowSetReturnDate  ? "," : ""}${" "} ${borrowSetReturnDate ? new Date(borrowSetReturnDate).toLocaleTimeString("th-TH",hoursOptions)
               : ""
           }`}
           />
         </div>
         <div className="flex relative col-span-2">
           <input
-            className="w-full text-left bg-gray-200 pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
+            className="w-full text-center bg-gray-200 flex justify-center items-center p-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"
             disabled
             value={`${
               borrowReturnDate 
