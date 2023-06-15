@@ -82,12 +82,16 @@ function RowOfTableAddressMerchant({
               บ้านเลขที่
               <input
                 className={`${inputClassname} ${errorAddress && "border-red-500"}`}
+                value={address.address}
+                name="address"
               />
             </div>
             <div>
               หมู่ที่
               <input
                 className={`${inputClassname}`}
+                value={address.group}
+                name="group"
               />
             </div>
           </div>
@@ -96,21 +100,25 @@ function RowOfTableAddressMerchant({
             หมู่บ้าน
             <input
               className={`${inputClassname}`}
+              value={address.village}
+              name="village"
             />
           </div>
           <div>
             ซอย
             <input
               className={`${inputClassname}`}
+              value={address.alley}
+              name="alley"
             />
           </div>
 
           <div>
             ถนน
             <input
-              name="road"
+              name="street"
               onChange={handleChangeAddress}
-              value={address.road}
+              value={address.street}
               className={`${inputClassname}`}
             />
           </div>

@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 function RowOfMerchantTableArray({
   index,
   ele,
-  page
+  page,
+  mode
 }) {
 
   return (
@@ -19,16 +20,26 @@ function RowOfMerchantTableArray({
       <div className="col-span-3">{ele.companyName}</div>
       <div className="col-span-2">{ele.creditorCategory}</div>
       <div className="col-span-2">{ele.contactName}</div>
-      <div className="col-span-2 text-center">{ele.status}</div>
+      <div className="col-span-2 text-center">
+        <div className={`rounded-full py-2 px-4  w-fit mx-auto 
+        ${ele.status === "saveDraft"
+            ? "bg-gray-300"
+            : ele.status === "active"
+              ? "bg-text-blue text-white"
+              : "border-text-blue border text-text-blue"
+          } `}>
+          {ele.status === "saveDraft" ? "แบบร่าง" : ele.status}
+        </div>
+      </div>
       <div className="col-span-2 flex justify-center gap-2 mr-2">
         <Link
-          // to={`/${mode !== "reportInfo" ? "viewMerchant" : "viewReportMerchantInfo"}/${_id}`}
-          to={`/${ele.status !== "active" ? "viewMerchant" : "viewReportMerchantInfo"}/${ele._id}`}
+          to={`/${mode !== "reportInfo" ? "viewMerchant" : "viewReportMerchantInfo"}/${ele._id}`}
+          // to={`/${ele.status !== "active" ? "viewMerchant" : "viewReportMerchantInfo"}/${ele._id}`}
           className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
           <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
         </Link>
-        {/* {mode === "reportInfo" */}
-        {ele.status == "active"
+        {/* {ele.status == "active" */}
+        {mode === "reportInfo"
           ?
           <button className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
             <div className="flex justify-center items-center">
@@ -46,7 +57,8 @@ function RowOfMerchantTableArray({
               </svg>
             </div>
           </button>
-          : <>
+          :
+          <>
             <Link
               to={`/editMerchant/${ele._id}`}
               className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
@@ -57,7 +69,7 @@ function RowOfMerchantTableArray({
             </button>
           </>}
       </div>
-    </div>
+    </div >
   );
 }
 
