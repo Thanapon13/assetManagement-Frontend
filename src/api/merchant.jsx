@@ -20,16 +20,16 @@ export function updateMerchant(input, id) {
   });
 }
 
+function getQueryString(search) {
+  const params = Object.keys(search)
+    .filter((key) => search[key] !== "") 
+    .map(
+      (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
+    )
+    .join("&");
+  return params;
+}
 export function getMerchantBySearch(search) {
-  function getQueryString(search) {
-    const params = Object.keys(search)
-      .filter((key) => search[key] !== "") 
-      .map(
-        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
-      )
-      .join("&");
-    return params;
-  }
 
   const queryString = getQueryString(search);
 
@@ -38,4 +38,12 @@ export function getMerchantBySearch(search) {
 
 export function getDropdownMerchant() {
   return axios.get(`/merchant/getDropdownMerchant`)
+}
+
+export function getMerchantById(id) {
+  return axios.get(`/merchant/${id}`)
+}
+
+export function getMerchantBySearchViewOnly(search) {
+  return axios.get(`/merchant/searchViewOnly?${getQueryString(search)}`)
 }
