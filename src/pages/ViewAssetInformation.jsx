@@ -15,6 +15,7 @@ import RowOfTableBorrowHistory from "../components/table/RowOfTableBorrowHistory
 import RowOfTableBuildingHistory from "../components/table/RowOfTableBuildingHistory";
 import OnlyDateInput from "../components/date/onlyDateInput";
 import { getViewBorrowHistoryByAssetId } from "../api/borrowApi";
+import { Spinner } from "flowbite-react";
 
 const ViewAssetInformation = () => {
   const { assetId } = useParams();
@@ -408,91 +409,81 @@ const ViewAssetInformation = () => {
         </div>
 
         {isLoading
-          ? '...'
+          ? <div className="mt-5 py-10 w-full text-center"><Spinner size="xl" /></div>
           : <>
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-4">
               <div>ข้อมูลครุภัณฑ์</div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3 text-xs">
-                {/* ชื่อครุภัณฑ์ภาษาอังกฤษ */}
-                <div className="text-gray-500">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
-                <div>
+              <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-xs">
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ชื่อครุภัณฑ์ภาษาอังกฤษ</div>
+                <div className="col-span-2 sm:col-span-4">
                   {input?.engProductName ? input?.engProductName : "-"}
                 </div>
-                {/* ชื่อครุภัณฑ์ภาษาไทย */}
-                <div className="text-gray-500">ชื่อครุภัณฑ์ภาษาไทย</div>
-                <div>{input?.productName ? input?.productName : "-"}</div>
-                {/* ประเภทครุภัณฑ์ */}
-                <div className="text-gray-500">ประเภทครุภัณฑ์</div>
-                <div>{input?.type ? input?.type : "-"}</div>
-                {/* ชนิดครุภัณฑ์ */}
-                <div className="text-gray-500">ชนิดครุภัณฑ์</div>
-                <div>{input?.kind ? input?.kind : "-"}</div>
-                {/* กลุ่ม */}
-                <div className="text-gray-500">กลุ่ม</div>
-                <div>{input?.group ? input?.group : "-"}</div>
-                {/* หมวด */}
-                <div className="text-gray-500">หมวด</div>
-                <div>{input?.category ? input?.category : "-"}</div>
-                {/* ราคาต่อหน่วย (บาท) */}
-                <div className="text-gray-500">ราคาต่อหน่วย (บาท)</div>
-                <div>{input?.pricePerUnit ? input?.pricePerUnit : "-"}</div>
-                {/* ลำดับครุภัณฑ์ */}
-                <div className="text-gray-500">ลำดับครุภัณฑ์</div>
-                <div>{input?.realAssetId ? input?.realAssetId : "-"}</div>
-                {/* ยี่ห้อ */}
-                <div className="text-gray-500">ยี่ห้อ</div>
-                <div>{input?.brand ? input?.brand : "-"}</div>
-                {/* รุ่น */}
-                <div className="text-gray-500">รุ่น</div>
-                <div>{input?.model ? input?.model : "-"}</div>
-                {/* เลขครุภัณฑ์ */}
-                <div className="text-gray-500">เลขครุภัณฑ์</div>
-                <div>{input?.assetNumber ? input?.assetNumber : "-"}</div>
-                {/* Serial Number */}
-                <div className="text-gray-500">Serial Number</div>
-                <div>{input?.serialNumber ? input?.serialNumber : "-"}</div>
-                {/* ขนาด */}
-                <div className="text-gray-500">ขนาด</div>
-                <div>{input?.size ? input?.size : "-"}</div>
-                {/* หน่วยงานเจ้าของครุภัณฑ์ */}
-                <div className="text-gray-500">หน่วยงานเจ้าของครุภัณฑ์</div>
-                <div>{input?.sector ? input?.sector : "-"}</div>
-                {/* ประเภทที่ได้มา */}
-                <div className="text-gray-500">ประเภทที่ได้มา</div>
-                <div>{input?.acquiredType ? input?.acquiredType : "-"}</div>
-                {/* แหล่งที่ได้มา */}
-                <div className="text-gray-500">แหล่งที่ได้มา</div>
-                <div>{input?.source ? input?.source : "-"}</div>
-                {/* วันที่เริ่มรับประกัน */}
-                <div className="text-gray-500">วันที่เริ่มรับประกัน</div>
-                <div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ชื่อครุภัณฑ์ภาษาไทย</div>
+                <div className="col-span-2 sm:col-span-4">
+                  {input?.productName ? input?.productName : "-"}
+                  </div>
+               
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ประเภทครุภัณฑ์</div>
+                <div className="col-span-2 sm:col-span-4">{input?.type ? input?.type : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ชนิดครุภัณฑ์</div>
+                <div className="col-span-2 sm:col-span-4">{input?.kind ? input?.kind : "-"}</div>
+             
+                <div className="text-gray-500 col-span-1 sm:col-span-3">กลุ่ม</div>
+                <div className="col-span-2 sm:col-span-4">{input?.group ? input?.group : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">หมวด</div>
+                <div className="col-span-2 sm:col-span-4">{input?.category ? input?.category : "-"}</div>
+             
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ราคาต่อหน่วย (บาท)</div>
+                <div className="col-span-2 sm:col-span-4">{input?.pricePerUnit ? input?.pricePerUnit : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ลำดับครุภัณฑ์</div>
+                <div className="col-span-2 sm:col-span-4">{input?.realAssetId ? input?.realAssetId : "-"}</div>
+              
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ยี่ห้อ</div>
+                <div className="col-span-2 sm:col-span-4">{input?.brand ? input?.brand : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">รุ่น</div>
+                <div className="col-span-2 sm:col-span-4">{input?.model ? input?.model : "-"}</div>
+              
+                <div className="text-gray-500 col-span-1 sm:col-span-3">เลขครุภัณฑ์</div>
+                <div className="col-span-2 sm:col-span-4">{input?.assetNumber ? input?.assetNumber : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">Serial Number</div>
+                <div className="col-span-2 sm:col-span-4">{input?.serialNumber ? input?.serialNumber : "-"}</div>
+             
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ขนาด</div>
+                <div className="col-span-2 sm:col-span-4">{input?.size ? input?.size : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">หน่วยงานเจ้าของครุภัณฑ์</div>
+                <div className="col-span-2 sm:col-span-4">{input?.sector ? input?.sector : "-"}</div>
+               
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ประเภทที่ได้มา</div>
+                <div className="col-span-2 sm:col-span-4">{input?.acquiredType ? input?.acquiredType : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">แหล่งที่ได้มา</div>
+                <div className="col-span-2 sm:col-span-4">{input?.source ? input?.source : "-"}</div>
+              
+                <div className="text-gray-500 col-span-1 sm:col-span-3">วันที่เริ่มรับประกัน</div>
+                <div className="col-span-2 sm:col-span-4">
                   {insuranceStartDate && ChangeDateToBuddhist(insuranceStartDate) || '-'}
                   {/* {insuranceStartDate !== ""
                 ? insuranceStartDate?.toLocaleDateString("en-GB", options)
                 : "-"} */}
                 </div>
-                {/* วันที่สิ้นสุดการรับประกัน */}
-                <div className="text-gray-500">วันที่สิ้นสุดการรับประกัน</div>
-                <div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">วันที่สิ้นสุดการรับประกัน</div>
+                <div className="col-span-2 sm:col-span-4">
                   {insuranceExpiredDate && ChangeDateToBuddhist(insuranceExpiredDate) || '-'}
                   {/* {insuranceExpiredDate !== ""
                 ? insuranceExpiredDate?.toLocaleDateString("en-GB", options)
                 : "-"} */}
                 </div>
-                {/* ระยะเวลารับประกัน(เดือน) */}
-                <div className="text-gray-500">ระยะเวลารับประกัน(เดือน)</div>
-                <div>
+              
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ระยะเวลารับประกัน(เดือน)</div>
+                <div className="col-span-2 sm:col-span-4">
                   {input?.guaranteedMonth ? input?.guaranteedMonth : "-"}
                 </div>
-                {/* วัตถุประสงค์การใช้งาน */}
-                <div className="text-gray-500">วัตถุประสงค์การใช้งาน</div>
-                <div>{input?.purposeOfUse ? input?.purposeOfUse : "-"}</div>
-                {/* สท.01 */}
-                <div className="text-gray-500">สท.01</div>
-                <div>{input?.asset01 ? input?.asset01 : "-"}</div>
-                {/* แทนครุภัณฑ์ */}
-                <div className="text-gray-500">แทนครุภัณฑ์</div>
-                <div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">วัตถุประสงค์การใช้งาน</div>
+                <div className="col-span-2 sm:col-span-4">{input?.purposeOfUse ? input?.purposeOfUse : "-"}</div>
+        
+                <div className="text-gray-500 col-span-1 sm:col-span-3">สท.01</div>
+                <div className="col-span-2 sm:col-span-4">{input?.asset01 ? input?.asset01 : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">แทนครุภัณฑ์</div>
+                <div className="col-span-2 sm:col-span-4">
                   {input?.replacedAssetNumber
                     ? input?.replacedAssetNumber
                     : "-"}
@@ -587,86 +578,77 @@ const ViewAssetInformation = () => {
               </div>
             </div>
 
-            {/* สัญญาจัดซื้อ */}
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-4">
               <div className="font-semibold">สัญญาจัดซื้อ</div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3 text-xs">
-                {/* วิธีการได้มา */}
-                <div className="text-gray-500">วิธีการได้มา</div>
-                <div>{acquisitionMethod ? acquisitionMethod : "-"}</div>
-                {/* ประเภทเงิน */}
-                <div className="text-gray-500">ประเภทเงิน</div>
-                <div>{moneyType ? moneyType : "-"}</div>
-                {/* เลขที่สัญญา */}
-                <div className="text-gray-500">เลขที่สัญญา</div>
-                <div>{contractNumber ? contractNumber : "-"}</div>
-                {/* เอกสารใบส่งของ */}
-                <div className="text-gray-500">เอกสารใบส่งของ</div>
-                <div>{deliveryDocument ? deliveryDocument : "-"}</div>
-                {/* ผู้ขาย */}
-                <div className="text-gray-500">ผู้ขาย</div>
-                <div>{seller ? seller : "-"}</div>
-                {/* เลขที่ใบเบิก */}
-                <div className="text-gray-500">เลขที่ใบเบิก</div>
-                <div>{billNumber ? billNumber : "-"}</div>
-                {/* วันที่ซื้อ */}
-                <div className="text-gray-500">วันที่ซื้อ</div>
-                <div>
+              <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-xs">
+          
+                <div className="text-gray-500 col-span-1 sm:col-span-3">วิธีการได้มา</div>
+                <div className="col-span-2 sm:col-span-4">{acquisitionMethod ? acquisitionMethod : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ประเภทเงิน</div>
+                <div className="col-span-2 sm:col-span-4">{moneyType ? moneyType : "-"}</div>
+            
+                <div className="text-gray-500 col-span-1 sm:col-span-3">เลขที่สัญญา</div>
+                <div className="col-span-2 sm:col-span-4">{contractNumber ? contractNumber : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">เอกสารใบส่งของ</div>
+                <div className="col-span-2 sm:col-span-4">{deliveryDocument ? deliveryDocument : "-"}</div>
+             
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ผู้ขาย</div>
+                <div className="col-span-2 sm:col-span-4">{seller ? seller : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">เลขที่ใบเบิก</div>
+                <div className="col-span-2 sm:col-span-4">{billNumber ? billNumber : "-"}</div>
+                
+                <div className="text-gray-500 col-span-1 sm:col-span-3">วันที่ซื้อ</div>
+                <div className="col-span-2 sm:col-span-4">
                   {purchaseDate && ChangeDateToBuddhist(purchaseDate) || '-'}
                   {/* {purchaseDate !== ""
                 ? purchaseDate?.toLocaleDateString("en-GB", options)
                 : "-"} */}
                 </div>
-                {/* วันที่รับมอบ */}
-                <div className="text-gray-500">วันที่รับมอบ</div>
-                <div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">วันที่รับมอบ</div>
+                <div className="col-span-2 sm:col-span-4">
                   {receivedDate && ChangeDateToBuddhist(receivedDate) || '-'}
                   {/* {receivedDate !== ""
                 ? receivedDate?.toLocaleDateString("en-GB", options)
                 : "-"} */}
                 </div>
-                {/* ราคาซื้อ (บาท) */}
-                <div className="text-gray-500">ราคาซื้อ (บาท)</div>
-                <div>{price ? price : "-"}</div>
-                {/* ปีงบประมาณที่ซื้อ */}
-                <div className="text-gray-500">ปีงบประมาณที่ซื้อ</div>
-                <div>
+            
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ราคาซื้อ (บาท)</div>
+                <div className="col-span-2 sm:col-span-4">{price ? price : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">ปีงบประมาณที่ซื้อ</div>
+                <div className="col-span-2 sm:col-span-4">
                   {purchaseYear ? new Date((purchaseYear)).getFullYear() + 543 : '-'}
                   {/* {purchaseYear !== ""
                 ? purchaseYear?.toLocaleDateString("en-GB", options)
                 : "-"} */}
                 </div>
-                {/* วันที่ลงเอกสาร */}
-                <div className="text-gray-500">วันที่ลงเอกสาร</div>
-                <div>
+             
+                <div className="text-gray-500 col-span-1 sm:col-span-3">วันที่ลงเอกสาร</div>
+                <div className="col-span-2 sm:col-span-4">
                   {documentDate && ChangeDateToBuddhist(documentDate) || '-'}
                 </div>
               </div>
             </div>
 
-            {/* การจำหน่าย */}
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-4">
               <div className="font-semibold">การจำหน่าย</div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3 text-xs">
-                {/* เอกสารจำหน่าย */}
-                <div className="text-gray-500">เอกสารจำหน่าย</div>
-                <div>{salesDocument ? salesDocument : "-"}</div>
-                {/* เอกสารลงวันที่ */}
-                <div className="text-gray-500">เอกสารลงวันที่</div>
-                <div>
+              <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-xs">
+               
+                <div className="text-gray-500 col-span-1 sm:col-span-3">เอกสารจำหน่าย</div>
+                <div className="col-span-2 sm:col-span-4">{salesDocument ? salesDocument : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">เอกสารลงวันที่</div>
+                <div className="col-span-2 sm:col-span-4">
                   {distributeDocumentDate && ChangeDateToBuddhist(distributeDocumentDate) || '-'}
                 </div>
-                {/* วันอนุมัติจำหน่าย */}
-                <div className="text-gray-500">วันอนุมัติจำหน่าย</div>
-                <div>
+             
+                <div className="text-gray-500 col-span-1 sm:col-span-3">วันอนุมัติจำหน่าย</div>
+                <div className="col-span-2 sm:col-span-4">
                   {distributeApprovalReleaseDate && ChangeDateToBuddhist(distributeApprovalReleaseDate) || '-'}
                 </div>
-                {/* สถานะ */}
-                <div className="text-gray-500">สถานะ</div>
-                <div>{distributeStatus ? distributeStatus : "-"}</div>
-                {/* หมายเหตุ */}
-                <div className="text-gray-500">หมายเหตุ</div>
-                <div>{distributionNote ? distributionNote : "-"}</div>
+                <div className="text-gray-500 col-span-1 sm:col-span-3">สถานะ</div>
+                <div className="col-span-2 sm:col-span-4">{distributeStatus ? distributeStatus : "-"}</div>
+             
+                <div className="text-gray-500 col-span-1 sm:col-span-3">หมายเหตุ</div>
+                <div className="col-span-2 sm:col-span-4">{distributionNote ? distributionNote : "-"}</div>
               </div>
             </div>
 
