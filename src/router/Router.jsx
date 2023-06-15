@@ -56,7 +56,6 @@ import {
   ViewWaitingTransferAsset,
   EditTransferAsset,
   SaveMerchant,
-  Merchant,
   ViewMerchant,
   ReportMerchantInfo,
   ViewReportMerchantInfo,
@@ -178,7 +177,7 @@ const Router = () => {
           <Route path="historyTransferAsset" element={<HistoryTransferAsset />} />
           <Route path="viewTransferAsset/:transferId" element={<ViewTransferAsset />} />
 
-          <Route path="merchant" element={<Merchant />} />
+          <Route path="merchantIndex" element={<MerchantIndex />} />
           <Route path="saveMerchant" element={<SaveMerchant />} />
           <Route path="editMerchant/:merchantId" element={<EditMerchant />} />
           <Route path="viewMerchant/:merchantId" element={<ViewMerchant />} />
@@ -215,7 +214,6 @@ const Router = () => {
           <Route path="setRole" element={<SetRole />} />
           <Route path="editRole/:id" element={<EditRole />} />
 
-          <Route path="merchantIndex" element={<MerchantIndex />} />
           <Route
             path="userInformationIndex"
             element={<UserInformationIndex />}

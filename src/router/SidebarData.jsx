@@ -88,7 +88,7 @@ export const SidebarData = [
     subNav: [
       {
         title: 'รายการข้อมูลหลักผู้ค้า',
-        path: '/merchant',
+        path: '/merchantIndex',
         icon: (
           <svg
             width="20"

@@ -323,7 +323,7 @@ export const EditRole = () => {
         {
           "name": "merchant",
           "main": "/merchantIndex",
-          "url": "/merchant"
+          "url": "/merchantIndex"
         },
         {
           "name": "saveMerchant",

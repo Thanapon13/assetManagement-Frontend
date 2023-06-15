@@ -86,7 +86,7 @@ export const SetRole = () => {
             {
               "name": "merchant",
               "main": "/merchantIndex",
-              "url": "/merchant"
+              "url": "/merchantIndex"
             },
             {
               "name": "saveMerchant",
