@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Selector from '../components/selector/Selector'
 import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
 import boxIcon from "../public/pics/boxIcon.png";
@@ -12,32 +12,47 @@ import { useRef } from "react";
 import { useForm } from "react-hook-form";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { createMerchant } from '../api/merchant';
+import { createMerchant, getMerchantById } from '../api/merchant';
 import { Spinner } from 'flowbite-react';
+import { useEffect } from 'react';
+import SearchSelector from '../components/selector/SearchSelector';
+import { getCompanyPrefix, getThaiPrefix } from '../api/masterApi';
 
 export const EditMerchant = () => {
-  const [isLoading, setIsLoading] = useState(!true)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // useState
   const [input, setInput] = useState({
-    merchantNo: '',
-    taxNumber: '',
-    titleCompany: '',
-    companyName: '',
-    titleName: '',
-    personName: '',
-    telNo: '',
-    email: '',
+    // merchantNo: '',
+    // taxNumber: '',
+    // titleCompany: '',
+    // companyName: '',
+    // titleName: '',
+    // personName: '',
+    // telNo: '',
+    // email: '',
   })
 
-  const [inputBottom, setInputBottom] = useState({
-    bankAccountNum: "",
-    detailBankAccount: "",
-    bankNo: "",
-    branchCode: "",
-    identificationNumber: "",
-    groupType: "",
-  })
+  useEffect(() => {
+    initData()
+    getMaster()
+  }, [])
+  const { merchantId } = useParams()
+
+  async function initData() {
+    try {
+      const res = await getMerchantById(merchantId)
+      setInput(res.data.merchant)
+      setArrayAddress(res.data.merchant.merchantAddress)
+      setArrayRelation(res.data.merchant.merchantRelation)
+      setArrayDocument(res.data.merchant.documentArray)
+    } catch (error) {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    setIsLoading(false)
+  }, [input])
 
   const handleChange = (e) => {
     setInput(prevInput => {
@@ -47,6 +62,33 @@ export const EditMerchant = () => {
       }
     })
   };
+
+  const handleSelect = (value, label) => {
+    setInput({ ...input, [label]: value })
+  }
+
+  const handleSelectRelation = (value, label) => {
+    setInput({ ...input, [label]: value })
+  }
+
+  const [companyPrefixList, setCompanyPrefixList] = useState([])
+  const [thaiPrefixList, setThaiPrefixList] = useState([])
+  const getMaster = async () => {
+    const companyPrefix = await getCompanyPrefix()
+    const arrCompanyPrefix = formArrayOption(companyPrefix.data.companyPrefix)
+    setCompanyPrefixList(arrCompanyPrefix)
+    const thaiPrefix = await getThaiPrefix()
+    const arrThaiPrefix = formArrayOption(thaiPrefix.data.thaiPrefix)
+    setThaiPrefixList(arrThaiPrefix)
+  }
+
+  function formArrayOption(data) {
+    const array = []
+    data.map(ele => {
+      array.push({ label: ele.name, value: ele.name })
+    })
+    return array
+  }
 
   const handleChangeAddress = (e) => {
     // setArrayAddress(prevInput => {
@@ -209,10 +251,9 @@ export const EditMerchant = () => {
   return (
     <>
       <div className="bg-background-page px-5 pt-10 pb-2">
-        {/* Header */}
         <div className="flex items-center">
           <Link
-            to="/merchant"
+            to="/merchantIndex"
             className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
           >
             <BsArrowLeft className="text-lg" />
@@ -220,7 +261,6 @@ export const EditMerchant = () => {
           <div className="text-xl text-text-green ">แก้ไขข้อมูลหลักผู้ค้า</div>
         </div>
         <div className="flex justify-between items-center">
-          {/* left home */}
           <div className="flex text-xs">
             <Link
               to="/"
@@ -230,7 +270,7 @@ export const EditMerchant = () => {
             </Link>
             <div className="text-text-gray">/</div>
             <Link
-              to="/merchant"
+              to="/merchantIndex"
               className=" text-text-green underline text-xs focus:text-sky-700 focus:underline mx-2"
             >
               รายการข้อมูลหลักผู้ค้า
@@ -251,10 +291,10 @@ export const EditMerchant = () => {
                   <div className="mb-1">รหัสผู้ค้า</div>
                   <input
                     type="text"
-                    name="ID"
+                    name="realMerchantId"
                     id="ID"
                     onChange={handleChange}
-                    value={input.merchantNo}
+                    value={input.realMerchantId}
                     className={`${inputClassname}`}
                   />
                 </div>
@@ -265,19 +305,20 @@ export const EditMerchant = () => {
                     name="billNumber"
                     id="billNumber"
                     onChange={handleChange}
-                    value={input.taxNumber}
+                    value={input.taxpayerNumber}
                     className={`${inputClassname}`}
                   />
                 </div>
 
                 <div>
                   <div className="mb-1">คำนำหน้าบริษัท</div>
-                  <Selector
-                    placeholder={"Select"}
-                    state={input}
-                    setState={setInput}
-                    id={"หน่วยนับ"}
-                  // isValid={!input.unit}
+                  <SearchSelector
+                    options={companyPrefixList}
+                    name="companyPrefix"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.companyPrefix}
+                    value={{ label: input.companyPrefix, value: input.companyPrefix }}
                   />
                 </div>
                 <div>
@@ -294,12 +335,13 @@ export const EditMerchant = () => {
 
                 <div>
                   <div className="mb-1">คำนำหน้าบุคคล</div>
-                  <Selector
-                    placeholder={"Select"}
-                    state={input}
-                    setState={setInput}
-                    id={"หน่วยนับ"}
-                  // isValid={!input.eligiblePerson}
+                  <SearchSelector
+                    options={thaiPrefixList}
+                    name="prefix"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={!input.prefix}
+                    value={{ label: input.prefix, value: input.prefix }}
                   />
                 </div>
 
@@ -308,10 +350,10 @@ export const EditMerchant = () => {
                   <div className="flex h-[38px]">
                     <input
                       type="text"
-                      name="sector"
-                      id="sector"
+                      name="name"
+                      id="name"
                       onChange={handleChange}
-                      value={input.personName}
+                      value={input.name}
                       className={`${inputClassname}`}
                     />
                   </div>
@@ -321,10 +363,10 @@ export const EditMerchant = () => {
                   <div className="mb-1">เบอร์โทรศัพท์</div>
                   <input
                     type="text"
-                    name="billNumber"
-                    id="billNumber"
+                    name="phoneNumber"
+                    id="phoneNumber"
                     onChange={handleChange}
-                    value={input.telNo}
+                    value={input.phoneNumber}
                     className={`${inputClassname}`}
                   />
                 </div>
@@ -332,8 +374,8 @@ export const EditMerchant = () => {
                   <div className="mb-1">E-mail</div>
                   <input
                     type="email"
-                    name="allPrice"
-                    id="allPrice"
+                    name="email"
+                    id="email"
                     onChange={handleChange}
                     value={input.email}
                     className={`${inputClassname}`}
@@ -356,12 +398,16 @@ export const EditMerchant = () => {
                             บ้านเลขที่
                             <input
                               className={`${inputClassname} ${errorAddress && "border-red-500"}`}
+                              value={address.address}
+                              name="address"
                             />
                           </div>
                           <div>
                             หมู่ที่
                             <input
                               className={`${inputClassname}`}
+                              value={address.group}
+                              name="group"
                             />
                           </div>
                         </div>
@@ -369,21 +415,25 @@ export const EditMerchant = () => {
                           หมู่บ้าน
                           <input
                             className={`${inputClassname}`}
+                            value={address.village}
+                            name="village"
                           />
                         </div>
                         <div>
                           ซอย
                           <input
                             className={`${inputClassname}`}
+                            value={address.alley}
+                            name="alley"
                           />
                         </div>
 
                         <div>
                           ถนน
                           <input
-                            name="road"
+                            name="street"
                             onChange={handleChangeAddress}
-                            value={address.road}
+                            value={address.street}
                             className={`${inputClassname}`}
                           />
                         </div>
@@ -410,6 +460,8 @@ export const EditMerchant = () => {
                           รหัสไปรษณีย์
                           <input
                             className={`${inputClassname}`}
+                            value={address.postalCode}
+                            name="postalCode"
                           />
                         </div>
 
@@ -493,10 +545,10 @@ export const EditMerchant = () => {
                   <div className="mb-1">เงื่อนไขการชำระเงิน</div>
                   <input
                     type="text"
-                    name="salesDocument"
-                    id="salesDocument"
-                    // onChange={handleChangeSales}
-                    // value={inputBottom.}
+                    name="paymentTerm"
+                    id="paymentTerm"
+                    onChange={handleChange}
+                    value={input.paymentTerm}
                     // className={`${errorSale && !inputSale.salesDocument && 'border-red-500'} 
                     className={`${inputClassname}`} />
                 </div>
@@ -505,10 +557,10 @@ export const EditMerchant = () => {
                   <div className="flex h-[38px]">
                     <input
                       type="text"
-                      name="salesDocument"
-                      id="salesDocument"
-                      // onChange={handleChangeSales}
-                      // value={inputBottom.}
+                      name="contactName"
+                      id="contactName"
+                      onChange={handleChange}
+                      value={input.contactName}
                       className={`${inputClassname}`}
                     />
                   </div>
@@ -523,14 +575,14 @@ export const EditMerchant = () => {
                   <div className="mb-1">เลขที่บัญชีธนาคาร</div>
                   <input
                     className={`${inputClassname}`}
-                    value={inputBottom.bankAccountNum}
+                    value={input.bankAccountNumber}
                   />
                 </div>
                 <div>
                   <div className="mb-1">รายละเอียดบัญชีธนาคาร</div>
                   <input
                     className={`${inputClassname}`}
-                    value={inputBottom.detailBankAcc}
+                    value={input.bankAccountDetail}
                   />
                 </div>
 
@@ -538,14 +590,14 @@ export const EditMerchant = () => {
                   <div className="mb-1">รหัสธนาคาร</div>
                   <input
                     className={`${inputClassname}`}
-                    value={inputBottom.bankCode}
+                    value={input.bankCode}
                   />
                 </div>
                 <div>
                   <div className="mb-1">รหัสสาขา</div>
                   <input
                     className={`${inputClassname}`}
-                    value={inputBottom.branchCode}
+                    value={input.bankBranchCode}
                   />
                 </div>
 
@@ -553,7 +605,7 @@ export const EditMerchant = () => {
                   <div className="mb-1">เลขที่บัตรประชาชน</div>
                   <input
                     className={`${inputClassname}`}
-                    value={inputBottom.identificationNumber}
+                    value={input.idCardNumber}
                   />
                 </div>
               </div>
@@ -567,20 +619,26 @@ export const EditMerchant = () => {
                 <div className="grid grid-cols-1 gap-y-3 mt-3 text-xs">
                   <div>
                     <input type="radio" className="border border-text-green p-2 mx-2"
-                      name="groupType"
-                      value="" />
+                      name="creditorCategory"
+                      checked={input.creditorCategory == "เจ้าหนี้การค้าภายในประเทศ"}
+                      onChange={handleChange}
+                      value="เจ้าหนี้การค้าภายในประเทศ" />
                     <label>เจ้าหนี้การค้าภายในประเทศ</label>
                   </div>
                   <div>
                     <input type="radio" className="border border-text-green p-2 mx-2"
-                      name="groupType"
-                      value="" />
+                      name="creditorCategory"
+                      checked={input.creditorCategory == "เจ้าหนี้การค้าภายนอกประเทศ"}
+                      onChange={handleChange}
+                      value="เจ้าหนี้การค้าภายนอกประเทศ" />
                     <label>เจ้าหนี้การค้าภายนอกประเทศ</label>
                   </div>
                   <div>
                     <input type="radio" className="border border-text-green p-2 mx-2"
-                      name="groupType"
-                      value="" />
+                      name="creditorCategory"
+                      checked={input.creditorCategory == "เจ้าหนี้เฉพาะหน่วยงานย่อย"}
+                      onChange={handleChange}
+                      value="เจ้าหนี้เฉพาะหน่วยงานย่อย" />
                     <label>เจ้าหนี้เฉพาะหน่วยงานย่อย</label>
                   </div>
                 </div>
@@ -592,7 +650,7 @@ export const EditMerchant = () => {
                   <div className='text-text-gray  inline-flex items-center'>
                     สถานะ
                     <label class="relative inline-flex items-center cursor-pointer ml-3">
-                      <input type="checkbox" value="" checked={status === "active"} onChange={e => setStatus(e.target.checked ? "active" : "nonActive")} class="sr-only peer" />
+                      <input type="checkbox" value="" checked={input.status === "active"} onChange={e => setStatus(e.target.checked ? "active" : "nonActive")} class="sr-only peer" />
                       <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-0 rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
                       <span class="ml-2 text-text-green">Active</span>
                     </label>
@@ -603,13 +661,26 @@ export const EditMerchant = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
                     <div>
                       <div className="mb-1">กลุ่มบริษัท</div>
-                      <Selector
+                      <SearchSelector
+                        options={[{ label: "คสพ", value: "คสพ" }]}
+                        name="companyCategory"
+                        onChange={handleSelectRelation}
+                        noClearButton
+                        error={!element.companyCategory}
+                        value={{ label: element.companyCategory, value: element.companyCategory }}
                       />
                     </div>
                     <div>
                       <input
                         placeholder='หมายเหตุ'
+                        name="remark"
                         className={`${inputClassname} mt-5`}
+                        onChange={e => {
+                          setArrayRelation(prev => {
+                            console.log({ ...prev })
+                            return [{ ...prev, [e.target.name]: e.target.value }]
+                          })
+                        }}
                       />
                     </div>
                   </div>
@@ -639,7 +710,8 @@ export const EditMerchant = () => {
         </button>
         <div className="flex justify-end gap-4">
           <button
-            className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+            className={`inline-flex justify-center items-center py-1 px-4 border-2  shadow-sm font-medium rounded-md   hover:bg-sidebar-green focus:outline-none focus:ring-offset-2 focus:ring-green-800 ${input.status == "active" ? "border-text-green text-text-green focus:ring-2" : "text-gray-500 hover:bg-white cursor-default"}`}
+            disabled={input.status == "active"}
           >
             บันทึกแบบร่าง
           </button>

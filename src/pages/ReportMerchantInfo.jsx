@@ -6,90 +6,49 @@ import { HiChevronRight } from 'react-icons/hi'
 import { AiOutlineSearch } from 'react-icons/ai'
 import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
 import DateInput from '../components/date/DateInput'
-import { getAllMerchant } from '../api/merchant'
+import { getAllMerchant, getMerchantBySearchViewOnly } from '../api/merchant'
 import RowOfMerchantTableArray from '../components/table/RowOfMerchantTableArray'
+import { CgPushChevronLeft, CgPushChevronRight } from 'react-icons/cg'
 
 export const ReportMerchantInfo = () => {
-  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
-
-  // useState
   const [search, setSearch] = useState({
     inventoryNumber: '',
     wordSearch: '',
     department: '',
     sector: '',
-    // "merchantDate":todayThaiDate
   })
-  const [perPage, setPerPage] = useState(10)
 
-  //Main Date
-  const [merchantDate, setmerchantDate] = useState(todayThaiDate)
+  const [merchantList, setMerchantList] = useState([])
 
-  // data
-  let merchantTableArray = [
-    {
-      ID: '84745',
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-    {
-      billNumber: '4140-001-004',
-      documentRegistration: 'พล072565',
-      sector: 'ภาควิชาศัลยกรรมศาสตร์',
-      withdrawDate: '14/12/2565 ',
-      allPrice: 1100,
-      count: 20,
-    },
-  ]
-
-  // const fetchMerchantList = async () => {
-  //   try {
-  //     const res = await getAllMerchant();
-  //     console.log('RES', res);
-  //     // setAssetList(res.data.asset);
-  //     // setSearch({
-  //     //   ...search,
-  //     //   page: res.data.page,
-  //     //   limit: res.data.limit,
-  //     //   total: res.data.total,
-  //     // });
-  //     // setAmountPage(Math.ceil(res.data.total / res.data.limit));
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
+  const fetchMerchantList = async (options) => {
+    try {
+      const res = await getMerchantBySearchViewOnly(options || search);
+      console.log('RES', res.data.merchant);
+      setMerchantList(res.data.merchant)
+      setSearch({
+        ...search,
+        page: res.data.page,
+        limit: res.data.limit,
+        total: res.data.total,
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }
+console.log(search)
   useEffect(() => {
-    // fetchAssetWithdrawList();
+    fetchMerchantList()
   }, []);
+
+  const handlePaginationSearch = (e) => {
+    setSearch({ ...search, [e.target.name]: e.target.value })
+    fetchMerchantList({ ...search, [e.target.name]: e.target.value })
+  };
+  
+  const handlePage = (num) => {
+    setSearch({ ...search, page: num })
+    fetchMerchantList({ ...search, page: num })
+  }
 
   return (
     <div className="bg-background-page px-5 pt-10 pb-36">
@@ -186,11 +145,12 @@ export const ReportMerchantInfo = () => {
               </div>
             </div>
           </div>
-          {merchantTableArray?.map((el, idx) => {
+          {merchantList?.map((el, idx) => {
             return (
               <RowOfMerchantTableArray
                 key={idx}
                 index={idx}
+                ele={el}
                 billNumber={el.billNumber}
                 documentRegistration={el.documentRegistration}
                 sector={el.sector}
@@ -202,49 +162,59 @@ export const ReportMerchantInfo = () => {
               />
             )
           })}
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-center mr-10">
+
+          <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+            <div className="flex items-center">
               <div>Rows per page:</div>
               <select
-                id="perPage"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={(e) => setPerPage(e.target.value)}
+                id="limit"
+                name="limit"
+                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                onChange={handlePaginationSearch}
               >
-                {/* <option value="" selected disabled hidden>
-            ประเภทครุภัณฑ์
-          </option> */}
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
                 <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
                 <option value="10" selected="selected">
                   10
                 </option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
               </select>
             </div>
 
-            <div>1-{perPage} of 13</div>
+            <div className="mx-5">
+              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + merchantList.length} of {search.total}
+            </div>
 
             <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 my-2"
+              onClick={() => {
+                if (1 == search.page) return
+                handlePage(1)
+              }}
+            >
+              <CgPushChevronLeft className="text-lg" />
+            </button>
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={() => handlePage(search.page - 1)}
             >
               <HiChevronLeft className="text-lg" />
             </button>
             <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={() => handlePage(search.page + 1)}
             >
               <HiChevronRight className="text-lg" />
+            </button>
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={() => {
+                if (search.page == search.limit) return
+                handlePage(search.limit)
+              }}
+            >
+              <CgPushChevronRight className="text-lg font-bold" />
             </button>
           </div>
         </div>

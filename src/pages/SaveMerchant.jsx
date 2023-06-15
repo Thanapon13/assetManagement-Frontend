@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Selector from '../components/selector/Selector'
 import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
@@ -14,12 +14,10 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { createMerchant } from '../api/merchant';
 import RowOfTableAddressMerchant from '../components/table/RowOfTableAddressMerchant';
+import SearchSelector from '../components/selector/SearchSelector';
+import { getCompanyPrefix, getThaiPrefix } from '../api/masterApi';
 
 export const SaveMerchant = () => {
-  const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
-
-  // useState
-
   const [input, setInput] = useState({
     realMerchantId: '',
     taxNumber: '',
@@ -44,8 +42,10 @@ export const SaveMerchant = () => {
     creditorCategory: "",
   })
 
+  const [companyPrefixList, setCompanyPrefixList] = useState([])
+  const [thaiPrefixList, setThaiPrefixList] = useState([])
+
   const handleChange = (e) => {
-    console.log(e.target.name)
     setInput(prevInput => {
       return {
         ...prevInput,
@@ -53,6 +53,31 @@ export const SaveMerchant = () => {
       }
     })
   };
+
+  const handleSelect = (value, label) => {
+    setInput({ ...input, [label]: value })
+  }
+
+  useEffect(() => {
+    getMaster()
+  }, [])
+
+  const getMaster = async () => {
+    const companyPrefix = await getCompanyPrefix()
+    const arrCompanyPrefix = formArrayOption(companyPrefix.data.companyPrefix)
+    setCompanyPrefixList(arrCompanyPrefix)
+    const thaiPrefix = await getThaiPrefix()
+    const arrThaiPrefix = formArrayOption(thaiPrefix.data.thaiPrefix)
+    setThaiPrefixList(arrThaiPrefix)
+  }
+
+  function formArrayOption(data) {
+    const array = []
+    data.map(ele => {
+      array.push({ label: ele.name, value: ele.name })
+    })
+    return array
+  }
 
   // ที่อยู่
   const objAddress = {
@@ -73,9 +98,6 @@ export const SaveMerchant = () => {
     console.log(arr)
   }
 
-
-
-  //อัพโหลดไฟล์
   const inputDoc = useRef();
   const [arrayDocument, setArrayDocument] = useState([])
 
@@ -153,6 +175,11 @@ export const SaveMerchant = () => {
     setArrayRelation(arr)
   }
 
+  const handleSelectRelation = (value, label) => {
+    console.log(value,label)
+    // setInput({ ...input, [label]: value })
+  }
+
   const inputClassname = "w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
 
   const schema = yup.object().shape({
@@ -179,7 +206,7 @@ export const SaveMerchant = () => {
 
   const [errorInput, setErrorInput] = useState()
   const [errorAddress, setErrorAddress] = useState()
-  const [errorInpuBottomt, setErrorInputBottom] = useState()
+  const [errorInpuBottom, setErrorInputBottom] = useState()
 
   const handleForm = async () => {
     console.log(JSON.stringify({ input }), inputBottom)
@@ -221,10 +248,9 @@ export const SaveMerchant = () => {
   return (
     <>
       <div className="bg-background-page px-5 pt-10 pb-2">
-        {/* Header */}
         <div className="flex items-center">
           <Link
-            to="/merchant"
+            to="/merchantIndex"
             className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
           >
             <BsArrowLeft className="text-lg" />
@@ -232,7 +258,6 @@ export const SaveMerchant = () => {
           <div className="text-xl text-text-green ">บันทึกข้อมูลหลักผู้ค้า</div>
         </div>
         <div className="flex justify-between items-center">
-          {/* left home */}
           <div className="flex text-xs">
             <Link
               to="/"
@@ -242,7 +267,7 @@ export const SaveMerchant = () => {
             </Link>
             <div className="text-text-gray">/</div>
             <Link
-              to="/merchant"
+              to="/merchantIndex"
               className=" text-text-green underline text-xs focus:text-sky-700 focus:underline mx-2"
             >
               รายการข้อมูลหลักผู้ค้า
@@ -259,9 +284,9 @@ export const SaveMerchant = () => {
               <div className="mb-1">รหัสผู้ค้า</div>
               <input
                 type="text"
-                name="merchantNo"
+                name="realMerchantId"
                 onChange={handleChange}
-                value={input.merchantNo}
+                value={input.realMerchantId}
                 className={`${inputClassname}`}
               />
             </div>
@@ -269,21 +294,22 @@ export const SaveMerchant = () => {
               <div className="mb-1">เลขที่ประจำตัวผู้เสียภาษี</div>
               <input
                 type="text"
-                name="taxNumber"
+                name="billNumber"
                 onChange={handleChange}
-                value={input.taxNumber}
+                value={input.billNumber}
                 className={`${inputClassname}`}
               />
             </div>
 
             <div>
               <div className="mb-1">คำนำหน้าบริษัท</div>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"หน่วยนับ"}
-              // isValid={!input.unit}
+              <SearchSelector
+                options={companyPrefixList}
+                name="companyPrefix"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.companyPrefix}
+                value={{ label: input.companyPrefix, value: input.companyPrefix }}
               />
             </div>
             <div>
@@ -300,12 +326,13 @@ export const SaveMerchant = () => {
 
             <div>
               <div className="mb-1">คำนำหน้าบุคคล</div>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"หน่วยนับ"}
-              // isValid={!input.eligiblePerson}
+              <SearchSelector
+                options={thaiPrefixList}
+                name="prefix"
+                onChange={handleSelect}
+                noClearButton
+                error={errorInput && !input.prefix}
+                value={{ label: input.prefix, value: input.prefix }}
               />
             </div>
 
@@ -314,9 +341,9 @@ export const SaveMerchant = () => {
               <div className="flex h-[38px]">
                 <input
                   type="text"
-                  name="personName"
+                  name="name"
                   onChange={handleChange}
-                  value={input.personName}
+                  value={input.name}
                   className={`${inputClassname}`}
                 />
               </div>
@@ -326,9 +353,9 @@ export const SaveMerchant = () => {
               <div className="mb-1">เบอร์โทรศัพท์</div>
               <input
                 type="text"
-                name="telNo"
+                name="phoneNumber"
                 onChange={handleChange}
-                value={input.telNo}
+                value={input.phoneNumber}
                 className={`${inputClassname}`}
               />
             </div>
@@ -427,22 +454,22 @@ export const SaveMerchant = () => {
               <div className="mb-1">เงื่อนไขการชำระเงิน</div>
               <input
                 type="text"
-                name="salesDocument"
-                // value={inputBottom.}
+                name="paymentTerm"
+                value={input.paymentTerm}
                 // onChange={handleChangeSales}
-                // className={`${errorSale && !inputSale.salesDocument && 'border-red-500'} 
-                className={`${inputClassname}`} />
+                className={`${errorInpuBottom && !inputSale.salesDocument && 'border-red-500'}`}
+              />
             </div>
             <div>
               <div className="mb-1">ชื่อผู้ติดต่อ</div>
               <div className="flex h-[38px]">
                 <input
                   type="text"
-                  name="salesDocument"
-                  id="salesDocument"
+                  name="contactName"
+                  id="contactName"
                   // onChange={handleChangeSales}
-                  // value={inputBottom.}
-                  className={`${inputClassname}`}
+                  value={input.contactName}
+                  className={`${errorInpuBottom && !inputSale.contactName && 'border-red-500'}`}
                 />
               </div>
             </div>
@@ -455,38 +482,43 @@ export const SaveMerchant = () => {
             <div>
               <div className="mb-1">เลขที่บัญชีธนาคาร</div>
               <input
-                className={`${inputClassname}`}
-                value={inputBottom.bankAccountNum}
+                name="bankAccountNumber"
+                value={inputBottom.bankAccountNumber}
+                className={`${errorInpuBottom && !inputBottom.bankAccountNumber && 'border-red-500'}`}
               />
             </div>
             <div>
               <div className="mb-1">รายละเอียดบัญชีธนาคาร</div>
               <input
-                className={`${inputClassname}`}
-                value={inputBottom.detailBankAcc}
+                name="bankAccountDetail"
+                value={inputBottom.bankAccountDetail}
+                className={`${errorInpuBottom && !inputBottom.bankAccountDetail && 'border-red-500'}`}
               />
             </div>
 
             <div>
               <div className="mb-1">รหัสธนาคาร</div>
               <input
-                className={`${inputClassname}`}
+                name="bankCode"
+                className={`${errorInpuBottom && !inputBottom.bankCode && 'border-red-500'}`}
                 value={inputBottom.bankCode}
               />
             </div>
             <div>
               <div className="mb-1">รหัสสาขา</div>
               <input
-                className={`${inputClassname}`}
-                value={inputBottom.branchCode}
+                name="bankBranchCode"
+                className={`${errorInpuBottom && !inputBottom.bankBranchCode && 'border-red-500'}`}
+                value={inputBottom.bankBranchCode}
               />
             </div>
 
             <div>
               <div className="mb-1">เลขที่บัตรประชาชน</div>
               <input
-                className={`${inputClassname}`}
-                value={inputBottom.identificationNumber}
+                name="idCardNumber"
+                className={`${errorInpuBottom && !inputBottom.idCardNumber && 'border-red-500'}`}
+                value={inputBottom.idCardNumber}
               />
             </div>
           </div>
@@ -500,20 +532,26 @@ export const SaveMerchant = () => {
             <div className="grid grid-cols-1 gap-y-3 mt-3 text-xs">
               <div>
                 <input type="radio" className="border border-text-green p-2 mx-2"
-                  name="groupType"
-                  value="" />
+                     name="creditorCategory"
+                     checked={input.creditorCategory == "เจ้าหนี้การค้าภายในประเทศ"}
+                     onChange={handleChange}
+                     value="เจ้าหนี้การค้าภายในประเทศ" />
                 <label>เจ้าหนี้การค้าภายในประเทศ</label>
               </div>
               <div>
                 <input type="radio" className="border border-text-green p-2 mx-2"
-                  name="groupType"
-                  value="" />
+                     name="creditorCategory"
+                     checked={input.creditorCategory == "เจ้าหนี้การค้าภายนอกประเทศ"}
+                     onChange={handleChange}
+                     value="เจ้าหนี้การค้าภายนอกประเทศ" />
                 <label>เจ้าหนี้การค้าภายนอกประเทศ</label>
               </div>
               <div>
                 <input type="radio" className="border border-text-green p-2 mx-2"
-                  name="groupType"
-                  value="" />
+                    name="creditorCategory"
+                    checked={input.creditorCategory == "เจ้าหนี้เฉพาะหน่วยงานย่อย"}
+                    onChange={handleChange}
+                    value="เจ้าหนี้การค้าภายในประเทศ" />
                 <label>เจ้าหนี้เฉพาะหน่วยงานย่อย</label>
               </div>
             </div>
@@ -536,8 +574,14 @@ export const SaveMerchant = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
                 <div>
                   <div className="mb-1">กลุ่มบริษัท</div>
-                  <Selector
-                  />
+                  <SearchSelector
+                        options={[{ label: "คสพ", value: "คสพ" }]}
+                        name="companyCategory"
+                        onChange={handleSelectRelation}
+                        noClearButton
+                        error={errorInpuBottom && !element.companyCategory}
+                        value={{ label: element.companyCategory, value: element.companyCategory }}
+                      />
                 </div>
                 <div>
                   <input
