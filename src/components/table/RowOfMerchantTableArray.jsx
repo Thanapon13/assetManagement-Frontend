@@ -1,6 +1,8 @@
+import { useEffect } from "react";
+import { useState } from "react";
 import { BsFillEyeFill } from "react-icons/bs"
 import { BsFillPencilFill } from "react-icons/bs"
-import { IoMdTrash } from "react-icons/io"
+import { IoIosClose, IoMdTrash } from "react-icons/io"
 import { Link } from "react-router-dom";
 
 function RowOfMerchantTableArray({
@@ -9,6 +11,7 @@ function RowOfMerchantTableArray({
   page,
   mode
 }) {
+  const [showModalDelete, setShowModalDelete] = useState(false)
 
   return (
     <div
@@ -64,13 +67,146 @@ function RowOfMerchantTableArray({
               className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
               <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
             </Link>
-            <button className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
+            <button className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
+              onClick={() => setShowModalDelete(ele)}>
               <IoMdTrash className="w-[20px] h-[20px] text-text-green" />
             </button>
           </>}
       </div>
+
+      {showModalDelete &&
+        <ModalDelete element={showModalDelete} onClose={() => setShowModalDelete(false)} />
+      }
     </div >
   );
+}
+
+function ModalDelete({ element, onClose }) {
+  const [remark, setRemark] = useState("")
+  const [error, setError] = useState(false)
+
+  function onConfirmDelete() {
+    console.log(element)
+  }
+
+  const handleClose = (e) => {
+    if (e.target.id === "wrapper") {
+      onClose()
+      setDefault()
+    }
+  }
+
+  useEffect(() => {
+    if (element) {
+      document.body.style.height = "100vh"
+      document.body.style.overflowY = "hidden"
+    }
+  }, [element])
+
+  function setDefault() {
+    document.body.style.height = "auto"
+    document.body.style.overflowY = "auto"
+  }
+
+  return (
+    <>
+      <div
+        id="wrapper"
+        className="modal fixed inset-0 bg-black bg-opacity-25 blackdrop-blur-sm flex justify-center items-center "
+        onClick={handleClose}
+      >
+        {/* <div className="fixed inset-0 -left-10 bg-black opacity-50" /> */}
+        <div className="flex justify-center items-center w-full lg:w-[80%]" id="content">
+          <div className="w-10/12 md:w-8/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
+            <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
+              <div>
+                <div className="flex items-center justify-center p-5 relative">
+                  <svg width="84" height="84" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M42 0.333344C39.9167 0.333344 37.8334 1.12501 36.125 2.79168L2.79169 36.125C-0.49998 39.375 -0.49998 44.625 2.79169 47.875L36.125 81.2083C39.375 84.5 44.625 84.5 47.875 81.2083L81.2084 47.875C84.5 44.625 84.5 39.375 81.2084 36.125L47.875 2.79168C46.1667 1.12501 44.0834 0.333344 42 0.333344ZM37.8334 21.1667H46.1667V46.1667H37.8334V21.1667ZM37.8334 54.5H46.1667V62.8333H37.8334V54.5Z" fill="#EB5757" />
+                  </svg>
+                  <p className="text-2xl text-red-600 ml-4">
+                    ลบข้อมูลหลักผู้ค้า
+                  </p>
+                  <div className="absolute w-full flex justify-end pr-5 mb-8">
+                    <button
+                      className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
+                      onClick={() => onClose()}
+                    >
+                      <IoIosClose className="text-2xl" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="px-5 py-4 text-base">
+                  <div className="grid grid-cols-2  md:grid-cols-6 p-2">
+                    <div className="text-text-gray flex items-center ">
+                      รหัสผู้ค้า
+                    </div>
+                    <div className="flex items-center md:col-span-2">
+                      {element.realMerchantId}
+                    </div>
+                    <div className="text-text-gray flex items-center ">
+                      ชื่อบริษัทผู้ค้า
+                    </div>
+                    <div className="flex items-center md:col-span-2">
+                      {element.companyName}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-6 p-2">
+                    <div className="text-text-gray flex items-center">
+                      กลุ่มประเภท
+                    </div>
+                    <div className="flex items-center md:col-span-2">
+                      {element.creditorCategory}
+                    </div>
+                    {/* <div className="text-text-gray flex items-center">
+                    ราคา
+                  </div>
+                  <div className="flex items-center md:col-span-2">
+                    {element.pricePerUnit}
+                  </div> */}
+                  </div>
+                  {/* {elem.status != "saveDraft" &&
+                  <div className="grid grid-cols-2 md:grid-cols-6 p-2">
+                    <div className="text-text-gray flex items-center">
+                      สาเหตุที่ยกเลิก
+                    </div>
+                    <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                      onChange={e => setRemark(e.target.value)}
+                    />
+                  </div>
+                } */}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
+                <button
+                  // className="px-10 py-2 border-[1px] shadow-sm rounded-md "
+                  className="px-10 py-3 text-white bg-gray-400/[.8] hover:bg-gray-400 bg-[#999999] shadow-sm rounded-md "
+                  type="button"
+                  onClick={() => onClose()}
+                >
+                  ย้อนกลับ
+                </button>
+                <button
+                  className="text-white hover:bg-red-600 bg-[#EB5757] px-10 py-3 border rounded-md "
+                  // type="button"
+                  onClick={() => {
+                    element.status == "saveDraft"
+                      ? onConfirmDelete(element._id)
+                      : remark ? onConfirmDelete(element._id, remark) : setError(true)
+                  }}
+                >
+                  ยืนยันลบ
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
 }
 
 export default RowOfMerchantTableArray;
