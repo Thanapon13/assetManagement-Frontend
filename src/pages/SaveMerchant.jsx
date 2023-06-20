@@ -20,27 +20,26 @@ import { getCompanyPrefix, getThaiPrefix } from '../api/masterApi';
 export const SaveMerchant = () => {
   const [input, setInput] = useState({
     realMerchantId: '',
-    taxNumber: '',
+    idCardNumber: '',
     companyPrefix: '',
     companyName: '',
     prefix: '',
     name: '',
     phoneNumber: '',
     email: '',
-  })
 
-  const [inputBottom, setInputBottom] = useState({
     paymentTerm: "",
     contactName: "",
     bankAccountNumber: "",
     bankAccountDetail: "",
     bankCode: "",
-    bankNo: "",
     bankBranchCode: "",
-    taxpayerNumber: "",
     idCardNumber: "",
     creditorCategory: "",
   })
+
+  // const [inputBottom, setInputBottom] = useState({
+  // })
 
   const [companyPrefixList, setCompanyPrefixList] = useState([])
   const [thaiPrefixList, setThaiPrefixList] = useState([])
@@ -168,7 +167,7 @@ export const SaveMerchant = () => {
   // ความสัมพันธ์
   const [status, setStatus] = useState("active")
 
-  const objRelation = { companyCategory: "", note: "" }
+  const objRelation = { companyCategory: "", ramark: "" }
   const [arrayRelation, setArrayRelation] = useState([objRelation])
   const addRelation = () => {
     const arr = arrayRelation.concat(objRelation)
@@ -176,9 +175,12 @@ export const SaveMerchant = () => {
   }
 
   const handleSelectRelation = (value, label) => {
-    console.log(value,label)
+    console.log(value, label)
     // setInput({ ...input, [label]: value })
   }
+
+  const [showModalConfirm, setShowModalConfirm] = useState(false)
+  const [showModalSuccess, setShowModalSuccess] = useState(false)
 
   const inputClassname = "w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
 
@@ -191,9 +193,6 @@ export const SaveMerchant = () => {
     // .min(0, "Min is 0")
     // .max(22, "max is 20")
     ,
-    age: yup
-      .number("Must be number")
-      .required("Is required")
   });
 
   const { register, handleSubmit, errors, control } = useForm({
@@ -206,18 +205,10 @@ export const SaveMerchant = () => {
 
   const [errorInput, setErrorInput] = useState()
   const [errorAddress, setErrorAddress] = useState()
-  const [errorInpuBottom, setErrorInputBottom] = useState()
+  const [errorRelation, setErrorRelation] = useState()
 
   const handleForm = async () => {
-    console.log(JSON.stringify({ input }), inputBottom)
-    const data = JSON.stringify({ input, inputBottom })
-    const formData = new FormData();
-    console.log(data);
-    formData.append("data", data);
-
-    const response = createMerchant(formData)
-    return
-    let errInput, errInputBottom, errAddress
+    let errInput, errRelation, errAddress
     Object.values(input).map((value) => {
       if (errInput) return
       if (!value) errInput = true
@@ -235,14 +226,38 @@ export const SaveMerchant = () => {
         })
       })
     }
-    Object.values(inputBottom).map((value) => {
-      if (errInputBottom) return
-      if (!value) errInputBottom = true
-    })
+    // arrayRelation?.forEach(arr => {
+    //   Object.entries(arr).forEach(([key, value]) => {
+    //     if (key != "companyCategory" || errRelation)  return
+    //     if (!value) errRelation = true
+    //   })
+    // })
+
+    console.log({ ...input, status, arrayAddress, arrayRelation, arrayDocument })
     setErrorInput(errInput)
-    setErrorInputBottom(errInputBottom)
+    setErrorRelation(errRelation)
     setErrorAddress(errAddress)
-    //   if (!(errInput || errAddress || errInputBottom)) setShowModalConfirm(true)
+    if (!(errInput || errAddress || errRelation)) setShowModalConfirm(true)
+  }
+
+  async function submit(valStatus) {
+    const data = JSON.stringify({
+      ...input,
+      status: valStatus || status
+    })
+    const formData = new FormData();
+    console.log(data);
+    formData.append("input", data)
+    formData.append("merchantAddress", JSON.stringify(arrayAddress))
+    formData.append("merchantRelation", JSON.stringify(arrayRelation))
+    formData.append("arrayDocument", JSON.stringify([]))
+    try {
+      const response = createMerchant(formData)
+
+    } catch (error) {
+      console.log(error)
+    }
+    return
   }
 
   return (
@@ -287,17 +302,17 @@ export const SaveMerchant = () => {
                 name="realMerchantId"
                 onChange={handleChange}
                 value={input.realMerchantId}
-                className={`${inputClassname}`}
+                className={`${inputClassname} ${errorInput && !input.realMerchantId && 'border-red-500'}`}
               />
             </div>
             <div>
               <div className="mb-1">เลขที่ประจำตัวผู้เสียภาษี</div>
               <input
                 type="text"
-                name="billNumber"
+                name="taxpayerNumber"
                 onChange={handleChange}
-                value={input.billNumber}
-                className={`${inputClassname}`}
+                value={input.taxpayerNumber}
+                className={`${inputClassname} ${errorInput && !input.taxpayerNumber && 'border-red-500'}`}
               />
             </div>
 
@@ -320,7 +335,7 @@ export const SaveMerchant = () => {
                 control="companyName"
                 onChange={handleChange}
                 value={input.companyName}
-                className={`${inputClassname}`}
+                className={`${inputClassname} ${errorInput && !input.companyName && 'border-red-500'}`}
               />
             </div>
 
@@ -344,7 +359,7 @@ export const SaveMerchant = () => {
                   name="name"
                   onChange={handleChange}
                   value={input.name}
-                  className={`${inputClassname}`}
+                  className={`${inputClassname} ${errorInput && !input.name && 'border-red-500'}`}
                 />
               </div>
             </div>
@@ -356,7 +371,7 @@ export const SaveMerchant = () => {
                 name="phoneNumber"
                 onChange={handleChange}
                 value={input.phoneNumber}
-                className={`${inputClassname}`}
+                className={`${inputClassname} ${errorInput && !input.phoneNumber && 'border-red-500'}`}
               />
             </div>
             <div>
@@ -366,7 +381,7 @@ export const SaveMerchant = () => {
                 name="email"
                 onChange={handleChange}
                 value={input.email}
-                className={`${inputClassname}`}
+                className={`${inputClassname} ${errorInput && !input.email && 'border-red-500'}`}
               />
             </div>
           </div>
@@ -456,8 +471,8 @@ export const SaveMerchant = () => {
                 type="text"
                 name="paymentTerm"
                 value={input.paymentTerm}
-                // onChange={handleChangeSales}
-                className={`${errorInpuBottom && !inputSale.salesDocument && 'border-red-500'}`}
+                onChange={handleChange}
+                className={`${errorInput && !input.paymentTerm && 'border-red-500'} ${inputClassname} `}
               />
             </div>
             <div>
@@ -467,9 +482,9 @@ export const SaveMerchant = () => {
                   type="text"
                   name="contactName"
                   id="contactName"
-                  // onChange={handleChangeSales}
+                  onChange={handleChange}
                   value={input.contactName}
-                  className={`${errorInpuBottom && !inputSale.contactName && 'border-red-500'}`}
+                  className={`${errorInput && !input.contactName && 'border-red-500'} ${inputClassname} `}
                 />
               </div>
             </div>
@@ -483,16 +498,18 @@ export const SaveMerchant = () => {
               <div className="mb-1">เลขที่บัญชีธนาคาร</div>
               <input
                 name="bankAccountNumber"
-                value={inputBottom.bankAccountNumber}
-                className={`${errorInpuBottom && !inputBottom.bankAccountNumber && 'border-red-500'}`}
+                value={input.bankAccountNumber}
+                className={`${errorInput && !input.bankAccountNumber && 'border-red-500'} ${inputClassname} `}
+                onChange={handleChange}
               />
             </div>
             <div>
               <div className="mb-1">รายละเอียดบัญชีธนาคาร</div>
               <input
                 name="bankAccountDetail"
-                value={inputBottom.bankAccountDetail}
-                className={`${errorInpuBottom && !inputBottom.bankAccountDetail && 'border-red-500'}`}
+                value={input.bankAccountDetail}
+                className={`${errorInput && !input.bankAccountDetail && 'border-red-500'} ${inputClassname} `}
+                onChange={handleChange}
               />
             </div>
 
@@ -500,16 +517,18 @@ export const SaveMerchant = () => {
               <div className="mb-1">รหัสธนาคาร</div>
               <input
                 name="bankCode"
-                className={`${errorInpuBottom && !inputBottom.bankCode && 'border-red-500'}`}
-                value={inputBottom.bankCode}
+                className={`${errorInput && !input.bankCode && 'border-red-500'} ${inputClassname} `}
+                value={input.bankCode}
+                onChange={handleChange}
               />
             </div>
             <div>
               <div className="mb-1">รหัสสาขา</div>
               <input
                 name="bankBranchCode"
-                className={`${errorInpuBottom && !inputBottom.bankBranchCode && 'border-red-500'}`}
-                value={inputBottom.bankBranchCode}
+                className={`${errorInput && !input.bankBranchCode && 'border-red-500'} ${inputClassname} `}
+                value={input.bankBranchCode}
+                onChange={handleChange}
               />
             </div>
 
@@ -517,8 +536,9 @@ export const SaveMerchant = () => {
               <div className="mb-1">เลขที่บัตรประชาชน</div>
               <input
                 name="idCardNumber"
-                className={`${errorInpuBottom && !inputBottom.idCardNumber && 'border-red-500'}`}
-                value={inputBottom.idCardNumber}
+                className={`${errorInput && !input.idCardNumber && 'border-red-500'} ${inputClassname} `}
+                value={input.idCardNumber}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -531,27 +551,27 @@ export const SaveMerchant = () => {
             <div className='text-sm'>กลุ่มประเภท</div>
             <div className="grid grid-cols-1 gap-y-3 mt-3 text-xs">
               <div>
-                <input type="radio" className="border border-text-green p-2 mx-2"
-                     name="creditorCategory"
-                     checked={input.creditorCategory == "เจ้าหนี้การค้าภายในประเทศ"}
-                     onChange={handleChange}
-                     value="เจ้าหนี้การค้าภายในประเทศ" />
+                <input type="radio" className={`border border-text-green p-2 mx-2 ${errorInput && !input.creditorCategory && 'border-red-500'}`}
+                  name="creditorCategory"
+                  checked={input.creditorCategory == "เจ้าหนี้การค้าภายในประเทศ"}
+                  onChange={handleChange}
+                  value="เจ้าหนี้การค้าภายในประเทศ" />
                 <label>เจ้าหนี้การค้าภายในประเทศ</label>
               </div>
               <div>
-                <input type="radio" className="border border-text-green p-2 mx-2"
-                     name="creditorCategory"
-                     checked={input.creditorCategory == "เจ้าหนี้การค้าภายนอกประเทศ"}
-                     onChange={handleChange}
-                     value="เจ้าหนี้การค้าภายนอกประเทศ" />
+                <input type="radio" className={`border border-text-green p-2 mx-2 ${errorInput && !input.creditorCategory && 'border-red-500'}`}
+                  name="creditorCategory"
+                  checked={input.creditorCategory == "เจ้าหนี้การค้าภายนอกประเทศ"}
+                  onChange={handleChange}
+                  value="เจ้าหนี้การค้าภายนอกประเทศ" />
                 <label>เจ้าหนี้การค้าภายนอกประเทศ</label>
               </div>
               <div>
-                <input type="radio" className="border border-text-green p-2 mx-2"
-                    name="creditorCategory"
-                    checked={input.creditorCategory == "เจ้าหนี้เฉพาะหน่วยงานย่อย"}
-                    onChange={handleChange}
-                    value="เจ้าหนี้การค้าภายในประเทศ" />
+                <input type="radio" className={`border border-text-green p-2 mx-2 ${errorInput && !input.creditorCategory && 'border-red-500'}`}
+                  name="creditorCategory"
+                  checked={input.creditorCategory == "เจ้าหนี้เฉพาะหน่วยงานย่อย"}
+                  onChange={handleChange}
+                  value="เจ้าหนี้เฉพาะหน่วยงานย่อย" />
                 <label>เจ้าหนี้เฉพาะหน่วยงานย่อย</label>
               </div>
             </div>
@@ -575,13 +595,13 @@ export const SaveMerchant = () => {
                 <div>
                   <div className="mb-1">กลุ่มบริษัท</div>
                   <SearchSelector
-                        options={[{ label: "คสพ", value: "คสพ" }]}
-                        name="companyCategory"
-                        onChange={handleSelectRelation}
-                        noClearButton
-                        error={errorInpuBottom && !element.companyCategory}
-                        value={{ label: element.companyCategory, value: element.companyCategory }}
-                      />
+                    options={[{ label: "คสพ", value: "คสพ" }]}
+                    name="companyCategory"
+                    onChange={handleSelectRelation}
+                    noClearButton
+                    error={errorRelation && !element.companyCategory}
+                    value={{ label: element.companyCategory, value: element.companyCategory }}
+                  />
                 </div>
                 <div>
                   <input
@@ -615,6 +635,7 @@ export const SaveMerchant = () => {
         <div className="flex justify-end gap-4">
           <button
             className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+            onClick={() => submit('saveDraft')}
           >
             บันทึกแบบร่าง
           </button>
@@ -627,13 +648,13 @@ export const SaveMerchant = () => {
             บันทึกข้อมูล
           </button>
 
-          {/* <ModalConfirmSave
+          <ModalConfirmSave
             isVisible={showModalConfirm}
             onClose={() => setShowModalConfirm(false)}
             onSave={submit}
           />
 
-          {showModalSuccess && <ModalSuccess urlPath='/merchant' />} */}
+          {showModalSuccess && <ModalSuccess urlPath='/merchant' />}
         </div>
       </div>
     </>

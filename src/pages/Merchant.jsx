@@ -8,6 +8,7 @@ import ChangeDateToBuddhist from '../components/date/ChangeDateToBuddhist'
 import DateInput from '../components/date/DateInput'
 import { getAllMerchant, getMerchantBySearch } from '../api/merchant'
 import RowOfMerchantTableArray from '../components/table/RowOfMerchantTableArray'
+import { CgPushChevronLeft, CgPushChevronRight } from 'react-icons/cg'
 
 export const Merchant = () => {
   const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
@@ -53,6 +54,11 @@ export const Merchant = () => {
     setSearch({ ...search, [e.target.name]: e.target.value })
     fetchSearchAssetList({ ...search, [e.target.name]: e.target.value })
   };
+  
+  const handlePage = (num) => {
+    setSearch({ ...search, page: num })
+    fetchLists({ ...search, page: num })
+  }
 
   return (
     <div className="bg-background-page px-5 pt-10 pb-36">
@@ -195,20 +201,34 @@ export const Merchant = () => {
             </div>
 
             <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 my-2"
+              onClick={() => {
+                if (1 == search.page) return
+                handlePage(1)
+              }}
+            >
+              <CgPushChevronLeft className="text-lg" />
+            </button>
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={() => handlePage(search.page - 1)}
             >
               <HiChevronLeft className="text-lg" />
             </button>
             <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={() => handlePage(search.page + 1)}
             >
               <HiChevronRight className="text-lg" />
+            </button>
+            <button
+              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+              onClick={() => {
+                if (search.page == search.limit) return
+                handlePage(search.limit)
+              }}
+            >
+              <CgPushChevronRight className="text-lg font-bold" />
             </button>
           </div>
         </div>

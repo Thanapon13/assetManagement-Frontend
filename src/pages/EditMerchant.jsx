@@ -12,7 +12,7 @@ import { useRef } from "react";
 import { useForm } from "react-hook-form";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { createMerchant, getMerchantById } from '../api/merchant';
+import { updateMerchant, getMerchantById } from '../api/merchant';
 import { Spinner } from 'flowbite-react';
 import { useEffect } from 'react';
 import SearchSelector from '../components/selector/SearchSelector';
@@ -45,6 +45,7 @@ export const EditMerchant = () => {
       setArrayAddress(res.data.merchant.merchantAddress)
       setArrayRelation(res.data.merchant.merchantRelation)
       setArrayDocument(res.data.merchant.documentArray)
+      setStatus(res.data.merchant.status)
     } catch (error) {
       setIsLoading(false)
     }
@@ -53,6 +54,9 @@ export const EditMerchant = () => {
   useEffect(() => {
     setIsLoading(false)
   }, [input])
+
+  const [showModalConfirm, setShowModalConfirm] = useState(false)
+  const [showModalSuccess, setShowModalSuccess] = useState(false)
 
   const handleChange = (e) => {
     setInput(prevInput => {
@@ -172,7 +176,7 @@ export const EditMerchant = () => {
   };
 
   // ความสัมพันธ์
-  const [status, setStatus] = useState("active")
+  const [status, setStatus] = useState("")
 
   const objRelation = { groupCompany: "", remark: "" }
   const [arrayRelation, setArrayRelation] = useState([objRelation])
@@ -207,18 +211,10 @@ export const EditMerchant = () => {
 
   const [errorInput, setErrorInput] = useState()
   const [errorAddress, setErrorAddress] = useState()
-  const [errorInpuBottomt, setErrorInputBottom] = useState()
+  const [errorRelation, setErrorRelation] = useState()
 
   const handleForm = async () => {
-    console.log(JSON.stringify({ input }), inputBottom)
-    const data = JSON.stringify({ input, inputBottom })
-    const formData = new FormData();
-    console.log(data);
-    formData.append("data", data);
-
-    const response = createMerchant(formData)
-    return
-    let errInput, errInputBottom, errAddress
+    let errInput, errRelation, errAddress
     Object.values(input).map((value) => {
       if (errInput) return
       if (!value) errInput = true
@@ -236,16 +232,30 @@ export const EditMerchant = () => {
         })
       })
     }
-    Object.values(inputBottom).map((value) => {
-      if (errInputBottom) return
-      if (!value) errInputBottom = true
+
+    arrayRelation?.forEach(arr => {
+      Object.entries(arr).forEach(([key, value]) => {
+        if (key != "companyCategory" || errRelation) return
+        if (!value) errRelation = true
+      })
     })
+
     setErrorInput(errInput)
-    setErrorInputBottom(errInputBottom)
     setErrorAddress(errAddress)
+    setErrorRelation(errRelation)
     //   if (!(errInput || errAddress || errInputBottom)) setShowModalConfirm(true)
+  }
 
+  async function submit(valStatus) {
+    const inputJSON = JSON.stringify({ ...input, status: valStatus || status })
+    const formData = new FormData();
+    formData.append("input", inputJSON)
+    formData.append("merchantAddress", JSON.stringify(arrayAddress))
+    formData.append("merchantRelation", JSON.stringify(arrayRelation))
+    // formData.append("existArrayDocument", data)
 
+    const response = updateMerchant(formData, merchantId)
+    return
   }
 
   return (
@@ -295,18 +305,17 @@ export const EditMerchant = () => {
                     id="ID"
                     onChange={handleChange}
                     value={input.realMerchantId}
-                    className={`${inputClassname}`}
+                    className={`${inputClassname} ${!input.realMerchantId && 'border-red-500'}`}
                   />
                 </div>
                 <div>
                   <div className="mb-1">เลขที่ประจำตัวผู้เสียภาษี</div>
                   <input
                     type="text"
-                    name="billNumber"
-                    id="billNumber"
+                    name="taxpayerNumber"
                     onChange={handleChange}
                     value={input.taxpayerNumber}
-                    className={`${inputClassname}`}
+                    className={`${inputClassname} ${!input.taxpayerNumber && 'border-red-500'}`}
                   />
                 </div>
 
@@ -329,7 +338,7 @@ export const EditMerchant = () => {
                     control="companyName"
                     onChange={handleChange}
                     value={input.companyName}
-                    className={`${inputClassname}`}
+                    className={`${inputClassname} ${!input.companyName && 'border-red-500'}`}
                   />
                 </div>
 
@@ -354,7 +363,7 @@ export const EditMerchant = () => {
                       id="name"
                       onChange={handleChange}
                       value={input.name}
-                      className={`${inputClassname}`}
+                      className={`${inputClassname} ${!input.name && 'border-red-500'}`}
                     />
                   </div>
                 </div>
@@ -367,7 +376,7 @@ export const EditMerchant = () => {
                     id="phoneNumber"
                     onChange={handleChange}
                     value={input.phoneNumber}
-                    className={`${inputClassname}`}
+                    className={`${inputClassname} ${!input.phoneNumber && 'border-red-500'}`}
                   />
                 </div>
                 <div>
@@ -378,7 +387,7 @@ export const EditMerchant = () => {
                     id="email"
                     onChange={handleChange}
                     value={input.email}
-                    className={`${inputClassname}`}
+                    className={`${inputClassname} ${!input.email && 'border-red-500'}`}
                   />
                 </div>
               </div>
@@ -549,8 +558,8 @@ export const EditMerchant = () => {
                     id="paymentTerm"
                     onChange={handleChange}
                     value={input.paymentTerm}
-                    // className={`${errorSale && !inputSale.salesDocument && 'border-red-500'} 
-                    className={`${inputClassname}`} />
+                    className={`${!input.paymentTerm && 'border-red-500'} ${inputClassname} `}
+                  />
                 </div>
                 <div>
                   <div className="mb-1">ชื่อผู้ติดต่อ</div>
@@ -561,7 +570,7 @@ export const EditMerchant = () => {
                       id="contactName"
                       onChange={handleChange}
                       value={input.contactName}
-                      className={`${inputClassname}`}
+                      className={`${!input.contactName && 'border-red-500'} ${inputClassname} `}
                     />
                   </div>
                 </div>
@@ -576,6 +585,8 @@ export const EditMerchant = () => {
                   <input
                     className={`${inputClassname}`}
                     value={input.bankAccountNumber}
+                    onChange={handleChange}
+                    name="bankAccountNumber"
                   />
                 </div>
                 <div>
@@ -583,6 +594,8 @@ export const EditMerchant = () => {
                   <input
                     className={`${inputClassname}`}
                     value={input.bankAccountDetail}
+                    onChange={handleChange}
+                    name="bankAccountDetail"
                   />
                 </div>
 
@@ -591,6 +604,8 @@ export const EditMerchant = () => {
                   <input
                     className={`${inputClassname}`}
                     value={input.bankCode}
+                    onChange={handleChange}
+                    name="bankCode"
                   />
                 </div>
                 <div>
@@ -598,6 +613,8 @@ export const EditMerchant = () => {
                   <input
                     className={`${inputClassname}`}
                     value={input.bankBranchCode}
+                    onChange={handleChange}
+                    name="bankBranchCode"
                   />
                 </div>
 
@@ -606,6 +623,8 @@ export const EditMerchant = () => {
                   <input
                     className={`${inputClassname}`}
                     value={input.idCardNumber}
+                    onChange={handleChange}
+                    name="idCardNumber"
                   />
                 </div>
               </div>
@@ -650,7 +669,7 @@ export const EditMerchant = () => {
                   <div className='text-text-gray  inline-flex items-center'>
                     สถานะ
                     <label class="relative inline-flex items-center cursor-pointer ml-3">
-                      <input type="checkbox" value="" checked={input.status === "active"} onChange={e => setStatus(e.target.checked ? "active" : "nonActive")} class="sr-only peer" />
+                      <input type="checkbox" value="" checked={status === "active"} onChange={e => setStatus(e.target.checked ? "active" : "nonActive")} class="sr-only peer" />
                       <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-0 rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
                       <span class="ml-2 text-text-green">Active</span>
                     </label>
@@ -666,7 +685,7 @@ export const EditMerchant = () => {
                         name="companyCategory"
                         onChange={handleSelectRelation}
                         noClearButton
-                        error={!element.companyCategory}
+                        error={errorRelation && !element.companyCategory}
                         value={{ label: element.companyCategory, value: element.companyCategory }}
                       />
                     </div>
@@ -696,11 +715,8 @@ export const EditMerchant = () => {
             </div>
           </>
         }
-
       </div>
 
-
-      {/* footer */}
       <div className="flex justify-between items-center gap-10 p-5 text-sm mr-12">
         <button
           type="button"
@@ -710,8 +726,10 @@ export const EditMerchant = () => {
         </button>
         <div className="flex justify-end gap-4">
           <button
-            className={`inline-flex justify-center items-center py-1 px-4 border-2  shadow-sm font-medium rounded-md   hover:bg-sidebar-green focus:outline-none focus:ring-offset-2 focus:ring-green-800 ${input.status == "active" ? "border-text-green text-text-green focus:ring-2" : "text-gray-500 hover:bg-white cursor-default"}`}
-            disabled={input.status == "active"}
+            className={`inline-flex justify-center items-center py-1 px-4 border-2  shadow-sm font-medium rounded-md   hover:bg-sidebar-green focus:outline-none focus:ring-offset-2 focus:ring-green-800
+            `}
+            // ${input.status == "active" ? "border-text-green text-text-green focus:ring-2" : "text-gray-500 hover:bg-white cursor-default"}
+            onClick={() => submit('saveDraft')}
           >
             บันทึกแบบร่าง
           </button>
@@ -719,18 +737,19 @@ export const EditMerchant = () => {
             id="form"
             type="submit"
             className="bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-            onClick={handleForm}
+            // onClick={handleForm}
+            onClick={submit}
           >
             บันทึกข้อมูล
           </button>
 
-          {/* <ModalConfirmSave
+          <ModalConfirmSave
             isVisible={showModalConfirm}
             onClose={() => setShowModalConfirm(false)}
             onSave={submit}
           />
 
-          {showModalSuccess && <ModalSuccess urlPath='/merchant' />} */}
+          {showModalSuccess && <ModalSuccess urlPath='/merchant' />}
         </div>
       </div>
     </>
