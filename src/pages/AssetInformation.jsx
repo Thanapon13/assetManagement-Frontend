@@ -62,6 +62,14 @@ const AssetInformation = () => {
     const res = await getAssetById(param.id);
     console.log(res.data.asset)
     setInput(res.data.asset[0])
+    setGenData(res.data.asset[0]?.genDataArray || [])
+    const docs = res.data.asset[0]?.documentArray
+    docs.map(ele => {
+      const name = ele.document
+      ele.document = { name: name }
+    })
+    setArrayDocument(docs)
+    setArrayImage(res.data.asset[0]?.imageArray)
   }
 
   const getMasterData = async () => {
@@ -116,11 +124,11 @@ const AssetInformation = () => {
 
   const handleSelect = (value, label, ele) => {
     console.log(ele, value)
-    // if (label == "kind" || label == "type" || label == "category") {
-    //   setInput({ ...input, [label]: ele })
-    // } else {
+    if (label == "kind" || label == "type" || label == "category") {
+      setInput({ ...input, [label]: ele })
+    } else {
     setInput({ ...input, [label]: value })
-    // }
+    }
   }
 
   const [input, setInput] = useState({
@@ -454,13 +462,14 @@ const AssetInformation = () => {
     } else {
       const arr = []
       fetchAssetList()
-      const assetGroupNumber = (+input.category.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 2 })
-        + (+input.type.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 2 })
-        + '-' + (+input.kind.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 3 })
+      const assetGroupNumber = (+input.category?.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 2 })
+        + (+input.type?.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 2 })
+        + '-' + (+input.kind?.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 3 })
       setInput({
         ...input,
         assetGroupNumber: assetGroupNumber
       })
+      
       for (let i = 0; i < input.quantity; i++) {
         arr.push({
           assetNumber: assetGroupNumber + '/'
@@ -496,7 +505,7 @@ const AssetInformation = () => {
     Object.values(input).map((value, index) => {
       if (errInput) return
       if (!value) errInput = true
-      if (Object.keys(input).length > index + 1) errInput = false
+      if (Object.keys(input).length > index + 2) errInput = false
     })
     genData.map(ele => {
       if (!ele.sector) errTable = true
@@ -527,19 +536,27 @@ const AssetInformation = () => {
   }
 
   const submit = async (valStatus) => {
-    // if(valStatus) setInput({...input, status: valStatus}) //*backend supp?
+    const existArrayDocument = arrayDocument.filter(ele => ele._id).map(ele => {
+      return { ...ele, document: ele.document.name }
+    })
+    const existArrayImage = arrayImage.filter(ele => ele._id)
+
     const inputJSON = JSON.stringify({
       ...input,
-      // category: input.category?.name,
-      // kind: input.kind?.name,
-      // type: input.type?.name,
+      category: input.category?.name,
+      kind: input.kind?.name,
+      type: input.type?.name,
       status: valStatus || "not approve",
+      // existArrayDocument: [],
     });
     const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
     formData.append("input", inputJSON);
     formData.append("insuranceStartDate", insuranceStartDate);
     formData.append("insuranceExpiredDate", insuranceExpiredDate);
+
+    formData.append("existArrayImage", JSON.stringify(existArrayImage))
+    formData.append("existArrayDocument", JSON.stringify(existArrayDocument))
 
     const baseArrayImage = [];
     if (arrayImage?.length > 0) {
@@ -550,6 +567,7 @@ const AssetInformation = () => {
         });
       });
     }
+
     const baseArrayImageJSON = JSON.stringify(baseArrayImage);
     formData.append("baseArrayImage", baseArrayImageJSON);
     console.log(baseArrayImageJSON)
@@ -559,10 +577,12 @@ const AssetInformation = () => {
       // for duplicate image file if create asset as too many
       arrayImage.forEach((file) => {
         formData.append("arrayImage", file.image);
+        if (valStatus) return
+        const name = file.image.name || file.image
         for (let i = 2; i <= input.quantity; i++) {
           const duplicatedFile = new File(
             [file.image],
-            `${file.image.name.split(".")[0]}_(${i - 1}).${file.image.name.split(".")[1]
+            `${name.split(".")[0]}_(${i - 1}).${name.split(".")[1]
             }`,
             { type: file.type }
           );
@@ -594,17 +614,21 @@ const AssetInformation = () => {
         });
       });
     }
+
     const baseArrayDocumentJSON = JSON.stringify(baseArrayDocument);
     formData.append("baseArrayDocument", baseArrayDocumentJSON);
+
     // for duplicate document file if create asset as too many
     // const duplicatedArrayDocument = [];
     if (arrayDocument?.length > 0) {
-      arrayDocument.forEach((file) => {
+      arrayDocument.filter(ele => !ele._id).forEach((file) => {
         formData.append("arrayDocument", file.document);
+        const name = file.document.name || file.document
+        if (valStatus) return
         for (let i = 2; i <= input.quantity; i++) {
           const duplicatedFile = new File(
             [file.document],
-            `${file.document.name.split(".")[0]}_(${i - 1}).${file.document.name.split(".")[1]
+            `${name.split(".")[0]}_(${i - 1}).${name.split(".")[1]
             }`,
             { type: file.type }
           );
@@ -619,6 +643,8 @@ const AssetInformation = () => {
 
       // console.log("allArrayDocument",[...arrayDocument,...duplicatedArrayDocument])
     }
+    console.log('exist', existArrayDocument, 'arr', arrayDocument, 'base', baseArrayDocument)
+    // return
 
     // if (duplicatedArrayDocument.length > 0) {
     //   const duplicatedArrayDocumentJSON = JSON.stringify(duplicatedArrayDocument);
@@ -708,7 +734,7 @@ const AssetInformation = () => {
     );
     formData.append("distributeStatus", inputSale.distributeStatus);
     formData.append("distributionNote", inputSale.distributionNote);
-    
+
     let response
     if (!param.id) {
       response = await createAsset(formData)
@@ -726,9 +752,15 @@ const AssetInformation = () => {
     const newImageUrls = [];
     // console.log(arrayImage);
     arrayImage.forEach(
-      (img) => newImageUrls.push(URL.createObjectURL(img.image))
-      // console.log(img)
+      (img) => {
+        if (img._id) {
+          newImageUrls.push(`http://localhost:4000/images/${img.image}`);
+        } else {
+          newImageUrls.push(URL.createObjectURL(img.image));
+        }
+      }
     );
+    console.log(newImageUrls)
     setArrayImageURL(newImageUrls);
   }, [arrayImage]);
 
@@ -821,7 +853,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.type}
-                value={(input.type) && { label: input.type, value: input.type }}
+                value={(input.type) && { label: input.type.name, value: input.type.name }}
               />
               {/* </div> */}
               <div className="text-red-500 pt-1">{errorGen && !input.type && `*โปรดระบุ`}</div>
@@ -835,7 +867,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.kind}
-                value={(input.kind) && { label: input.kind, value: input.kind }}
+                value={(input.kind) && { label: input.kind.name, value: input.kind.name }}
               />
               <div className="text-red-500 pt-1">{errorGen && !input.kind && `*โปรดระบุ`}</div>
             </div>
@@ -922,7 +954,7 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.category}
-                value={(input.category) && { label: input.category, value: input.category }}
+                value={(input.category) && { label: input.category.name, value: input.category.name }}
               />
               <div className="text-red-500 pt-1">{errorGen && !input.category && `*โปรดระบุ`}</div>
             </div>
@@ -1148,7 +1180,7 @@ const AssetInformation = () => {
                   >
                     <div className="flex items-center text-text-green">
                       <img src={docIcon} className="w-4 h-4 " />
-                      <div className="ml-2 text-sm">{el.image.name}</div>
+                      <div className="ml-2 text-sm">{el.image.name || el.image}</div>
                     </div>
                     <button
                       className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
@@ -1201,7 +1233,7 @@ const AssetInformation = () => {
                   >
                     <div className="flex items-center text-text-green">
                       <img src={docIcon} className="w-4 h-4 " />
-                      <div className="ml-2 text-sm">{el.document.name}</div>
+                      <div className="ml-2 text-sm">{el.document.name || el.document}</div>
                     </div>
                     <button
                       className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
@@ -2070,7 +2102,7 @@ const AssetInformation = () => {
         >
           <div className=" px-10 pt-2 pb-10">
             {arrayImageURL.map((el, idx) => (
-              <img src={el} className="w-[640px] mb-5" />
+              <img src={el} crossorigin="true" key={idx} className="w-[640px] mb-5" />
             ))}
           </div>
         </Modal>
