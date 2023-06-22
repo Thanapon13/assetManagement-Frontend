@@ -87,6 +87,7 @@ function ModalDelete({ element, onClose }) {
 
   function onConfirmDelete() {
     console.log(element)
+    
   }
 
   const handleClose = (e) => {

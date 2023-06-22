@@ -468,7 +468,7 @@ const EditAssetInformation = () => {
     Object.values(input).map((value, index) => {
       if (errInput) return
       if (!value) errInput = true
-      if (Object.keys(input).length == index + 1) errInput = false
+      if (Object.keys(input).length == index + 2) errInput = false
     })
     Object.values(inputContract).map((value, index) => {
       if (errContact) return

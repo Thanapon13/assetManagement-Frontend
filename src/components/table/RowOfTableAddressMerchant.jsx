@@ -81,7 +81,7 @@ function RowOfTableAddressMerchant({
             <div className='col-span-2'>
               บ้านเลขที่
               <input
-                className={`${inputClassname} ${errorAddress && "border-red-500"}`}
+                className={`${inputClassname} ${errorAddress && !address.address && "border-red-500"}`}
                 value={address.address}
                 name="address"
               />
@@ -89,7 +89,7 @@ function RowOfTableAddressMerchant({
             <div>
               หมู่ที่
               <input
-                className={`${inputClassname}`}
+                className={`${inputClassname} ${errorAddress && !address.group && "border-red-500"}`}
                 value={address.group}
                 name="group"
               />
@@ -99,7 +99,7 @@ function RowOfTableAddressMerchant({
           <div>
             หมู่บ้าน
             <input
-              className={`${inputClassname}`}
+              className={`${inputClassname} ${errorAddress && !address.village && "border-red-500"}`}
               value={address.village}
               name="village"
             />
@@ -107,7 +107,7 @@ function RowOfTableAddressMerchant({
           <div>
             ซอย
             <input
-              className={`${inputClassname}`}
+              className={`${inputClassname} ${errorAddress && !address.alley && "border-red-500"}`}
               value={address.alley}
               name="alley"
             />
@@ -119,7 +119,7 @@ function RowOfTableAddressMerchant({
               name="street"
               onChange={handleChangeAddress}
               value={address.street}
-              className={`${inputClassname}`}
+              className={`${inputClassname} ${errorAddress && !address.street && "border-red-500"}`}
             />
           </div>
 
