@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import InputAddress from "react-thailand-address-autocomplete";
 
@@ -7,8 +7,11 @@ function RowOfTableAddressMerchant({
   arrayAddress,
   errorAddress,
   setArrayAddress,
-  address
+  // address
 }) {
+  const address = arrayAddress[index]
+  // const [address, setAddress] = useState(arrayAddress[index])
+  const [onInput, setOnInput] = useState("")
 
   const delAddress = (index) => {
     let clone = [...arrayAddress];
@@ -24,28 +27,21 @@ function RowOfTableAddressMerchant({
     //   //   [e.target.name]: e.target.value
     //   // }
     // })
-    console.log(arrayAddress[0])
   };
 
-  const onSelectAddress = ({ subdistrict, district, province, zipcode }) => {
-    console.log(subdistrict, district, province, zipcode)
-    // setInput({
-    //   subdistrict,
-    //   district,
-    //   province,
-    //   zipcode,
-    // });
-    // const clone = [...arrayAddress];
-    // clone[index].subDistrict = subDistrict
-    // clone[index].district = district
-    // clone[index].province = province
-    // clone[index].postalCode = postalCode
-    // setArrayAddress(clone)
+  const onSelectAddress = ({ subdistrict, district, province, zipcode }, x) => {
+    // console.log(subdistrict, district, province, zipcode)
+    const clone = [...arrayAddress];
+    clone[index].subDistrict = subdistrict
+    clone[index].district = district
+    clone[index].province = province
+    clone[index].postalCode = zipcode
+    setArrayAddress(clone)
   };
 
   const onChange = (e) => {
     const clone = [...arrayAddress];
-
+    setOnInput(e.target.name)
     switch (e.target.name) {
       case "subdistrict":
         clone[index].subDistrict = e.target.value;
@@ -62,10 +58,14 @@ function RowOfTableAddressMerchant({
       default:
         break;
     }
-    console.log(e.target.value, index)
-    console.log(clone)
     setArrayAddress(clone)
   };
+
+  function onChangeInput(e) {
+      const clone = [...arrayAddress];
+      clone[index][e.target.name] = e.target.value
+      setArrayAddress(clone)
+  }
 
   const inputClassname = "w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
 
@@ -84,6 +84,7 @@ function RowOfTableAddressMerchant({
                 className={`${inputClassname} ${errorAddress && !address.address && "border-red-500"}`}
                 value={address.address}
                 name="address"
+                onChange={onChangeInput}
               />
             </div>
             <div>
@@ -92,6 +93,7 @@ function RowOfTableAddressMerchant({
                 className={`${inputClassname} ${errorAddress && !address.group && "border-red-500"}`}
                 value={address.group}
                 name="group"
+                onChange={onChangeInput}
               />
             </div>
           </div>
@@ -102,6 +104,7 @@ function RowOfTableAddressMerchant({
               className={`${inputClassname} ${errorAddress && !address.village && "border-red-500"}`}
               value={address.village}
               name="village"
+              onChange={onChangeInput}
             />
           </div>
           <div>
@@ -110,6 +113,7 @@ function RowOfTableAddressMerchant({
               className={`${inputClassname} ${errorAddress && !address.alley && "border-red-500"}`}
               value={address.alley}
               name="alley"
+              onChange={onChangeInput}
             />
           </div>
 
@@ -117,7 +121,8 @@ function RowOfTableAddressMerchant({
             ถนน
             <input
               name="street"
-              onChange={handleChangeAddress}
+              // onChange={handleChangeAddress}
+              onChange={onChangeInput}
               value={address.street}
               className={`${inputClassname} ${errorAddress && !address.street && "border-red-500"}`}
             />
@@ -130,60 +135,62 @@ function RowOfTableAddressMerchant({
               value={address?.subDistrict}
               onChange={onChange}
               onSelect={onSelectAddress}
-              filter={(items) =>
-                console.log(items)
-                // items.filter(
-                //   (item) =>
-                //     console.log(item)
-                //       (!address?.subDistrict ||
-                //         item?.subDistrict?.includes(address?.subDistrict)) &&
-                //     (!address?.province ||
-                //       item.province.includes(address?.province)) &&
-                //     (!address?.zipcode || item?.zipcode?.includes(address?.zipcode))
-                // )
-              }
+              filter={(items) => {
+                if (onInput == "subdistrict") return
+                items.filter(
+                  (item) =>
+                    (!district || item.district.includes(address.district)) &&
+                    (!subdistrict ||
+                      item.subdistrict.includes(address.subdistrict)) &&
+                    (!province || item.province.includes(address.province)) &&
+                    (!zipcode || item.zipcode.includes(address.zipcode))
+                )
+              }}
+              style={{ outline: "none" }}
             />
           </div>
           <div>
             อำเภอ
             <InputAddress
-                  address="district"
-                 value={address.district}
-                  onChange={onChange}
-                  onSelect={onSelectAddress}
-                  filter={(items) =>
-                    items.filter(
-                      (item) =>
-                        (!district || item.district.includes(district)) &&
-                        (!subdistrict ||
-                          item.subdistrict.includes(subdistrict)) &&
-                        (!province || item.province.includes(province)) &&
-                        (!zipcode || item.zipcode.includes(zipcode))
-                    )
-                  }
-                />
+              address="district"
+              value={address.district}
+              onChange={onChange}
+              onSelect={onSelectAddress}
+              filter={(items) => {
+                if (onInput == "district") return
+                items.filter(
+                  (item) =>
+                    (!district || item.district.includes(address.district)) &&
+                    (!subdistrict ||
+                      item.subdistrict.includes(address.subdistrict)) &&
+                    (!province || item.province.includes(address.province)) &&
+                    (!zipcode || item.zipcode.includes(address.zipcode))
+                )
+              }}
+              style={{ outline: "none" }}
+            />
           </div>
 
           <div>
             จังหวัด
             <InputAddress
-                address="province"
-                value={address?.province}
-                onChange={onChange}
-                onSelect={onSelectAddress}
-                filter={(items) =>
-                  items.filter(
-                    // (item) =>
-                    //   (!address?.district ||
-                    //     item?.district?.includes(address?.district)) &&
-                    //   (!address?.subdistrict ||
-                    //     item?.subdistrict?.includes(address?.subdistrict)) &&
-                    //   (!address?.province ||
-                    //     item?.province?.includes(address?.province)) &&
-                    //   (!address?.zipcode || item?.zipcode?.includes(address?.zipcode))
-                  )
-                }
-              />
+              address="province"
+              value={address?.province}
+              onChange={onChange}
+              onSelect={onSelectAddress}
+              filter={(items) => {
+                if (onInput == "province") return
+                (item) =>
+                  (!address?.district ||
+                    item?.district?.includes(address?.district)) &&
+                  (!address?.subdistrict ||
+                    item?.subdistrict?.includes(address?.subdistrict)) &&
+                  (!address?.province ||
+                    item?.province?.includes(address?.province)) &&
+                  (!address?.zipcode || item?.zipcode?.includes(address?.zipcode))
+              }}
+              style={{ outline: "none" }}
+            />
           </div>
           <div>
             รหัสไปรษณีย์
@@ -192,7 +199,8 @@ function RowOfTableAddressMerchant({
               value={address.postalCode}
               onChange={onChange}
               onSelect={onSelectAddress}
-              filter={(items) =>
+              filter={(items) => {
+                if (onInput == "zipcode") return
                 items.filter(
                   (item) =>
                     (!address?.district ||
@@ -203,7 +211,8 @@ function RowOfTableAddressMerchant({
                       item?.province?.includes(address?.province)) &&
                     (!address?.zipcode || item?.zipcode?.includes(address?.zipcode))
                 )
-              }
+              }}
+              style={{ outline: "none" }}
             />
           </div>
 
