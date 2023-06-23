@@ -47,3 +47,7 @@ export function getMerchantById(id) {
 export function getMerchantBySearchViewOnly(search) {
   return axios.get(`/merchant/searchViewOnly?${getQueryString(search)}`)
 }
+
+export function deleteMerchant(id, body) {
+  return axios.patch(`/merchant/delete/${id}`, body);
+}
