@@ -52,10 +52,8 @@ console.log(search)
 
   return (
     <div className="bg-background-page px-5 pt-10 pb-36">
-      {/* Header */}
       <div className="text-xl text-text-green ">รายงานข้อมูลหลักผู้ค้า</div>
       <div className="flex justify-between items-center">
-        {/* left home */}
         <div className="flex text-xs">
           <Link
             to="/"
@@ -103,13 +101,9 @@ console.log(search)
             <option defaultValue value="">
               สถานะทั้งหมด
             </option>
-            <option value="inStock">ใช้งานได้</option>
-            <option value="transfered">โอน</option>
-            <option value="borrowed">ยืม</option>
-            <option value="broken">ชำรุด</option>
-            <option value="repair">ซ่อม</option>
-            <option value="sell">จำหน่าย</option>
-            <option value="">แทงจำหน่าย</option>
+            <option value="active">active</option>
+            <option value="inactive">Inactive</option>
+            <option value="saveDraft">แบบร่าง</option>
           </select>
 
           <button
@@ -133,11 +127,11 @@ console.log(search)
               <div className="ml-2 text-sm">25 รายการ </div>
             </div>
             {/* top bar */}
-            <div className="grid grid-cols-15 gap-2 h-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-t-lg border-b-[1px] border-border-gray-table">
+            <div className="grid grid-cols-14 gap-2 h-12 items-center text-center text-text-black-table text-xs font-semibold bg-white rounded-t-lg border-b-[1px] border-border-gray-table ml-2">
               <div className="">รหัสผู้ค้า</div>
               <div className="col-span-2">คำนำหน้าบริษัท</div>
               <div className="col-span-3">ชื่อบริษัทผู้ค้า</div>
-              <div className="col-span-3">กลุ่มประเภท</div>
+              <div className="col-span-2">กลุ่มประเภท</div>
               <div className="col-span-2">ชื่อผู้ติดต่อ</div>
               <div className="col-span-2">สถานะ</div>
               <div className="col-span-2 text-center font-bold mr-2">

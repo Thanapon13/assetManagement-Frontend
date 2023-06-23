@@ -34,7 +34,6 @@ export const SaveMerchant = () => {
     bankAccountDetail: "",
     bankCode: "",
     bankBranchCode: "",
-    idCardNumber: "",
     creditorCategory: "",
   })
 
@@ -237,7 +236,7 @@ export const SaveMerchant = () => {
     setErrorInput(errInput)
     setErrorRelation(errRelation)
     setErrorAddress(errAddress)
-    if (!(errInput || errAddress || errRelation)) setShowModalConfirm(true)
+     if (!(errInput || errAddress || errRelation)) setShowModalConfirm(true)
   }
 
   async function submit(valStatus) {
@@ -393,7 +392,7 @@ export const SaveMerchant = () => {
                 index={index}
                 errorAddress={errorAddress}
                 arrayAddress={arrayAddress}
-                address={address}
+                // address={address}
                 setArrayAddress={setArrayAddress}
               />
             ))}
@@ -583,7 +582,7 @@ export const SaveMerchant = () => {
               <div className='text-text-gray  inline-flex items-center'>
                 สถานะ
                 <label class="relative inline-flex items-center cursor-pointer ml-3">
-                  <input type="checkbox" value="" checked={status === "active"} onChange={e => setStatus(e.target.checked ? "active" : "nonActive")} class="sr-only peer" />
+                  <input type="checkbox" value="" checked={status === "active"} onChange={e => setStatus(e.target.checked ? "active" : "inactive")} class="sr-only peer" />
                   <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-0 rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
                   <span class="ml-2 text-text-green">Active</span>
                 </label>

@@ -13,14 +13,21 @@ import { CgPushChevronLeft, CgPushChevronRight } from 'react-icons/cg'
 export const Merchant = () => {
   const todayThaiDate = ChangeDateToBuddhist(new Date().toLocaleString('th-TH'))
 
-  // useState
+  // const [search, setSearch] = useState({
+  //   inventoryNumber: '',
+  //   wordSearch: '',
+  //   department: '',
+  //   sector: '',
+  //   // "merchantDate":todayThaiDate
+  // })
   const [search, setSearch] = useState({
-    inventoryNumber: '',
-    wordSearch: '',
-    department: '',
-    sector: '',
-    // "merchantDate":todayThaiDate
-  })
+    typeTextSearch: "assetNumber",
+    textSearch: "",
+    status: "",
+  });
+  const handleChange = (e) => {
+    setSearch({ ...search, [e.target.name]: e.target.value });
+  };
   const [perPage, setPerPage] = useState(10)
 
   //Main Date
@@ -54,7 +61,7 @@ export const Merchant = () => {
     setSearch({ ...search, [e.target.name]: e.target.value })
     fetchData({ ...search, [e.target.name]: e.target.value })
   };
-  
+
   const handlePage = (num) => {
     setSearch({ ...search, page: num })
     fetchData({ ...search, page: num })
@@ -132,12 +139,25 @@ export const Merchant = () => {
         </div>
 
         <div className="md:col-span-3 flex gap-2">
-          <Selector placeholder={'อาคาร'} />
+          {/* <Selector placeholder={'อาคาร'} /> */}
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+            name="status"
+            value={search.status}
+            onChange={handleChange}
+          >
+            <option defaultValue value="">
+              สถานะทั้งหมด
+            </option>
+            <option value="active">active</option>
+            <option value="inactive">Inactive</option>
+            <option value="saveDraft">แบบร่าง</option>
+          </select>
 
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-          // onClick={handleSearch}
+            onClick={fetchData}
           >
             <div className="text-xl text-white">
               <AiOutlineSearch />
@@ -174,6 +194,7 @@ export const Merchant = () => {
                 ele={ele}
                 index={idx}
                 page={search.page}
+                fetchData={fetchData}
               />
             )
           })}
