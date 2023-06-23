@@ -15,7 +15,15 @@ const ViewMerchant = () => {
     const fetchData = async () => {
       try {
         const res = await getMerchantById(merchantId)
-        setData(res.data.merchant)
+        let relation = ""
+        res.data.merchant.merchantRelation?.map((ele, ind) => {
+          if (ind == 0) {
+            relation = ele.companyCategory
+          } else {
+            relation = relation.concat(', ', ele.companyCategory)
+          }
+        })
+        setData({ ...res.data.merchant, relation })
         setArrayDocument(res.data.merchant.documentArray)
       } catch (err) {
         console.log(err);
@@ -149,7 +157,7 @@ const ViewMerchant = () => {
             </div>
             <div className="mb-1 col-span-1 sm:col-span-3">ความสัมพันธ์</div>
             <div className="col-span-2 sm:col-span-4">
-              { }
+              {data?.relation}
             </div>
           </div>
 

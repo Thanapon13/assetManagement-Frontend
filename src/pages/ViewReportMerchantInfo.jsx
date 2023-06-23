@@ -18,10 +18,21 @@ const ViewReportMerchantInfo = () => {
     const fetchData = async () => {
       try {
         const res = await getMerchantById(merchantId);
-        console.log(res.data);
-        setData(res.data.merchant)
+        let relation = ""
+        res.data.merchant.merchantRelation?.map((ele, ind) => {
+          if (ind == 0) {
+            relation = ele.companyCategory
+          } else {
+            relation = relation.concat(', ', ele.companyCategory)
+          }
+        })
+        console.log(relation)
+        setData({
+          ...res.data.merchant,
+          relation
+        })
         setArrayDocument(res.data.merchant.documentArray)
-
+        // "".concat(...greetList)
       } catch (err) {
         console.log(err);
       }
@@ -188,12 +199,12 @@ const ViewReportMerchantInfo = () => {
               </div>
               <div className="mb-1 col-span-1 sm:col-span-3">ความสัมพันธ์</div>
               <div className="col-span-2 sm:col-span-4">
-                { }
+                {data?.relation}
               </div>
             </div>
 
             {data?.merchantAddress?.map((ele, index) => (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
+              <div key={index} className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
                 {/* <div className="mt-1 text-sm">ที่อยู่</div> */}
 
                 <div className='col-span-2 border border-gray-300 rounded-md p-2'>
@@ -287,22 +298,21 @@ const ViewReportMerchantInfo = () => {
                     </div>
                   </div>
                 </div>
-
-                <div className="col-span-4 sm:my-3">
-                  {arrayDocument.map((el, idx) => (
-                    <div
-                      key={idx}
-                      className="flex justify-between items-center border-b-[1px] mt-2 pb-2 mx-5"
-                    >
-                      <div className="flex items-center text-text-green ">
-                        <img src={docIcon} className="w-4 h-4 " />
-                        <div className="ml-2 text-sm cursor-pointer ">{el.document}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
             ))}
+            <div className="col-span-4 sm:my-3">
+              {arrayDocument.map((el, idx) => (
+                <div
+                  key={idx}
+                  className="flex justify-between items-center border-b-[1px] mt-2 pb-2 mx-5"
+                >
+                  <div className="flex items-center text-text-green ">
+                    <img src={docIcon} className="w-4 h-4 " />
+                    <div className="ml-2 text-sm cursor-pointer ">{el.document}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="bg-white rounded-lg mx-10 mt-3 mb-7 p-3">
