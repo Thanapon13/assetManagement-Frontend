@@ -4,14 +4,22 @@ import { BsFillEyeFill } from "react-icons/bs"
 import { BsFillPencilFill } from "react-icons/bs"
 import { IoIosClose, IoMdTrash } from "react-icons/io"
 import { Link } from "react-router-dom";
+import { deleteMerchant } from "../../api/merchant";
 
 function RowOfMerchantTableArray({
   index,
   ele,
   page,
-  mode
+  mode,
+  fetchData
 }) {
   const [showModalDelete, setShowModalDelete] = useState(false)
+
+  function onConfirmDelete(id) {
+    deleteMerchant(id)
+    setShowModalDelete(false)
+    fetchData()
+  }
 
   return (
     <div
@@ -31,7 +39,7 @@ function RowOfMerchantTableArray({
               ? "bg-text-blue text-white"
               : "border-text-blue border text-text-blue"
           } `}>
-          {ele.status === "saveDraft" ? "แบบร่าง" : ele.status}
+          {ele.status === "saveDraft" ? "แบบร่าง" : ele.status === "inactive" ? "Inactive" : ele.status}
         </div>
       </div>
       <div className="col-span-2 flex justify-center gap-2 mr-2">
@@ -75,20 +83,16 @@ function RowOfMerchantTableArray({
       </div>
 
       {showModalDelete &&
-        <ModalDelete element={showModalDelete} onClose={() => setShowModalDelete(false)} />
+        <ModalDelete element={showModalDelete} onClose={() => setShowModalDelete(false)}
+          onConfirmDelete={onConfirmDelete} />
       }
     </div >
   );
 }
 
-function ModalDelete({ element, onClose }) {
+function ModalDelete({ element, onClose, onConfirmDelete }) {
   const [remark, setRemark] = useState("")
   const [error, setError] = useState(false)
-
-  function onConfirmDelete() {
-    console.log(element)
-    
-  }
 
   const handleClose = (e) => {
     if (e.target.id === "wrapper") {
@@ -168,16 +172,16 @@ function ModalDelete({ element, onClose }) {
                     {element.pricePerUnit}
                   </div> */}
                   </div>
-                  {/* {elem.status != "saveDraft" &&
-                  <div className="grid grid-cols-2 md:grid-cols-6 p-2">
-                    <div className="text-text-gray flex items-center">
-                      สาเหตุที่ยกเลิก
+                  {element.status != "saveDraft" &&
+                    <div className="grid grid-cols-2 md:grid-cols-6 p-2">
+                      <div className="text-text-gray flex items-center">
+                        สาเหตุที่ยกเลิก
+                      </div>
+                      <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                        onChange={e => setRemark(e.target.value)}
+                      />
                     </div>
-                    <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
-                      onChange={e => setRemark(e.target.value)}
-                    />
-                  </div>
-                } */}
+                  }
                 </div>
               </div>
 

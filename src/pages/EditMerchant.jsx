@@ -17,6 +17,7 @@ import { Spinner } from 'flowbite-react';
 import { useEffect } from 'react';
 import SearchSelector from '../components/selector/SearchSelector';
 import { getCompanyPrefix, getThaiPrefix } from '../api/masterApi';
+import RowOfTableAddressMerchant from '../components/table/RowOfTableAddressMerchant';
 
 export const EditMerchant = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -243,7 +244,8 @@ export const EditMerchant = () => {
     setErrorInput(errInput)
     setErrorAddress(errAddress)
     setErrorRelation(errRelation)
-    //   if (!(errInput || errAddress || errInputBottom)) setShowModalConfirm(true)
+    //   if (!(errInput || errAddress || errInputBottom)) 
+    setShowModalConfirm(true)
   }
 
   async function submit(valStatus) {
@@ -254,7 +256,13 @@ export const EditMerchant = () => {
     formData.append("merchantRelation", JSON.stringify(arrayRelation))
     // formData.append("existArrayDocument", data)
 
-    const response = updateMerchant(formData, merchantId)
+    try {
+      await updateMerchant(formData, merchantId)
+      setShowModalConfirm(false)
+      setShowModalSuccess(true)
+    } catch (error) {
+      console.log(error)
+    }
     return
   }
 
@@ -395,93 +403,12 @@ export const EditMerchant = () => {
               <div id="address" className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs">
                 <div className="mt-1 text-sm" id="head-address">ที่อยู่</div>
                 {arrayAddress?.map((address, index) => (
-                  <div className='col-span-2 border border-gray-300 rounded-md p-2'>
-                    <div className="flex">
-                      <div className="mt-2 mr-2 flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 p-2">
-                        {index + 1}
-                      </div>
-                      {/* <div className="grid grid-cols-3 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3 text-xs"> */}
-                      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1  gap-x-4 gap-y-3 mt-3 text-xs">
-                        <div className='grid grid-cols-3 gap-x-4'>
-                          <div className='col-span-2'>
-                            บ้านเลขที่
-                            <input
-                              className={`${inputClassname} ${errorAddress && "border-red-500"}`}
-                              value={address.address}
-                              name="address"
-                            />
-                          </div>
-                          <div>
-                            หมู่ที่
-                            <input
-                              className={`${inputClassname}`}
-                              value={address.group}
-                              name="group"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          หมู่บ้าน
-                          <input
-                            className={`${inputClassname}`}
-                            value={address.village}
-                            name="village"
-                          />
-                        </div>
-                        <div>
-                          ซอย
-                          <input
-                            className={`${inputClassname}`}
-                            value={address.alley}
-                            name="alley"
-                          />
-                        </div>
-
-                        <div>
-                          ถนน
-                          <input
-                            name="street"
-                            onChange={handleChangeAddress}
-                            value={address.street}
-                            className={`${inputClassname}`}
-                          />
-                        </div>
-                        <div>
-                          ตำบล
-                          <Selector
-
-                          />
-                        </div>
-                        <div>
-                          อำเภอ
-                          <Selector
-
-                          />
-                        </div>
-
-                        <div>
-                          จังหวัด
-                          <Selector
-
-                          />
-                        </div>
-                        <div>
-                          รหัสไปรษณีย์
-                          <input
-                            className={`${inputClassname}`}
-                            value={address.postalCode}
-                            name="postalCode"
-                          />
-                        </div>
-
-                      </div>
-
-                      <div className='mt-1 mx-1 hover:bg-gray-200 rounded-full h-fit cursor-pointer p-1'
-                        onClick={() => delAddress(index)}>
-                        <IoIosClose className="text-2xl" />
-                      </div>
-                    </div>
-                  </div>
+                  <RowOfTableAddressMerchant
+                    index={index}
+                    errorAddress={errorAddress}
+                    arrayAddress={arrayAddress}
+                    setArrayAddress={setArrayAddress}
+                  />
                 ))}
 
                 <div className='col-span-2 mx-3'>
@@ -669,7 +596,7 @@ export const EditMerchant = () => {
                   <div className='text-text-gray  inline-flex items-center'>
                     สถานะ
                     <label class="relative inline-flex items-center cursor-pointer ml-3">
-                      <input type="checkbox" value="" checked={status === "active"} onChange={e => setStatus(e.target.checked ? "active" : "nonActive")} class="sr-only peer" />
+                      <input type="checkbox" value="" checked={status === "active"} onChange={e => setStatus(e.target.checked ? "active" : "inactive")} class="sr-only peer" />
                       <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-0 rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
                       <span class="ml-2 text-text-green">Active</span>
                     </label>
@@ -727,7 +654,7 @@ export const EditMerchant = () => {
         <div className="flex justify-end gap-4">
           <button
             className={`inline-flex justify-center items-center py-1 px-4 border-2  shadow-sm font-medium rounded-md   hover:bg-sidebar-green focus:outline-none focus:ring-offset-2 focus:ring-green-800
-            `}
+            ${merchantId && "hidden"}`}
             // ${input.status == "active" ? "border-text-green text-text-green focus:ring-2" : "text-gray-500 hover:bg-white cursor-default"}
             onClick={() => submit('saveDraft')}
           >
@@ -737,8 +664,7 @@ export const EditMerchant = () => {
             id="form"
             type="submit"
             className="bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-            // onClick={handleForm}
-            onClick={submit}
+            onClick={handleForm}
           >
             บันทึกข้อมูล
           </button>
@@ -749,7 +675,7 @@ export const EditMerchant = () => {
             onSave={submit}
           />
 
-          {showModalSuccess && <ModalSuccess urlPath='/merchant' />}
+          {showModalSuccess && <ModalSuccess urlPath='/merchantIndex' />}
         </div>
       </div>
     </>
