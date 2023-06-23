@@ -60,8 +60,7 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
             // position :  "relative"
             ...baseStyles,
             cursor: 'pointer',
-            borderColor: state.isHovered && 'initial',
-            borderColor: !isDisabled && error && 'red',
+            borderColor: !isDisabled && error ? 'red' : state.isHovered && 'initial',
             // background: isDisabled && '#E5E7EB',
           }),
           valueContainer: (baseStyles, state) => ({
