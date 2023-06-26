@@ -13,6 +13,7 @@ import { deleteTransfer, getAllTransfer, getSectorOfTransfer, getSectorOfTransfe
 import { getSector } from "../api/masterApi";
 import ModalReasonDelete from "../components/modal/ModalReasonDelete";
 import { Spinner } from "flowbite-react/lib/esm";
+import Pagination from "../components/pagination";
 
 const TransferIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(
@@ -54,9 +55,14 @@ const TransferIndex = () => {
   }, [])
 
   const initData = async () => {
-    const response = await getAllTransfer()
+    const response = await getTransferAssetBySearch(search)
     setTransferArray(response.data.transfer)
-
+    setSearch({
+      ...search,
+      limit: response.data.limit,
+      page: response.data.page,
+      total: response.data.total
+    })
     const sectorTransfer = await getSectorOfTransfer()
     const transferSector = []
     sectorTransfer.data.transferSector.map(ele => {
@@ -85,8 +91,8 @@ const TransferIndex = () => {
     setSearch({ ...search, [label]: value })
   }
 
-  const handleSearch = async () => {
-    const res = await getTransferAssetBySearch(search)
+  const handleSearch = async (valueSet) => {
+    const res = await getTransferAssetBySearch(valueSet || search)
     setTransferArray(res.data.transfer)
     setSearch({
       ...search,
@@ -242,7 +248,7 @@ const TransferIndex = () => {
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-            onClick={handleSearch}
+            onClick={() => handleSearch()}
           >
             <div className="text-xl text-white">
               <AiOutlineSearch />
@@ -302,44 +308,7 @@ const TransferIndex = () => {
             />
             {!transferArray.length
               ? <center className='p-5'>-</center>
-              : <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-                <div className="flex items-center">
-                  <div>Rows per page:</div>
-                  <select
-                    id="limit"
-                    name="limit"
-                    className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  // onChange={handlePaginationSearch}
-                  >
-                    <option value="5">5</option>
-                    <option value="10" selected="selected">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                  </select>
-                </div>
-
-                <div className="mx-5">
-                  {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + transferArray.length} of {search.total}
-                </div>
-
-                <button
-                  className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-                // onClick={() => {
-                //   deleteRow(index)
-                // }}
-                >
-                  <HiChevronLeft className="text-lg" />
-                </button>
-                <button
-                  className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-                // onClick={() => {
-                //   deleteRow(index)
-                // }}
-                >
-                  <HiChevronRight className="text-lg" />
-                </button>
-              </div>
+              : <Pagination  search={search} data={transferArray} fetchLists={handleSearch}/>
             }
           </div>
         }
