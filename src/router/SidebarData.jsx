@@ -66,7 +66,7 @@ export const SidebarData = [
   },
   {
     title: 'ข้อมูลหลักผู้ค้า',
-    path: '/',
+    // path: '/',
     order: 3,
     icon: (
       <svg
@@ -144,7 +144,7 @@ export const SidebarData = [
   },
   {
     title: 'จัดการคลัง',
-    path: '/',
+    // path: '/',
     order: 4,
     icon: (
       <svg
@@ -186,7 +186,7 @@ export const SidebarData = [
   },
   {
     title: 'เบิกจ่ายครุภัณฑ์',
-    path: '/',
+    // path: '/',
     order: 5,
     icon: (
       <svg
@@ -263,7 +263,7 @@ export const SidebarData = [
   },
   {
     title: 'ยืม-คืน ครุภัณฑ์',
-    path: '/borrowList',
+    // path: '/borrowList',
     order: 6,
     icon: (
       <svg
@@ -376,7 +376,7 @@ export const SidebarData = [
   },
   {
     title: 'โอน-ย้าย ครุภัณฑ์',
-    path: '/transferIndex',
+    // path: '/transferIndex',
     order: 7,
     icon: (
       <svg
@@ -471,7 +471,7 @@ export const SidebarData = [
   },
   {
     title: 'งานซ่อม',
-    path: '/repairIndex',
+    // path: '/repairIndex',
     order: 8,
     icon: (
       <svg
@@ -621,7 +621,7 @@ export const SidebarData = [
   },
   {
     title: 'ข้อมูลตั้งต้น',
-    path: '/defaultData',
+    // path: '/defaultData',
     order: 10,
     icon: (
       <svg

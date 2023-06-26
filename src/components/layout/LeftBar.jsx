@@ -9,6 +9,7 @@ import SubMenu from './SubMenu'
 const LeftBar = ({ menu }) => {
   const [showMenu, setShowMenu] = useState(true)
   const handleShowMenu = () => setShowMenu(!showMenu)
+  const [showSubMenu, setShowSubMenu] = useState(false)
 
   return (
     <>
@@ -22,7 +23,7 @@ const LeftBar = ({ menu }) => {
             <div>
               {SidebarData.map((item, index) => {
                 if (menu.find(ele => ele.order == item.order)) {
-                  return <SubMenu item={item} key={index} />
+                  return <SubMenu item={item} key={index} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} />
                 }
               })}
             </div>

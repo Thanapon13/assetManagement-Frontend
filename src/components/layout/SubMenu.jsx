@@ -1,23 +1,36 @@
 import React, { useState } from 'react'
+import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 
-const SubMenu = ({ item }) => {
+const SubMenu = ({ item, showSubMenu, setShowSubMenu }) => {
   const [subnav, setSubnav] = useState(false)
 
-  const showSubnav = () => {
-    setSubnav(!subnav)
+  // const showSubnav = () => {
+  //   setSubnav(!subnav)
+  // }
+  const handleClick = () => {
+    if (!showSubMenu || showSubMenu != item.title) {
+      setShowSubMenu(item.title)
+    } else {
+      setShowSubMenu(false)
+    }
   }
+
+  useEffect(() => {
+    setSubnav(showSubMenu == item.title)
+  }, [showSubMenu])
 
   return (
     <>
       {/* main menu */}
       <NavLink
         to={item.path}
-        onClick={item.subNav && showSubnav}
+        onClick={item.subNav && handleClick}
         className={({ isActive }) =>
           [
             'flex items-center p-4 h-[60px] rounded-3xl hover:bg-sidebar-green',
-            isActive ? 'bg-sidebar-green text-text-green' : 'text-text-gray',
+            // isActive ? 'bg-sidebar-green text-text-green' : 'text-text-gray',
+            subnav ? 'bg-sidebar-green text-text-green' : 'text-text-gray',
           ]
             .filter(Boolean)
             .join(' ')
@@ -36,18 +49,21 @@ const SubMenu = ({ item }) => {
         </div>
       </NavLink>
       {/* sub menu */}
-      {subnav &&
-        item.subNav.map((item, index) => {
+      {
+      // subnav &&
+        item.subNav?.map((item, index) => {
           return (
             <NavLink
               to={item.path}
               key={index}
               className={({ isActive }) =>
                 [
-                  'flex items-center gap-2 p-3 px-6 rounded-3xl hover:bg-sidebar-green',
+                  'flex items-center gap-2 px-6 rounded-3xl hover:bg-sidebar-green',
                   isActive
                     ? 'bg-sidebar-green text-text-green'
                     : 'text-text-gray',
+                    'overflow-hidden',
+                    !subnav ? 'max-h-0 p-0 ease-out duration-400' : 'max-h-fit p-3 ease-in duration-300 '
                 ]
                   .filter(Boolean)
                   .join(' ')
