@@ -12,7 +12,7 @@ function Pagination({ search, data, fetchLists }) {
         // setSearch({ ...search, page: num })
         fetchLists({ ...search, page: num })
     }
-    const lastPage = (Math.round(search.total / search.limit))
+    const lastPage = (Math.round(search.total / search.limit)) || 1
 
     return (
         <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">

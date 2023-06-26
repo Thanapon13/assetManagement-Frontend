@@ -8,9 +8,10 @@ import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
 import RowOfTableUserInformationIndex from "../components/table/RowOfTableUserInformationIndex";
 import { useEffect } from "react";
-import { getSectorOfUser, getUsersAll } from "../api/userApi";
+import { getSectorOfUser, getUsersAll, getUsersBySearch } from "../api/userApi";
 import { getSector } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
+import Pagination from "../components/pagination";
 
 const UserInformationIndex = () => {
   const [search, setSearch] = useState({
@@ -36,12 +37,17 @@ const UserInformationIndex = () => {
   const [withdrawDate, setWithdrawDate] = useState();
 
   const [data, setData] = useState([])
+  const fetchUsersList = async () => {
+    const response = await getUsersBySearch(search)
+    setData(response.data.user)
+    setSearch({
+      ...search,
+      limit: response.data.limit,
+      page: response.data.page,
+      total: response.data.total
+    })
+  }
   useEffect(() => {
-    const fetchUsersList = async () => {
-      const response = await getUsersAll()
-      console.log(response.data)
-      setData(response.data)
-    }
     fetchUsersList()
     getMaster()
   }, [])
@@ -179,44 +185,7 @@ const UserInformationIndex = () => {
             );
           })}
 
-          <div className="flex justify-end gap-2 h-12 pr-8 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-center mr-10">
-              <div>Rows per page:</div>
-              <select
-                id="limit"
-                name="limit"
-                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              // onChange={handlePaginationSearch}
-              >
-                <option value="5">5</option>
-                <option value="10" selected="selected">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
-
-            <div className="mx-5">
-              {/* {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + transferArray.length} of {search.total} */}
-            </div>
-
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
-            >
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
-            >
-              <HiChevronRight className="text-lg" />
-            </button>
-          </div>
+         <Pagination search={search} data={data} fetchLists={fetchUsersList} />
         </div>
       </div>
     </div>
