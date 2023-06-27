@@ -9,6 +9,8 @@ import { getSector } from '../api/masterApi'
 import SearchSelector from '../components/selector/SearchSelector'
 import { getAllRole, getRoleBySearch } from '../api/userApi'
 import { CgPushChevronLeft, CgPushChevronRight } from 'react-icons/cg'
+import Pagination from '../components/pagination'
+import { Spinner } from 'flowbite-react'
 
 export const SetRoleIndex = () => {
   const [search, setSearch] = useState({
@@ -28,7 +30,7 @@ export const SetRoleIndex = () => {
   }
 
   const [data, setData] = useState([])
-
+  const [isLoading, setIsLoading] = useState(true)
 
   const fetchLists = async () => {
     try {
@@ -40,8 +42,10 @@ export const SetRoleIndex = () => {
         limit: res.data.limit,
         total: res.data.total,
       });
+      setIsLoading(false)
     } catch (err) {
       console.log(err);
+      setIsLoading(false)
     }
   };
 
@@ -87,8 +91,8 @@ export const SetRoleIndex = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-10 gap-3 items-center mt-8 mb-5 pl-3">
-        <div className="md:col-span-3 flex items-center">
+      <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-10 gap-3 items-center mt-8 mb-5 pl-3">
+        <div className="lg:col-span-3 md:col-span-2  flex items-center">
           <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
           <select
             className="ml-2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
@@ -99,7 +103,7 @@ export const SetRoleIndex = () => {
           </select>
         </div>
 
-        <div className="md:col-span-4  h-[38px] relative">
+        <div className="lg:col-span-4 md:col-span-3 h-[38px] relative">
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
@@ -111,8 +115,8 @@ export const SetRoleIndex = () => {
           />
         </div>
 
-        <div className="md:col-span-3 flex gap-2">
-          <div className="w-full">
+        <div className="lg:col-span-3 md:col-span-5 flex gap-2 justify-between">
+          <div className="w-full md:max-w-[300px]">
             <SearchSelector
               options={sectorArray}
               placeholder={"หน่วยงาน"}
@@ -134,99 +138,58 @@ export const SetRoleIndex = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg my-3 overflow-x-auto scrollbar">
-        <div className="w-[600px] lg:w-full h-[500px] ">
-          <div>
-            <div className="flex p-4">
-              <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-              <div className="ml-2 text-sm">{search.total} รายการ </div>
-            </div>
+      <div className='grid'>
+        <div className="bg-white rounded-lg my-3 overflow-x-auto scrollbar">
+          {isLoading
+            ? <div className="mt-5 py-10 w-full text-center"><Spinner size="xl" /></div>
+            :
+            <div className="w-max min-w-full lg:w-full ">
+              <div>
+                <div className="flex p-4">
+                  <div className=" text-sm text-text-gray">ผลการค้นหา </div>
+                  <div className="ml-2 text-sm">{search.total} รายการ </div>
+                </div>
 
-            <div className="grid grid-cols-6 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
-              <div className="">รหัสผู้ใช้งาน</div>
-              {/* <div className="col-span-2">ชื่อภาษาอังกฤษ</div> */}
-              <div className="col-span-4">ชื่อภาษาไทย</div>
-              <div className="col-span-1 text-center font-bold mr-2">
-                {/* Action */}
-              </div>
-            </div>
-          </div>
-          {data?.map((ele, index) => {
-            return (
-              <div key={index}
-                className={`grid grid-cols-6 gap-2 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
-              >
-                <div className="ml-2 text-center">{index + 1}</div>
-                <div className="col-span-4">{ele.roleName}</div>
-                <div className="col-span-1 flex justify-center gap-2 mr-2">
-                  <Link
-                    to={`/editRole/${ele._id}`}
-                    className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
-                    <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
-                  </Link>
-                  <button className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
-                    <IoMdTrash className="w-[20px] h-[20px] text-text-green" />
-                  </button>
+                <div className="grid grid-cols-6 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
+                  <div className="">รหัสผู้ใช้งาน</div>
+                  {/* <div className="col-span-2">ชื่อภาษาอังกฤษ</div> */}
+                  <div className="col-span-4">ชื่อภาษาไทย</div>
+                  <div className="col-span-1 text-center font-bold mr-2">
+                    {/* Action */}
+                  </div>
                 </div>
               </div>
-            )
-          })}
-          <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-center">
-              <div>Rows per page:</div>
-              <select
-                id="limit"
-                name="limit"
-                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={handlePagination}
-              >
-                <option value="5">5</option>
-                <option value="10" selected="selected">
-                  10
-                </option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
+              {data?.map((ele, index) => {
+                return (
+                  <div key={index}
+                    className={`grid grid-cols-6 gap-2 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
+                  >
+                    <div className="ml-2 text-center">{index + 1}</div>
+                    <div className="col-span-4">{ele.roleName}</div>
+                    <div className="col-span-1 flex justify-center gap-2 mr-2">
+                      <Link
+                        to={`/editRole/${ele._id}`}
+                        className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
+                        <BsFillPencilFill className="w-[16px] h-[16px] text-text-green" />
+                      </Link>
+                      <button className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md">
+                        <IoMdTrash className="w-[20px] h-[20px] text-text-green" />
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
 
-            <div className="mx-5">
-              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + data.length} of {search.total}
-            </div>
+              {!search.total
+                ? <center className='p-5'>-</center>
+                : <Pagination search={search} data={data} fetchLists={fetchLists} />
+              }
 
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 my-2"
-              onClick={() => {
-                if (1 == search.page) return
-                handlePage(1)
-              }}
-            >
-              <CgPushChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={() => handlePage(search.page - 1)}
-            >
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={() => handlePage(search.page + 1)}
-            >
-              <HiChevronRight className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={() => {
-                if (search.page == search.limit) return
-                handlePage(search.limit)
-              }}
-            >
-              <CgPushChevronRight className="text-lg font-bold" />
-            </button>
-          </div>
+            </div>
+          }
         </div>
       </div>
+
     </div>
   )
 }

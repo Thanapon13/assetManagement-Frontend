@@ -12,10 +12,11 @@ import { getSectorOfUser, getUsersAll, getUsersBySearch } from "../api/userApi";
 import { getSector } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import Pagination from "../components/pagination";
+import { Spinner } from "flowbite-react";
 
 const UserInformationIndex = () => {
   const [search, setSearch] = useState({
-    typeTextSearch: "assetNumber",
+    typeTextSearch: "username",
     textSearch: "",
     status: "",
     sector: "",
@@ -30,11 +31,7 @@ const UserInformationIndex = () => {
     setSectorArray(arrSector)
   }
 
-  // useState
-  const [perPage, setPerPage] = useState(10);
-
-  //Main Date
-  const [withdrawDate, setWithdrawDate] = useState();
+  const [isLoading, setIsLoading] = useState(true)
 
   const [data, setData] = useState([])
   const fetchUsersList = async () => {
@@ -46,6 +43,7 @@ const UserInformationIndex = () => {
       page: response.data.page,
       total: response.data.total
     })
+    setIsLoading(false)
   }
   useEffect(() => {
     fetchUsersList()
@@ -53,11 +51,9 @@ const UserInformationIndex = () => {
   }, [])
 
   return (
-    <div className="bg-background-page px-5 pt-10 pb-36">
-      {/* Header */}
+    <div className="bg-background-page px-5 pt-10 pb-10">
       <div className="text-xl text-text-green ">ข้อมูลผู้ใช้งาน</div>
       <div className="sm:flex justify-between items-center">
-        {/* left home */}
         <div className="flex text-xs">
           <Link
             to="/"
@@ -69,7 +65,6 @@ const UserInformationIndex = () => {
           <div className="text-text-gray ml-2">ข้อมูลผู้ใช้งาน</div>
         </div>
 
-        {/* right button  */}
         <div className="mt-4 sm:mt-0 flex justify-end gap-4">
           <button
             className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
@@ -101,8 +96,8 @@ const UserInformationIndex = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-10 gap-3 items-center mt-8 mb-5 pl-3">
-        <div className="md:col-span-3 flex items-center">
+      <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-10 gap-3 items-center mt-8 mb-5 pl-3">
+        <div className="lg:col-span-3 md:col-span-2 flex items-center">
           <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
           <select
             className="ml-2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
@@ -113,7 +108,7 @@ const UserInformationIndex = () => {
           </select>
         </div>
 
-        <div className="md:col-span-4  h-[38px] relative">
+        <div className="lg:col-span-4 md:col-span-3  h-[38px] relative">
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
@@ -125,67 +120,72 @@ const UserInformationIndex = () => {
           />
         </div>
 
-        <div className="md:col-span-3 flex gap-2">
-          <div className="w-full">
+        <div className="lg:col-span-3 md:col-span-5 flex gap-2 justify-between">
+          <div className="w-full md:max-w-[300px]">
             <SearchSelector
               options={sectorArray}
               placeholder={"หน่วยงาน"}
               name={"sector"}
-              onChange={(value, label) => setSearch({ ...search, [label]: value })}
+              onChange={(value, label) => setSearch({ ...search, [label]: value || "" })}
               floatLabel
             />
           </div>
 
-          <button
-            type="button"
-            className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-          // onClick={handleSearch}
-          >
-            <div className="text-xl text-white">
-              <AiOutlineSearch />
-            </div>
-          </button>
+            <button
+              type="button"
+              className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+              onClick={fetchUsersList}
+            >
+              <div className="text-xl text-white">
+                <AiOutlineSearch />
+              </div>
+            </button>
         </div>
       </div>
 
-      {/* table */}
-      <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
-        <div className="w-[1200px] lg:w-full h-[500px] ">
-          <div>
-            <div className="flex p-4">
-              <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-              <div className="ml-2 text-sm">{data.length} รายการ </div>
-            </div>
-            {/* top bar */}
-            <div className="grid grid-cols-13 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
-              <div className="col-span-2 ml-2">รหัสผู้ใช้งาน</div>
-              <div className="col-span-2">ชื่อ</div>
-              <div className="col-span-2">นามสกุล</div>
-              <div className="col-span-2">หน่วยงาน</div>
-              <div className="col-span-2">วันที่เข้าสู่ระบบล่าสุด</div>
-              <div className="col-span-1">สิทธิการเข้าถึง</div>
-              <div className="col-span-2 text-center font-bold mr-2">
-                Action
+      <div className="grid">
+        <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
+        {isLoading
+          ? <div className="mt-5 py-10 w-full text-center"><Spinner size="xl" /></div>
+          :
+          <div className="w-max lg:w-full ">
+            <div>
+              <div className="flex p-4">
+                <div className=" text-sm text-text-gray">ผลการค้นหา </div>
+                <div className="ml-2 text-sm">{data.length} รายการ </div>
+              </div>
+              {/* top bar */}
+              <div className="grid grid-cols-13 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
+                <div className="col-span-2 ml-2">รหัสผู้ใช้งาน</div>
+                <div className="col-span-2">ชื่อ</div>
+                <div className="col-span-2">นามสกุล</div>
+                <div className="col-span-2">หน่วยงาน</div>
+                <div className="col-span-2">วันที่เข้าสู่ระบบล่าสุด</div>
+                <div className="col-span-1">สิทธิการเข้าถึง</div>
+                <div className="col-span-2 text-center font-bold mr-2">
+                  Action
+                </div>
               </div>
             </div>
-          </div>
-          {data?.map((el, idx) => {
-            return (
-              <RowOfTableUserInformationIndex
-                key={idx}
-                index={idx}
-                _id={el._id}
-                userId={el.username}
-                thaiFirstName={el.thaiFirstName}
-                thaiLastName={el.thaiLastName}
-                sector={el.sector}
-                lastLoginDate={el.lastRevisionDateTime}
-                level={el.role} //* ?
-              />
-            );
-          })}
+            {data?.map((el, idx) => {
+              return (
+                <RowOfTableUserInformationIndex
+                  key={idx}
+                  index={idx}
+                  _id={el._id}
+                  userId={el.username}
+                  thaiFirstName={el.thaiFirstName}
+                  thaiLastName={el.thaiLastName}
+                  sector={el.sector}
+                  lastLoginDate={el.lastRevisionDateTime}
+                  level={el.role} //* ?
+                />
+              );
+            })}
 
-         <Pagination search={search} data={data} fetchLists={fetchUsersList} />
+            <Pagination search={search} data={data} fetchLists={fetchUsersList} />
+          </div>
+}
         </div>
       </div>
     </div>
