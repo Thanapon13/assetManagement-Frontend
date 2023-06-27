@@ -12,11 +12,11 @@ const TableBorrowApprove = ({assetList,handleCheckboxChange}) => {
     <>
       {assetList.map((item, idx) => {
         return (
-          <div className="grid grid-cols-12 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+          <div className="grid grid-cols-12 gap-2 pt-2 pb-2 text-xs text-center items-center bg-white">
             <div className="col-span-1">
               <input
                 type="checkbox"
-                className=" text-text-green placeholder-text-green focus:ring-0"
+                className=" text-text-green placeholder-text-green focus:ring-0 rounded"
                 checked={item.checked}
                 onChange={() => handleCheckboxChange(assetList, item._id)}
               />

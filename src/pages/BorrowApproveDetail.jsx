@@ -90,7 +90,7 @@ const BorrowApproveDetail = () => {
         const dateDiff = Math.ceil(
           (new Date(res.data.borrow.borrowSetReturnDate) -
             new Date(res.data.borrow.borrowDate)) /
-            (1000 * 60 * 60 * 24)
+          (1000 * 60 * 60 * 24)
         );
         const totalPrice = dateDiff * res.data.borrow.pricePerDay;
 
@@ -162,7 +162,7 @@ const BorrowApproveDetail = () => {
             <div className="text-text-gray">/</div>
             <div className="text-text-gray ml-2">รายละเอียดการขออนุมัติ</div>
           </div>
-         
+
         </div>
 
         {/* ข้อมูลการยืมครุภัณฑ์ */}
@@ -271,29 +271,30 @@ const BorrowApproveDetail = () => {
         {/* รายการครุภัณฑ์ที่ยืม */}
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
           <div className="text-xl">รายการครุภัณฑ์ที่ยืม</div>
-          {/* table */}
-          <div className="overflow-x-auto  scrollbar pt-4 mb-5">
-            <div className="w-[1000px] lg:w-full">
-              <div className="grid grid-cols-12 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
-                <div className="col-span-1">
-                  <input
-                    type="checkbox"
-                    onChange={() => handleAllCheckboxChange(assetList)}
-                    className=" text-text-green placeholder-text-green focus:ring-0"
-                  />
+          <div className="grid">
+            <div className="overflow-x-auto  scrollbar pt-4 mb-2">
+              <div className="w-max lg:w-full">
+                <div className="grid grid-cols-12 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
+                  <div className="col-span-1">
+                    <input
+                      type="checkbox"
+                      onChange={() => handleAllCheckboxChange(assetList)}
+                      className=" text-text-green placeholder-text-green focus:ring-0 rounded"
+                    />
+                  </div>
+                  <div className="col-span-1">ลำดับ</div>
+                  <div className="col-span-2">เลขครุภัณฑ์</div>
+                  <div className="col-span-3">ชื่อครุภัณฑ์</div>
+                  <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
+                  <div className="col-span-1">จำนวน</div>
+                  <div className="col-span-1">หน่วยนับ</div>
+                  <div className="col-span-1 pr-1">จำนวน(บาท)</div>
                 </div>
-                <div className="col-span-1">ลำดับ</div>
-                <div className="col-span-2">เลขครุภัณฑ์</div>
-                <div className="col-span-3">ชื่อครุภัณฑ์</div>
-                <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
-                <div className="col-span-1">จำนวน</div>
-                <div className="col-span-1">หน่วยนับ</div>
-                <div className="col-span-1">จำนวน(บาท)</div>
+                <TableBorrowApprove
+                  assetList={assetList}
+                  handleCheckboxChange={handleCheckboxChange}
+                />
               </div>
-              <TableBorrowApprove
-                assetList={assetList}
-                handleCheckboxChange={handleCheckboxChange}
-              />
             </div>
           </div>
         </div>
@@ -385,7 +386,7 @@ const BorrowApproveDetail = () => {
             setInput={setInput}
             assetList={assetList}
             setAssetList={setAssetList}
-            // fetchFirstBorrowApproveData={props.fetchFirstBorrowApproveData}
+          // fetchFirstBorrowApproveData={props.fetchFirstBorrowApproveData}
           />
           <ModalSummary
             assetList={assetList}
@@ -796,15 +797,15 @@ const TableSummaryEachReject = ({ assetList, input, setInput }) => {
                   value={
                     assetList[idx].hasOwnProperty("type4")
                       ? (
-                          input.packageAssetIdArray.find(
-                            (el) => el.packageAssetId === assetList[idx]._id
-                          ) || {}
-                        ).reason
+                        input.packageAssetIdArray.find(
+                          (el) => el.packageAssetId === assetList[idx]._id
+                        ) || {}
+                      ).reason
                       : (
-                          input.assetIdArray.find(
-                            (el) => el.assetId === assetList[idx]._id
-                          ) || {}
-                        ).reason
+                        input.assetIdArray.find(
+                          (el) => el.assetId === assetList[idx]._id
+                        ) || {}
+                      ).reason
                   }
                   onChange={(e) => handleChangeEachReject(e, idx)}
                   placeholder="Example"

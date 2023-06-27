@@ -397,7 +397,7 @@ const BorrowEdit = () => {
                     type="text"
                     placeholder="Example"
                     readOnly
-                    value={input.pricePerDay.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    value={input.pricePerDay?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                   />
                 </div>
@@ -424,51 +424,52 @@ const BorrowEdit = () => {
                 </div>
               </div>
             </div>
-            {/* รายการครุภัณฑ์ที่เลือก */}
+
             <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
               <div className="text-xl">รายการครุภัณฑ์ที่เลือก</div>
-              {/* table */}
-              <div className="overflow-x-auto scrollbar pt-4 min-h-[14rem]">
-                <div className="w-[1000px] lg:w-full p-2 ">
-                  <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                    <div className="grid grid-cols-12 gap-2 text-center">
-                      <div className="ml-2 col-span-1 ">ลำดับ</div>
-                      <div className="col-span-2">เลขครุภัณฑ์</div>
-                      <div className="col-span-3">ชื่อครุภัณฑ์</div>
-                      <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
-                      <div className="col-span-3 grid grid-cols-4 gap-5">
-                        <div className="col-span-1">จำนวน</div>
-                        <div className="col-span-1">หน่วยนับ</div>
-                        <div className="col-span-2">จำนวนเงิน (บาท)</div>
+
+              <div className="grid">
+                <div className="overflow-x-auto scrollbar pt-4 ">
+                  <div className="w-[1000px] lg:w-full p-2 ">
+                    <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+                      <div className="grid grid-cols-12 gap-2 text-center">
+                        <div className="ml-2 col-span-1 ">ลำดับ</div>
+                        <div className="col-span-2">เลขครุภัณฑ์</div>
+                        <div className="col-span-3">ชื่อครุภัณฑ์</div>
+                        <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
+                        <div className="col-span-3 grid grid-cols-4 gap-5">
+                          <div className="col-span-1">จำนวน</div>
+                          <div className="col-span-1">หน่วยนับ</div>
+                          <div className="col-span-2">จำนวนเงิน (บาท)</div>
+                        </div>
                       </div>
                     </div>
+                    {saveAssetWithdrawTableArray?.map((el, idx) => {
+                      return (
+                        <TableBorrowRecord
+                          key={idx}
+                          index={idx}
+                          saveAssetWithdrawTableArray={saveAssetWithdrawTableArray}
+                          setSaveAssetWithdrawTableArray={
+                            setSaveAssetWithdrawTableArray
+                          }
+                          deleteRow={deleteRow}
+                          errorAssestTable={errorAssestTable}
+                        />
+                      );
+                    })}
                   </div>
-                  {saveAssetWithdrawTableArray?.map((el, idx) => {
-                    return (
-                      <TableBorrowRecord
-                        key={idx}
-                        index={idx}
-                        saveAssetWithdrawTableArray={saveAssetWithdrawTableArray}
-                        setSaveAssetWithdrawTableArray={
-                          setSaveAssetWithdrawTableArray
-                        }
-                        deleteRow={deleteRow}
-                        errorAssestTable={errorAssestTable}
-                      />
-                    );
-                  })}
-                  <button
-                    type="button"
-                    className="mt-2 w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-                    onClick={handleClickIncrease}
-                  >
-                    + เพิ่มครุภัณฑ์
-                  </button>
-
                 </div>
+                <button
+                  type="button"
+                  className="mt-2 w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+                  onClick={handleClickIncrease}
+                >
+                  + เพิ่มครุภัณฑ์
+                </button>
               </div>
             </div>
-            {/* รายละเอียดผู้ยืม */}
+
             <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
               <div className="text-xl">รายละเอียดผู้ยืม</div>
               <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
@@ -517,7 +518,6 @@ const BorrowEdit = () => {
                   <label className=" text-text-gray">ผู้ดำเนินการ</label>
                   <input
                     type="text"
-                    placeholder="Example"
                     name="handler"
                     value={input.handler}
                     onChange={handleChange}
@@ -544,7 +544,7 @@ const BorrowEdit = () => {
                     value={input.building && { label: input.building, value: input.building }}
                   />
                 </div>
-                <div className="flex flex-col gap-y-2 col-span-1">
+                <div className="flex flex-col gap-y-2 col-span-1 -mr-12">
                   <label className="text-text-gray">ชั้น</label>
                   <SearchSelector
                     isDisabled={!input.building}
@@ -556,7 +556,7 @@ const BorrowEdit = () => {
                     value={input.floor && { label: input.floor, value: input.floor } || floorList?.find(list => list.value == input.floor)}
                   />
                 </div>
-                <div className="flex flex-col gap-y-2 col-span-1">
+                <div className="flex flex-col gap-y-2 col-span-1 -mr-20">
                   <label className="text-text-gray">ห้อง</label>
                   <SearchSelector
                     noClearButton

@@ -183,7 +183,7 @@ const AssetInformationIndex = () => {
       </div>
 
       {/* search bar */}
-      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-3">
         {/* <div className="text-xs font-semibold">ค้นหาโดย</div>
         <div className="md:col-span-2">
           <select
@@ -221,7 +221,7 @@ const AssetInformationIndex = () => {
           />
         </div>
 
-        <div className="md:col-span-3 md:pr-4">
+        <div className="md:col-span-3 md:pr-3">
           {/* <Selector placeholder={"สถานะ"} /> */}
           <select
             className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
@@ -281,10 +281,10 @@ const AssetInformationIndex = () => {
           />
         </div>
 
-        <div className="flex justify-end pr-4">
+        <div className="flex justify-end pr-3 max-lg:pr-0">
           <button
             type="button"
-            className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+            className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6 max-lg:px-3 max-md:px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
             onClick={handleSearch}
           >
             <div className="text-xl text-white">
@@ -294,7 +294,7 @@ const AssetInformationIndex = () => {
         </div>
       </div>
 
-      <div className="max-lg:grid">
+      <div className="max-lg:grid ">
         <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar ">
           <div className="w-[1000px] lg:w-full max-h-[50em] mb-4">
             <div>

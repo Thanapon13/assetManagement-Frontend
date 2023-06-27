@@ -237,7 +237,7 @@ const BorrowList = () => {
             onChange={handleChange}
           >
             <option defaultValue value="">
-              สถานะ
+              สถานะทั้งหมด
             </option>
             <option value="waiting">รอการอนุมัติ</option>
             <option value="approve">อนุมัติแล้ว</option>
@@ -293,9 +293,10 @@ const BorrowList = () => {
           </button>
         </div>
       </div>
-      {/* table */}
+     
+     <div className="grid">
       <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
-        <div className="w-[1200px] lg:w-full lg:h-full max-h-[50rem]">
+        <div className="w-max lg:w-full lg:h-full max-h-[50rem]">
           <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
           <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
             {/* top bar */}
@@ -306,7 +307,8 @@ const BorrowList = () => {
               <div className="col-span-1">วันที่ยืม</div>
               <div className="col-span-1">กำหนดคืน</div>
               <div className="col-span-1">วันที่คืน</div>
-              <div className="col-span-2">Action</div>
+              <div></div>
+              <div className="col-span-1">Action</div>
             </div>
           </div>
           <TableBorrowList data={borrowList} search={search} />
@@ -363,6 +365,8 @@ const BorrowList = () => {
           }
         </div>
       </div>
+     </div>
+
     </div>
   );
 };

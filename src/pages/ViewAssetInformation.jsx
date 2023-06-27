@@ -421,43 +421,43 @@ const ViewAssetInformation = () => {
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ชื่อครุภัณฑ์ภาษาไทย</div>
                 <div className="col-span-2 sm:col-span-4">
                   {input?.productName ? input?.productName : "-"}
-                  </div>
-               
+                </div>
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ประเภทครุภัณฑ์</div>
                 <div className="col-span-2 sm:col-span-4">{input?.type ? input?.type : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ชนิดครุภัณฑ์</div>
                 <div className="col-span-2 sm:col-span-4">{input?.kind ? input?.kind : "-"}</div>
-             
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">กลุ่ม</div>
                 <div className="col-span-2 sm:col-span-4">{input?.group ? input?.group : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">หมวด</div>
                 <div className="col-span-2 sm:col-span-4">{input?.category ? input?.category : "-"}</div>
-             
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ราคาต่อหน่วย (บาท)</div>
                 <div className="col-span-2 sm:col-span-4">{input?.pricePerUnit ? input?.pricePerUnit : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ลำดับครุภัณฑ์</div>
                 <div className="col-span-2 sm:col-span-4">{input?.realAssetId ? input?.realAssetId : "-"}</div>
-              
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ยี่ห้อ</div>
                 <div className="col-span-2 sm:col-span-4">{input?.brand ? input?.brand : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">รุ่น</div>
                 <div className="col-span-2 sm:col-span-4">{input?.model ? input?.model : "-"}</div>
-              
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">เลขครุภัณฑ์</div>
                 <div className="col-span-2 sm:col-span-4">{input?.assetNumber ? input?.assetNumber : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">Serial Number</div>
                 <div className="col-span-2 sm:col-span-4">{input?.serialNumber ? input?.serialNumber : "-"}</div>
-             
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ขนาด</div>
                 <div className="col-span-2 sm:col-span-4">{input?.size ? input?.size : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">หน่วยงานเจ้าของครุภัณฑ์</div>
                 <div className="col-span-2 sm:col-span-4">{input?.sector ? input?.sector : "-"}</div>
-               
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ประเภทที่ได้มา</div>
                 <div className="col-span-2 sm:col-span-4">{input?.acquiredType ? input?.acquiredType : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">แหล่งที่ได้มา</div>
                 <div className="col-span-2 sm:col-span-4">{input?.source ? input?.source : "-"}</div>
-              
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">วันที่เริ่มรับประกัน</div>
                 <div className="col-span-2 sm:col-span-4">
                   {insuranceStartDate && ChangeDateToBuddhist(insuranceStartDate) || '-'}
@@ -472,14 +472,14 @@ const ViewAssetInformation = () => {
                 ? insuranceExpiredDate?.toLocaleDateString("en-GB", options)
                 : "-"} */}
                 </div>
-              
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ระยะเวลารับประกัน(เดือน)</div>
                 <div className="col-span-2 sm:col-span-4">
                   {input?.guaranteedMonth ? input?.guaranteedMonth : "-"}
                 </div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">วัตถุประสงค์การใช้งาน</div>
                 <div className="col-span-2 sm:col-span-4">{input?.purposeOfUse ? input?.purposeOfUse : "-"}</div>
-        
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">สท.01</div>
                 <div className="col-span-2 sm:col-span-4">{input?.asset01 ? input?.asset01 : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">แทนครุภัณฑ์</div>
@@ -491,15 +491,13 @@ const ViewAssetInformation = () => {
               </div>
             </div>
 
-            {/* ภาพครุภัณฑ์และเอกสารประกอบ */}
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-4">
-              {/* Header ภาพครุภัณฑ์และเอกสารประกอบ */}
               <div className="font-semibold mb-3">ภาพครุภัณฑ์และเอกสารประกอบ</div>
+
               <div className="lg:grid lg:grid-cols-6 gap-6">
-                {/* left image */}
-                <div className="lg:col-span-3 border-2 border-gray-300  px-30 rounded-lg flex flex-col justify-center items-center gap-4  ">
+                <div className={`lg:col-span-3 ${arrayImageURL?.length && "border-2"} border-gray-300  px-30 rounded-lg flex flex-col justify-center items-center gap-4 `}>
                   <div className="overflow-y-auto scrollbar ">
-                    <div className="h-[550px]">
+                    <div className="max-h-[550px]">
                       <div className=" px-5 pt-5  pb-10">
                         {arrayImageURL?.map((el, idx) => (
                           <img
@@ -513,56 +511,59 @@ const ViewAssetInformation = () => {
                     </div>
                   </div>
                 </div>
+
                 {/* right */}
                 <div className="lg:col-span-3 mt-5 lg:mt-0">
                   {/* คู่มือและเอกสารแนบ */}
-                  <div className="  bg-background-page p-5 h-72 rounded-lg mb-5  gap-4 ">
+                  <div className="  bg-background-page p-5 max-h-72 rounded-lg mb-5  gap-4 ">
                     <div className=" font-semibold text-center mb-3">
                       คู่มือและเอกสารแนบ
                     </div>
-                    {arrayDocument?.map((el, idx) => (
-                      <div
-                        key={idx}
-                        className="flex justify-between items-center mb-2 text-gray-400"
-                      >
-                        <div className="flex items-center">
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 14 14"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clip-path="url(#clip0_977_14129)">
-                              <rect
-                                width="14"
-                                height="14"
-                                fill="white"
-                                fill-opacity="0.01"
-                              />
-                              <g clip-path="url(#clip1_977_14129)">
-                                <path
-                                  d="M12.2495 3.93671V12.2492C12.2495 12.7133 12.0651 13.1585 11.7369 13.4866C11.4088 13.8148 10.9636 13.9992 10.4995 13.9992H3.49951C3.03538 13.9992 2.59026 13.8148 2.26207 13.4866C1.93389 13.1585 1.74951 12.7133 1.74951 12.2492V1.74921C1.74951 1.28508 1.93389 0.839958 2.26207 0.51177C2.59026 0.183581 3.03538 -0.000793457 3.49951 -0.000793457H8.31201L12.2495 3.93671ZM9.62451 3.93671C9.27641 3.93671 8.94258 3.79843 8.69643 3.55228C8.45029 3.30614 8.31201 2.9723 8.31201 2.62421V0.874207H3.49951C3.26745 0.874207 3.04489 0.966394 2.88079 1.13049C2.7167 1.29458 2.62451 1.51714 2.62451 1.74921V12.2492C2.62451 12.4813 2.7167 12.7038 2.88079 12.8679C3.04489 13.032 3.26745 13.1242 3.49951 13.1242H10.4995C10.7316 13.1242 10.9541 13.032 11.1182 12.8679C11.2823 12.7038 11.3745 12.4813 11.3745 12.2492V3.93671H9.62451Z"
-                                  fill="#999999"
+                    {!arrayImageURL?.length ? <center>-</center>
+                      :
+                      arrayDocument?.map((el, idx) => (
+                        <div
+                          key={idx}
+                          className="flex justify-between items-center mb-2 text-gray-400"
+                        >
+                          <div className="flex items-center">
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 14 14"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g clip-path="url(#clip0_977_14129)">
+                                <rect
+                                  width="14"
+                                  height="14"
+                                  fill="white"
+                                  fill-opacity="0.01"
                                 />
+                                <g clip-path="url(#clip1_977_14129)">
+                                  <path
+                                    d="M12.2495 3.93671V12.2492C12.2495 12.7133 12.0651 13.1585 11.7369 13.4866C11.4088 13.8148 10.9636 13.9992 10.4995 13.9992H3.49951C3.03538 13.9992 2.59026 13.8148 2.26207 13.4866C1.93389 13.1585 1.74951 12.7133 1.74951 12.2492V1.74921C1.74951 1.28508 1.93389 0.839958 2.26207 0.51177C2.59026 0.183581 3.03538 -0.000793457 3.49951 -0.000793457H8.31201L12.2495 3.93671ZM9.62451 3.93671C9.27641 3.93671 8.94258 3.79843 8.69643 3.55228C8.45029 3.30614 8.31201 2.9723 8.31201 2.62421V0.874207H3.49951C3.26745 0.874207 3.04489 0.966394 2.88079 1.13049C2.7167 1.29458 2.62451 1.51714 2.62451 1.74921V12.2492C2.62451 12.4813 2.7167 12.7038 2.88079 12.8679C3.04489 13.032 3.26745 13.1242 3.49951 13.1242H10.4995C10.7316 13.1242 10.9541 13.032 11.1182 12.8679C11.2823 12.7038 11.3745 12.4813 11.3745 12.2492V3.93671H9.62451Z"
+                                    fill="#999999"
+                                  />
+                                </g>
                               </g>
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_977_14129">
-                                <rect width="14" height="14" fill="white" />
-                              </clipPath>
-                              <clipPath id="clip1_977_14129">
-                                <rect width="14" height="14" fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
+                              <defs>
+                                <clipPath id="clip0_977_14129">
+                                  <rect width="14" height="14" fill="white" />
+                                </clipPath>
+                                <clipPath id="clip1_977_14129">
+                                  <rect width="14" height="14" fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
 
-                          <div className="ml-2 text-sm">{el.document.name}</div>
+                            <div className="ml-2 text-sm">{el.document.name}</div>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
-                  {/* ค่าเสื่อมราคา  :  คำนวนค่าเสื่อมราคา(ปกติ) */}
+
                   <div className=" bg-background-page py-10 px-30 h-40 rounded-lg flex flex-col justify-center items-center gap-4">
                     <div className=" font-semibold">
                       ค่าเสื่อมราคา : คำนวนค่าเสื่อมราคา(ปกติ)
@@ -581,22 +582,22 @@ const ViewAssetInformation = () => {
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-4">
               <div className="font-semibold">สัญญาจัดซื้อ</div>
               <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-xs">
-          
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">วิธีการได้มา</div>
                 <div className="col-span-2 sm:col-span-4">{acquisitionMethod ? acquisitionMethod : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ประเภทเงิน</div>
                 <div className="col-span-2 sm:col-span-4">{moneyType ? moneyType : "-"}</div>
-            
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">เลขที่สัญญา</div>
                 <div className="col-span-2 sm:col-span-4">{contractNumber ? contractNumber : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">เอกสารใบส่งของ</div>
                 <div className="col-span-2 sm:col-span-4">{deliveryDocument ? deliveryDocument : "-"}</div>
-             
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ผู้ขาย</div>
                 <div className="col-span-2 sm:col-span-4">{seller ? seller : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">เลขที่ใบเบิก</div>
                 <div className="col-span-2 sm:col-span-4">{billNumber ? billNumber : "-"}</div>
-                
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">วันที่ซื้อ</div>
                 <div className="col-span-2 sm:col-span-4">
                   {purchaseDate && ChangeDateToBuddhist(purchaseDate) || '-'}
@@ -611,7 +612,7 @@ const ViewAssetInformation = () => {
                 ? receivedDate?.toLocaleDateString("en-GB", options)
                 : "-"} */}
                 </div>
-            
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ราคาซื้อ (บาท)</div>
                 <div className="col-span-2 sm:col-span-4">{price ? price : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">ปีงบประมาณที่ซื้อ</div>
@@ -621,7 +622,7 @@ const ViewAssetInformation = () => {
                 ? purchaseYear?.toLocaleDateString("en-GB", options)
                 : "-"} */}
                 </div>
-             
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">วันที่ลงเอกสาร</div>
                 <div className="col-span-2 sm:col-span-4">
                   {documentDate && ChangeDateToBuddhist(documentDate) || '-'}
@@ -632,31 +633,31 @@ const ViewAssetInformation = () => {
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-4">
               <div className="font-semibold">การจำหน่าย</div>
               <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-xs">
-               
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">เอกสารจำหน่าย</div>
                 <div className="col-span-2 sm:col-span-4">{salesDocument ? salesDocument : "-"}</div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">เอกสารลงวันที่</div>
                 <div className="col-span-2 sm:col-span-4">
                   {distributeDocumentDate && ChangeDateToBuddhist(distributeDocumentDate) || '-'}
                 </div>
-             
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">วันอนุมัติจำหน่าย</div>
                 <div className="col-span-2 sm:col-span-4">
                   {distributeApprovalReleaseDate && ChangeDateToBuddhist(distributeApprovalReleaseDate) || '-'}
                 </div>
                 <div className="text-gray-500 col-span-1 sm:col-span-3">สถานะ</div>
                 <div className="col-span-2 sm:col-span-4">{distributeStatus ? distributeStatus : "-"}</div>
-             
+
                 <div className="text-gray-500 col-span-1 sm:col-span-3">หมายเหตุ</div>
                 <div className="col-span-2 sm:col-span-4">{distributionNote ? distributionNote : "-"}</div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
+            <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3 grid">
               <div className="font-semibold mb-3">ประวัติการยืม</div>
               {!borrowHistoryList.length ? <div className="text-center pb-5">-</div> :
                 <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
-                  <div className="w-[1000px] lg:w-full max-h-[400px] ">
+                  <div className="max-lg:w-[800px] lg:w-full max-h-[400px] ">
                     <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
                       <div className="grid grid-cols-15 gap-2 text-center">
                         <div className="ml-2">ลำดับ</div>

@@ -1086,8 +1086,7 @@ const AssetInformation = () => {
             </button>
           </div>
 
-          {/* block white bottom */}
-          <div className=" my-3 p-3">
+          <div className=" my-3 p-3 grid">
             <div className="overflow-x-auto overflow-y-auto scrollbar pb-3">
               <div className="w-[1000px] xl:w-full min-h-[350px] max-h-[500px] ">
                 <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
