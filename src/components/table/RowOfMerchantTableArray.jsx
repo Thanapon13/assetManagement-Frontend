@@ -23,15 +23,15 @@ function RowOfMerchantTableArray({
 
   return (
     <div
-      className={`grid grid-cols-14 gap-2 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
+      className={`grid grid-cols-13 gap-2 h-12 pt-2 text-xs items-center border-b-[1px] border-border-gray-table bg-white`}
     >
       {/* <div className="ml-2 text-center">{index + 1}</div> */}
-      <div className="text-center ml-2">{ele.realMerchantId}</div>
+      <div className="text-center">{ele.realMerchantId}</div>
       <div className="col-span-2">{ele.companyPrefix}</div>
       <div className="col-span-3">{ele.companyName}</div>
       <div className="col-span-2">{ele.creditorCategory}</div>
       <div className="col-span-2">{ele.contactName}</div>
-      <div className="col-span-2 text-center">
+      <div className="col-span-1 text-center">
         <div className={`rounded-full py-2 px-4  w-fit mx-auto 
         ${ele.status === "saveDraft"
             ? "bg-gray-300"

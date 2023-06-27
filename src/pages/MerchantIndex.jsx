@@ -166,91 +166,95 @@ export const Merchant = () => {
         </div>
       </div>
 
-      {/* table */}
-      <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
-        <div className="w-full min-w-max lg:w-full h-[500px] ">
-          <div>
-            <div className="flex p-4">
-              <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-              <div className="ml-2 text-sm">{data.length} รายการ </div>
-            </div>
-            {/* top bar */}
-            <div className="grid grid-cols-14 gap-2 h-12 items-center text-center text-text-black-table text-xs font-semibold bg-white rounded-t-lg border-b-[1px] border-border-gray-table ml-2">
-              <div className="">รหัสผู้ค้า</div>
-              <div className="col-span-2">คำนำหน้าบริษัท</div>
-              <div className="col-span-3">ชื่อบริษัทผู้ค้า</div>
-              <div className="col-span-2">กลุ่มประเภท</div>
-              <div className="col-span-2">ชื่อผู้ติดต่อ</div>
-              <div className="col-span-2">สถานะ</div>
-              <div className="col-span-2  font-bold mr-2">
-                Action
+      <div className='grid'>
+        <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
+          <div className="w-full min-w-max lg:w-full max-h-[500px] ">
+            <div>
+              <div className="flex p-4">
+                <div className=" text-sm text-text-gray">ผลการค้นหา </div>
+                <div className="ml-2 text-sm">{data.length} รายการ </div>
+              </div>
+
+              <div className="grid grid-cols-13 gap-2 h-12 items-center text-center text-text-black-table text-xs font-semibold bg-border-gray-table border-b-[1px] border-border-gray-table">
+                <div className="">รหัสผู้ค้า</div>
+                <div className="col-span-2">คำนำหน้าบริษัท</div>
+                <div className="col-span-3">ชื่อบริษัทผู้ค้า</div>
+                <div className="col-span-2">กลุ่มประเภท</div>
+                <div className="col-span-2">ชื่อผู้ติดต่อ</div>
+                <div className="col-span-1">สถานะ</div>
+                <div className="col-span-2  font-bold mr-2">
+                  Action
+                </div>
               </div>
             </div>
-          </div>
-          {data?.map((ele, idx) => {
-            return (
-              <RowOfMerchantTableArray
-                key={idx}
-                ele={ele}
-                index={idx}
-                page={search.page}
-                fetchData={fetchData}
-              />
-            )
-          })}
-          <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-center">
-              <div>Rows per page:</div>
-              <select
-                id="limit"
-                name="limit"
-                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={handlePaginationSearch}
-              >
-                <option value="5">5</option>
-                <option value="10" selected="selected">
-                  10
-                </option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
+            {data?.map((ele, idx) => {
+              return (
+                <RowOfMerchantTableArray
+                  key={idx}
+                  ele={ele}
+                  index={idx}
+                  page={search.page}
+                  fetchData={fetchData}
+                />
+              )
+            })}
+            {!data.length
+              ? <center className='p-5'>-</center>
+              : <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-border-gray-table">
+                <div className="flex items-center">
+                  <div>Rows per page:</div>
+                  <select
+                    id="limit"
+                    name="limit"
+                    className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    onChange={handlePaginationSearch}
+                  >
+                    <option value="5">5</option>
+                    <option value="10" selected="selected">
+                      10
+                    </option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
 
-            <div className="mx-5">
-              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + data.length} of {search.total}
-            </div>
+                <div className="mx-5">
+                  {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + data.length} of {search.total}
+                </div>
 
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 my-2"
-              onClick={() => {
-                if (1 == search.page) return
-                handlePage(1)
-              }}
-            >
-              <CgPushChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={() => handlePage(search.page - 1)}
-            >
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={() => handlePage(search.page + 1)}
-            >
-              <HiChevronRight className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={() => {
-                if (search.page == search.limit) return
-                handlePage(search.limit)
-              }}
-            >
-              <CgPushChevronRight className="text-lg font-bold" />
-            </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 my-2"
+                  onClick={() => {
+                    if (1 == search.page) return
+                    handlePage(1)
+                  }}
+                >
+                  <CgPushChevronLeft className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={() => handlePage(search.page - 1)}
+                >
+                  <HiChevronLeft className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={() => handlePage(search.page + 1)}
+                >
+                  <HiChevronRight className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={() => {
+                    if (search.page == search.limit) return
+                    handlePage(search.limit)
+                  }}
+                >
+                  <CgPushChevronRight className="text-lg font-bold" />
+                </button>
+              </div>
+            }
           </div>
         </div>
       </div>

@@ -257,21 +257,22 @@ const ViewMerchant = () => {
                 </div>
               </div>
 
-              <div className="col-span-4 sm:my-3">
-                {arrayDocument.map((el, idx) => (
-                  <div
-                    key={idx}
-                    className="flex justify-between items-center border-b-[1px] mt-2 pb-2 mx-5"
-                  >
-                    <div className="flex items-center text-text-green ">
-                      <img src={docIcon} className="w-4 h-4 " />
-                      <div className="ml-2 text-sm cursor-pointer ">{el.document}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           ))}
+
+          <div className="col-span-4 sm:my-3">
+            {arrayDocument.map((el, idx) => (
+              <div
+                key={idx}
+                className="flex justify-between items-center border-b-[1px] mt-2 pb-2 mx-5"
+              >
+                <div className="flex items-center text-text-green ">
+                  <img src={docIcon} className="w-4 h-4 " />
+                  <div className="ml-2 text-sm cursor-pointer ">{el.document}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="bg-white rounded-lg mx-10 mt-3 mb-7 p-3">
