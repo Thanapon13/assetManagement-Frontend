@@ -79,11 +79,11 @@ export const SaveMerchant = () => {
 
   // ที่อยู่
   const objAddress = {
-    houseNo: "",
-    villageNo: "",
+    address: "",
+    group: "",
     village: "",
-    lane: "",
-    road: "",
+    alley: "",
+    street: "",
     subDistrict: "",
     district: "",
     province: "",
@@ -166,7 +166,7 @@ export const SaveMerchant = () => {
   // ความสัมพันธ์
   const [status, setStatus] = useState("active")
 
-  const objRelation = { companyCategory: "", ramark: "" }
+  const objRelation = { companyCategory: "", remark: "" }
   const [arrayRelation, setArrayRelation] = useState([objRelation])
   const addRelation = () => {
     const arr = arrayRelation.concat(objRelation)
@@ -175,7 +175,6 @@ export const SaveMerchant = () => {
 
   const handleSelectRelation = (value, label) => {
     console.log(value, label)
-    // setInput({ ...input, [label]: value })
   }
 
   const [showModalConfirm, setShowModalConfirm] = useState(false)
@@ -232,7 +231,7 @@ export const SaveMerchant = () => {
       })
     })
 
-    console.log({ ...input, status, arrayAddress, arrayRelation, arrayDocument })
+    console.log(errInput, errAddress, arrayAddress, arrayRelation)
     setErrorInput(errInput)
     setErrorRelation(errRelation)
     setErrorAddress(errAddress)
@@ -596,7 +595,11 @@ export const SaveMerchant = () => {
                   <SearchSelector
                     options={[{ label: "คสพ", value: "คสพ" }]}
                     name="companyCategory"
-                    onChange={handleSelectRelation}
+                    onChange={value => {
+                      const clone = [...arrayRelation];
+                      clone[index].companyCategory = value
+                      setArrayRelation(clone)
+                    }}
                     noClearButton
                     error={errorRelation && !element.companyCategory}
                     value={{ label: element.companyCategory, value: element.companyCategory }}
@@ -606,6 +609,11 @@ export const SaveMerchant = () => {
                   <input
                     placeholder='หมายเหตุ'
                     className={`${inputClassname} mt-5`}
+                    onChange={e => {
+                      const clone = [...arrayRelation];
+                      clone[index].remark = e.target.value
+                      setArrayRelation(clone)
+                    }}
                   />
                   <div className='m-1 hover:bg-gray-200 rounded-full h-fit cursor-pointer p-1 '
                     onClick={() => {
