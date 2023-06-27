@@ -225,18 +225,18 @@ export const SaveMerchant = () => {
         })
       })
     }
-    // arrayRelation?.forEach(arr => {
-    //   Object.entries(arr).forEach(([key, value]) => {
-    //     if (key != "companyCategory" || errRelation)  return
-    //     if (!value) errRelation = true
-    //   })
-    // })
+    arrayRelation?.forEach(arr => {
+      Object.entries(arr).forEach(([key, value]) => {
+        if (key != "companyCategory" || errRelation) return
+        if (!value) errRelation = true
+      })
+    })
 
     console.log({ ...input, status, arrayAddress, arrayRelation, arrayDocument })
     setErrorInput(errInput)
     setErrorRelation(errRelation)
     setErrorAddress(errAddress)
-     if (!(errInput || errAddress || errRelation)) setShowModalConfirm(true)
+    if (!(errInput || errAddress || errRelation)) setShowModalConfirm(true)
   }
 
   async function submit(valStatus) {
@@ -602,11 +602,19 @@ export const SaveMerchant = () => {
                     value={{ label: element.companyCategory, value: element.companyCategory }}
                   />
                 </div>
-                <div>
+                <div className='flex items-end'>
                   <input
                     placeholder='หมายเหตุ'
                     className={`${inputClassname} mt-5`}
                   />
+                  <div className='m-1 hover:bg-gray-200 rounded-full h-fit cursor-pointer p-1 '
+                    onClick={() => {
+                      let clone = [...arrayRelation];
+                      clone.splice(index, 1)
+                      setArrayRelation(clone)
+                    }}>
+                    <IoIosClose className="text-2xl" />
+                  </div>
                 </div>
               </div>
             ))}

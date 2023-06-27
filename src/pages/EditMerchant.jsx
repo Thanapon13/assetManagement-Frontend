@@ -420,7 +420,6 @@ export const EditMerchant = () => {
                   </button>
                 </div>
 
-
                 <div className='col-span-2 text-sm'>
                   {/* <div className="grid sm:grid-cols-6 gap-6 mt-5"> */}
                   <div className="sm:col-span-4 bg-background-page px-30 rounded-lg flex flex-col justify-center items-center gap-4 py-6">
@@ -510,7 +509,7 @@ export const EditMerchant = () => {
                 <div>
                   <div className="mb-1">เลขที่บัญชีธนาคาร</div>
                   <input
-                    className={`${inputClassname}`}
+                    className={`${!input.bankAccountNumber && 'border-red-500'} ${inputClassname} `}
                     value={input.bankAccountNumber}
                     onChange={handleChange}
                     name="bankAccountNumber"
@@ -519,7 +518,7 @@ export const EditMerchant = () => {
                 <div>
                   <div className="mb-1">รายละเอียดบัญชีธนาคาร</div>
                   <input
-                    className={`${inputClassname}`}
+                    className={`${!input.bankAccountDetail && 'border-red-500'} ${inputClassname} `}
                     value={input.bankAccountDetail}
                     onChange={handleChange}
                     name="bankAccountDetail"
@@ -529,7 +528,7 @@ export const EditMerchant = () => {
                 <div>
                   <div className="mb-1">รหัสธนาคาร</div>
                   <input
-                    className={`${inputClassname}`}
+                    className={`${!input.bankCode && 'border-red-500'} ${inputClassname} `}
                     value={input.bankCode}
                     onChange={handleChange}
                     name="bankCode"
@@ -538,7 +537,7 @@ export const EditMerchant = () => {
                 <div>
                   <div className="mb-1">รหัสสาขา</div>
                   <input
-                    className={`${inputClassname}`}
+                    className={`${!input.bankBranchCode && 'border-red-500'} ${inputClassname} `}
                     value={input.bankBranchCode}
                     onChange={handleChange}
                     name="bankBranchCode"
@@ -548,7 +547,7 @@ export const EditMerchant = () => {
                 <div>
                   <div className="mb-1">เลขที่บัตรประชาชน</div>
                   <input
-                    className={`${inputClassname}`}
+                    className={`${!input.idCardNumber && 'border-red-500'} ${inputClassname} `}
                     value={input.idCardNumber}
                     onChange={handleChange}
                     name="idCardNumber"
@@ -616,7 +615,7 @@ export const EditMerchant = () => {
                         value={{ label: element.companyCategory, value: element.companyCategory }}
                       />
                     </div>
-                    <div>
+                    <div className='flex items-end'>
                       <input
                         placeholder='หมายเหตุ'
                         name="remark"
@@ -628,6 +627,14 @@ export const EditMerchant = () => {
                           })
                         }}
                       />
+                      <div className='m-1 hover:bg-gray-200 rounded-full h-fit cursor-pointer p-1 '
+                        onClick={() => {
+                          let clone = [...arrayRelation];
+                          clone.splice(index, 1)
+                          setArrayRelation(clone)
+                        }}>
+                        <IoIosClose className="text-2xl" />
+                      </div>
                     </div>
                   </div>
                 ))}
