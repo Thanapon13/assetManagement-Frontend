@@ -88,7 +88,7 @@ const TransferIndex = () => {
   // }
   const handleSelect = (value, label) => {
     console.log({ ...search, [label]: value })
-    setSearch({ ...search, [label]: value })
+    setSearch({ ...search, [label]: value || "" })
   }
 
   const handleSearch = async (valueSet) => {
@@ -257,15 +257,16 @@ const TransferIndex = () => {
         </div>
       </div>
 
+      <div className="grid">
       <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
         {isLoading
           ? <div className="mt-5 py-10 w-full text-center"><Spinner size="xl" /></div>
           :
-          <div className="w-[1100px] 2xl:w-full  ">
+          <div className="w-max lg:w-full">
             <div>
               <div className="flex p-4">
                 <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-                <div className="ml-2 text-sm">{transferArray?.length} รายการ </div>
+                <div className="ml-2 text-sm">{search.total} รายการ </div>
               </div>
               <div className="grid grid-cols-18 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
                 <div className="col-span-2 ml-2">วันที่/เวลาโอน</div>
@@ -279,7 +280,6 @@ const TransferIndex = () => {
                 </div>
               </div>
             </div>
-            <div className="">
               {transferArray?.map((ele, idx) => {
                 return (
                   <RowOfTableTransferIndex
@@ -298,7 +298,6 @@ const TransferIndex = () => {
                   />
                 );
               })}
-            </div>
 
             <ModalReasonDelete isVisible={showModalDelete} textSubmit="ยกเลิกโอนย้าย"
               reason={reasonDelete}
@@ -306,13 +305,15 @@ const TransferIndex = () => {
               onClose={() => setShowModalDelete(false)}
               onSubmit={submitDelete}
             />
-            {!transferArray.length
+            {!search.total
               ? <center className='p-5'>-</center>
               : <Pagination  search={search} data={transferArray} fetchLists={handleSearch}/>
             }
           </div>
         }
       </div>
+      </div>
+
     </div>
   );
 };
