@@ -8,11 +8,12 @@ import { BsFillEyeFill } from "react-icons/bs";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import OnlyDateInput from "../components/date/onlyDateInput";
 import InputAddress from "react-thailand-address-autocomplete";
-import { createUser, getUserById } from "../api/userApi";
+import { createUser, getRoleBySearch, getUserById } from "../api/userApi";
 import { getDoctorType, getEngPrefix, getMedicalField, getThaiPrefix } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
+import { Spinner } from "flowbite-react";
 
 function EditUserInformation() {
   const [isLoading, setIsLoading] = useState(true)
@@ -95,6 +96,7 @@ function EditUserInformation() {
       passwordEndDate: new Date(dataUser.passwordEndDate),
       passwordStartDate: new Date(dataUser.passwordStartDate),
       PACSDateTime: new Date(dataUser.PACSDateTime),
+      role: dataUser.roleId?.roleName
     })
     setIsLoading(false)
   }
@@ -110,6 +112,7 @@ function EditUserInformation() {
   const [engPrefixList, setEngPrefixList] = useState([])
   const [doctorTypeList, setDoctorTypeList] = useState([])
   const [medicalFieldList, setMedicalFieldList] = useState([])
+  const [roleList, setRoleList] = useState([])
 
   const getMasterData = async () => {
     const thaiPrefix = await getThaiPrefix()
@@ -119,11 +122,17 @@ function EditUserInformation() {
     const arrEngPrefix = formArrayOption(engPrefix.data.engPrefix)
     setEngPrefixList(arrEngPrefix)
     const doctorType = await getDoctorType()
-    const arrDoctorType = formArrayOption(doctorType.data.doctorType)
+    const arrDoctorType = formArrayOption(doctorType.data.docterType)
     setDoctorTypeList(arrDoctorType)
     const medicalField = await getMedicalField()
     const arrMedicalField = formArrayOption(medicalField.data.medicalField)
     setMedicalFieldList(arrMedicalField)
+    const role = await getRoleBySearch()
+    const array = []
+    role.data.role?.map(ele => {
+      array.push({ label: ele.roleName, value: ele.roleName })
+    })
+    setRoleList(array)
   }
 
   const onChange = (e) => {
@@ -214,7 +223,7 @@ function EditUserInformation() {
         </div>
 
         {isLoading
-          ? '...'
+          ? <div className="mt-5 min-h-[70vh] w-full text-center"><Spinner size="xl" /></div>
           : <>
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
               <div className="font-semibold">ข้อมูลทั่วไป</div>
@@ -835,12 +844,13 @@ function EditUserInformation() {
                 {/* ประเภทของผู้ใช้ */}
                 <div className="col-span-2">
                   <div className="mb-1">กำหนด Role ผู้ใช้งาน</div>
-                  <Selector
-                    placeholder={"Select"}
-                    state={input}
-                    setState={setInput}
-                    id={"ประเภทของผู้ใช้"}
-                    name={"userType"}
+                  <SearchSelector
+                    options={roleList}
+                    name="userType"
+                    onChange={handleSelect}
+                    // error={error && !input?.docterType}
+                    noClearButton
+                    value={input?.role && { label: input?.role, value: input?.role }}
                   />
                 </div>
 
@@ -852,7 +862,7 @@ function EditUserInformation() {
                     onChange={handleSelect}
                     // error={error && !input?.docterType}
                     noClearButton
-                    value={input?.doctorType && { label: input?.doctorType, value: input?.docterType }}
+                    value={input?.docterType && { label: input?.docterType, value: input?.docterType }}
                   />
                 </div>
 

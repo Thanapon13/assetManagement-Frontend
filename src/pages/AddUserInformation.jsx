@@ -8,7 +8,7 @@ import { BsFillEyeFill } from "react-icons/bs";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import OnlyDateInput from "../components/date/onlyDateInput";
 import InputAddress from "react-thailand-address-autocomplete";
-import { createUser } from "../api/userApi";
+import { createUser, getRoleBySearch } from "../api/userApi";
 import { getDoctorType, getEngPrefix, getMedicalField, getThaiPrefix } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
@@ -93,6 +93,7 @@ function AddUserInformation() {
   const [engPrefixList, setEngPrefixList] = useState([])
   const [doctorTypeList, setDoctorTypeList] = useState([])
   const [medicalFieldList, setMedicalFieldList] = useState([])
+  const [roleList, setRoleList] = useState([])
 
   const getMasterData = async () => {
     const thaiPrefix = await getThaiPrefix()
@@ -107,6 +108,12 @@ function AddUserInformation() {
     const medicalField = await getMedicalField()
     const arrMedicalField = formArrayOption(medicalField.data.medicalField)
     setMedicalFieldList(arrMedicalField)
+    const role = await getRoleBySearch()
+    const array = []
+    role.data.role?.map(ele => {
+      array.push({ label: ele.roleName, value: ele.roleName })
+    })
+    setRoleList(array)
   }
 
   const onChange = (e) => {
@@ -817,12 +824,13 @@ function AddUserInformation() {
             {/* ประเภทของผู้ใช้ */}
             <div className="col-span-2">
               <div className="mb-1">กำหนด Role ผู้ใช้งาน</div>
-              <Selector
-                placeholder={"Select"}
-                state={input}
-                setState={setInput}
-                id={"ประเภทของผู้ใช้"}
-                name={"userType"}
+              <SearchSelector
+                options={roleList}
+                name="userType"
+                onChange={handleSelect}
+                // error={error && !input?.docterType}
+                noClearButton
+                value={input?.role && { label: input?.role, value: input?.role }}
               />
             </div>
 
