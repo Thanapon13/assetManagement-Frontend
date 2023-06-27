@@ -304,7 +304,7 @@ const SaveTransferAsset = () => {
     if (!(errInput || errTable)) setShowModalConfirm(true)
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (status) => {
     console.log(saveTransferTableArray)
     try {
       await createTransfer({
@@ -321,7 +321,7 @@ const SaveTransferAsset = () => {
           // firstName_approver: "",
           // lastName_approver: "",
           // dateTime_approver: "",
-          // status: "waiting",
+          status: status || 'waiting',
         },
         saveTransferTableArray
       })
@@ -551,6 +551,7 @@ const SaveTransferAsset = () => {
         <div className="flex justify-end gap-4">
           <button
             className=" inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
+            onClick={() => handleSubmit('saveDraft')}
           >
             บันทึกแบบร่าง
           </button>

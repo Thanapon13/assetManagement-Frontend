@@ -21,7 +21,7 @@ function RowOfTableTransferIndex({
       <div className="col-span-3 text-left">{ele.transfereeSector}</div>
       <div className="col-span-3 text-left">{ele.building}</div>
       <div
-        className={`col-span-2 ${ele.status === "waiting"
+        className={`col-span-2 mx-1.5 ${ele.status === "waiting"
           ? " bg-background-light-blue text-text-blue  "
           : ele.status === "approve" || ele.status === "partiallyApprove"
             ? "bg-text-green/[.15] text-text-green    "
@@ -83,7 +83,7 @@ function RowOfTableTransferIndex({
           <>
             <Link
               to={`/viewWaitingTransferAsset/${id}`}
-              className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] px-1 flex justify-center items-center rounded-md"
+              className="border-[1px] border-text-green  focus:border-transparent shadow-sm font-medium leading-[.8rem] text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] px-1 flex justify-center items-center rounded-md"
             >
               <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
               <p className="ml-2">ดูรายละเอียด</p>

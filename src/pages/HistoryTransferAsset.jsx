@@ -12,6 +12,7 @@ import RowOfTableHistoryTransfer from "../components/table/RowOfTableHistoryTran
 import { getBySearchTransferHistory, getTransferHistorySector } from "../api/transferApi";
 import { useEffect } from "react";
 import SearchSelector from "../components/selector/SearchSelector";
+import Pagination from "../components/pagination";
 
 const HistoryTransferAsset = () => {
   const todayThaiDate = ChangeDateToBuddhist(
@@ -36,9 +37,9 @@ const HistoryTransferAsset = () => {
     dateFrom: "",
     dateTo: new Date(),
     sector: "",
-    page: "",
-    limit: 10,
-    total: 0,
+    // page: "",
+    // limit: 10,
+    // total: 0,
   });
   const [data, setData] = useState();
   const [sectorList, setSectorList] = useState([]);
@@ -48,6 +49,12 @@ const HistoryTransferAsset = () => {
         const history = await getBySearchTransferHistory(search)
         const sector = await getTransferHistorySector()
         setData(history.data.transfer)
+        setSearch({
+          ...search,
+          limit: history.data.limit,
+          page: history.data.page,
+          total: history.data.total
+        })
         const arrSector = []
         sector.data.transfereeSectors.map(ele => {
           arrSector.push({ label: ele.transfereeSector, value: ele.transfereeSector })
@@ -125,7 +132,14 @@ const HistoryTransferAsset = () => {
           />
         </div>
 
-        <div className="md:col-span-3 md:pr-10">
+        <div className="md:col-span-3 md:pr-3">
+          <SearchSelector
+            options={sectorList}
+            placeholder={"หน่วยงานที่โอน"}
+            name={"transferSector"}
+            onChange={handleSelect}
+            floatLabel
+          />
           {/* <select
             className="md:ml-2 border text-sm border-gray-300 w-full text-gray-500 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-pointer"
             name="status"
@@ -139,7 +153,7 @@ const HistoryTransferAsset = () => {
           </select> */}
         </div>
 
-        <div className="md:col-span-2 h-full ">
+        <div className="md:col-span-3 h-full ">
           <div className="flex h-full">
             <DateInput
               id="dateFrom"
@@ -150,7 +164,7 @@ const HistoryTransferAsset = () => {
           </div>
         </div>
 
-        <div className="md:col-span-2 h-full ">
+        <div className="md:col-span-3 h-full ">
           <div className="flex h-full">
             <DateInput
               id="dateTo"
@@ -161,14 +175,8 @@ const HistoryTransferAsset = () => {
           </div>
         </div>
 
-        <div className="md:col-span-3">
-          <SearchSelector
-            options={sectorList}
-            placeholder={"หน่วยงานที่โอน"}
-            name={"transferSector"}
-            onChange={handleSelect}
-            floatLabel
-          />
+        <div className="md:col-span-4">
+
         </div>
 
         <div className="flex justify-center">
@@ -185,7 +193,7 @@ const HistoryTransferAsset = () => {
       </div>
 
       <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
-        <div className="w-[1200px] 2xl:w-full  ">
+        <div className="w-max lg:w-full">
           <div>
             <div className="flex p-4">
               <div className=" text-sm text-text-gray">ผลการค้นหา </div>
@@ -221,51 +229,10 @@ const HistoryTransferAsset = () => {
               );
             })}
           </div>
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex items-end mr-10">
-              <div>Rows per page:</div>
-              <select
-                id="perPage"
-                className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={(e) => setPerPage(e.target.value)}
-              >
-                {/* <option value="" selected disabled hidden>
-            ประเภทครุภัณฑ์
-          </option> */}
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10" selected="selected">
-                  10
-                </option>
-              </select>
-            </div>
-
-            <div>1-{perPage} of 13</div>
-
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
-            >
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1"
-            // onClick={() => {
-            //   deleteRow(index)
-            // }}
-            >
-              <HiChevronRight className="text-lg" />
-            </button>
-          </div>
+          {!search.total
+            ? <center className='p-5'>-</center>
+            : <Pagination search={search} data={data} fetchLists={handleSearch} />
+          }
         </div>
       </div>
     </div>
