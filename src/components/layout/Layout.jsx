@@ -7,7 +7,7 @@ const Layout = ({menu}) => {
     <div className="">
       <Navbar />
       <div className="flex">
-        <div className="hidden sm:block">
+        <div className="hidden md:block">
           <LeftBar menu={menu} />
         </div>
         <div className="w-[100vw]">

@@ -18,7 +18,7 @@ const LeftBar = ({ menu }) => {
         <div className="flex">
           <div
             className={`${showMenu ? 'left-0 ' : '-left-full '
-              } w-[250px] bg-white h-screen duration-300 `}
+              } w-[250px] bg-white h-full duration-300 `}
           >
             <div>
               {SidebarData.map((item, index) => {

@@ -22,11 +22,11 @@ const Sidebar = () => {
         <nav
           className={`${
             sidebar ? 'left-0 ' : '-left-full '
-          } w-[250px]  bg-white h-screen fixed top-0 duration-300 overflow-auto`}
+          } w-[250px]  bg-white h-screen fixed top-0 duration-300 overflow-auto scrollbar`}
         >
           <ul>
-            <li className="w-full h-[56px] bg-white flex items-center ml-8">
-              <Link to="#" className="text-2xl">
+            <li className="mt-2.5 bg-white flex items-center ml-6 hover:bg-gray-200 rounded-full w-fit p-2">
+              <Link to="#" className="text-xl">
                 <AiIcons.AiOutlineClose onClick={showSidebar} />
               </Link>
             </li>
