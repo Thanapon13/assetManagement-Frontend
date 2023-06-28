@@ -327,18 +327,25 @@ export const SetRole = () => {
 
   const [permission, setPermission] = useState([])
   const onChange = (checkAll, element) => {
-    const array = permission
+    // const array = permission
+    const arr = []
     if (element.submenu) {
       if (!checkAll) {
         element.submenu?.map(sub => {
-          if (!permission.find(val => val == sub.name)) {
-            array.push({ name: sub.name, order: element.order })
+          if (!permission.find(val => val.name == sub.name)) {
+            // array.push({ name: sub.name, order: element.order })
+            arr.push({ name: sub.name, order: element.order })
           }
         })
-        console.log(array)
-        setPermission(array)
+        setPermission(arr.concat(permission))
       } else {
-        const arr = []
+        let permis = permission
+        element.submenu?.map(sub => {
+          permis = permis.filter(p => p.name != sub.name)
+          console.log(permis, permission)
+        })
+        setPermission(permis)
+        return
         permission.map(ele => {
           if (!element.submenu.find(sub => (ele == sub.name))) arr.push(ele)
         })
@@ -348,8 +355,8 @@ export const SetRole = () => {
       onChangeSubmenu(checkAll, element.name)
     }
   }
+
   const onChangeSubmenu = (check, value) => {
-    console.log(check)
     if (check) {
       const arr = permission.filter(ele => (ele.name != value.name))
       setPermission(arr)
@@ -553,14 +560,15 @@ function ScreenAll(props) {
       findCheckAll()
     }
   }, [])
-
   useEffect(() => {
     setCollapse(collapseAll)
   }, [collapseAll])
 
   const onChangeAll = () => {
+    console.log(permission, checkAll, ele)
     onChange(checkAll, ele)
     setCheckAll(!checkAll)
+    return
   }
 
   function findCheckAll(arr) {
@@ -582,8 +590,16 @@ function ScreenAll(props) {
   }
 
   useEffect(() => {
+    console.log(ele)
     if (allScreenLength == permission.length) {
       setCheckAll(true)
+    } else if (ele.submenu) {
+      let findAllSub = true
+      ele.submenu.map(element => {
+        if (!findAllSub) return
+        if (!permission.find(p => p.name == element.name)) findAllSub = false
+      })
+      setCheckAll(findAllSub)
     }
   }, [permission.length])
 
@@ -591,10 +607,11 @@ function ScreenAll(props) {
     <div className='text-text-gray'>
       <div className='flex justify-between mt-1'>
         <div className={`${checkAll && 'text-black'} hover:cursor-pointer hover:text-black`}
-          onClick={() => onChangeAll()}>
+        // onClick={() => onChangeAll()}
+        >
           <input type="checkbox" value={ele.name} className='mx-2 rounded text-lg'
             onChange={onChangeAll} // 
-            checked={checkAll}
+            checked={permission.length && checkAll}
           />
           {ele.name}
         </div>
@@ -606,12 +623,13 @@ function ScreenAll(props) {
           }
         </div>
       </div>
-      <div className={`ml-5 duration-500 transition-all overflow-hidden ${collapse ? 'max-h-0 ease-out' : 'max-h-screen ease-in'}`}>
+      <div className={`ml-3 duration-500 transition-all overflow-hidden ${collapse ? 'max-h-0 ease-out' : 'max-h-screen ease-in'}`}>
         {ele.submenu?.map((submenu, index) => {
           const check = permission.find(el => el.name === submenu.name)
           return (
             <div key={index} className={`ml-5 my-1 ${checkMain && 'text-black'} hover:cursor-pointer hover:text-black`}
-              onClick={() => onChangeSub(check, submenu.name, ele.order)} >
+            // onClick={() => onChangeSub(check, submenu.name, ele.order)} 
+            >
               <input type="checkbox" checked={check} value={submenu.name} className='mx-2 rounded'
                 onChange={() => onChangeSub(check, submenu.name, ele.order)} />
               {submenu.name}
