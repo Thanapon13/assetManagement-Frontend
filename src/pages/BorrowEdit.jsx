@@ -432,16 +432,16 @@ const BorrowEdit = () => {
                 <div className="overflow-x-auto scrollbar pt-4 ">
                   <div className="w-[1000px] lg:w-full p-2 ">
                     <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                      <div className="grid grid-cols-12 gap-2 text-center">
+                      <div className="grid grid-cols-14 gap-2 text-center">
                         <div className="ml-2 col-span-1 ">ลำดับ</div>
-                        <div className="col-span-2">เลขครุภัณฑ์</div>
+                        <div className="col-span-3">เลขครุภัณฑ์</div>
                         <div className="col-span-3">ชื่อครุภัณฑ์</div>
                         <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
-                        <div className="col-span-3 grid grid-cols-4 gap-5">
+                        {/* <div className="col-span-3 grid grid-cols-4 gap-5"> */}
                           <div className="col-span-1">จำนวน</div>
                           <div className="col-span-1">หน่วยนับ</div>
                           <div className="col-span-2">จำนวนเงิน (บาท)</div>
-                        </div>
+                        {/* </div> */}
                       </div>
                     </div>
                     {saveAssetWithdrawTableArray?.map((el, idx) => {

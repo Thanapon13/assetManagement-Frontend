@@ -197,7 +197,7 @@ function TableBorrowRecord({
 
   return (
     <div
-      className={` p-2 grid grid-cols-13 justify-center items-center gap-x-4 text-xs bg-white`}
+      className={` p-2 grid grid-cols-14 justify-center items-center gap-x-4 text-xs bg-white`}
     >
       <div className="col-span-1 ml-2 text-center flex justify-center items-center ">
         <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
@@ -205,7 +205,7 @@ function TableBorrowRecord({
         </div>
       </div>
 
-      <div className="col-span-2 ">
+      <div className="col-span-3 ">
       <SearchSelector
           id="เลขครุภัณฑ์"
           name="assetNumber"

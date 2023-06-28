@@ -79,6 +79,8 @@ const TableBorrowList = (props) => {
                         ? " text-green-700 bg-sidebar-green rounded-xl"
                         : item.status === "cancel" || item.status === "reject"
                         ? "bg-red-200 text-red-600  rounded-xl"
+                        : item.status === "saveDraft"
+                        ? "bg-gray-200 rounded-xl"
                         : "bg-text-green text-white rounded-md hover:bg-green-800"
                     } border border-spacing-5 p-2 w-full cursor-default`}
                   >
@@ -92,12 +94,14 @@ const TableBorrowList = (props) => {
                       ? "ยกเลิก"
                       : item.status === "reject"
                       ? "ไม่อนุมัติ"
+                      : item.status === "saveDraft"
+                      ? "แบบร่าง"
                       : "บันทึกคืน"}
                   </div>
                 )}
               </div>
               <div className="flex justify-center">
-                {item.status === "waiting" ? (
+                {item.status === "waiting" || item.status === "saveDraft" ? (
                   <div className="flex gap-1">
                     <Link
                       to={`/borrowEdit/${item._id}`}

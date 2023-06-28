@@ -173,7 +173,7 @@ const BorrowList = () => {
         <div className="md:flex gap-5 space-y-2 md:space-y-0">
           <button
             type="button"
-            className="bg-background-page px-4 py-2  flex items-center gap-3 text-text-green border border-text-green rounded hover:bg-green-800"
+            className="bg-background-page px-4 py-2  flex items-center gap-3 text-text-green border border-text-green rounded hover:bg-sidebar-green"
           >
             <svg
               width="22"
@@ -296,7 +296,7 @@ const BorrowList = () => {
      
      <div className="grid">
       <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
-        <div className="w-max lg:w-full lg:h-full max-h-[50rem]">
+        <div className="w-max min-w-[900px] lg:w-full lg:h-full max-h-[50rem]">
           <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
           <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
             {/* top bar */}

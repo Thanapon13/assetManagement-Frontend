@@ -250,7 +250,7 @@ const BorrowCheckIndex = () => {
             id={"sector"}
             data={sectorList}
           /> */}
-            <SearchSelector
+          <SearchSelector
             options={sectorList}
             placeholder={"หน่วยงาน"}
             name={"sector"}
@@ -271,81 +271,83 @@ const BorrowCheckIndex = () => {
           </button>
         </div>
       </div>
-      {/* table */}
-      <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
-        <div className="w-[1200px] lg:w-full lg:h-full h-[500px]">
-          <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
-          <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
-            {/* top bar */}
-            <div className="grid grid-cols-12 gap-2 h-12 items-center text-center">
-              <div className="col-span-1">ลำดับ</div>
-              <div className="col-span-3">เลขที่เอกสารการยืม</div>
-              <div className="col-span-3">หน่วยงานที่ยืม</div>
-              <div className="col-span-1">วันที่ยืม</div>
-              <div className="col-span-1">กำหนดคืน</div>
-              <div className="col-span-1">วันที่คืน</div>
-              <div className="col-span-2">Action</div>
+
+      <div className="grid">
+        <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
+          <div className="w-[1000px] lg:w-full lg:h-full">
+            <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
+            <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
+              <div className="grid grid-cols-12 gap-2 h-12 items-center text-center">
+                <div className="col-span-1">ลำดับ</div>
+                <div className="col-span-3">เลขที่เอกสารการยืม</div>
+                <div className="col-span-3">หน่วยงานที่ยืม</div>
+                <div className="col-span-1">วันที่ยืม</div>
+                <div className="col-span-1">กำหนดคืน</div>
+                <div className="col-span-1">วันที่คืน</div>
+                <div className="col-span-2">Action</div>
+              </div>
             </div>
-          </div>
-          <TableBorrowCheckIndex data={borrowList} search={search} />
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex mr-10 items-center">
-              <div>Rows per page:</div>
-              <select
-                 id="limit"
-                 name="limit"
-                 className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                 onChange={handlePaginationSearch}
+            <TableBorrowCheckIndex data={borrowList} search={search} />
+            <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+              <div className="flex mr-10 items-center">
+                <div>Rows per page:</div>
+                <select
+                  id="limit"
+                  name="limit"
+                  className="w-20 h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handlePaginationSearch}
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10" defaultValue="selected">
+                    10
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                {" "}
+                {search.limit * (search.page - 1) + 1}-
+                {search.limit * (search.page - 1) + borrowList.length} of{" "}
+                {search.total}
+              </div>
+
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handleFirstPage}
               >
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10" defaultValue="selected">
-                  10
-                </option>
-              </select>
+                <CgPushChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handlePageDecrease}
+              >
+                <HiChevronLeft className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handlePageIncrease}
+              >
+                <HiChevronRight className="text-lg" />
+              </button>
+              <button
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                onClick={handleLastPage}
+              >
+                <CgPushChevronRight className="text-lg font-bold" />
+              </button>
             </div>
-
-            <div>
-              {" "}
-              {search.limit * (search.page - 1) + 1}-
-              {search.limit * (search.page - 1) + borrowList.length} of{" "}
-              {search.total}
-            </div>
-
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handleFirstPage}
-            >
-              <CgPushChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handlePageDecrease}
-            >
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handlePageIncrease}
-            >
-              <HiChevronRight className="text-lg" />
-            </button>
-            <button
-              className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-              onClick={handleLastPage}
-            >
-              <CgPushChevronRight className="text-lg font-bold" />
-            </button>
           </div>
         </div>
       </div>
+
     </div>
   );
 };
