@@ -251,7 +251,7 @@ export const SaveMerchant = () => {
     formData.append("arrayDocument", JSON.stringify([]))
     try {
       const response = createMerchant(formData)
-
+      setShowModalSuccess(true)
     } catch (error) {
       console.log(error)
     }
@@ -549,7 +549,8 @@ export const SaveMerchant = () => {
             <div className='text-sm'>กลุ่มประเภท</div>
             <div className="grid grid-cols-1 gap-y-3 mt-3 text-xs">
               <div>
-                <input type="radio" className={`border border-text-green p-2 mx-2 ${errorInput && !input.creditorCategory && 'border-red-500'}`}
+                <input type="radio" className={`border p-2 mx-2 ${!errorInput ? " border-text-green"
+                  : !input.creditorCategory && 'border-red-500'}`}
                   name="creditorCategory"
                   checked={input.creditorCategory == "เจ้าหนี้การค้าภายในประเทศ"}
                   onChange={handleChange}
@@ -557,7 +558,8 @@ export const SaveMerchant = () => {
                 <label>เจ้าหนี้การค้าภายในประเทศ</label>
               </div>
               <div>
-                <input type="radio" className={`border border-text-green p-2 mx-2 ${errorInput && !input.creditorCategory && 'border-red-500'}`}
+                <input type="radio" className={`border p-2 mx-2 ${!errorInput ? " border-text-green"
+                  : !input.creditorCategory && 'border-red-500'}`}
                   name="creditorCategory"
                   checked={input.creditorCategory == "เจ้าหนี้การค้าภายนอกประเทศ"}
                   onChange={handleChange}
@@ -565,7 +567,8 @@ export const SaveMerchant = () => {
                 <label>เจ้าหนี้การค้าภายนอกประเทศ</label>
               </div>
               <div>
-                <input type="radio" className={`border border-text-green p-2 mx-2 ${errorInput && !input.creditorCategory && 'border-red-500'}`}
+                <input type="radio" className={`border p-2 mx-2 ${!errorInput ? " border-text-green"
+                  : !input.creditorCategory && 'border-red-500'}`}
                   name="creditorCategory"
                   checked={input.creditorCategory == "เจ้าหนี้เฉพาะหน่วยงานย่อย"}
                   onChange={handleChange}
@@ -669,7 +672,7 @@ export const SaveMerchant = () => {
             onSave={submit}
           />
 
-          {showModalSuccess && <ModalSuccess urlPath='/merchant' />}
+          {showModalSuccess && <ModalSuccess urlPath='/merchantIndex' />}
         </div>
       </div>
     </>

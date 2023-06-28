@@ -15,8 +15,8 @@ function RowOfMerchantTableArray({
 }) {
   const [showModalDelete, setShowModalDelete] = useState(false)
 
-  function onConfirmDelete(id) {
-    deleteMerchant(id)
+  async function onConfirmDelete(id) {
+    await deleteMerchant(id)
     setShowModalDelete(false)
     fetchData()
   }
@@ -135,7 +135,7 @@ function ModalDelete({ element, onClose, onConfirmDelete }) {
                   <div className="absolute w-full flex justify-end pr-5 mb-8">
                     <button
                       className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
-                      onClick={() => onClose()}
+                      onClick={() => {setDefault(); onClose()}}
                     >
                       <IoIosClose className="text-2xl" />
                     </button>
@@ -190,7 +190,7 @@ function ModalDelete({ element, onClose, onConfirmDelete }) {
                   // className="px-10 py-2 border-[1px] shadow-sm rounded-md "
                   className="px-10 py-3 text-white bg-gray-400/[.8] hover:bg-gray-400 bg-[#999999] shadow-sm rounded-md "
                   type="button"
-                  onClick={() => onClose()}
+                  onClick={() => {setDefault(); onClose()}}
                 >
                   ย้อนกลับ
                 </button>

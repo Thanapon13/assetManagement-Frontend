@@ -661,7 +661,7 @@ export const EditMerchant = () => {
         <div className="flex justify-end gap-4">
           <button
             className={`inline-flex justify-center items-center py-1 px-4 border-2  shadow-sm font-medium rounded-md   hover:bg-sidebar-green focus:outline-none focus:ring-offset-2 focus:ring-green-800
-            ${merchantId && "hidden"}`}
+            ${input.status != "saveDraft" && "hidden"}`}
             // ${input.status == "active" ? "border-text-green text-text-green focus:ring-2" : "text-gray-500 hover:bg-white cursor-default"}
             onClick={() => submit('saveDraft')}
           >

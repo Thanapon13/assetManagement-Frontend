@@ -88,7 +88,7 @@ export const Merchant = () => {
         <div className="md:flex gap-5 space-y-2 md:space-y-0">
           <button
             type="button"
-            className="bg-background-page px-4 py-2  flex items-center gap-3 text-text-green border border-text-green rounded hover:bg-green-800"
+            className="bg-background-page px-4 py-2  flex items-center gap-3 text-text-green border border-text-green rounded hover:bg-sidebar-green"
           >
             <svg
               width="22"
