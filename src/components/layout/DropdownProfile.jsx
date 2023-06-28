@@ -11,7 +11,7 @@ const DropdownProfile = () => {
 
   const navigate = useNavigate();
 
-  const signOut =  () => {
+  const signOut = () => {
     logout();
     navigate("/")
   };
@@ -25,7 +25,7 @@ const DropdownProfile = () => {
       <a
         href="#"
         className="px-1 py-1 rounded-full border-spacing-0 text-sm text-gray-600 hover:text-gray-700 hover:bg-gray-50 "
-        // rounded-l-md
+      // rounded-l-md
       >
         <img
           src={profile}
@@ -40,7 +40,7 @@ const DropdownProfile = () => {
           type="button"
           onClick={handleOnClick}
           className="mr-5 inline-flex items-center justify-center h-full px-1  hover:text-gray-700"
-          // border-l border-gray-100 rounded-r-md
+        // border-l border-gray-100 rounded-r-md
         >
           <RiIcons.RiArrowDropDownFill className="w-6 h-6 rounded-full text-white hover:text-black hover:bg-sidebar-text-green" />
         </button>
@@ -58,8 +58,10 @@ const DropdownProfile = () => {
               onClick={signOut}
               className="text-left mr-20 block px-4 py-2 text-sm text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700 w-full"
             >
-              LogOut
+              {/* Log Out */}
+              ออกจากระบบ
             </button>
+
             {/* <a
               href="/"
               className="block px-4 py-2 text-sm text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700"
@@ -67,7 +69,11 @@ const DropdownProfile = () => {
               Some Menu
             </a> */}
           </div>
+
         </div>
+        <div className={`fixed top-0 right-0 bottom-0 left-0 z-[4] ${isActive ? "" : "hidden"}`}
+          onClick={() => setIsActive(false)}
+        />
       </div>
     </div>
   );

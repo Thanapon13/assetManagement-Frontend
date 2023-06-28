@@ -2,17 +2,28 @@ import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 
-const SubMenu = ({ item, showSubMenu, setShowSubMenu }) => {
+const SubMenu = ({ item, showSubMenu, setShowSubMenu, setSidebar }) => {
   const [subnav, setSubnav] = useState(false)
 
   // const showSubnav = () => {
   //   setSubnav(!subnav)
   // }
+  // const handleClick = () => {
+  //   if (!showSubMenu || showSubMenu != item.title) {
+  //     setShowSubMenu(item.title)
+  //   } else {
+  //     setShowSubMenu(false)
+  //   }
+  // }
   const handleClick = () => {
-    if (!showSubMenu || showSubMenu != item.title) {
-      setShowSubMenu(item.title)
-    } else {
-      setShowSubMenu(false)
+    if (item.subNav) {
+      if (!showSubMenu || showSubMenu != item.title) {
+        setShowSubMenu(item.title)
+      } else {
+        setShowSubMenu(false)
+      }
+    } else if (item.path) {
+      setSidebar(false)
     }
   }
 
@@ -25,7 +36,8 @@ const SubMenu = ({ item, showSubMenu, setShowSubMenu }) => {
       {/* main menu */}
       <NavLink
         to={item.path}
-        onClick={item.subNav && handleClick}
+        // onClick={item.subNav && handleClick}
+        onClick={handleClick}
         className={({ isActive }) =>
           [
             'flex items-center p-4 h-[60px] rounded-3xl hover:bg-sidebar-green',
@@ -44,13 +56,13 @@ const SubMenu = ({ item, showSubMenu, setShowSubMenu }) => {
           {item.subNav && subnav
             ? item.iconOpened
             : item.subNav
-            ? item.iconClosed
-            : null}
+              ? item.iconClosed
+              : null}
         </div>
       </NavLink>
       {/* sub menu */}
       {
-      // subnav &&
+        // subnav &&
         item.subNav?.map((item, index) => {
           return (
             <NavLink
@@ -62,12 +74,13 @@ const SubMenu = ({ item, showSubMenu, setShowSubMenu }) => {
                   isActive
                     ? 'bg-sidebar-green text-text-green'
                     : 'text-text-gray',
-                    'overflow-hidden',
-                    !subnav ? 'max-h-0 p-0 ease-out duration-400' : 'max-h-fit p-3 ease-in duration-300 '
+                  'overflow-hidden',
+                  !subnav ? 'max-h-0 p-0 ease-out duration-400' : 'max-h-fit p-3 ease-in duration-300 '
                 ]
                   .filter(Boolean)
                   .join(' ')
               }
+              onClick={() => setSidebar(false)}
             >
               <div className="flex w-full hover:text-text-green gap-5">
                 <div className="flex items-center">{item.icon}</div>

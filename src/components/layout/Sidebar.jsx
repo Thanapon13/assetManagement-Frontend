@@ -8,9 +8,9 @@ import SubMenu from './SubMenu'
 
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false)
-
   const showSidebar = () => setSidebar(!sidebar)
-
+  
+  const [showSubMenu, setShowSubMenu] = useState(false)
   return (
     <>
       <IconContext.Provider value={{ color: 'undefined' }}>
@@ -20,7 +20,7 @@ const Sidebar = () => {
         </Link>
         {/* menu */}
         <nav
-          className={`${
+          className={`absolute z-10 ${
             sidebar ? 'left-0 ' : '-left-full '
           } w-[250px]  bg-white h-screen fixed top-0 duration-300 overflow-auto scrollbar`}
         >
@@ -31,10 +31,13 @@ const Sidebar = () => {
               </Link>
             </li>
             {SidebarData.map((item, index) => {
-              return <SubMenu item={item} key={index} />
+              return <SubMenu item={item} key={index} showSubMenu={showSubMenu} setShowSubMenu={setShowSubMenu} setSidebar={setSidebar} />
             })}
           </ul>
         </nav>
+        <div className={`fixed top-0 right-0 bottom-0 left-0 bg-gray-400/[.2] ${sidebar ? "" : "hidden"}`}
+          onClick={() => setSidebar(false)}
+        />
       </IconContext.Provider>
     </>
   )
