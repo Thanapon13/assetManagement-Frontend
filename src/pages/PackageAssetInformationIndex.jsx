@@ -275,107 +275,109 @@ const PackageAssetInformationIndex = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
-        <div className="w-[1200px] lg:w-full max-h-[50em] mb-4">
-          <div>
-            <div className="flex p-4">
-              <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-              <div className="ml-2 text-sm">{search.total} รายการ </div>
-            </div>
-            <div className="grid grid-cols-19 gap-2 h-12 items-center text-center text-text-black-table text-xs font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
-              <div className="ml-2">ลำดับ</div>
-              <div className="col-span-3">เลขครุภัณฑ์</div>
-              <div className="col-span-3">ชื่อครุภัณฑ์</div>
-              <div className="col-span-2">ราคา</div>
-              <div className="col-span-2">ฝ่าย/กลุ่มงาน</div>
-              <div className="col-span-2">หน่วยงาน</div>
-              <div className="col-span-2">อาคาร</div>
-              <div className="col-span-2 text-center">สถานะ</div>
-              <div className="col-span-2 text-center font-bold mr-2">
-                Action
+      <div className='grid'>
+        <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
+          <div className="w-[1000px] lg:w-full max-h-[50em] mb-4">
+            <div>
+              <div className="flex p-4">
+                <div className=" text-sm text-text-gray">ผลการค้นหา </div>
+                <div className="ml-2 text-sm">{search.total} รายการ </div>
+              </div>
+              <div className="grid grid-cols-19 gap-2 h-12 items-center text-center text-text-black-table text-xs font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
+                <div className="ml-2">ลำดับ</div>
+                <div className="col-span-3">เลขครุภัณฑ์</div>
+                <div className="col-span-3">ชื่อครุภัณฑ์</div>
+                <div className="col-span-2">ราคา</div>
+                <div className="col-span-2">ฝ่าย/กลุ่มงาน</div>
+                <div className="col-span-2">หน่วยงาน</div>
+                <div className="col-span-2">อาคาร</div>
+                <div className="col-span-2 text-center">สถานะ</div>
+                <div className="col-span-2 text-center font-bold mr-2">
+                  Action
+                </div>
               </div>
             </div>
-          </div>
-          {packageAssetList?.map((el, idx) => {
-            console.log(el)
-            return (
-              <RowOfTablePackageIndex
-                key={idx}
-                index={search.page * (search.limit) - (search.limit - idx) + 1}
-                _id={el._id}
-                realAssetId={el.realAssetId}
-                assetNumber={el.assetNumber}
-                productName={el.productName}
-                department={el.department}
-                sector={el.sector}
-                // agency={el.agency}
-                building={el.building}
-                // floor={el.floor}
-                // room={el.room}
-                status={el.status}
-                price={el.pricePerUnit}
-                handleDelete={() => setShowModalDeleteAsset(el)}
+            {packageAssetList?.map((el, idx) => {
+              console.log(el)
+              return (
+                <RowOfTablePackageIndex
+                  key={idx}
+                  index={search.page * (search.limit) - (search.limit - idx) + 1}
+                  _id={el._id}
+                  realAssetId={el.realAssetId}
+                  assetNumber={el.assetNumber}
+                  productName={el.productName}
+                  department={el.department}
+                  sector={el.sector}
+                  // agency={el.agency}
+                  building={el.building}
+                  // floor={el.floor}
+                  // room={el.room}
+                  status={el.status}
+                  price={el.pricePerUnit}
+                  handleDelete={() => setShowModalDeleteAsset(el)}
+                />
+              )
+            })}
+            {showModalDeleteAsset &&
+              <ModalDeleteAsset
+                element={showModalDeleteAsset}
+                close={() => setShowModalDeleteAsset(false)}
+                confirmDelete={handleDelete}
               />
-            )
-          })}
-          {showModalDeleteAsset &&
-            <ModalDeleteAsset
-              element={showModalDeleteAsset}
-              close={() => setShowModalDeleteAsset(false)}
-              confirmDelete={handleDelete}
-            />
-          }
-          {!packageAssetList.length
-            ? <center className='p-5'>-</center>
-            : <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-              <div className="flex items-center">
-                <div>Rows per page:</div>
-                <select
-                  id="limit"
-                  name="limit"
-                  className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  onChange={handlePaginationSearch}
+            }
+            {!packageAssetList.length
+              ? <center className='p-5'>-</center>
+              : <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+                <div className="flex items-center">
+                  <div>Rows per page:</div>
+                  <select
+                    id="limit"
+                    name="limit"
+                    className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    onChange={handlePaginationSearch}
+                  >
+                    <option value="5">5</option>
+                    <option value="10" selected="selected">
+                      10
+                    </option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+
+                <div className="mx-5">
+                  {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + packageAssetList.length} of {search.total}
+                </div>
+
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handleFirstPage}
                 >
-                  <option value="5">5</option>
-                  <option value="10" selected="selected">
-                    10
-                  </option>
-                  <option value="20">20</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
+                  <CgPushChevronLeft className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handlePageDecrease}
+                >
+                  <HiChevronLeft className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handlePageIncrease}
+                >
+                  <HiChevronRight className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handleLastPage}
+                >
+                  <CgPushChevronRight className="text-lg font-bold" />
+                </button>
               </div>
-
-              <div className="mx-5">
-                {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + packageAssetList.length} of {search.total}
-              </div>
-
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handleFirstPage}
-              >
-                <CgPushChevronLeft className="text-lg" />
-              </button>
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handlePageDecrease}
-              >
-                <HiChevronLeft className="text-lg" />
-              </button>
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handlePageIncrease}
-              >
-                <HiChevronRight className="text-lg" />
-              </button>
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handleLastPage}
-              >
-                <CgPushChevronRight className="text-lg font-bold" />
-              </button>
-            </div>
-          }
+            }
+          </div>
         </div>
       </div>
     </div>

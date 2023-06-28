@@ -442,9 +442,8 @@ const EditPackageAssetInformation = () => {
   // const [errorTable, setErrorTable] = useState(false)
   const handleForm = async () => {
     let errInput, errContract, errSale, errTable
-    console.log(input)
-    Object.values(input).map((value, index) => {
-      if (errInput) return
+    Object.entries(input).forEach(([key, value], index) => {
+      if (errInput|| key === "replacedAssetNumber") return
       if (!value) errInput = true
     })
     bottomSubComponentData.map(ele => {
