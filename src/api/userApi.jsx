@@ -4,8 +4,12 @@ export function getUsersAll() {
   return axios.get("/user/all");
 }
 
+export function getUsersBySearch(search) {
+  return axios.get(`/user/search?${getQueryString(search)}`);
+}
+
 export function getToken() {
-  return(localStorage.getItem("accessToken"))
+  return (localStorage.getItem("accessToken"))
 }
 
 export function getUserById(id) {
@@ -17,7 +21,7 @@ export function getUserById(id) {
     url: `/user/${id}`,
     // params: filter,
     headers: {
-      Authorization: `Bearer ${ getToken() || "unknown"}`
+      Authorization: `Bearer ${getToken() || "unknown"}`
     }
   }
   return axios(property)
@@ -108,7 +112,7 @@ function getQueryString(search) {
       (key) => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`
     )
     .join("&");
-    console.log(params)
+  console.log(params)
   return params;
 }
 

@@ -177,7 +177,7 @@ const UserInformationIndex = () => {
                   thaiFirstName={el.thaiFirstName}
                   thaiLastName={el.thaiLastName}
                   sector={el.sector}
-                  lastLoginDate={el.lastRevisionDateTime}
+                  lastLoginDate={el.lastLoginDate}
                   level={el.role} //* ?
                 />
               );
