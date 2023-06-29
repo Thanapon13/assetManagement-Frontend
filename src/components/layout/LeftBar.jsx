@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
@@ -9,7 +9,17 @@ import SubMenu from './SubMenu'
 const LeftBar = ({ menu }) => {
   const [showMenu, setShowMenu] = useState(true)
   const handleShowMenu = () => setShowMenu(!showMenu)
-  const [showSubMenu, setShowSubMenu] = useState(false)
+  const [showSubMenu, setShowSubMenu] = useState()
+
+  useEffect(() => {
+    const path = window.location.pathname
+    let finding = false
+    SidebarData.map(data => {
+      if(finding) return
+      if(data.subNav?.find(ele => ele.path == path)) finding = data.title
+    })
+    setShowSubMenu(finding)
+  }, [])
 
   return (
     <>
