@@ -71,8 +71,8 @@ export const ReportMerchantInfo = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-10 gap-3 items-center mt-8 mb-5 pl-3">
-        <div className="md:col-span-3 flex items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-10 sm:grid-cols-2 gap-3 items-center mt-8 mb-5 pl-3">
+        <div className="lg:col-span-3 sm:col-span-1 flex items-center">
           <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
           <select
             className="ml-2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
@@ -83,7 +83,7 @@ export const ReportMerchantInfo = () => {
           </select>
         </div>
 
-        <div className="md:col-span-4  h-[38px] relative">
+        <div className="lg:col-span-4 sm:col-span-1 h-[38px] relative">
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
@@ -95,7 +95,7 @@ export const ReportMerchantInfo = () => {
           />
         </div>
 
-        <div className="md:col-span-3 flex gap-2">
+        <div className="lg:col-span-3 sm:col-start-2 sm:col-span-1 flex gap-2">
           <select
             className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
             name="status"
