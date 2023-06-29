@@ -35,7 +35,7 @@ const TableBorrowList = (props) => {
             </div>
             {/* insuranceStartDate.toLocaleDateString("en-GB", options) */}
             <div className="col-span-1 ">
-              {new Date(item.borrowSetReturnDate).toLocaleDateString(
+              {item.borrowSetReturnDate && new Date(item.borrowSetReturnDate).toLocaleDateString(
                 "th-TH",
                 options
               )}
