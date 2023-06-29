@@ -150,3 +150,7 @@ export function getRoleBySearch(options) {
   }
   return axios.get(`/role/search${option}`);
 }
+
+export function getUserRepairDropdown() {
+  return axios.get(`/user/userRepairDropdown`);
+}

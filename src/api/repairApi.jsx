@@ -1,5 +1,9 @@
 import axios from "../config/axios";
 
+export function createRepair(input) {
+  return axios.post("/repair/create",input)
+}
+
 export function getAllRepair() {
   return axios.get("/repair/getAll")
 }

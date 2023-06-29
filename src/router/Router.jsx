@@ -187,8 +187,8 @@ const Router = () => {
           {/* <Route path="repairDashboard" element={<RepairDashboard />} /> */}
           <Route path="transferAsset" element={<TransferAsset />} />
           <Route path="repairIndex" element={<RepairIndex />} />
-          <Route path="repairIndex/repairDetail" element={<RepairDetail />} />
-          <Route path="repairIndex/repairEdit" element={<RepairEdit />} />
+          <Route path="repairIndex/repairDetail/:repairId" element={<RepairDetail />} />
+          <Route path="repairIndex/repairEdit/:repairId" element={<RepairEdit />} />
           <Route path="repairRecord" element={<RepairRecord />} />
           <Route
             path="repairTechnicianIndex"

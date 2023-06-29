@@ -1,16 +1,25 @@
-import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { FaArrowLeft } from 'react-icons/fa'
-import { BsFillCheckCircleFill } from 'react-icons/bs'
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
+import { BsFillCheckCircleFill } from "react-icons/bs";
+import { getRepairById } from "../api/repairApi";
 
 const RepairDetail = () => {
-  const location = useLocation()
-  const item = location.state.data
+  const location = useLocation();
+  const item = location.state.data;
 
   const borrowData = {
-    borrowID: 'br.6602/1677',
-    pricePerDay: '1300.00',
-  }
+    borrowID: "br.6602/1677",
+    pricePerDay: "1300.00",
+  };
+
+  const getMasterData = async () => {
+    const res = await getRepairById();
+    console.log(res.data);
+  };
+  useEffect(() => {
+    getMasterData();
+  }, []);
   return (
     <>
       <div className="bg-background-page pt-5 p-3">
@@ -46,13 +55,13 @@ const RepairDetail = () => {
           </div>
           {/* status */}
           <div className="flex justify-end gap-5">
-            {item.repairStatus === 'waitApprove' ? (
+            {item.repairStatus === "waitApprove" ? (
               <>
                 <ModalApproveDone />
                 <div className="flex items-center gap-2">
                   <h1>สถานะใบแจ้งซ่อม</h1>
                   <div className="bg-purple-600 text-white text-sm py-2 px-4 rounded-2xl">
-                    {'รอตรวจรับ'}
+                    {"รอตรวจรับ"}
                   </div>
                 </div>
               </>
@@ -64,7 +73,7 @@ const RepairDetail = () => {
                 <div className="flex items-center gap-2">
                   <h1>สถานะใบแจ้งซ่อม</h1>
                   <div className="bg-sky-200 text-blue-600 text-sm py-2 px-4 rounded-2xl">
-                    {'รอช่างรับงาน'}
+                    {"รอช่างรับงาน"}
                   </div>
                 </div>
               </>
@@ -86,7 +95,7 @@ const RepairDetail = () => {
                 สถานะความเร่งด่วน
               </div>
               <div className="flex justify-center items-center py-2 w-12 text-blue-500 bg-sky-100 rounded-2xl">
-                {'ปกติ'}
+                {"ปกติ"}
               </div>
             </div>
             {/* row 2 เวลาที่แจ้งซ่อม*/}
@@ -94,11 +103,11 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center">
                 เวลาที่แจ้งซ่อม
               </div>
-              <div className="flex items-center">{'09/09/2565 , 12:30'}</div>
+              <div className="flex items-center">{"09/09/2565 , 12:30"}</div>
               <div className="text-text-gray flex items-center">
                 รหัสครุภัณฑ์
               </div>
-              <div className="flex items-center">{'18/02/2566 , 09:00'}</div>
+              <div className="flex items-center">{"18/02/2566 , 09:00"}</div>
             </div>
             {/* row 3 อยู่ในประกัน*/}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
@@ -106,24 +115,24 @@ const RepairDetail = () => {
                 อยู่ในประกัน
               </div>
               <div className="flex items-center text-text-green">
-                {'อยู่ในประกัน'}
+                {"อยู่ในประกัน"}
               </div>
               <div className="text-text-gray flex items-center">
                 เลขครุภัณฑ์
               </div>
-              <div className="flex items-center">{'pc-hphz-360/071'}</div>
+              <div className="flex items-center">{"pc-hphz-360/071"}</div>
             </div>
             {/* row 4 เจ้าของครุภัณฑ์*/}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
               <div className="text-text-gray flex items-center">
                 เจ้าของครุภัณฑ์
               </div>
-              <div className="flex items-center">{'กองคลังหลัก'}</div>
+              <div className="flex items-center">{"กองคลังหลัก"}</div>
               <div className="text-text-gray flex items-center">
                 ชื่อครุภัณฑ์
               </div>
               <div className="flex items-center">
-                {'Notebook HP Pavilian16'}
+                {"Notebook HP Pavilian16"}
               </div>
             </div>
             {/* row 5 วันที่เริ่มรับประกัน*/}
@@ -131,20 +140,20 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center">
                 วันที่เริ่มรับประกัน
               </div>
-              <div className="flex items-center">{'10/08/2565'}</div>
+              <div className="flex items-center">{"10/08/2565"}</div>
               <div className="text-text-gray flex items-center">
                 วันที่สิ้นสุดการรับประกัน
               </div>
-              <div className="flex items-center">{'09/08/2566'}</div>
+              <div className="flex items-center">{"09/08/2566"}</div>
             </div>
             {/* row 6 รหัส cost center*/}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
               <div className="text-text-gray flex items-center">
                 รหัส cost center
               </div>
-              <div className="flex items-center">{'000123'}</div>
+              <div className="flex items-center">{"000123"}</div>
               <div className="text-text-gray flex items-center">สท.01</div>
-              <div className="flex items-center">{'-'}</div>
+              <div className="flex items-center">{"-"}</div>
             </div>
           </div>
           {/* ข้อมูลสถานที่ซ่อม */}
@@ -155,14 +164,14 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center ">
                 ที่ตั้ง/อาคาร
               </div>
-              <div className="flex items-center ">{'อาคารเพชรไมตรี'}</div>
+              <div className="flex items-center ">{"อาคารเพชรไมตรี"}</div>
               <div className="text-text-gray flex items-center ">ชั้น</div>
-              <div className="flex items-center ">{'7'}</div>
+              <div className="flex items-center ">{"7"}</div>
             </div>
             {/* row 2 ห้อง */}
             <div className="grid grid-cols-2 md:grid-cols-5 p-2">
               <div className="text-text-gray flex items-center">ห้อง</div>
-              <div className="flex items-center">{'304'}</div>
+              <div className="flex items-center">{"304"}</div>
             </div>
           </div>
           {/* ข้อมูลผู้เกี่ยวข้อง */}
@@ -173,11 +182,11 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center ">
                 ผู้ส่งซ่อม
               </div>
-              <div className="flex items-center ">{'กรขจิน กลิ่นขจร'}</div>
+              <div className="flex items-center ">{"กรขจิน กลิ่นขจร"}</div>
               <div className="text-text-gray flex items-center ">
                 เบอร์โทรศัพท์
               </div>
-              <div className="flex items-center ">{'098-7654321'}</div>
+              <div className="flex items-center ">{"098-7654321"}</div>
             </div>
             {/* row 2 ผู้ประสานงาน */}
             <div className="grid grid-cols-2 md:grid-cols-5 p-2">
@@ -185,10 +194,10 @@ const RepairDetail = () => {
                 ผู้ประสานงาน
               </div>
               <div className="flex items-center">
-                {'เมตตา ดวงรุ่งเรืองโรจน์'}
+                {"เมตตา ดวงรุ่งเรืองโรจน์"}
               </div>
               <div className="text-text-gray flex items-center">หน่วยงาน</div>
-              <div className="flex items-center">{'กองงานบัญชีกลาง'}</div>
+              <div className="flex items-center">{"กองงานบัญชีกลาง"}</div>
             </div>
           </div>
         </div>
@@ -202,14 +211,14 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center ">
                 ประเภทการซ่อม
               </div>
-              <div className="flex items-center ">{'ซ่อมครุภัณฑ์'}</div>
+              <div className="flex items-center ">{"ซ่อมครุภัณฑ์"}</div>
             </div>
             {/* row 2 หน่วยงานซ่อม*/}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
               <div className="text-text-gray flex items-center">
                 หน่วยงานซ่อม
               </div>
-              <div className="flex items-center">{'ศูนย์คอมพิวเตอร์'}</div>
+              <div className="flex items-center">{"ศูนย์คอมพิวเตอร์"}</div>
             </div>
             {/* row 3 ส่วนที่ชำรุดหรือเหตุขัดข้อง*/}
             <div className="grid grid-cols-3 gap-2 md:grid-cols-5 p-2">
@@ -218,13 +227,13 @@ const RepairDetail = () => {
               </div>
               <div className="flex items-center col-span-2">
                 {
-                  'เครื่องเปิดไม่ติด ไม่รู้เป็นอะไรเหมือนกัน อยู่ๆดับไปเองตอนทำงาน'
+                  "เครื่องเปิดไม่ติด ไม่รู้เป็นอะไรเหมือนกัน อยู่ๆดับไปเองตอนทำงาน"
                 }
               </div>
             </div>
           </div>
         </div>
-        {item.repairStatus === 'waitApprove' ? (
+        {item.repairStatus === "waitApprove" ? (
           <>
             <TableRepairCost data={item.repairCostList} />
             {/* ผลการซ่อม */}
@@ -238,7 +247,7 @@ const RepairDetail = () => {
                     ผลการซ่อม
                   </div>
                   <div className="flex items-center ">
-                    {'เปลี่ยนสายไฟเรียบร้อย'}
+                    {"เปลี่ยนสายไฟเรียบร้อย"}
                   </div>
                 </div>
                 {/* row 2 ความเห็นช่าง*/}
@@ -247,7 +256,7 @@ const RepairDetail = () => {
                     ความเห็นช่าง
                   </div>
                   <div className="flex items-center">
-                    {'ระวังหนูกัดสายไฟซ้ำ'}
+                    {"ระวังหนูกัดสายไฟซ้ำ"}
                   </div>
                 </div>
               </div>
@@ -256,7 +265,7 @@ const RepairDetail = () => {
         ) : null}
       </div>
       {/* footer */}
-      {item.repairStatus === 'waitApprove' ? (
+      {item.repairStatus === "waitApprove" ? (
         <>
           {/* footer */}
           <div className="flex justify-between p-3 border-t-[1px] bg-white">
@@ -270,8 +279,8 @@ const RepairDetail = () => {
         </>
       ) : null}
     </>
-  )
-}
+  );
+};
 
 const TableRepairCost = (props) => {
   //   waitTechnicianConfirm , inProgress , draftRepair, waitApprove, done , cancel
@@ -319,24 +328,24 @@ const TableRepairCost = (props) => {
                   {item.totalPrice}
                 </div>
               </div>
-            )
+            );
           })}
           <div className="bg-table-data h-[40px] p-6 flex justify-between items-center mt-10">
             <div className="text-sm  font-semibold">รวมจำนวนเงินทั้งหมด</div>
-            <div className="text-sm font-semibold">{'11300.00'} บาท</div>
+            <div className="text-sm font-semibold">{"11300.00"} บาท</div>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 const ModalApproveDone = () => {
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
 
   const callback = (payload) => {
-    setAllReject(payload)
-  }
+    setAllReject(payload);
+  };
   return (
     <>
       <button
@@ -365,7 +374,7 @@ const ModalApproveDone = () => {
         </>
       ) : null}
     </>
-  )
-}
+  );
+};
 
-export default RepairDetail
+export default RepairDetail;

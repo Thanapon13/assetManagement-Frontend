@@ -280,13 +280,13 @@ const TableRepairIndex = (props) => {
                             : 'bg-red-200 text-red-600 rounded-full border-red-200'
                     } border border-spacing-5 p-2 w-full`}
                 >
-                  {item.status === 'waitTechnicianConfirm'
+                  {item.status === 'waiting'
                     ? 'รอช่างรับงาน'
                     : item.status === 'inProgress'
                       ? 'ดำเนินการ'
-                      : item.status === 'waiting'
+                      : item.status === 'waitingApproval'
                         ? 'รอตรวจรับ'
-                        : item.status === 'draft'
+                        : item.status === 'saveDraft'
                           ? 'แบบร่าง'
                           : item.status === 'complete'
                             ? 'เสร็จสิ้น'
@@ -296,17 +296,17 @@ const TableRepairIndex = (props) => {
             </div>
             <div className="col-span-2 grid grid-cols-2 items-center">
               <div className="flex justify-center col-span-2">
-                {item.status === 'waitTechnicianConfirm' ? (
+                {item.status === 'waiting' ? (
                   <div className="flex gap-1">
                     <Link
-                      to="repairDetail"
+                      to={`repairDetail/${item.id}`}
                       state={{ data: item }}
                       className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
                     >
                       <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
                     </Link>
                     <Link
-                      to="repairEdit"
+                      to={`repairEdit/${item._id}`}
                       state={{ data: item }}
                       className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
                     >
@@ -325,7 +325,7 @@ const TableRepairIndex = (props) => {
                       <h1>ดูรายละเอียด</h1>
                     </Link>
                   </div>
-                ) : item.status === 'draft' ? (
+                ) : item.status === 'saveDraft' ? (
                   <div className="flex gap-1">
                     <Link
                       to="repairDetail"
@@ -343,7 +343,7 @@ const TableRepairIndex = (props) => {
                     </Link>
                     <ModalCancel />
                   </div>
-                ) : item.status === 'waiting' ? (
+                ) : item.status === 'waitingApproval' ? (
                   <div className="flex gap-3">
                     <Link
                       to="repairDetail"
