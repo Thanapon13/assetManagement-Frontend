@@ -1,7 +1,14 @@
+import { Input } from "@material-ui/icons";
 import axios from "../config/axios";
 
 export function createRepair(input) {
   return axios.post("/repair/create",input)
+}
+
+export function updateRepair(repairId,input) {
+  console.log("input",input);
+  
+  return axios.patch(`/repair/update/${repairId}`,input)
 }
 
 export function getAllRepair() {

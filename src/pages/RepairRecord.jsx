@@ -17,7 +17,7 @@ const RepairRecord = () => {
     urgentStatus: "",
     informRepairDate: new Date(),
     assetNumber: "",
-    IsInsurance: "",
+    isInsurance: "",
     assetGroupNumber: "",
     hostSector: "",
     productName: "",
@@ -66,7 +66,7 @@ const RepairRecord = () => {
     Object.entries(formData).forEach(([key, value]) => {
       if (key === "asset01" || key === "costCenterCode" || key === "status") {
       } else {
-        if (!value) {
+        if (value === "") {
           isError = true;
           console.log(`Key: ${key}, Value: ${value}`);
           setError(true);
@@ -152,6 +152,8 @@ const RepairRecord = () => {
     setFormData({ ...formData, [label]: value });
   };
 
+  
+
   useEffect(() => {
     getMasterData();
   }, []);
@@ -163,7 +165,7 @@ const RepairRecord = () => {
           console.log("list.ele", list.ele);
           setFormData({
             ...formData,
-            IsInsurance: list.ele.isInsurance,
+            isInsurance: list.ele.isInsurance,
             assetGroupNumber: list.ele.assetGroupNumber,
             hostSector: list.ele.sector,
             productName: list.ele.productName,
@@ -176,7 +178,7 @@ const RepairRecord = () => {
     } else {
       setFormData({
         ...formData,
-        IsInsurance: "",
+        isInsurance: "",
         assetGroupNumber: "",
         hostSector: "",
         productName: "",
@@ -396,10 +398,10 @@ const RepairRecord = () => {
                 </div>
                 <div
                   className={`flex items-center ${
-                    formData.IsInsurance ? "text-text-green" : "text-red-600"
+                    formData.isInsurance ? "text-text-green" : "text-red-600"
                   }`}
                 >
-                  {formData.IsInsurance ? "อยู่ในประกัน" : "ไม่อยู่ในประกัน"}
+                  {formData.isInsurance ? "อยู่ในประกัน" : "ไม่อยู่ในประกัน"}
                 </div>
                 <div className="text-text-gray flex items-center">
                   รหัสกลุ่มครุภัณฑ์

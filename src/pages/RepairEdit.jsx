@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import Selector from "../components/selector/Selector";
-import { getRepairById } from "../api/repairApi";
+import { getRepairById, updateRepair } from "../api/repairApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
@@ -19,7 +19,7 @@ const RepairEdit = () => {
     urgentStatus: "",
     informRepairDate: new Date(),
     assetNumber: "",
-    IsInsurance: "",
+    isInsurance: "",
     assetGroupNumber: "",
     hostSector: "",
     productName: "",
@@ -69,7 +69,7 @@ const RepairEdit = () => {
     Object.entries(formData).forEach(([key, value]) => {
       if (key === "asset01" || key === "costCenterCode" || key === "status") {
       } else {
-        if (!value) {
+        if (value === "") {
           isError = true;
           console.log(`Key: ${key}, Value: ${value}`);
           setError(true);
@@ -88,12 +88,12 @@ const RepairEdit = () => {
     let submitFormData = { ...formData, status: valStatus || "waiting" };
     console.log("submitFormData", submitFormData);
 
-    const response = await createRepair({
+    const response = await updateRepair(repairId,{
       input: submitFormData,
     });
     console.log(response);
 
-    if (response.data.message.includes("create repair successfully")) {
+    if (response.data.message.includes("update repair successfully")) {
       setShowModalConfirm(false);
       setShowModalSuccess(true);
     }
@@ -132,18 +132,32 @@ const RepairEdit = () => {
     const arrBuilding = formArrayOption(building.data);
     // console.log("arrBuilding", arrBuilding);
     setBuildingList(arrBuilding);
+    const assets = await getAllAssetForRepairDropdown();
+    const sectors = await getSector();
+    const arrAsset = formAssetArrayOption(assets.data.assets);
+    // console.log("arrAsset", arrAsset);
+    setAssetList(arrAsset);
+
+    const arrSector = formArrayOption(sectors.data.sector);
+    // console.log("arrSector",arrSector);
+    setSectorList(arrSector);
+
+    const user = await getUserRepairDropdown();
+    const userArray = formNameRecorderArrayOption(user.data.user);
+    // console.log("userArray", userArray);
+    setNameRecorderList(userArray);
+    setNameCourierList(userArray);
     const res = await getRepairById(repairId);
-    // console.log(res.data.repair);
     const repair = res.data.repair;
-    // console.log("repair",repair);
-    console.log("repair.room",repair.room);
+    console.log("repair",repair);
+    console.log("repair.assetNumber",repair.assetNumber);
 
     setFormData({
       informRepairIdDoc: repair?.informRepairIdDoc,
       urgentStatus: repair?.urgentStatus,
       informRepairDate: new Date(repair?.informRepairDate),
       assetNumber: repair?.assetNumber,
-      IsInsurance: repair?.IsInsurance,
+      isInsurance: repair?.isInsurance,
       assetGroupNumber: repair?.assetGroupNumber,
       hostSector: repair?.hostSector,
       productName: repair?.productName,
@@ -163,21 +177,7 @@ const RepairEdit = () => {
       problemDetail: repair?.problemDetail,
       status: repair?.status,
     });
-    const assets = await getAllAssetForRepairDropdown();
-    const sectors = await getSector();
-    const arrAsset = formAssetArrayOption(assets.data.assets);
-    // console.log("arrAsset", arrAsset);
-    setAssetList(arrAsset);
-
-    const arrSector = formArrayOption(sectors.data.sector);
-    // console.log("arrSector",arrSector);
-    setSectorList(arrSector);
-
-    const user = await getUserRepairDropdown();
-    const userArray = formNameRecorderArrayOption(user.data.user);
-    // console.log("userArray", userArray);
-    setNameRecorderList(userArray);
-    setNameCourierList(userArray);
+   
     setIsLoading(false);
   };
 
@@ -190,12 +190,14 @@ const RepairEdit = () => {
   }, []);
 
   useEffect(() => {
+    console.log("formData assetNumber effect",formData);
+    
     if (formData.assetNumber) {
       assetList?.map((list) => {
         if (list.value == formData.assetNumber) {
           setFormData({
             ...formData,
-            IsInsurance: list.ele.isInsurance,
+            isInsurance: list.ele.isInsurance,
             assetGroupNumber: list.ele.assetGroupNumber,
             hostSector: list.ele.sector,
             productName: list.ele.productName,
@@ -208,7 +210,7 @@ const RepairEdit = () => {
     } else {
       setFormData({
         ...formData,
-        IsInsurance: "",
+        isInsurance: "",
         assetGroupNumber: "",
         hostSector: "",
         productName: "",
@@ -287,15 +289,20 @@ const RepairEdit = () => {
     }
   }, [formData.repairSector]);
 
+  useEffect(()=>{
+console.log("formData",formData);
+
+  },[formData])
+
   return (
     <>
       <form name="form" onSubmit={handleSubmitForValidate}>
         <div className="bg-background-page pt-5 p-3">
           {/* Header */}
           <div>
-            {/* เพิ่มการซ่อมบำรุง */}
+            {/* แก้ไขการแจ้งซ่อมบำรุง */}
             <div className="text-2xl text-text-green flex items-center space-x-5 ">
-              <h1>เพิ่มการซ่อมบำรุง</h1>
+              <h1>แก้ไขการแจ้งซ่อมบำรุง</h1>
             </div>
             {/* navigate link */}
             <div className="flex pt-3">
@@ -308,7 +315,7 @@ const RepairEdit = () => {
                   Home
                 </Link>
                 <div className="text-text-gray">/</div>
-                <div className="text-text-gray ml-2">เพิ่มการซ่อมบำรุง</div>
+                <div className="text-text-gray ml-2">แก้ไขการแจ้งซ่อมบำรุง</div>
               </div>
             </div>
             {/* status */}
@@ -433,12 +440,12 @@ const RepairEdit = () => {
                     </div>
                     <div
                       className={`flex items-center ${
-                        formData.IsInsurance
+                        formData.isInsurance
                           ? "text-text-green"
                           : "text-red-600"
                       }`}
                     >
-                      {formData.IsInsurance
+                      {formData.isInsurance
                         ? "อยู่ในประกัน"
                         : "ไม่อยู่ในประกัน"}
                     </div>
@@ -757,7 +764,7 @@ const RepairEdit = () => {
               onSave={handleSubmit}
             />
 
-            {showModalSuccess && <ModalSuccess urlPath="/repairRecord" />}
+            {showModalSuccess && <ModalSuccess urlPath="/repairIndex" />}
           </div>
         </div>
       </form>
