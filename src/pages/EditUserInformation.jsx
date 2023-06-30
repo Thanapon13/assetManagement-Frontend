@@ -146,9 +146,15 @@ function EditUserInformation() {
         ...prevState,
         [e.target.name]: e.target.value,
       }));
-
     }
+    if (e.target.ariaAutoComplete == "list") setOnInputAdr(e.target.name)
   };
+  const [onInputAdr, setOnInputAdr] = useState("")
+  const addressClass = {
+    outline: "none",
+    width: "100%",
+    height: "38px"
+  }
 
   const onSelectAddress = ({ subdistrict, district, province, zipcode }) => {
     setInput({ ...input, subdistrict, district, province, zipcode });
@@ -557,12 +563,10 @@ function EditUserInformation() {
               </div>
             </div>
 
-            {/* ที่อยู่ */}
             <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
               <div>ที่อยู่</div>
               <div className="grid grid-cols-1 md:grid-cols-3 md:gap-x-5 gap-y-3 mt-3 text-xs">
                 <div className="grid grid-cols-3 gap-x-5">
-                  {/* บ้านเลขที่ */}
                   <div className="col-span-2">
                     <div className="mb-1">บ้านเลขที่</div>
                     <input
@@ -574,7 +578,6 @@ function EditUserInformation() {
                       className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.houseNo && 'border-red-500'} `}
                     />
                   </div>
-                  {/* หมู่ที่ */}
                   <div className="">
                     <div className="mb-1">หมู่ที่</div>
                     <input
@@ -587,7 +590,6 @@ function EditUserInformation() {
                     />
                   </div>
                 </div>
-                {/* ซอย */}
                 <div>
                   <div className="mb-1">ซอย</div>
                   <input
@@ -599,7 +601,6 @@ function EditUserInformation() {
                     className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.soi && 'border-red-500'} `}
                   />
                 </div>
-                {/* ซอย (แยก) */}
                 <div>
                   <div className="mb-1">ซอย (แยก)</div>
                   <input
@@ -611,7 +612,6 @@ function EditUserInformation() {
                     className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.separatedSoi && 'border-red-500'} `}
                   />
                 </div>
-                {/* ถนน */}
                 <div>
                   <div className="mb-1">ถนน</div>
                   <input
@@ -623,7 +623,6 @@ function EditUserInformation() {
                     className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.road && 'border-red-500'} `}
                   />
                 </div>
-                {/* หมู่บ้าน */}
                 <div>
                   <div className="mb-1">หมู่บ้าน</div>
                   <input
@@ -635,7 +634,6 @@ function EditUserInformation() {
                     className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${!input.village && 'border-red-500'} `}
                   />
                 </div>
-                {/* เขต / อำเภอ */}
                 <div className="w-full">
                   <div className="mb-1">เขต / อำเภอ</div>
                   {/* <input
@@ -653,7 +651,8 @@ function EditUserInformation() {
                       value={input?.district}
                       onChange={onChange}
                       onSelect={onSelectAddress}
-                      filter={(items) =>
+                      filter={(items) => {
+                        if (onInputAdr == "district") return
                         items.filter(
                           (item) =>
                             (!input?.district ||
@@ -665,13 +664,12 @@ function EditUserInformation() {
                             (!input?.zipcode ||
                               item?.zipcode?.includes(input?.zipcode))
                         )
-                      }
+                      }}
                       // className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                      style={{ width: "100% !important", display: "inline" }}
+                      style={addressClass}
                     />
                   </div>
                 </div>
-                {/* แขวง / ตำบล */}
                 <div>
                   <div className="mb-1">แขวง / ตำบล</div>
                   {/* <input
@@ -688,21 +686,21 @@ function EditUserInformation() {
                     value={input?.subdistrict}
                     onChange={onChange}
                     onSelect={onSelectAddress}
-                    filter={(items) =>
-                      console.log(items)
-                      // items.filter(
-                      //   (item) =>
-                      //     // (!district || item.district.includes(district)) &&
-                      //     (!input?.subdistrict ||
-                      //       item?.subdistrict?.includes(input?.subdistrict)) &&
-                      //     (!input?.province ||
-                      //       item.province.includes(input?.province)) &&
-                      //     (!input?.zipcode || item?.zipcode?.includes(input?.zipcode))
-                      // )
+                    filter={(items) => {
+                      if (onInputAdr == "subdistrict") return
+                      items.filter(
+                        (item) =>
+                          // (!district || item.district.includes(district)) &&
+                          (!input?.subdistrict ||
+                            item?.subdistrict?.includes(input?.subdistrict)) &&
+                          (!input?.province ||
+                            item.province.includes(input?.province)) &&
+                          (!input?.zipcode || item?.zipcode?.includes(input?.zipcode))
+                      )}
                     }
+                    style={addressClass}
                   />
                 </div>
-                {/* จังหวัด */}
                 <div>
                   <div className="mb-1">จังหวัด</div>
                   {/* <input
@@ -720,7 +718,8 @@ function EditUserInformation() {
                     onChange={onChange}
                     onSelect={onSelectAddress}
                     // filter={(items) => items.filter(item => item.province !== 'กรุงเทพมหานคร')}
-                    filter={(items) =>
+                    filter={(items) =>{
+                      if (onInputAdr == "province") return
                       items.filter(
                         (item) =>
                           (!input?.district ||
@@ -730,11 +729,11 @@ function EditUserInformation() {
                           (!input?.province ||
                             item?.province?.includes(input?.province)) &&
                           (!input?.zipcode || item?.zipcode?.includes(input?.zipcode))
-                      )
+                      )}
                     }
+                    style={addressClass}
                   />
                 </div>
-                {/* รหัสไปรษณีย์ */}
                 <div>
                   <div className="mb-1">รหัสไปรษณีย์</div>
                   {/* <input
@@ -751,7 +750,8 @@ function EditUserInformation() {
                     value={input?.zipcode}
                     onChange={onChange}
                     onSelect={onSelectAddress}
-                    filter={(items) =>
+                    filter={(items) =>{
+                      if (onInputAdr == "zipcode") return
                       items.filter(
                         (item) =>
                           (!input?.district ||
@@ -761,8 +761,9 @@ function EditUserInformation() {
                           (!input?.province ||
                             item?.province?.includes(input?.province)) &&
                           (!input?.zipcode || item?.zipcode?.includes(input?.zipcode))
-                      )
-                    }
+                          )}
+                        }
+                        style={addressClass}
                   />
                 </div>
               </div>

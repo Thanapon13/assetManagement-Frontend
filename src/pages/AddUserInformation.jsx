@@ -74,7 +74,7 @@ function AddUserInformation() {
     note: "",
     status: false,
   });
-
+  const [onInputAdr, setOnInputAdr] = useState("")
   const [toggle, setToggle] = useState(false);
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [showModalSuccess, setShowModalSuccess] = useState(false);
@@ -117,6 +117,7 @@ function AddUserInformation() {
   }
 
   const onChange = (e) => {
+    if (e.target.ariaAutoComplete == "list") setOnInputAdr(e.target.name)
     if (e.target.name === "status") {
       setInput((prevState) => ({
         ...prevState,
@@ -166,6 +167,11 @@ function AddUserInformation() {
     // if (value) setInput(clone)
   }
 
+  const addressClass = {
+    outline: "none",
+    width: "100%",
+    height: "38px"
+  }
   return (
     <form>
       <div className="bg-background-page px-5 pt-10 pb-10">
@@ -537,7 +543,6 @@ function AddUserInformation() {
           </div>
         </div>
 
-        {/* ที่อยู่ */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
           <div>ที่อยู่</div>
           <div className="grid grid-cols-1 md:grid-cols-3 md:gap-x-5 gap-y-3 mt-3 text-xs">
@@ -615,7 +620,7 @@ function AddUserInformation() {
                 className={`w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${errorInput && !input.village && 'border-red-500'} `}
               />
             </div>
-            {/* เขต / อำเภอ */}
+
             <div className="w-full">
               <div className="mb-1">เขต / อำเภอ</div>
               {/* <input
@@ -633,7 +638,8 @@ function AddUserInformation() {
                   value={input?.district}
                   onChange={onChange}
                   onSelect={onSelectAddress}
-                  filter={(items) =>
+                  filter={(items) => {
+                    if (onInputAdr == "district") return
                     items.filter(
                       (item) =>
                         (!input?.district ||
@@ -646,12 +652,13 @@ function AddUserInformation() {
                           item?.zipcode?.includes(input?.zipcode))
                     )
                   }
+                  }
                   // className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-                  style={{ width: "100% !important", display: "inline" }}
+                  style={addressClass}
                 />
               </div>
             </div>
-            {/* แขวง / ตำบล */}
+         
             <div>
               <div className="mb-1">แขวง / ตำบล</div>
               {/* <input
@@ -668,21 +675,21 @@ function AddUserInformation() {
                 value={input?.subdistrict}
                 onChange={onChange}
                 onSelect={onSelectAddress}
-                filter={(items) =>
-                  console.log(items)
-                  // items.filter(
-                  //   (item) =>
-                  //     // (!district || item.district.includes(district)) &&
-                  //     (!input?.subdistrict ||
-                  //       item?.subdistrict?.includes(input?.subdistrict)) &&
-                  //     (!input?.province ||
-                  //       item.province.includes(input?.province)) &&
-                  //     (!input?.zipcode || item?.zipcode?.includes(input?.zipcode))
-                  // )
+                filter={(items) => {
+                  if (onInputAdr == "subdistrict") return
+                  items.filter(
+                    (item) =>
+                      // (!district || item.district.includes(district)) &&
+                      (!input?.subdistrict ||
+                        item?.subdistrict?.includes(input?.subdistrict)) &&
+                      (!input?.province ||
+                        item.province.includes(input?.province)) &&
+                      (!input?.zipcode || item?.zipcode?.includes(input?.zipcode))
+                  )}
                 }
+                style={addressClass}
               />
             </div>
-            {/* จังหวัด */}
             <div>
               <div className="mb-1">จังหวัด</div>
               {/* <input
@@ -700,7 +707,8 @@ function AddUserInformation() {
                 onChange={onChange}
                 onSelect={onSelectAddress}
                 // filter={(items) => items.filter(item => item.province !== 'กรุงเทพมหานคร')}
-                filter={(items) =>
+                filter={(items) =>{
+                  if (onInputAdr == "province") return
                   items.filter(
                     (item) =>
                       (!input?.district ||
@@ -710,11 +718,12 @@ function AddUserInformation() {
                       (!input?.province ||
                         item?.province?.includes(input?.province)) &&
                       (!input?.zipcode || item?.zipcode?.includes(input?.zipcode))
-                  )
+                  )}
                 }
+                style={addressClass}
               />
             </div>
-            {/* รหัสไปรษณีย์ */}
+          
             <div>
               <div className="mb-1">รหัสไปรษณีย์</div>
               {/* <input
@@ -731,7 +740,8 @@ function AddUserInformation() {
                 value={input?.zipcode}
                 onChange={onChange}
                 onSelect={onSelectAddress}
-                filter={(items) =>
+                filter={(items) =>{
+                  if (onInputAdr == "zipcode") return
                   items.filter(
                     (item) =>
                       (!input?.district ||
@@ -741,14 +751,14 @@ function AddUserInformation() {
                       (!input?.province ||
                         item?.province?.includes(input?.province)) &&
                       (!input?.zipcode || item?.zipcode?.includes(input?.zipcode))
-                  )
+                  )}
                 }
+                style={addressClass}
               />
             </div>
           </div>
         </div>
 
-        {/* ข้อมูลการติดต่อ */}
         <div className="bg-white rounded-lg mx-10 mt-3 mb-10 p-3">
           <div className="font-semibold">ข้อมูลการติดต่อ</div>
           <div className="grid grid-cols-1 sm:grid-cols-4 sm:gap-x-5 gap-y-3 mt-3 text-xs">
@@ -826,9 +836,9 @@ function AddUserInformation() {
               <div className="mb-1">กำหนด Role ผู้ใช้งาน</div>
               <SearchSelector
                 options={roleList}
-                name="userType"
+                name="role"
                 onChange={handleSelect}
-                // error={error && !input?.docterType}
+                error={errorInput && !input?.role}
                 noClearButton
                 value={input?.role && { label: input?.role, value: input?.role }}
               />
@@ -840,7 +850,7 @@ function AddUserInformation() {
                 options={doctorTypeList}
                 name="doctorType"
                 onChange={handleSelect}
-                error={errorInput && !input?.doctorType}
+                // error={errorInput && !input?.doctorType}
                 noClearButton
               // value={input?.docterType && { label: input?.docterType, value: input?.docterType }}
               />
@@ -852,7 +862,7 @@ function AddUserInformation() {
                 options={medicalFieldList}
                 name="medicalField"
                 onChange={handleSelect}
-                error={errorInput && !input?.medicalField}
+                // error={errorInput && !input?.medicalField}
                 noClearButton
               // value={input?.medicalField && { label: input?.medicalField, value: input?.medicalField }}
               />
