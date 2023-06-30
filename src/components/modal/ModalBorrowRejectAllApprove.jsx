@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { rejectAllWaitingBorrow } from "../../api/borrowApi";
 import DropdownModalBorrowApprove from "../dropdown/DropdownModalBorrowApprove";
+import { IoIosClose } from "react-icons/io";
 
 const ModalBorrowRejectAllApprove = ({
   state,
@@ -82,12 +83,14 @@ const ModalBorrowRejectAllApprove = ({
                     />
                   </div>
                   <button
-                    className="border-0 text-black float-right"
+                    // className="border-0 text-black float-right"
                     onClick={() => setShowModal(false)}
+                    className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
                   >
-                    <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
+                    <IoIosClose className="text-2xl" />
+                    {/* <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
                       x
-                    </span>
+                    </span> */}
                   </button>
                 </div>
                 {/* body */}
@@ -99,7 +102,7 @@ const ModalBorrowRejectAllApprove = ({
                 {/* footer */}
                 <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
                   <button
-                    className="px-10 py-2 border-[1px] shadow-sm rounded-md "
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md hover:bg-gray-200"
                     type="button"
                     onClick={() => setShowModal(false)}
                   >
