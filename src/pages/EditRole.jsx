@@ -72,28 +72,27 @@ export const EditRole = () => {
 
   const onChange = (checkAll, element) => {
     const array = accessScreen
+    const arr = []
     if (element.submenu) {
       if (!checkAll) {
         element.submenu?.map(sub => {
-          if (!accessScreen.find(val => val == sub.name)) {
-            array.push({ name: sub.name, order: element.order })
+          if (!accessScreen.find(val => val.name == sub.name)) {
+            arr.push({ name: sub.name, order: element.order })
           }
         })
-        console.log(array)
-        setAccessScreen(array)
+        setAccessScreen(arr.concat(accessScreen))
       } else {
-        const arr = []
-        accessScreen.map(ele => {
-          if (!element.submenu.find(sub => (ele == sub.name))) arr.push(ele)
+        let permis = accessScreen
+        element.submenu?.map(sub => {
+          permis = permis.filter(p => p.name != sub.name)
         })
-        setAccessScreen(arr)
+        setAccessScreen(permis)
       }
     } else {
       onChangeSubmenu(checkAll, element.name)
     }
   }
   const onChangeSubmenu = (check, value) => {
-    console.log(check, value)
     if (check) {
       const arr = accessScreen.filter(ele => (ele.name != value.name))
       setAccessScreen(arr)
@@ -104,10 +103,8 @@ export const EditRole = () => {
   }
 
   function onChangeAll(e) {
-    console.log(e)
     if (e.target.checked) {
       const all = []
-      // screenData.map(ele => all.push(ele.name))
       screenData.map(ele => {
         if (!ele.submenu) {
           all.push({ name: ele.name, order: ele.order })
@@ -115,7 +112,6 @@ export const EditRole = () => {
           ele.submenu.forEach(sub => all.push({ name: sub.name, order: ele.order }))
         }
       })
-      console.log(all)
       setAccessScreen(all)
     } else {
       setAccessScreen([])
@@ -533,7 +529,7 @@ export const EditRole = () => {
 }
 
 function ScreenAll(props) {
-  const { ele, permission, screenData, onChange, onChangeSubmenu, collapseAll, allScreenLength } = props
+  const { ele, permission, screenData, onChange, onChangeSubmenu, collapseAll, allScreenLength, } = props
   const checkMain = permission?.find(el => el === ele.name)
   const subelement = screenData.filter(el => el.main !== true && el.main === ele.url)
   const [collapse, setCollapse] = useState(false)
@@ -541,7 +537,7 @@ function ScreenAll(props) {
 
   useEffect(() => {
     if (!ele.submenu) {
-      if (permission?.find(el => el.name == ele.name)) setCheckAll(true)
+      if (permission?.find(el => el == ele.name)) setCheckAll(true)
     } else {
       findCheckAll()
     }
@@ -560,9 +556,8 @@ function ScreenAll(props) {
     let num = 0
     const array = arr || permission
     ele.submenu?.map(sub => {
-      if (array?.find(el => el.name == sub.name)) num += 1
+      if (array?.find(el => el == sub.name)) num += 1
     })
-    console.log(num, ele.submenu)
     setCheckAll(num === ele.submenu.length)
   }
 
@@ -578,6 +573,13 @@ function ScreenAll(props) {
   useEffect(() => {
     if (allScreenLength == permission?.length) {
       setCheckAll(true)
+    } else if (ele.submenu) {
+      let findAllSub = true
+      ele.submenu.map(element => {
+        if (!findAllSub) return
+        if (!permission.find(p => p.name == element.name)) findAllSub = false
+      })
+      setCheckAll(findAllSub)
     }
   }, [permission?.length])
 
@@ -585,7 +587,8 @@ function ScreenAll(props) {
     <div className='text-text-gray'>
       <div className='flex justify-between mt-1'>
         <div className={`${checkAll && 'text-black'} hover:cursor-pointer hover:text-black`}
-          onClick={() => onChangeAll()}>
+        // onClick={() => onChangeAll()}
+        >
           <input type="checkbox" value={ele.name} className='mx-2 rounded text-lg'
             onChange={onChangeAll} // 
             checked={checkAll}
@@ -600,15 +603,16 @@ function ScreenAll(props) {
           }
         </div>
       </div>
-      <div className={`ml-5 duration-500 transition-all overflow-hidden ${collapse ? 'max-h-0 ease-out' : 'max-h-screen ease-in'}`}>
+      <div className={`ml-3 duration-500 transition-all overflow-hidden ${collapse ? 'max-h-0 ease-out' : 'max-h-screen ease-in'}`}>
         {ele.submenu?.map((submenu, index) => {
           const check = permission.find(el => el.name === submenu.name)
           return (
             <div key={index} className={`ml-5 my-1 ${checkMain && 'text-black'} hover:cursor-pointer hover:text-black`}
-              onClick={() => onChangeSub(check, submenu.name, ele.order)} >
-              <input type="checkbox" checked={check} value={submenu.name} className='mx-2 rounded'
-                onChange={() => onChangeSub(check, submenu.name, ele.order)} />
-              {submenu.name}
+            // onClick={() => onChangeSub(check, submenu.name, ele.order)}
+            >
+              <input type="checkbox" checked={check ? true : false} value={submenu.name} className='mx-2 rounded'
+                onChange={() => onChangeSub(check, submenu?.name, ele?.order)} />
+              {submenu.name} {check&& ele?.order}
             </div>
           )
         })}
