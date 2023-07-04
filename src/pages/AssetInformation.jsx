@@ -59,32 +59,82 @@ const AssetInformation = () => {
   }, []);
 
   async function initData() {
+    const types = await getTypeData()
+    const arrType = formArrayOption(types.data.type)
+    setTypeList(arrType)
+    const kinds = await getKindAll()
+    const arrKind = formArrayOption(kinds.data.kind)
+    setKindList(arrKind)
+    const categorys = await getCategory()
+    const arrCategory = formArrayOption(categorys.data.category)
+    setCategoryList(arrCategory)
     const res = await getAssetById(param.id);
-    console.log(res.data.asset)
-    setInput(res.data.asset[0])
-    setGenData(res.data.asset[0]?.genDataArray || [])
-    const docs = res.data.asset[0]?.documentArray
+    const asset = res.data.asset[0]
+
+    const type = arrType.find(ele => ele.value == asset.type)
+    const kind =arrKind.find(ele => ele.value == asset.kind)
+    const category =arrCategory.find(ele => ele.value == asset.category)
+    setInput({
+      engProductName: asset.engProductName,
+      productName: asset.productName,
+      realAssetId: asset.realAssetId,
+      unit: asset.unit,
+      brand: asset.brand,
+      model: asset.model,
+      size: asset.size,
+      quantity: asset.quantity,
+      source: asset.source,
+      category: asset.category,
+      acquiredType: asset.acquiredType,
+      group: asset.group,
+      pricePerUnit: asset.pricePerUnit,
+      guaranteedMonth: asset.guaranteedMonth,
+      purposeOfUse: asset.purposeOfUse,
+      assetGroupNumber: asset.assetGroupNumber,
+      distributeToSector: asset.distributeToSector,
+      // ...asset,
+      type: { label: type.label,value: type.ele.value, name: asset.type } || { label: asset.type, name: asset.type },
+      kind: { label: kind.label,value: kind.ele.value, name: asset.kind } || { label: asset.kind, name: asset.kind },
+      category: { label: category.label,value: category.ele.value, name: asset.category } || { label: asset.category, name: asset.category },
+    })
+
+    setInputContract({
+      ...asset?.purchaseContract,
+      receivedDate: new Date(asset?.purchaseContract.receivedDate),
+      purchaseYear: new Date(asset?.purchaseContract.purchaseYear),
+      purchaseDate: new Date(asset?.purchaseContract.purchaseDate),
+      documentDate: new Date(asset?.purchaseContract.documentDate),
+    })
+    setInputSale({
+      ...asset?.distribution,
+      distributeDocumentDate: new Date(asset?.distribution.distributeDocumentDate),
+      distributeApprovalReleaseDate: new Date(asset?.distribution.distributeApprovalReleaseDate),
+    })
+    setGenData(asset?.genDataArray || [])
+    const docs = asset?.documentArray
     docs.map(ele => {
       const name = ele.document
       ele.document = { name: name }
     })
     setArrayDocument(docs)
-    setArrayImage(res.data.asset[0]?.imageArray)
+    setArrayImage(asset?.imageArray)
   }
 
   const getMasterData = async () => {
-    const type = await getTypeData()
-    const arrType = formArrayOption(type.data.type)
-    setTypeList(arrType)
-    const kind = await getKindAll()
-    const arrKind = formArrayOption(kind.data.kind)
-    setKindList(arrKind)
+    if (!param.id) {
+      const type = await getTypeData()
+      const arrType = formArrayOption(type.data.type)
+      setTypeList(arrType)
+      const kind = await getKindAll()
+      const arrKind = formArrayOption(kind.data.kind)
+      setKindList(arrKind)
+      const category = await getCategory()
+      const arrCategory = formArrayOption(category.data.category)
+      setCategoryList(arrCategory)
+    }
     const brand = await getBrandData()
     const arrBrand = formArrayOption(brand.data.brand)
     setBrandList(arrBrand)
-    const category = await getCategory()
-    const arrCategory = formArrayOption(category.data.category)
-    setCategoryList(arrCategory)
     const group = await getGroupData()
     const arrGroup = formArrayOption(group.data.group)
     setGroupList(arrGroup)
@@ -127,7 +177,7 @@ const AssetInformation = () => {
     if (label == "kind" || label == "type" || label == "category") {
       setInput({ ...input, [label]: ele })
     } else {
-    setInput({ ...input, [label]: value })
+      setInput({ ...input, [label]: value })
     }
   }
 
@@ -502,13 +552,13 @@ const AssetInformation = () => {
     let errInput, errContact, errSale, errTable
     // checkError
     console.log({ input, ...inputSale, ...inputContract });
-    Object.values(input).map((value, index) => {
-      if (errInput) return
+    Object.entries(input).forEach(([key, value], index) => {
+      if (errInput || key == "distributeToSector") return
       if (!value) errInput = true
-      if (Object.keys(input).length > index + 2) errInput = false
+      // if (Object.keys(input).length > index + 2) errInput = false
     })
     genData.map(ele => {
-      if (!ele.sector) errTable = true
+      if (!ele.sector || !ele.serialNumber) errTable = true
       // Object.values(ele).map((value, index) => {
       //   if (errTable || Object.keys(ele).length == index + 1) return
       //   if (!value) errTable = true
@@ -519,10 +569,10 @@ const AssetInformation = () => {
       if (!value) errContact = true
       if (Object.keys(inputContract).length == index + 1) errContact = false
     })
-    Object.values(inputSale).map((value, index) => {
-      if (errSale) return
+    Object.entries(inputSale).forEach(([key, value], index) => {
+      if (errSale || key == "distributionNote") return
       if (!value) errSale = true
-      if (Object.keys(inputSale).length == index + 1) errSale = false
+      // if (Object.keys(inputSale).length == index + 2) errSale = false
     })
     if (errInput) {
       setErrorGen(false)
@@ -530,9 +580,10 @@ const AssetInformation = () => {
       window.scrollTo({ top: 180, behavior: "smooth", });
     }
     setErrorAssestTable(errTable)
+    console.log(errInput, errContact, errSale, genData)
     if (errContact) setErrorContract(true)
     if (errSale) setErrorSale(true)
-    if (!(errInput || errContact || errSale)) setShowModalConfirm(true)
+    if (!(errInput || errContact || errSale || errTable)) setShowModalConfirm(true)
   }
 
   const submit = async (valStatus) => {
@@ -546,9 +597,10 @@ const AssetInformation = () => {
       category: input.category?.name,
       kind: input.kind?.name,
       type: input.type?.name,
-      status: valStatus || "not approve",
+      status: valStatus || "inStock",
       // existArrayDocument: [],
     });
+    
     const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
     formData.append("input", inputJSON);
