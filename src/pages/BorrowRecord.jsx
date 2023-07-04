@@ -14,10 +14,10 @@ import { getByAssetNumberSelector, getByProductSelector } from "../api/assetApi"
 
 const BorrowRecord = () => {
   const [countRow, setCountRow] = useState(1);
-
+  const [isLoading, setIsLoading] = useState(true)
   const [input, setInput] = useState({
     // ข้อมูลการยืม
-    borrowIdDoc: 'x',
+    borrowIdDoc: '',
     pricePerDay: "0",
     borrowDate: new Date(),
     borrowSetReturnDate: "",
@@ -106,6 +106,7 @@ const BorrowRecord = () => {
     })
     console.log(arrAsset)
     setAssetList(arrAsset)
+    setAssetListFilt(arrAsset)
     const resProduct = await getByProductSelector("")
     const arrProduct = []
     resProduct.data.asset.map(ele => {
@@ -114,18 +115,24 @@ const BorrowRecord = () => {
     setProductList(arrProduct)
 
     assetList?.find(list => console.log(list.value, search.assetNumber))
+    setIsLoading(false)
   }
 
+  const [assetListFilt, setAssetListFilt] = useState([])
   function callbackList() {
-    console.log('saveAssetWithdrawTableArray', saveAssetWithdrawTableArray)
-    console.log(assetList, productList)
-    let asset = [], product = []
-    saveAssetWithdrawTableArray?.map(ele => {
-      asset = assetList.filter(ass => ele.assetNumber != ass.value)
-      product = productList.filter(ass => ele.productName != ass.value)
-    })
-    setAssetList(asset)
-    setProductList(product)
+    let asset = [], product = [], countVal = 0
+
+    saveAssetWithdrawTableArray?.map((ele,index) => {
+      if(ele.assetNumber) countVal += 1
+      console.log('-------', ele.assetNumber, countVal, index)
+      // asset = assetList.filter(ass => ele.assetNumber != ass.value)
+      // if(assetList.find(ass => ass.value == ele.assetNumber)) {
+        if(countVal == index+1) {
+        console.log(assetList.filter(ass => ass.value != ele.assetNumber).length, assetList.filter(ass => ass.value != ele.assetNumber))
+        setAssetListFilt(assetList.filter(ass => ass.value != ele.assetNumber))
+      }
+   })
+    // setProductList(product)
   }
 
   function formArrayOption(data) {
@@ -320,7 +327,7 @@ const BorrowRecord = () => {
             <div className="text-text-gray ml-2">บันทึกใบยืมครุภัณฑ์</div>
           </div>
         </div>
-        {/* ข้อมูลการยืมครุภัณฑ์ */}
+
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
           <div className="text-xl">ข้อมูลการยืมครุภัณฑ์</div>
           {/* Row 1 เลขที่เอกสารการยืม */}
@@ -332,7 +339,6 @@ const BorrowRecord = () => {
               </label>
               <input
                 type="text"
-                placeholder="Example"
                 readOnly
                 value={input.borrowIdDoc}
                 className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
@@ -342,7 +348,6 @@ const BorrowRecord = () => {
               <label className="text-text-gray">ราคายืม (ต่อวัน)</label>
               <input
                 type="text"
-                placeholder="Example"
                 readOnly
                 value={input.pricePerDay.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
@@ -381,8 +386,8 @@ const BorrowRecord = () => {
               <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
                 <div className="grid grid-cols-13 gap-2 text-center">
                   {/* <div className="col-span-2 grid grid-cols-3 gap-5 "> */}
-                    <div className="ml-2 col-span-1 ">ลำดับ</div>
-                    <div className="col-span-2 ">เลขครุภัณฑ์</div>
+                  <div className="ml-2 col-span-1 ">ลำดับ</div>
+                  <div className="col-span-2 ">เลขครุภัณฑ์</div>
                   {/* </div> */}
                   <div className="col-span-3">ชื่อครุภัณฑ์</div>
                   <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
@@ -394,6 +399,8 @@ const BorrowRecord = () => {
                 </div>
               </div>
               {saveAssetWithdrawTableArray?.map((el, idx) => {
+                const lists = assetListFilt == null ?  assetList : assetListFilt
+                // console.log(lists, assetList, assetListFilt)
                 return (
                   <TableBorrowRecord
                     key={idx}
@@ -402,7 +409,7 @@ const BorrowRecord = () => {
                     setSaveAssetWithdrawTableArray={setSaveAssetWithdrawTableArray}
                     deleteRow={deleteRow}
                     errorAssestTable={errorAssestTable}
-                    assetList={assetList}
+                    assetList={assetListFilt}
                     productList={productList}
                     callbackList={callbackList}
                   />
@@ -420,104 +427,108 @@ const BorrowRecord = () => {
             </div>
           </div>
         </div>
-        {/* รายละเอียดผู้ยืม */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-xl">รายละเอียดผู้ยืม</div>
-          {/* Row 1 หน่วยงาน */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <div className="flex flex-col gap-y-2 col-span-2">
-                <label className=" text-text-gray flex">
-                  หน่วยงาน
-                  <h1 className="text-red-500 ml-2 font-bold">*</h1>
-                </label>
+        {isLoading
+          ? ""
+          : <>
+            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+              <div className="text-xl">รายละเอียดผู้ยืม</div>
+              {/* Row 1 หน่วยงาน */}
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <div className="flex flex-col gap-y-2 col-span-2">
+                    <label className=" text-text-gray flex">
+                      หน่วยงาน
+                      <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                    </label>
+                  </div>
+                  <SearchSelector
+                    options={sectorList}
+                    name="sector"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={errorInput && !input.sector}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className="text-text-gray">ภาควิชา</label>
+                  <SearchSelector
+                    options={subSectorList}
+                    name="subSector"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={errorInput && !input.subSector}
+                  />
+                </div>
               </div>
-              <SearchSelector
-                options={sectorList}
-                name="sector"
-                onChange={handleSelect}
-                noClearButton
-                error={errorInput && !input.sector}
-              />
+              {/* Row 2 วัตถุประสงค์การขอยืม */}
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray">วัตถุประสงค์การขอยืม</label>
+                  <SearchSelector
+                    options={purposeOfUseList}
+                    name="borrowPurpose"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={errorInput && !input.borrowPurpose}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray">ผู้ดำเนินการ</label>
+                  <input
+                    type="text"
+                    name="handler"
+                    value={input.handler}
+                    onChange={handleChange}
+                    className={`${errorInput && !input.handler && 'border-red-500'} border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">ภาควิชา</label>
-              <SearchSelector
-                options={subSectorList}
-                name="subSector"
-                onChange={handleSelect}
-                noClearButton
-                error={errorInput && !input.subSector}
-              />
-            </div>
-          </div>
-          {/* Row 2 วัตถุประสงค์การขอยืม */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">วัตถุประสงค์การขอยืม</label>
-              <SearchSelector
-                options={purposeOfUseList}
-                name="borrowPurpose"
-                onChange={handleSelect}
-                noClearButton
-                error={errorInput && !input.borrowPurpose}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">ผู้ดำเนินการ</label>
-              <input
-                type="text"
-                name="handler"
-                value={input.handler}
-                onChange={handleChange}
-                className={`${errorInput && !input.handler && 'border-red-500'} border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
-              />
-            </div>
-          </div>
-        </div>
 
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-xl">สถานที่ตั้งใหม่</div>
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray flex">
-                อาคาร
-                <h1 className="text-red-500 ml-2 font-bold">*</h1>
-              </label>
-              <SearchSelector
-                options={buildingList}
-                name="building"
-                onChange={handleSelect}
-                noClearButton
-                error={errorInput && !input.building}
-              />
+            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+              <div className="text-xl">สถานที่ตั้งใหม่</div>
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray flex">
+                    อาคาร
+                    <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                  </label>
+                  <SearchSelector
+                    options={buildingList}
+                    name="building"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={errorInput && !input.building}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-1">
+                  <label className="text-text-gray">ชั้น</label>
+                  <SearchSelector
+                    isDisabled={!input.building}
+                    options={floorList}
+                    onChange={handleSelect}
+                    name="floor"
+                    noClearButton
+                    error={errorInput && !input.floor}
+                    value={input.floor && floorList?.find(list => list.value == input.floor)}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-1">
+                  <label className="text-text-gray">ห้อง</label>
+                  <SearchSelector
+                    noClearButton
+                    name="room"
+                    options={roomList}
+                    onChange={handleSelect}
+                    isDisabled={!input.floor}
+                    error={errorInput && !input.room}
+                    value={input?.room && roomList?.find(list => list.value == input.room)}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col gap-y-2 col-span-1">
-              <label className="text-text-gray">ชั้น</label>
-              <SearchSelector
-                isDisabled={!input.building}
-                options={floorList}
-                onChange={handleSelect}
-                name="floor"
-                noClearButton
-                error={errorInput && !input.floor}
-                value={input.floor && floorList?.find(list => list.value == input.floor)}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-1">
-              <label className="text-text-gray">ห้อง</label>
-              <SearchSelector
-                noClearButton
-                name="room"
-                options={roomList}
-                onChange={handleSelect}
-                isDisabled={!input.floor}
-                error={errorInput && !input.room}
-                value={input?.room && roomList?.find(list => list.value == input.room)}
-              />
-            </div>
-          </div>
-        </div>
+          </>
+        }
       </div>
       {/* footer */}
       {/* <div className="bottom-0 bg-white  flex justify-end items-center gap-4 p-3 text-sm mr-3 "> */}

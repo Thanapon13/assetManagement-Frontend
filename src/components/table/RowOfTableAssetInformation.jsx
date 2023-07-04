@@ -85,10 +85,9 @@ function RowOfTableAssetInformation({
 
         <div className="flex relative col-span-2">
           <input
-            className={`w-full text-left  pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
-            // ${error && !genData[index]?.serialNumber && 'border-red-500'}
+            className={`w-full text-left  pl-3 flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue ${error && !genData[index]?.serialNumber && 'border-red-500'}`}
             onChange={handleChangeSerialNumber}
-            value={genData && genData[index]?.serialNumber}
+            // value={genData && genData[index]?.serialNumber} 
           />
           <div
             className="z-20 absolute top-1/2 right-0 transform -translate-x-1/2 -translate-y-1/2"
