@@ -53,3 +53,15 @@ export function getRepairOutsourceBySearch(options) {
 export function getRepairTechnicianBySearch(options) {
   return axios.get(`/repair/searchDetailRecord${getQueryString(options)}`)
 }
+
+export function updateStatusForGetJobRepair(id, status, reason) {
+  return axios.patch(`/repair/updateStatusForGetJob/${id}?status=${status}`, reason)
+}
+
+export function updateStatusForCheckJob(id) {
+  return axios.patch(`/repair/updateStatusForCheckJob/${id}`)
+}
+
+export function deleteRepair(id) {
+  return axios.patch(`/repair/delete/${id}`)
+}

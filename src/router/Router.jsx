@@ -70,6 +70,7 @@ import {
 
 import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
+import RepairOutSourceRecord from "../pages/RepairOutsourceRecord";
 
 const Router = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -195,13 +196,16 @@ const Router = () => {
             element={<RepairTechnicianIndex />}
           />
           <Route
-            path="repairTechnicianIndex/repairTechnicianRecord"
+            path="repairTechnicianIndex/repairTechnicianRecord/:id"
             element={<RepairTechnicianRecord />}
           />
           <Route
             path="repairTechnicianIndex/repairTechnicianDetail"
             element={<RepairTechnicianDetail />}
           />
+           <Route path="repairTechnicianIndex/repairDetail/:repairId" element={<RepairDetail />} />
+           <Route path="repairTechnicianIndex/repairTechnicianDetail/:repairId" element={<RepairDetail />} />
+           <Route path="repairTechnicianIndex/repairOutsourceRecord/:id" element={<RepairOutSourceRecord />} />
           <Route path="historyRepairIndex" element={<HistoryRepairIndex />} />
           <Route path="historyRepair/:id" element={<HistoryRepair />} />
           <Route path="repairOutsourceIndex" element={<RepairOutsourceIndex />} />
