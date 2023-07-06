@@ -5,14 +5,15 @@ import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { BsFillPencilFill, BsFillEyeFill } from 'react-icons/bs'
 import DateInput from '../components/date/DateInput'
-import { getRepairTechnicianBySearch } from '../api/repairApi'
+import { getRepairTechnicianBySearch, updateStatusForGetJobRepair } from '../api/repairApi'
 import SearchSelector from '../components/selector/SearchSelector'
+import ModalConfirmSave from '../components/modal/ModalConfirmSave'
 
 const RepairTechnicianIndex = () => {
   const [search, setSearch] = useState({
-    typeTextSearch: "assetNumber",
+    typeTextSearch: "informRepairIdDoc",
     textSearch: "",
-    status: "",
+    statusOfDetailRecord: "",
     dateFrom: "",
     dateTo: new Date(),
     sector: "",
@@ -27,7 +28,7 @@ const RepairTechnicianIndex = () => {
   }, [])
 
   async function fetchList() {
-    const res = await getRepairTechnicianBySearch()
+    const res = await getRepairTechnicianBySearch(search)
     setData(res.data.repair)
     console.log(res.data.repair)
     setSearch({
@@ -97,7 +98,22 @@ const RepairTechnicianIndex = () => {
         </div>
 
         <div className="md:col-span-3">
-          <Selector placeholder={'สถานะ'} />
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+            name="statusOfDetailRecord"
+            value={search.statusOfDetailRecord}
+            onChange={handleChange}
+          >
+            <option defaultValue value="">
+              สถานะทั้งหมด
+            </option>
+            <option value="waitTechnicianConfirm">รอช่างรับงาน</option>
+            <option value="inProgress">ดำเนินการ</option>
+            <option value="waiting">รอตรวจรับ</option>
+            <option value="complete">เสร็จสิ้น</option>
+            <option value="cancel">ยกเลิก</option>
+            <option value="saveDraft">แบบร่าง</option>
+          </select>
         </div>
 
         <div className="md:col-span-3 h-full ">
@@ -136,7 +152,7 @@ const RepairTechnicianIndex = () => {
           <button
             type="button"
             className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-          // onClick={handleSearch}
+            onClick={fetchList}
           >
             <div className="text-xl text-white">
               <AiOutlineSearch />
@@ -144,52 +160,54 @@ const RepairTechnicianIndex = () => {
           </button>
         </div>
       </div>
-      {/* table */}
-      <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
-        <div className="w-[1200px] lg:w-full lg:h-full h-[500px]">
-          <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
-          <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
-            {/* top bar */}
-            <div className="grid grid-cols-12 gap-2 h-12 items-center text-center">
-              <div className="col-span-1">วันที่แจ้ง</div>
-              <div className="col-span-2">เลขที่ใบแจ้งซ่อม</div>
-              <div className="col-span-1">รหัสครุภัณฑ์</div>
-              <div className="col-span-3">รายละเอียด</div>
-              <div className="col-span-1">หน่วยงานที่ส่งซ่อม</div>
-              <div className="col-span-1">สถานะความเร่งด่วน</div>
-              <div className="col-span-1">สถานะ</div>
-              <div className="col-span-2">Action</div>
-            </div>
-          </div>
-          <TableRepairTechnicianIndex data={data} />
 
-          <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-            <div className="flex mr-10 items-center">
-              <div>Rows per page:</div>
-              <select
-                id="limit"
-                name="limit"
-                className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={handlePagination}
-              >
-                <option value="5">5</option>
-                <option value="10" selected="selected"> 10 </option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
+      <div className='grid'>
+        <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
+          <div className="min-w-[1070px] lg:w-full lg:h-full h-[500px]">
+            <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
+            <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
+              {/* top bar */}
+              <div className="grid grid-cols-14 gap-2 h-12 items-center text-center">
+                <div className="col-span-1">วันที่แจ้ง</div>
+                <div className="col-span-2">เลขที่ใบแจ้งซ่อม</div>
+                <div className="col-span-2">เลขครุภัณฑ์</div>
+                <div className="col-span-3">รายละเอียด</div>
+                <div className="col-span-1">หน่วยงานที่ส่งซ่อม</div>
+                <div className="col-span-1">สถานะความเร่งด่วน</div>
+                <div className="col-span-2">สถานะ</div>
+                <div className="col-span-2"></div>
+              </div>
             </div>
+            <TableRepairTechnicianIndex data={data} fetchList={fetchList} />
 
-            <div className="mx-5">
-              {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + data.length} of {search.total}
+            <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+              <div className="flex mr-10 items-center">
+                <div>Rows per page:</div>
+                <select
+                  id="limit"
+                  name="limit"
+                  className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handlePagination}
+                >
+                  <option value="5">5</option>
+                  <option value="10" selected="selected"> 10 </option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+
+              <div className="mx-5">
+                {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + data.length} of {search.total}
+              </div>
+
+              <button className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
+                <HiChevronLeft className="text-lg" />
+              </button>
+              <button className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
+                <HiChevronRight className="text-lg" />
+              </button>
             </div>
-
-            <button className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
-              <HiChevronLeft className="text-lg" />
-            </button>
-            <button className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
-              <HiChevronRight className="text-lg" />
-            </button>
           </div>
         </div>
       </div>
@@ -197,7 +215,7 @@ const RepairTechnicianIndex = () => {
   )
 }
 
-const TableRepairTechnicianIndex = ({ data }) => {
+const TableRepairTechnicianIndex = ({ data, fetchList }) => {
   const [isClick, setIsClick] = useState(false)
 
   let navigate = useNavigate()
@@ -217,76 +235,81 @@ const TableRepairTechnicianIndex = ({ data }) => {
         return (
           <div
             key={idx}
-            className={`grid grid-cols-12 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
+            className={`grid grid-cols-14 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
             <div className="col-span-1">{new Date(item.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.</div>
             <div className="col-span-2">{item.informRepairIdDoc}</div>
-            <div className="col-span-1 ">{item.assetNumber}</div>
+            <div className="col-span-2 ">{item.assetNumber}</div>
             <div className="col-span-3">{item.repairDetail}</div>
             <div className="col-span-1">{item.sector}</div>
             <div className="col-span-1 flex justify-center">
               <div onClick={() => handleClick(item.emerygencyStatus)}
-                className={`${item.emerygencyStatus === 'normal'
+                className={`${item.urgentStatus === 'ปกติ'
                   ? 'bg-blue-600 text-white rounded-full '
-                  : item.emerygencyStatus === 'rushing'
+                  : item.urgentStatus === 'เร่งด่วน'
                     ? 'bg-[#F2994A] text-white  rounded-full'
-                    : item.emerygencyStatus === 'emergency'
+                    : item.urgentStatus === 'ฉุกเฉิน'
                       ? 'bg-red-700 text-white  rounded-full'
-                      : 'bg-red-200 text-red-600 rounded-full '
+                      : 'border-0'
                   } border border-spacing-5 p-2 w-[80px]`}
               >
-                {item.emerygencyStatus === 'normal'
-                  ? 'ปกติ'
-                  : item.emerygencyStatus === 'rushing'
-                    ? 'เร่งด่วน'
-                    : item.emerygencyStatus === 'emergency'
-                      ? 'ฉุกเฉิน'
-                      : 'ยกเลิก'}
+                {item.urgentStatus
+                  // === 'normal'
+                  //   ? 'ปกติ'
+                  //   : item.urgentStatus === 'rushing'
+                  //     ? 'เร่งด่วน'
+                  //     : item.urgentStatus === 'emergency'
+                  //       ? 'ฉุกเฉิน'
+                  //       : 'ยกเลิก'
+                }
               </div>
             </div>
-            <div className="col-span-1 flex justify-center">
+            <div className="col-span-2 flex justify-center">
               <div onClick={() => handleClick(item.status)}
-                className={`${item.status === 'waitTechnicianConfirm'
+                className={`${item.statusOfDetailRecord === 'waitTechnicianConfirm'
                   ? 'bg-[#245BD826] text-blue-600 rounded-full '
-                  : item.status === 'waiting'
-                    ? ' bg-purple-600 border-purple-600 text-white rounded-full'
-                    : item.status === 'inProgress'
+                  : item.statusOfDetailRecord === 'waiting'
+                    ? 'bg-[#245BD826] text-blue-600 rounded-full '
+                    : item.statusOfDetailRecord === 'inProinProgressOfDetailRecordgress'
                       ? 'bg-purple-600  text-white rounded-full'
-                      : item.status === 'waitApprove'
+                      : item.statusOfDetailRecord === 'waitApprove'
                         ? ' bg-[#F2C94C]  rounded-full'
-                        : item.status === 'waitRecord'
+                        : item.statusOfDetailRecord === 'waitingRecord'
                           ? ' bg-[#F2994A26] text-[#F2994A] rounded-full'
-                          : item.status === 'complete'
+                          : item.statusOfDetailRecord === 'completeOfDetailRecord'
                             ? 'bg-sidebar-green text-text-green  rounded-full  '
                             : 'bg-red-200 text-red-600 rounded-full '
-                  }  border p-2 w-[100px]`}
+                  }  p-2 w-[100px]`}
               >
-                {item.status === 'waitTechnicianConfirm'
+                {item.statusOfDetailRecord === 'waitTechnicianConfirm'
                   ? 'รอช่างรับงาน'
-                  : item.status === 'inProgress'
+                  : item.statusOfDetailRecord === 'inProgressOfDetailRecord'
                     ? 'ดำเนินการ'
-                    : item.status === 'waitApprove'
+                    : item.statusOfDetailRecord === 'waitingApproval'
                       ? 'รออนุมัติ'
-                      : item.status === 'waitRecord'
+                      : item.statusOfDetailRecord === 'waitingRecord'
                         ? 'รอลงบันทึก'
-                        : item.status === 'complete'
+                        : item.statusOfDetailRecord === 'completeOfDetailRecord'
                           ? 'เสร็จสิ้น'
                           : 'ยกเลิก'}
               </div>
             </div>
-            {item.technicianStatus === 'waitTechnicianConfirm' ? (
-              <ActionWaitTechnicalConfirm />
-            ) : item.technicianStatus === 'waitRecord' ? (
-              <ActionWaitRecord />
-            ) : item.technicianStatus === 'inProgress' ? (
-              <ActionInProgress />
-            ) : item.technicianStatus === 'waitApprove' ? (
-              <ActionWaitApprove />
-            ) : item.technicianStatus === 'done' ? (
-              <ActionDone />
-            ) : (
-              <ActionCancel />
-            )}
+            <div className="col-span-2">
+              {/*  completeOfDetailRecord  cancleOfDetailRecord  reject  */}
+              {item.statusOfDetailRecord === 'waitTechnicianConfirm' ? (
+                <ActionWaitTechnicalConfirm id={item._id} item={item} fetchList={fetchList} />
+              ) : item.statusOfDetailRecord === 'waitingRecord' ? (
+                <ActionWaitRecord id={item._id} item={item} />
+              ) : item.statusOfDetailRecord === 'inProgressOfDetailRecord' ? (
+                <ActionInProgress />
+              ) : item.statusOfDetailRecord === 'waitingApproval' ? (
+                <ActionWaitApprove />
+              ) : item.statusOfDetailRecord === 'completeOfDetailRecord' ? (
+                <ActionDone />
+              ) : (
+                <ActionCancel item={item} />
+              )}
+            </div>
           </div>
         )
       })}
@@ -413,51 +436,64 @@ const ModalCancel = () => {
   )
 }
 
-const ActionWaitTechnicalConfirm = () => {
+const ActionWaitTechnicalConfirm = (props) => {
+  const [showModal, setShowModal] = useState(false)
+
   return (
     <>
       <div className="col-span-2 flex justify-center gap-2">
-        <Link
-          to="repairTechnicianDetail"
+        <ModalConfirmSave
+          isVisible={showModal}
+          onClose={() => setShowModal(false)}
+          text={`คุณต้องการรับงานเลขที่ใบแจ้งซ่อม ${props.item.informRepairIdDoc} นี้หรือไม่`}
+          header="ยืนยันการรับงาน"
+          confirmText="รับงาน"
+          onSave={async () => {
+            try {
+              await updateStatusForGetJobRepair(props.id, "waitingRecord")
+              props.fetchList()
+              setShowModal(false)
+            } catch (error) {
+              console.log(error)
+            }
+          }}
+        />
+        <button
           className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg w-[100px]"
+          onClick={() => setShowModal(true)}
         >
           รับงาน
+        </button>
+        <Link
+          to={`repairTechnicianDetail/${props.id}`}
+          state={{ data: props?.item }}
+          className="border-[1px] border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[31px] flex justify-center items-center rounded-md"
+        >
+          <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
         </Link>
-        <div className=" border-[1px] border-text-green hover:bg-green-800 flex items-center p-2 rounded-lg">
-          <svg
-            width="16"
-            height="12"
-            viewBox="0 0 16 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.99967 9.1569C8.83787 9.1569 9.54915 8.86471 10.1335 8.28034C10.7179 7.69596 11.0101 6.98468 11.0101 6.14648C11.0101 5.30829 10.7179 4.59701 10.1335 4.01263C9.54915 3.42826 8.83787 3.13607 7.99967 3.13607C7.16148 3.13607 6.4502 3.42826 5.86582 4.01263C5.28145 4.59701 4.98926 5.30829 4.98926 6.14648C4.98926 6.98468 5.28145 7.69596 5.86582 8.28034C6.4502 8.86471 7.16148 9.1569 7.99967 9.1569ZM7.99967 8.12982C7.44481 8.12982 6.97554 7.93798 6.59186 7.5543C6.20818 7.17062 6.01634 6.70135 6.01634 6.14648C6.01634 5.59162 6.20818 5.12235 6.59186 4.73867C6.97554 4.35499 7.44481 4.16315 7.99967 4.16315C8.55453 4.16315 9.02381 4.35499 9.40749 4.73867C9.79117 5.12235 9.98301 5.59162 9.98301 6.14648C9.98301 6.70135 9.79117 7.17062 9.40749 7.5543C9.02381 7.93798 8.55453 8.12982 7.99967 8.12982ZM7.99967 11.459C6.27606 11.459 4.71773 10.9691 3.32467 9.98919C1.93162 9.00933 0.89273 7.72843 0.208008 6.14648C0.89273 4.56454 1.93162 3.28364 3.32467 2.30378C4.71773 1.32391 6.27606 0.833984 7.99967 0.833984C9.72329 0.833984 11.2816 1.32391 12.6747 2.30378C14.0677 3.28364 15.1066 4.56454 15.7913 6.14648C15.1066 7.72843 14.0677 9.00933 12.6747 9.98919C11.2816 10.9691 9.72329 11.459 7.99967 11.459Z"
-              fill="#38821D"
-            />
-          </svg>
-        </div>
       </div>
     </>
   )
 }
 
-const ActionWaitRecord = () => {
+const ActionWaitRecord = ({ id, item }) => {
   return (
     <>
-      <div className="col-span-2 flex justify-center gap-2">
-        <button
-          type="button"
-          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg w-[100px]"
+      <div className="col-span-2 flex justify-center gap-2 -mx-4">
+        <Link
+          to={`repairTechnicianRecord/${id}`}
+          state={{ data: item }}
+          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg px-3"
         >
           ลงบันทึก
-        </button>
-        <button
-          type="button"
-          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg w-[100px]"
+        </Link>
+        <Link
+          to={`repairOutsourceRecord/${id}`}
+          state={{ data: item }}
+          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg "
         >
           จ้างซ่อมภายนอก
-        </button>
+        </Link>
       </div>
     </>
   )
@@ -470,6 +506,7 @@ const ActionInProgress = () => {
         <button
           type="button"
           className="border hover:bg-[#245BD826]  border-[#2F80ED] text-[#2F80ED] p-2 rounded-lg w-[120px]"
+          onClick={async () => await updateStatusForGetJobRepair('123', "waitingRecord")}
         >
           ปิดงาน
         </button>
@@ -526,28 +563,18 @@ const ActionDone = () => {
   )
 }
 
-const ActionCancel = () => {
+const ActionCancel = (props) => {
   return (
     <>
       <div className="col-span-2 flex justify-center gap-2">
-        <button
-          type="button"
-          className="flex gap-2 items-center hover:bg-green-100 border border-text-green text-text-green p-2 rounded-lg w-[120px]"
+        <Link
+          className="border-[1px] gap-2 border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[120px] flex justify-center items-center rounded-md"
+          to={`repairDetail/${props.item._id}`}
+          state={{ data: props.item }}
         >
-          <svg
-            width="16"
-            height="12"
-            viewBox="0 0 16 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.99967 9.1569C8.83787 9.1569 9.54915 8.86471 10.1335 8.28034C10.7179 7.69596 11.0101 6.98468 11.0101 6.14648C11.0101 5.30829 10.7179 4.59701 10.1335 4.01263C9.54915 3.42826 8.83787 3.13607 7.99967 3.13607C7.16148 3.13607 6.4502 3.42826 5.86582 4.01263C5.28145 4.59701 4.98926 5.30829 4.98926 6.14648C4.98926 6.98468 5.28145 7.69596 5.86582 8.28034C6.4502 8.86471 7.16148 9.1569 7.99967 9.1569ZM7.99967 8.12982C7.44481 8.12982 6.97554 7.93798 6.59186 7.5543C6.20818 7.17062 6.01634 6.70135 6.01634 6.14648C6.01634 5.59162 6.20818 5.12235 6.59186 4.73867C6.97554 4.35499 7.44481 4.16315 7.99967 4.16315C8.55453 4.16315 9.02381 4.35499 9.40749 4.73867C9.79117 5.12235 9.98301 5.59162 9.98301 6.14648C9.98301 6.70135 9.79117 7.17062 9.40749 7.5543C9.02381 7.93798 8.55453 8.12982 7.99967 8.12982ZM7.99967 11.459C6.27606 11.459 4.71773 10.9691 3.32467 9.98919C1.93162 9.00933 0.89273 7.72843 0.208008 6.14648C0.89273 4.56454 1.93162 3.28364 3.32467 2.30378C4.71773 1.32391 6.27606 0.833984 7.99967 0.833984C9.72329 0.833984 11.2816 1.32391 12.6747 2.30378C14.0677 3.28364 15.1066 4.56454 15.7913 6.14648C15.1066 7.72843 14.0677 9.00933 12.6747 9.98919C11.2816 10.9691 9.72329 11.459 7.99967 11.459Z"
-              fill="#38821D"
-            />
-          </svg>
-          ดูรายละเอียด
-        </button>
+          <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
+          <h1>ดูรายละเอียด</h1>
+        </Link>
       </div>
     </>
   )

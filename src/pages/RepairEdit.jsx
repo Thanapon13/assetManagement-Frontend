@@ -9,17 +9,18 @@ import { getBuildingData, getSector } from "../api/masterApi";
 import { getUserRepairDropdown } from "../api/userApi";
 import { getAllAssetForRepairDropdown } from "../api/assetApi";
 import { Spinner } from "flowbite-react";
+import { BsArrowLeft } from "react-icons/bs";
 
 const RepairEdit = () => {
   let { repairId } = useParams();
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [showModalSuccess, setShowModalSuccess] = useState(false);
   const [formData, setFormData] = useState({
-    informRepairIdDoc: "11",
+    informRepairIdDoc: "",
     urgentStatus: "",
     informRepairDate: new Date(),
     assetNumber: "",
-    isInsurance: "",
+    isInsurance: null,
     assetGroupNumber: "",
     hostSector: "",
     productName: "",
@@ -85,17 +86,20 @@ const RepairEdit = () => {
   const handleSubmit = async (valStatus) => {
     console.log("valStatus", valStatus);
 
-    let submitFormData = { ...formData, status: valStatus || "waiting" };
+    let submitFormData = {
+      ...formData,
+      status: valStatus || "waiting",
+      statusOfDetailRecord: "waitTechnicianConfirm"
+    };
     console.log("submitFormData", submitFormData);
-
-    const response = await updateRepair(repairId,{
-      input: submitFormData,
-    });
-    console.log(response);
-
-    if (response.data.message.includes("update repair successfully")) {
+    try {
+      const response = await updateRepair(repairId, {
+        input: submitFormData,
+      });
       setShowModalConfirm(false);
       setShowModalSuccess(true);
+    } catch (err) {
+      console.log(err)
     }
   };
 
@@ -149,15 +153,16 @@ const RepairEdit = () => {
     setNameCourierList(userArray);
     const res = await getRepairById(repairId);
     const repair = res.data.repair;
-    console.log("repair",repair);
-    console.log("repair.assetNumber",repair.assetNumber);
-
+    console.log("repair", repair);
+    console.log("repair.assetNumber", repair.assetNumber);
+    if (repair?.informRepairDate) setFormData({ informRepairDate: new Date(repair?.informRepairDate) })
     setFormData({
+      ...formData,
       informRepairIdDoc: repair?.informRepairIdDoc,
       urgentStatus: repair?.urgentStatus,
-      informRepairDate: new Date(repair?.informRepairDate),
+      // informRepairDate: new Date(repair?.informRepairDate),
       assetNumber: repair?.assetNumber,
-      isInsurance: repair?.isInsurance,
+      isInsurance: repair?.isInsurance || null,
       assetGroupNumber: repair?.assetGroupNumber,
       hostSector: repair?.hostSector,
       productName: repair?.productName,
@@ -177,7 +182,7 @@ const RepairEdit = () => {
       problemDetail: repair?.problemDetail,
       status: repair?.status,
     });
-   
+
     setIsLoading(false);
   };
 
@@ -190,8 +195,8 @@ const RepairEdit = () => {
   }, []);
 
   useEffect(() => {
-    console.log("formData assetNumber effect",formData);
-    
+    console.log("formData assetNumber effect", formData);
+
     if (formData.assetNumber) {
       assetList?.map((list) => {
         if (list.value == formData.assetNumber) {
@@ -210,7 +215,7 @@ const RepairEdit = () => {
     } else {
       setFormData({
         ...formData,
-        isInsurance: "",
+        isInsurance: null,
         assetGroupNumber: "",
         hostSector: "",
         productName: "",
@@ -222,7 +227,7 @@ const RepairEdit = () => {
   }, [formData.assetNumber]);
 
   useEffect(() => {
-  
+
     buildingList?.map((list) => {
       if (list.value == formData.building) {
         const floors = [];
@@ -232,8 +237,8 @@ const RepairEdit = () => {
         setFloorList(floors);
       }
     });
-      handleSelect("", "floor");
-      handleSelect("", "room");
+    handleSelect("", "floor");
+    handleSelect("", "room");
   }, [formData.building]);
 
   useEffect(() => {
@@ -246,8 +251,8 @@ const RepairEdit = () => {
         setRoomList(rooms);
       }
     });
-      handleSelect("", "room");
-  }, [formData.floor,floorList]);
+    handleSelect("", "room");
+  }, [formData.floor, floorList]);
 
   useEffect(() => {
     if (formData.name_recorder) {
@@ -289,24 +294,31 @@ const RepairEdit = () => {
     }
   }, [formData.repairSector]);
 
-  useEffect(()=>{
-console.log("formData",formData);
+  useEffect(() => {
+    console.log("formData", formData);
 
-  },[formData])
+  }, [formData])
 
   return (
     <>
       <form name="form" onSubmit={handleSubmitForValidate}>
         <div className="bg-background-page pt-5 p-3">
-          {/* Header */}
+
           <div>
-            {/* แก้ไขการแจ้งซ่อมบำรุง */}
-            <div className="text-2xl text-text-green flex items-center space-x-5 ">
-              <h1>แก้ไขการแจ้งซ่อมบำรุง</h1>
+            <div className="flex items-center">
+              <Link
+                to="/repairIndex"
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
+              >
+                <BsArrowLeft className="text-lg" />
+              </Link>
+              <div className="text-2xl text-text-green flex items-center space-x-5 ">
+                <h1>แก้ไขการแจ้งซ่อมบำรุง</h1>
+              </div>
             </div>
-            {/* navigate link */}
+
             <div className="flex pt-3">
-              {/* left home */}
+
               <div className="flex text-xs">
                 <Link
                   to="/"
@@ -389,7 +401,7 @@ console.log("formData",formData);
                       เวลาที่แจ้งซ่อม
                     </div>
                     <div className="flex items-center">
-                      {new Date(formData.informRepairDate).toLocaleString(
+                      {formData.informRepairDate.toLocaleString(
                         "th",
                         {
                           day: "2-digit",
@@ -439,15 +451,11 @@ console.log("formData",formData);
                       อยู่ในประกัน
                     </div>
                     <div
-                      className={`flex items-center ${
-                        formData.isInsurance
-                          ? "text-text-green"
-                          : "text-red-600"
-                      }`}
+                      className={`flex items-center ${formData.isInsurance == null ? ''
+                        : formData.isInsurance ? "text-text-green" : "text-red-600"}`}
                     >
-                      {formData.isInsurance
-                        ? "อยู่ในประกัน"
-                        : "ไม่อยู่ในประกัน"}
+                      {formData.isInsurance == null ? '-'
+                        : formData.isInsurance ? "อยู่ในประกัน" : "ไม่อยู่ในประกัน"}
                     </div>
                     <div className="text-text-gray flex items-center">
                       รหัสกลุ่มครุภัณฑ์
@@ -481,16 +489,16 @@ console.log("formData",formData);
                     <div className="flex items-center">
                       {formData.insuranceStartDate
                         ? new Date(formData.insuranceStartDate).toLocaleString(
-                            "th",
-                            {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: false,
-                            }
-                          )
+                          "th",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                          }
+                        )
                         : "-"}
                     </div>
                     <div className="text-text-gray flex items-center">
@@ -499,16 +507,16 @@ console.log("formData",formData);
                     <div className="flex items-center">
                       {formData.insuranceEndDate
                         ? new Date(formData.insuranceEndDate).toLocaleString(
-                            "th",
-                            {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: false,
-                            }
-                          )
+                          "th",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                          }
+                        )
                         : "-"}
                     </div>
                   </div>
@@ -725,11 +733,10 @@ console.log("formData",formData);
                   </div>
                   <div className=" col-span-3 flex items-center">
                     <textarea
-                      className={`border-[1px] w-full rounded-lg" ${
-                        error.problemDetail
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
+                      className={`border-[1px] w-full rounded-lg" ${error.problemDetail
+                        ? "border-red-500"
+                        : "border-gray-300"
+                        }`}
                       name="problemDetail"
                       onChange={handleChange}
                       value={formData.problemDetail}
@@ -741,17 +748,20 @@ console.log("formData",formData);
           )}
         </div>
         {/* footer */}
-        <div className="border-t-[1px] p-6 flex justify-between">
-          <button className="text-text-gray px-4 py-2 border-[1px] rounded-md hover:text-black">
+        <div className="border-t-[1px] p-6 flex justify-between text-sm">
+          <button className=" hover:bg-gray-100 text-text-gray text-sm rounded-md py-2 px-4"
+          >
             ยกเลิก
           </button>
-          <div className="flex gap-10">
-            <button
-              className="px-4 py-2 border-[1px] border-text-green text-text-green rounded-md hover:bg-green-100"
-              onClick={() => handleSubmit("saveDraft")}
-            >
-              บันทึกแบบร่าง
-            </button>
+          <div className="flex gap-4">
+            {formData.status == "saveDraft" &&
+              <button
+                className="px-4 py-2 border-2 border-text-green text-text-green rounded-md hover:bg-green-100"
+                onClick={(e) => { e.preventDefault(); handleSubmit("saveDraft") }}
+              >
+                บันทึกแบบร่าง
+              </button>
+            }
             <button
               className="px-4 py-2 border-[1px] bg-text-green border-text-green text-white rounded-md hover:bg-green-800"
               type="submit"

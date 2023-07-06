@@ -8,6 +8,7 @@ import { getUserRepairDropdown } from "../api/userApi";
 import { getAllAssetForRepairDropdown } from "../api/assetApi";
 import { createRepair } from "../api/repairApi";
 import ModalSuccess from "../components/modal/ModalSuccess";
+import { BsArrowLeft } from "react-icons/bs";
 
 const RepairRecord = () => {
   const [showModalConfirm, setShowModalConfirm] = useState(false);
@@ -17,7 +18,7 @@ const RepairRecord = () => {
     urgentStatus: "",
     informRepairDate: new Date(),
     assetNumber: "",
-    isInsurance: "",
+    isInsurance: null,
     assetGroupNumber: "",
     hostSector: "",
     productName: "",
@@ -82,7 +83,11 @@ const RepairRecord = () => {
   const handleSubmit = async (valStatus) => {
     console.log("valStatus", valStatus);
 
-    let submitFormData = { ...formData, status: valStatus || "waiting" };
+    let submitFormData = {
+      ...formData, 
+      status: valStatus || "waiting",
+      statusOfDetailRecord: "waitTechnicianConfirm"
+    };
     console.log("submitFormData", submitFormData);
 
     const response = await createRepair({
@@ -152,8 +157,6 @@ const RepairRecord = () => {
     setFormData({ ...formData, [label]: value });
   };
 
-  
-
   useEffect(() => {
     getMasterData();
   }, []);
@@ -178,7 +181,7 @@ const RepairRecord = () => {
     } else {
       setFormData({
         ...formData,
-        isInsurance: "",
+        isInsurance: null,
         assetGroupNumber: "",
         hostSector: "",
         productName: "",
@@ -275,15 +278,21 @@ const RepairRecord = () => {
     <>
       <form name="form" onSubmit={handleSubmitForValidate}>
         <div className="bg-background-page pt-5 p-3">
-          {/* Header */}
+
           <div>
-            {/* เพิ่มการซ่อมบำรุง */}
-            <div className="text-2xl text-text-green flex items-center space-x-5 ">
-              <h1>เพิ่มการซ่อมบำรุง</h1>
+            <div className="flex items-center">
+              <Link
+                to="/repairIndex"
+                className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
+              >
+                <BsArrowLeft className="text-lg" />
+              </Link>
+              <div className="text-2xl text-text-green flex items-center space-x-5 ">
+                <h1>เพิ่มการซ่อมบำรุง</h1>
+              </div>
             </div>
-            {/* navigate link */}
+
             <div className="flex pt-3">
-              {/* left home */}
               <div className="flex text-xs">
                 <Link
                   to="/"
@@ -376,6 +385,7 @@ const RepairRecord = () => {
                     onChange={(value, label) =>
                       setFormData({ ...formData, [label]: value })
                     }
+                    noClearButton
                   />
                   <svg
                     width="22"
@@ -397,11 +407,11 @@ const RepairRecord = () => {
                   อยู่ในประกัน
                 </div>
                 <div
-                  className={`flex items-center ${
-                    formData.isInsurance ? "text-text-green" : "text-red-600"
-                  }`}
+                  className={`flex items-center ${formData.isInsurance == "" ? '-'
+                    : formData.isInsurance ? "text-text-green" : "text-red-600"}`}
                 >
-                  {formData.isInsurance ? "อยู่ในประกัน" : "ไม่อยู่ในประกัน"}
+                  {formData.isInsurance === false ? "ไม่อยู่ในประกัน"
+                    : formData.isInsurance === true ? "อยู่ในประกัน" : '-'}
                 </div>
                 <div className="text-text-gray flex items-center">
                   รหัสกลุ่มครุภัณฑ์
@@ -433,16 +443,16 @@ const RepairRecord = () => {
                 <div className="flex items-center">
                   {formData.insuranceStartDate
                     ? new Date(formData.insuranceStartDate).toLocaleString(
-                        "th",
-                        {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: false,
-                        }
-                      )
+                      "th",
+                      {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                      }
+                    )
                     : "-"}
                 </div>
                 <div className="text-text-gray flex items-center">
@@ -451,13 +461,13 @@ const RepairRecord = () => {
                 <div className="flex items-center">
                   {formData.insuranceEndDate
                     ? new Date(formData.insuranceEndDate).toLocaleString("th", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: false,
-                      })
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })
                     : "-"}
                 </div>
               </div>
@@ -625,6 +635,7 @@ const RepairRecord = () => {
                   onChange={(value, label) =>
                     setFormData({ ...formData, [label]: value })
                   }
+                  noClearButton
                 />
               </div>
             </div>
@@ -635,9 +646,8 @@ const RepairRecord = () => {
               </div>
               <div className=" col-span-3 flex items-center">
                 <textarea
-                  className={`border-[1px] w-full rounded-lg" ${
-                    error.problemDetail ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`border-[1px] w-full rounded-lg" ${error && !formData.problemDetail ? "border-red-500" : "border-gray-300"
+                    }`}
                   name="problemDetail"
                   onChange={handleChange}
                 />
@@ -646,14 +656,16 @@ const RepairRecord = () => {
           </div>
         </div>
         {/* footer */}
-        <div className="border-t-[1px] p-6 flex justify-between">
-          <button className="text-text-gray px-4 py-2 border-[1px] rounded-md hover:text-black">
+        <div className="border-t-[1px] p-6 flex justify-between text-sm">
+          <button className=" hover:bg-gray-100 text-text-gray text-sm rounded-md py-2 px-4"
+            onClick={e => e.preventDefault()}
+          >
             ยกเลิก
           </button>
-          <div className="flex gap-10">
+          <div className="flex gap-4">
             <button
-              className="px-4 py-2 border-[1px] border-text-green text-text-green rounded-md hover:bg-green-100"
-              onClick={() => handleSubmit("saveDraft")}
+              className="px-4 py-2 border-2 border-text-green text-text-green rounded-md hover:bg-green-100"
+              onClick={e => { e.preventDefault(); handleSubmit("saveDraft") }}
             >
               บันทึกแบบร่าง
             </button>
@@ -669,7 +681,7 @@ const RepairRecord = () => {
               onSave={handleSubmit}
             />
 
-            {showModalSuccess && <ModalSuccess urlPath="/repairRecord" />}
+            {showModalSuccess && <ModalSuccess urlPath="/repairIndex" />}
           </div>
         </div>
       </form>

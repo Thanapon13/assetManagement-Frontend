@@ -219,7 +219,7 @@ const HistoryRepairIndex = () => {
         </div>
       </div>
 
-      {/* table */}
+      <div className="grid">
       <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
         <div className="w-[1000px] xl:w-full xl:h-full ">
           <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
@@ -288,6 +288,8 @@ const HistoryRepairIndex = () => {
           }
         </div>
       </div>
+      </div>
+
     </div>
   );
 };
