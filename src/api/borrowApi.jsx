@@ -100,6 +100,10 @@ export function deleteAsset(input) {
   return axios.delete(`/borrow/deleteAsset/${input}`);
 }
 
+export function deleteBorrow(id) {
+  return axios.patch(`/borrow/delete/${id}`);
+}
+
 export function getAllFirstFetchBorrowApprove() {
   return axios.get(`/borrow/allFirstFetchBorrowApprove`);
 }

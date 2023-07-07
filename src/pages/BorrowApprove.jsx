@@ -14,6 +14,8 @@ import {
 import ApproveSectorSelector from "../components/selector/ApproveSectorSelector";
 import { id } from "date-fns/locale";
 import { Spinner } from "flowbite-react";
+import SearchSelector from "../components/selector/SearchSelector";
+import { IoIosClose } from "react-icons/io";
 
 const BorrowApprove = () => {
   let options = { day: "2-digit", month: "2-digit", year: "numeric" };
@@ -30,7 +32,6 @@ const BorrowApprove = () => {
     totalReject: 0,
     totalWaiting: 0,
   });
-
   const [sectorList, setSectorList] = useState([]);
 
   const boxStyle = {
@@ -116,7 +117,12 @@ const BorrowApprove = () => {
     try {
       const res = await getAllSectorFromBorrow();
       // console.log(res.data.sectors);
-      setSectorList(res.data.sectors);
+      // setSectorList(res.data.sectors);
+      const arrSector = []
+      res.data.sectors.map(ele => {
+        arrSector.push({ label: ele, value: ele })
+      })
+      setSectorList(arrSector)
     } catch (err) {
       console.log(err);
     }
@@ -138,8 +144,10 @@ const BorrowApprove = () => {
         totalReject: res.data.totalReject,
         totalWaiting: res.data.totalWaiting,
       });
+      setIsFetch(false)
     } catch (err) {
       console.log(err);
+      setIsFetch(false)
     }
   };
 
@@ -195,13 +203,12 @@ const BorrowApprove = () => {
               <label className="text-text-gray">
                 หน่วยงานที่เสนอ (รหัส P4P)
               </label>
-              {/* <select className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md">
-                <option className="">select</option>
-                <option>select</option>
-                <option>select</option>
-                <option>select</option>
-              </select> */}
-              <ApproveSectorSelector
+              <SearchSelector
+                options={sectorList}
+                name={"sector"}
+                onChange={(value) => setSearch({ ...search, transferSector: value || "" })}
+              />
+              {/* <ApproveSectorSelector
                 placeholder={"Select"}
                 state={search}
                 setState={setSearch}
@@ -209,7 +216,7 @@ const BorrowApprove = () => {
                 setSearch={setSearch}
                 id={"sector"}
                 data={sectorList}
-              />
+              /> */}
             </div>
             {/* <div className=" md:col-span-3 flex flex-col gap-y-2">
               <label className="text-text-gray">รายการ</label>
@@ -221,17 +228,17 @@ const BorrowApprove = () => {
               </select>
             </div> */}
 
-            <div className="flex justify-end items-end">
-              <button
-                type="button"
-                className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-                onClick={handleSearch}
-              >
-                <div className="text-xl text-white">
-                  <AiOutlineSearch />
-                </div>
-              </button>
-            </div>
+<div className="flex justify-start items-end">
+                <button
+                  type="button"
+                  className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+                  onClick={handleSearch}
+                >
+                  <div className="text-xl text-white">
+                    <AiOutlineSearch />
+                  </div>
+                </button>
+              </div>
           </div>
           {/* status */}
           <div className="grid md:grid-cols-4 pt-5 gap-5 md:gap-10 p-2">
@@ -261,35 +268,36 @@ const BorrowApprove = () => {
             </div>
           </div>
           {/* header approve list */}
-          {!topApproveList.length
-            ? <div className="mt-5 py-10 w-full text-center">{isFetch ? <Spinner size="xl" /> : "ยังไม่มีรายการรออนุมัติ"}</div>
-            : <div className="flex justify-between mt-5 pt-5 border-t-2">
-              <div className="flex items-center space-x-5">
-                <div className="flex">
-                  <input
-                    type="checkbox"
-                    onChange={() => handleAllCheckboxChange(topApproveList)}
-                    className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
-                  />
-                  <h1 className="ml-2">เลือกทั้งหมด</h1>
+          {isFetch
+            ? <div className="mt-5 py-10 w-full text-center"> <Spinner size="xl" /> </div>
+            : !topApproveList.length ? <div className="mt-5 py-10 w-full text-center">ยังไม่มีรายการรออนุมัติ</div>
+              : <div className="flex justify-between mt-5 pt-5 border-t-2">
+                <div className="flex items-center space-x-5">
+                  <div className="flex">
+                    <input
+                      type="checkbox"
+                      onChange={() => handleAllCheckboxChange(topApproveList)}
+                      className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
+                    />
+                    <h1 className="ml-2">เลือกทั้งหมด</h1>
+                  </div>
+                  <h1 className="">
+                    เลือกแล้ว {topApproveList.filter(ele => ele.checked).length}/{amountOfStatusList.totalWaiting} รายการ
+                  </h1>
                 </div>
-                <h1 className="">
-                  เลือกแล้ว {topApproveList.filter(ele => ele.checked).length}/{amountOfStatusList.totalWaiting} รายการ
-                </h1>
+                <div className="flex space-x-3">
+                  <ModalBorrowRejectAllApprove
+                    state={topApproveList}
+                    setState={setTopApproveList}
+                    fetchFirstBorrowApproveData={fetchFirstBorrowApproveData}
+                  />
+                  <ModalApproveAll
+                    state={topApproveList}
+                    setState={setTopApproveList}
+                    handleApproveAllWaitingList={handleApproveAllWaitingList}
+                  />
+                </div>
               </div>
-              <div className="flex space-x-3">
-                <ModalBorrowRejectAllApprove
-                  state={topApproveList}
-                  setState={setTopApproveList}
-                  fetchFirstBorrowApproveData={fetchFirstBorrowApproveData}
-                />
-                <ModalApproveAll
-                  state={topApproveList}
-                  setState={setTopApproveList}
-                  handleApproveAllWaitingList={handleApproveAllWaitingList}
-                />
-              </div>
-            </div>
           }
           {/* approve list item */}
           <div className="mt-3">
@@ -382,10 +390,10 @@ const BorrowApprove = () => {
           </div>
           {/* approved list item */}
           <div className="mt-3">
-          {!bottomApprovedList.length
-            ? <center className='p-5'>-</center>
-            : <BorrowApprovedListItem data={bottomApprovedList} />
-          }
+            {!bottomApprovedList.length
+              ? <center className='p-5'>-</center>
+              : <BorrowApprovedListItem data={bottomApprovedList} />
+            }
           </div>
         </div>
       </div>
@@ -607,12 +615,10 @@ const ModalApproveAll = ({ state, setState, handleApproveAllWaitingList }) => {
                       รายการครุภัณฑ์ที่อนุมัติ
                     </h3>
                     <button
-                      className="border-0 text-black float-right"
+                     className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
                       onClick={() => setShowModal(false)}
                     >
-                      <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
-                        x
-                      </span>
+                       <IoIosClose className="text-2xl" />
                     </button>
                   </div>
                   {/* table */}
@@ -631,7 +637,7 @@ const ModalApproveAll = ({ state, setState, handleApproveAllWaitingList }) => {
                 {/* footer */}
                 <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
                   <button
-                    className="px-10 py-2 border-[1px] shadow-sm rounded-md "
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md hover:bg-gray-200"
                     type="button"
                     onClick={() => setShowModal(false)}
                   >
@@ -731,18 +737,16 @@ const ModalIndividualReject = ({
           <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
             <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
               <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
-                {/* สาเหตุที่ไม่อนุมัติ */}
+               
                 <div>
-                  {/* header*/}
                   <div className="flex items-center justify-between p-5 ">
                     <h3 className="text-xl">สาเหตุที่ไม่อนุมัติ</h3>
                     <button
-                      className="border-0 text-black float-right"
+                      // className="border-0 text-black float-right"
+                      className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
                       onClick={() => setShowModal(false)}
                     >
-                      <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
-                        x
-                      </span>
+                      <IoIosClose className="text-2xl" />
                     </button>
                   </div>
                   {/* reject information */}
@@ -794,7 +798,7 @@ const ModalIndividualReject = ({
                 {/* footer */}
                 <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
                   <button
-                    className="px-10 py-2 border-[1px] shadow-sm rounded-md "
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md hover:bg-gray-200"
                     type="button"
                     onClick={() => setShowModal(false)}
                   >

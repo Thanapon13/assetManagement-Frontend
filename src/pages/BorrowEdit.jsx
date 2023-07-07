@@ -200,7 +200,7 @@ const BorrowEdit = () => {
     }
     saveAssetWithdrawTableArray.map(list => {
       Object.entries(list).forEach(([key, value], index) => {
-        if (errAssetTable || key === "isPackage" || key === "index") return
+        if (errAssetTable || key === "isPackage" || key === "index" || key === "serialNumber") return
         if (!value) errAssetTable = true
       })
     })
@@ -386,7 +386,6 @@ const BorrowEdit = () => {
                   <input
                     type="text"
                     value={input.borrowIdDoc}
-                    placeholder="Example"
                     readOnly
                     className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                   />
@@ -395,7 +394,6 @@ const BorrowEdit = () => {
                   <label className="text-text-gray">ราคายืม (ต่อวัน)</label>
                   <input
                     type="text"
-                    placeholder="Example"
                     readOnly
                     value={input.pricePerDay?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"

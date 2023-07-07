@@ -246,6 +246,7 @@ const BorrowList = () => {
             <option value="partiallyApprove">อนุมัติบางส่วน</option>
             <option value="reject">ไม่อนุมัติทั้งหมด</option>
             <option value="cancel">ยกเลิก</option>
+            <option value="saveDraft">แบบร่าง</option>
           </select>
         </div>
 
@@ -275,8 +276,8 @@ const BorrowList = () => {
           <SearchSelector
             options={sectorArray}
             placeholder={"หน่วยงาน"}
-            name={"transferSector"}
-            onChange={(value, label) => setSearch({ ...search, [label]: value })}
+            name={"sector"}
+            onChange={(value, label) => setSearch({ ...search, [label]: value || "" })}
             floatLabel
           />
         </div>
@@ -311,7 +312,7 @@ const BorrowList = () => {
               <div className="col-span-1">Action</div>
             </div>
           </div>
-          <TableBorrowList data={borrowList} search={search} />
+          <TableBorrowList data={borrowList} search={search} fetchLists={fetchBorrowList} />
           {!borrowList.length
             ? <center className='p-5'>-</center>
             : <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">

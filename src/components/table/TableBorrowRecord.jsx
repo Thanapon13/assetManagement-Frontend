@@ -152,8 +152,8 @@ function TableBorrowRecord({
   }, [search.productName]);
 
   const ele = saveAssetWithdrawTableArray[index]
-
   const handleNumber = async (value, label, ele) => {
+    console.log(ele, 'xx', value)
     const clone = { ...search };
     clone.assetNumber = value || ""
     if (value) {
@@ -167,7 +167,11 @@ function TableBorrowRecord({
       sector: ele?.sector || val.sector,
       quantity: 1,
       unit: ele?.unit || val.unit,
-      isFetching: false
+      isFetching: false,
+      pricePerUnit: ele.pricePerUnit,
+      brand: `${ele.brand}/${ele.size}`,
+      amount: 1,
+      maxQuantity: ele.quantity
     }
 
     console.log(saveAssetWithdrawTableArray)
@@ -209,6 +213,7 @@ function TableBorrowRecord({
       <SearchSelector
           id="เลขครุภัณฑ์"
           name="assetNumber"
+          // options={assetList}
           options={assetList}
           onChange={handleNumber}
           // error={error && !ele.assetNumber}
@@ -276,22 +281,23 @@ function TableBorrowRecord({
         <input
           className={`${errorAssestTable && !saveAssetWithdrawTableArray[index]?.amount && 'border-red-500'} border-gray-300 text-sm col-span-1 text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue`}
           name="amount"
-          type="text" inputmode="numeric"
-          min="0"
+          type="text" 
+          // inputmode="numeric"
+          // min="1"
           // required
-          disabled={
-            saveAssetWithdrawTableArray[index]?.isFetching === true
-              ? true
-              : search.assetNumber === ""
-                ? false
-                : true
-          }
+          // disabled={
+          //   saveAssetWithdrawTableArray[index]?.isFetching === true
+          //     ? true
+          //     : search.assetNumber === ""
+          //       ? false
+          //       : true
+          // }
           onChange={handleChange}
           value={
             saveAssetWithdrawTableArray &&
             saveAssetWithdrawTableArray[index]?.amount?.toLocaleString()
           }
-          placeholder={saveAssetWithdrawTableArray[index]?.maxQuantity}
+          // placeholder={saveAssetWithdrawTableArray[index]?.maxQuantity}
         />
         <input
           className="col-span-1 bg-table-gray text-center flex justify-center items-center py-2 border-[1px] border-block-green rounded focus:border-2 focus:outline-none  focus:border-focus-blue"

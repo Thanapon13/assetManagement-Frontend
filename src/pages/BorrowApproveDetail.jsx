@@ -7,6 +7,9 @@ import {
 } from "../api/borrowApi";
 import TableBorrowApprove from "../components/table/TableBorrowApprove";
 import OnlyDateInput from "../components/date/onlyDateInput";
+import ReactToPrint from "react-to-print";
+import { useRef } from "react";
+import { IoIosClose } from "react-icons/io";
 
 const BorrowApproveDetail = () => {
   const { borrowId } = useParams();
@@ -136,13 +139,15 @@ const BorrowApproveDetail = () => {
     fetchBorrowById();
   }, []);
 
+  const printRef = useRef();
+  const [showAll, setShowAll] = useState(false)
+
   return (
     <>
       <div className="bg-background-page pt-5 p-3">
         {/* Header */}
         <div className="text-2xl text-text-green ">อนุมัติการยืมครุภัณฑ์</div>
-        <div className="flex pt-3">
-          {/* left home */}
+        <div className="flex pt-3 justify-between flex">
           <div className="flex text-xs">
             <Link
               to="/"
@@ -163,222 +168,252 @@ const BorrowApproveDetail = () => {
             <div className="text-text-gray ml-2">รายละเอียดการขออนุมัติ</div>
           </div>
 
-        </div>
-
-        {/* ข้อมูลการยืมครุภัณฑ์ */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
-          <div className="flex justify-between">
-            <div className="text-lg">ข้อมูลการยืมครุภัณฑ์</div>
-            <button className="p-1 px-7 mr-5 border-[1px] border-gray-500 rounded-md hover:bg-slate-200">
-              พิมพ์
-            </button>
-          </div>
-          {/* Row 1 เลขที่เอกสารการยืม */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray flex">
-                เลขที่เอกสารการยืม
-                <h1 className="text-red-500 ml-2 font-bold">*</h1>
-              </label>
-              <input
-                type="text"
-                placeholder="Example"
-                readOnly
-                value={input.borrowIdDoc}
-                className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">ราคายืม (ต่อวัน)</label>
-              <input
-                type="text"
-                placeholder="Example"
-                readOnly
-                value={input.pricePerDay.toFixed(2)}
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-          {/* Row 2 วันที่ยืม */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">วันที่ยืม</label>
-              <OnlyDateInput
-                id={"borrowDate"}
-                state={input}
-                setAssetList={setInput}
-                disabled={true}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">วันที่คืน</label>
-              <OnlyDateInput
-                id={"borrowReturnDate"}
-                state={input}
-                setAssetList={setInput}
-                disabled={true}
-              />
-            </div>
-          </div>
-          {/* Row 3 กำหนดส่งคืน */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">กำหนดส่งคืน</label>
-              <OnlyDateInput
-                id={"borrowSetReturnDate"}
-                state={input}
-                setAssetList={setInput}
-                disabled={true}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">จำนวนวันที่ยืม (วัน) </label>
-              <input
-                type="number"
-                placeholder="0"
-                readOnly
-                value={input.dateDiff}
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-
-          {/* Row 4 กำหนดส่งคืน */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">วัตถุประสงค์การขอยืม</label>
-              <input
-                type="text"
-                placeholder="Example"
-                readOnly
-                value={input.borrowPurpose}
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">มูลค่าการยืม (บาท)</label>
-              <input
-                type="number"
-                placeholder="0.00"
-                readOnly
-                value={input.totalPrice.toFixed(2)}
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* รายการครุภัณฑ์ที่ยืม */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
-          <div className="text-xl">รายการครุภัณฑ์ที่ยืม</div>
-          <div className="grid">
-            <div className="overflow-x-auto  scrollbar pt-4 mb-2">
-              <div className="w-max lg:w-full">
-                <div className="grid grid-cols-12 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
-                  <div className="col-span-1">
-                    <input
-                      type="checkbox"
-                      onChange={() => handleAllCheckboxChange(assetList)}
-                      className=" text-text-green placeholder-text-green focus:ring-0 rounded"
-                    />
+          <ReactToPrint
+            trigger={() => {
+              return (
+                <button
+                  type="button"
+                  className="-ml-2 flex justify-center items-center text-white bg-blue-500 hover:bg-focus-blue rounded-lg focus:border-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-focus-blue focus:border-focus-blue  px-8 py-2 "
+                >
+                  <div className="flex justify-center items-center">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 18 18"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M14.4 4H3.6V1C3.6 0.716667 3.6861 0.479 3.8583 0.287C4.0311 0.0956666 4.245 0 4.5 0H13.5C13.755 0 13.9686 0.0956666 14.1408 0.287C14.3136 0.479 14.4 0.716667 14.4 1V4ZM14.4 9.5C14.655 9.5 14.8686 9.404 15.0408 9.212C15.2136 9.02067 15.3 8.78333 15.3 8.5C15.3 8.21667 15.2136 7.979 15.0408 7.787C14.8686 7.59567 14.655 7.5 14.4 7.5C14.145 7.5 13.9314 7.59567 13.7592 7.787C13.5864 7.979 13.5 8.21667 13.5 8.5C13.5 8.78333 13.5864 9.02067 13.7592 9.212C13.9314 9.404 14.145 9.5 14.4 9.5ZM5.4 16H12.6V12H5.4V16ZM5.4 18C4.905 18 4.4814 17.8043 4.1292 17.413C3.7764 17.021 3.6 16.55 3.6 16V14H0.9C0.645 14 0.4314 13.904 0.2592 13.712C0.0864001 13.5207 0 13.2833 0 13V8C0 7.15 0.2625 6.43767 0.7875 5.863C1.3125 5.28767 1.95 5 2.7 5H15.3C16.065 5 16.7064 5.28767 17.2242 5.863C17.7414 6.43767 18 7.15 18 8V13C18 13.2833 17.9136 13.5207 17.7408 13.712C17.5686 13.904 17.355 14 17.1 14H14.4V16C14.4 16.55 14.2239 17.021 13.8717 17.413C13.5189 17.8043 13.095 18 12.6 18H5.4Z"
+                        fill="white"
+                      />
+                    </svg>
+                    <div className="ml-2 text-sm">พิมพ์</div>
                   </div>
-                  <div className="col-span-1">ลำดับ</div>
-                  <div className="col-span-2">เลขครุภัณฑ์</div>
-                  <div className="col-span-3">ชื่อครุภัณฑ์</div>
-                  <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
-                  <div className="col-span-1">จำนวน</div>
-                  <div className="col-span-1">หน่วยนับ</div>
-                  <div className="col-span-1 pr-1">จำนวน(บาท)</div>
-                </div>
-                <TableBorrowApprove
-                  assetList={assetList}
-                  handleCheckboxChange={handleCheckboxChange}
+                </button>
+              );
+            }}
+            onBeforeGetContent={async () => { await setShowAll(true) }}
+            content={() => printRef.current}
+            onAfterPrint={() => setShowAll(false)}
+          />
+        </div>
+
+
+        <div ref={printRef} className={`${showAll && "px-5"}`}>
+          <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
+            <div className="flex justify-between">
+              <div className="text-lg">ข้อมูลการยืมครุภัณฑ์</div>
+            </div>
+            {/* Row 1 เลขที่เอกสารการยืม */}
+            <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className=" text-text-gray flex">
+                  เลขที่เอกสารการยืม
+                  <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                </label>
+                <input
+                  type="text"
+
+                  readOnly
+                  value={input.borrowIdDoc}
+                  className=" bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
+              </div>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">ราคายืม (ต่อวัน)</label>
+                <input
+                  type="text"
+
+                  readOnly
+                  value={input.pricePerDay.toFixed(2)}
+                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
+              </div>
+            </div>
+            {/* Row 2 วันที่ยืม */}
+            <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className=" text-text-gray">วันที่ยืม</label>
+                <OnlyDateInput
+                  id={"borrowDate"}
+                  state={input}
+                  setAssetList={setInput}
+                  disabled={true}
+                />
+              </div>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">วันที่คืน</label>
+                <OnlyDateInput
+                  id={"borrowReturnDate"}
+                  state={input}
+                  setAssetList={setInput}
+                  disabled={true}
+                />
+              </div>
+            </div>
+            {/* Row 3 กำหนดส่งคืน */}
+            <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className=" text-text-gray">กำหนดส่งคืน</label>
+                <OnlyDateInput
+                  id={"borrowSetReturnDate"}
+                  state={input}
+                  setAssetList={setInput}
+                  disabled={true}
+                />
+              </div>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">จำนวนวันที่ยืม (วัน) </label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  readOnly
+                  value={input.dateDiff}
+                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
+              </div>
+            </div>
+
+            {/* Row 4 กำหนดส่งคืน */}
+            <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">วัตถุประสงค์การขอยืม</label>
+                <input
+                  type="text"
+
+                  readOnly
+                  value={input.borrowPurpose}
+                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
+              </div>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">มูลค่าการยืม (บาท)</label>
+                <input
+                  type="number"
+                  placeholder="0.00"
+                  readOnly
+                  value={input.totalPrice.toFixed(2)}
+                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
             </div>
           </div>
-        </div>
-        {/* รายละเอียดผู้ยืม */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-xl">รายละเอียดผู้ยืม</div>
-          {/* Row 1 ชื่อ */}
-          <div className="grid md:grid-cols-5 pt-4 gap-5 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray ">ชื่อ - นามสกุล</label>
-              <input
-                type="text"
-                placeholder="Example"
-                readOnly
-                value={input.handler}
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">รหัสเจ้าหน้าที่</label>
-              <input
-                type="text"
-                placeholder="00000000"
-                readOnly
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-          </div>
-          {/* Row 2 หมายเลขโทรศัพท์ */}
-          <div className="grid md:grid-cols-5 pt-4 gap-5 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">หมายเลขโทรศัพท์</label>
-              <input
-                type="number"
-                placeholder="120301230123"
-                readOnly
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">ที่อยู่</label>
-              <input
-                type="text"
-                placeholder="Example"
-                readOnly
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+
+          <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
+            <div className="text-xl">รายการครุภัณฑ์ที่ยืม</div>
+            <div className="grid">
+              <div className="overflow-x-auto  scrollbar pt-4 mb-2">
+                <div className="w-max lg:w-full">
+                  <div className="grid grid-cols-12 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
+                    <div className="col-span-1">
+                      <input
+                        type="checkbox"
+                        onChange={() => handleAllCheckboxChange(assetList)}
+                        className=" text-text-green placeholder-text-green focus:ring-0 rounded"
+                      />
+                    </div>
+                    <div className="">ลำดับ</div>
+                    <div className="col-span-2">เลขครุภัณฑ์</div>
+                    <div className="col-span-3">ชื่อครุภัณฑ์</div>
+                    <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
+                    <div className="col-span-1">จำนวน</div>
+                    <div className="col-span-1">หน่วยนับ</div>
+                    <div className="col-span-1 px-1">จำนวน(บาท)</div>
+                  </div>
+                  <TableBorrowApprove
+                    assetList={assetList}
+                    handleCheckboxChange={handleCheckboxChange}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          {/* Row 3 หน่วยงานผู้ยืม */}
-          <div className="grid md:grid-cols-5 pt-4 gap-5 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">หน่วยงานผู้ยืม</label>
-              <input
-                type="text"
-                placeholder="ไอ่สองงงงงงง"
-                readOnly
-                value={input.sector}
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+          {/* รายละเอียดผู้ยืม */}
+          <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+            <div className="text-xl">รายละเอียดผู้ยืม</div>
+            {/* Row 1 ชื่อ */}
+            <div className="grid md:grid-cols-5 pt-4 gap-5 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className=" text-text-gray ">ชื่อ - นามสกุล</label>
+                <input
+                  type="text"
+
+                  readOnly
+                  value={input.handler}
+                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
+              </div>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">รหัสเจ้าหน้าที่</label>
+                <input
+                  type="text"
+                  placeholder="00000000"
+                  readOnly
+                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">ภาควิชาผู้ยืม</label>
-              <input
-                type="text"
-                placeholder="Example"
-                readOnly
-                value={input.subSector}
-                className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-              />
+            {/* Row 2 หมายเลขโทรศัพท์ */}
+            <div className="grid md:grid-cols-5 pt-4 gap-5 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">หมายเลขโทรศัพท์</label>
+                <input
+                  type="number"
+                  placeholder="120301230123"
+                  readOnly
+                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
+              </div>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">ที่อยู่</label>
+                <input
+                  type="text"
+
+                  readOnly
+                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
+              </div>
+            </div>
+            {/* Row 3 หน่วยงานผู้ยืม */}
+            <div className="grid md:grid-cols-5 pt-4 gap-5 md:gap-20">
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">หน่วยงานผู้ยืม</label>
+                <input
+                  type="text"
+                  placeholder="ไอ่สองงงงงงง"
+                  readOnly
+                  value={input.sector}
+                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
+              </div>
+              <div className="flex flex-col gap-y-2 col-span-2">
+                <label className="text-text-gray">ภาควิชาผู้ยืม</label>
+                <input
+                  type="text"
+
+                  readOnly
+                  value={input.subSector}
+                  className="bg-table-data border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+                />
+              </div>
             </div>
           </div>
+          {/* หมายเหตุ */}
+          <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+            <div className="text-lg ">หมายเหตุ</div>
+            <textarea
+              maxLength=""
+              name="note"
+              value={input.note}
+              onChange={(e) => handleChange(e)}
+              // className="h-[250px] border-[1px] mt-5  rounded-md w-full focus:border-sky-300"
+              className="min-h-[7em] border-[1px] mt-5  rounded-md w-full focus:border-sky-300"
+            ></textarea>
+
+          </div>
         </div>
-        {/* หมายเหตุ */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-lg ">หมายเหตุ</div>
-          <textarea
-            maxLength=""
-            name="note"
-            value={input.note}
-            onChange={(e) => handleChange(e)}
-            className="h-[250px] border-[1px] mt-5  rounded-md w-full focus:border-sky-300"
-          ></textarea>
-        </div>
+
         {/* footer button */}
         <div className="flex justify-between items-center gap-5 p-3 text-sm ">
           <ModalIndividualReject
@@ -502,16 +537,19 @@ const ModalSummary = ({ assetList, input, setInput }) => {
                       รายการครุภัณฑ์ที่อนุมัติ
                     </h3>
                     <button
-                      className="border-0 text-black float-right"
+                      // className="border-0 text-black float-right"
+                      className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
+
                       onClick={() => setShowModal(false)}
                     >
-                      <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
-                        x
-                      </span>
+                      <IoIosClose className="text-2xl" />
+                      {/* <span className=" flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
+                      x
+                      </span> */}
                     </button>
                   </div>
                   {/* table */}
-                  <div className="overflow-x-auto  scrollbar pt-4 mb-5">
+                  <div className="overflow-x-auto  scrollbar pt-4 mb-5 px-2">
                     <div className="w-[1000px] lg:w-full">
                       <div className="grid grid-cols-10 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
                         <div className="col-span-1">ลำดับ</div>
@@ -525,9 +563,8 @@ const ModalSummary = ({ assetList, input, setInput }) => {
                     </div>
                   </div>
                 </div>
-                {/* รายการครุภัณฑ์ที่ไม่อนุมัติ */}
+              
                 <div>
-                  {/* header*/}
                   <div className="flex items-center justify-between p-5 ">
                     <h3 className="text-xl text-text-green">
                       รายการครุภัณฑ์ที่ไม่อนุมัติ
@@ -554,10 +591,10 @@ const ModalSummary = ({ assetList, input, setInput }) => {
                     />
                   )}
                 </div>
-                {/* footer */}
+              
                 <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
                   <button
-                    className="px-10 py-2 border-[1px] shadow-sm rounded-md "
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md hover:bg-gray-200"
                     type="button"
                     onClick={() => setShowModal(false)}
                   >
@@ -587,8 +624,7 @@ const ModalSummary = ({ assetList, input, setInput }) => {
 const EachReject = ({ assetList, input, setInput }) => {
   return (
     <div>
-      {/* table */}
-      <div className="overflow-x-auto  scrollbar pt-4 mb-5">
+      <div className="overflow-x-auto  scrollbar pt-4 mb-5 px-2">
         <div className="w-[1000px] lg:w-full">
           <div className="grid grid-cols-12 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
             <div className="col-span-1">ลำดับ</div>
@@ -650,8 +686,7 @@ const AllReject = ({ assetList, input, setInput }) => {
 
   return (
     <div>
-      {/* table */}
-      <div className="overflow-x-auto  scrollbar pt-4 mb-5">
+      <div className="overflow-x-auto  scrollbar pt-4 mb-5 px-2">
         <div className="w-[1000px] lg:w-full">
           <div className="grid grid-cols-10 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
             <div className="col-span-1">ลำดับ</div>
@@ -668,12 +703,12 @@ const AllReject = ({ assetList, input, setInput }) => {
           />
         </div>
       </div>
-      {/* สาเหตุที่ไม่อนุมัติ */}
+    
       <div className="p-4 text-sm mt-3 ">
         <div className="text-lg ">สาเหตุที่ไม่อนุมัติ</div>
         <textarea
           maxLength=""
-          className="h-[100px] border-[1px] mt-5  rounded-md w-full focus:border-sky-300"
+          className="min-h-[7em] border-[1px] mt-5  rounded-md w-full focus:border-sky-300"
           value={allReason}
           onChange={(e) => handleChangeAllReject(e)}
         ></textarea>
@@ -697,7 +732,7 @@ const TableSummaryApprove = ({ assetList }) => {
         assetList.map((item, idx) => {
           if (item.checked) {
             return (
-              <div className="grid grid-cols-10 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+              <div className="grid grid-cols-10 gap-2 pt-2 text-xs text-center items-center bg-white">
                 <div className="col-span-1  text-center flex justify-center items-center ">
                   <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
                     {idx + 1}
@@ -769,7 +804,7 @@ const TableSummaryEachReject = ({ assetList, input, setInput }) => {
           item.hasOwnProperty("checked") === false
         ) {
           return (
-            <div className="grid grid-cols-12 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+            <div className="grid grid-cols-12 gap-2 pt-2 text-xs text-center items-center bg-white">
               <div className="col-span-1  text-center flex justify-center items-center ">
                 <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
                   {idx + 1}
@@ -808,7 +843,7 @@ const TableSummaryEachReject = ({ assetList, input, setInput }) => {
                       ).reason
                   }
                   onChange={(e) => handleChangeEachReject(e, idx)}
-                  placeholder="Example"
+
                   className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
               </div>
@@ -829,7 +864,7 @@ const TableSummaryAllReject = ({ assetList, input, setInput }) => {
           item.hasOwnProperty("checked") === false
         ) {
           return (
-            <div className="grid grid-cols-10 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+            <div className="grid grid-cols-10 gap-2 pt-2 text-xs text-center items-center bg-white">
               <div className="col-span-1  text-center flex justify-center items-center ">
                 <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
                   {idx + 1}
@@ -1049,7 +1084,7 @@ const ModalIndividualReject = ({
                             name="reason"
                             value={input.reason}
                             onChange={(e) => handleChangeIndividualReject(e)}
-                            placeholder="Example"
+
                             required
                             className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                           />
@@ -1061,7 +1096,7 @@ const ModalIndividualReject = ({
                 {/* footer */}
                 <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
                   <button
-                    className="px-10 py-2 border-[1px] shadow-sm rounded-md "
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md hover:bg-gray-200"
                     type="button"
                     onClick={() => setShowModal(false)}
                   >
