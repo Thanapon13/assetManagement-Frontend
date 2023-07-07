@@ -14,9 +14,10 @@ import { getByAssetNumberSelector, getByProductSelector } from "../api/assetApi"
 
 const BorrowRecord = () => {
   const [countRow, setCountRow] = useState(1);
-
+  const [isLoading, setIsLoading] = useState(true)
   const [input, setInput] = useState({
     // ข้อมูลการยืม
+
     borrowIdDoc: '',
     pricePerDay: "0",
     borrowDate: new Date(),
@@ -100,7 +101,7 @@ const BorrowRecord = () => {
   const [assetList, setAssetList] = useState([])
   const [productList, setProductList] = useState([])
   const { id } = useParams();
-  const [isLoading, setIsLoading] = useState(true)
+
   const fetchLists = async () => {
     if (id) {
       const res = await getBorrowById(id);
@@ -114,6 +115,7 @@ const BorrowRecord = () => {
     })
     console.log(arrAsset)
     setAssetList(arrAsset)
+    setAssetListFilt(arrAsset)
     setAssetListFilt(arrAsset)
     const resProduct = await getByProductSelector("")
     const arrProduct = []
@@ -129,17 +131,19 @@ const BorrowRecord = () => {
   const [assetListFilt, setAssetListFilt] = useState()
   const [productListFilt, setProductListFilt] = useState()
   function callbackList() {
-    console.log('saveAssetWithdrawTableArray', saveAssetWithdrawTableArray)
-    console.log(assetList, productList)
-    // let asset = [], product = []
-    // saveAssetWithdrawTableArray?.map(ele => {
-    //   asset = assetList.filter(ass => ele.assetNumber != ass.value)
-    //   product = productList.filter(ass => ele.productName != ass.value)
-    // })
-    // // console.log(asset,'139')
-    // setAssetListFilt(asset)
-    // setProductListFilt(product)
-    calPricePerDay()
+    let asset = [], product = [], countVal = 0
+
+    saveAssetWithdrawTableArray?.map((ele,index) => {
+      if(ele.assetNumber) countVal += 1
+      console.log('-------', ele.assetNumber, countVal, index)
+      // asset = assetList.filter(ass => ele.assetNumber != ass.value)
+      // if(assetList.find(ass => ass.value == ele.assetNumber)) {
+        if(countVal == index+1) {
+        console.log(assetList.filter(ass => ass.value != ele.assetNumber).length, assetList.filter(ass => ass.value != ele.assetNumber))
+        setAssetListFilt(assetList.filter(ass => ass.value != ele.assetNumber))
+      }
+   })
+    // setProductList(product)
   }
 
   function formArrayOption(data) {
@@ -347,7 +351,7 @@ const BorrowRecord = () => {
             <div className="text-text-gray ml-2">บันทึกใบยืมครุภัณฑ์</div>
           </div>
         </div>
-        {/* ข้อมูลการยืมครุภัณฑ์ */}
+
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
           <div className="text-xl">ข้อมูลการยืมครุภัณฑ์</div>
           {/* Row 1 เลขที่เอกสารการยืม */}
@@ -400,158 +404,155 @@ const BorrowRecord = () => {
 
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
           <div className="text-xl">รายการครุภัณฑ์ที่เลือก</div>
-          <div className="grid">
-            <div className="overflow-x-auto scrollbar pt-4">
-              <div className="w-[1000px] lg:w-full p-2 ">
-                <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
-                  <div className="grid grid-cols-14 gap-2 text-center">
-                    {/* <div className="col-span-2 grid grid-cols-3 gap-5 "> */}
-                    <div className="ml-2 col-span-1 ">ลำดับ</div>
-                    <div className="col-span-3 ">เลขครุภัณฑ์</div>
-                    {/* </div> */}
-                    <div className="col-span-3">ชื่อครุภัณฑ์</div>
-                    <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
-                    {/* <div className="col-span-3 grid grid-cols-4 gap-5"> */}
-                    <div className="col-span-1">จำนวน</div>
-                    <div className="col-span-1">หน่วยนับ</div>
-                    <div className="col-span-2">จำนวนเงิน (บาท)</div>
-                    {/* </div> */}
-                  </div>
+          {/* table */}
+          <div className="overflow-x-auto scrollbar pt-4">
+            <div className="w-[1000px] lg:w-full p-2 min-h-[30vh]">
+              <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+                <div className="grid grid-cols-13 gap-2 text-center">
+                  {/* <div className="col-span-2 grid grid-cols-3 gap-5 "> */}
+                  <div className="ml-2 col-span-1 ">ลำดับ</div>
+                  <div className="col-span-2 ">เลขครุภัณฑ์</div>
+                  {/* </div> */}
+                  <div className="col-span-3">ชื่อครุภัณฑ์</div>
+                  <div className="col-span-2">ยี่ห้อ/รุ่น/ขนาด</div>
+                  {/* <div className="col-span-3 grid grid-cols-4 gap-5"> */}
+                  <div className="col-span-1">จำนวน</div>
+                  <div className="col-span-1">หน่วยนับ</div>
+                  <div className="col-span-2">จำนวนเงิน (บาท)</div>
+                  {/* </div> */}
                 </div>
-                {saveAssetWithdrawTableArray?.map((el, idx) => {
-                   let asset = [], product = []
-                   saveAssetWithdrawTableArray?.map(ele => {
-                     asset = assetList.filter(ass => ele.assetNumber != ass.value)
-                     product = productList.filter(ass => ele.productName != ass.value)
-                   })
-                  return (
-                    <TableBorrowRecord
-                      key={idx}
-                      index={idx}
-                      saveAssetWithdrawTableArray={saveAssetWithdrawTableArray}
-                      setSaveAssetWithdrawTableArray={setSaveAssetWithdrawTableArray}
-                      deleteRow={deleteRow}
-                      errorAssestTable={errorAssestTable}
-                      assetList={asset}
-                      productList={product}
-                      callbackList={callbackList}
-                    />
-                  );
-                })}
+              </div>
+              {saveAssetWithdrawTableArray?.map((el, idx) => {
+                const lists = assetListFilt == null ?  assetList : assetListFilt
+                // console.log(lists, assetList, assetListFilt)
+                return (
+                  <TableBorrowRecord
+                    key={idx}
+                    index={idx}
+                    saveAssetWithdrawTableArray={saveAssetWithdrawTableArray}
+                    setSaveAssetWithdrawTableArray={setSaveAssetWithdrawTableArray}
+                    deleteRow={deleteRow}
+                    errorAssestTable={errorAssestTable}
+                    assetList={assetListFilt}
+                    productList={productList}
+                    callbackList={callbackList}
+                  />
+                );
+              })}
+              <button
+                type="button"
+                className="mt-2 w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+                onClick={handleClickIncrease}
+              >
+                + เพิ่มครุภัณฑ์
+              </button>
+
+              {/* <div className="h-[24px]"></div> */}
+            </div>
+          </div>
+        </div>
+        {isLoading
+          ? ""
+          : <>
+            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+              <div className="text-xl">รายละเอียดผู้ยืม</div>
+              {/* Row 1 หน่วยงาน */}
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <div className="flex flex-col gap-y-2 col-span-2">
+                    <label className=" text-text-gray flex">
+                      หน่วยงาน
+                      <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                    </label>
+                  </div>
+                  <SearchSelector
+                    options={sectorList}
+                    name="sector"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={errorInput && !input.sector}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className="text-text-gray">ภาควิชา</label>
+                  <SearchSelector
+                    options={subSectorList}
+                    name="subSector"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={errorInput && !input.subSector}
+                  />
+                </div>
+              </div>
+              {/* Row 2 วัตถุประสงค์การขอยืม */}
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray">วัตถุประสงค์การขอยืม</label>
+                  <SearchSelector
+                    options={purposeOfUseList}
+                    name="borrowPurpose"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={errorInput && !input.borrowPurpose}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray">ผู้ดำเนินการ</label>
+                  <input
+                    type="text"
+                    name="handler"
+                    value={input.handler}
+                    onChange={handleChange}
+                    className={`${errorInput && !input.handler && 'border-red-500'} border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <button
-            type="button"
-            className="mt-2 w-full h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-            onClick={handleClickIncrease}
-          >
-            + เพิ่มครุภัณฑ์
-          </button>
-        </div>
-        {/* รายละเอียดผู้ยืม */}
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-xl">รายละเอียดผู้ยืม</div>
-          {/* Row 1 หน่วยงาน */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <div className="flex flex-col gap-y-2 col-span-2">
-                <label className=" text-text-gray flex">
-                  หน่วยงาน
-                  <h1 className="text-red-500 ml-2 font-bold">*</h1>
-                </label>
+            <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
+              <div className="text-xl">สถานที่ตั้งใหม่</div>
+              <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
+                <div className="flex flex-col gap-y-2 col-span-2">
+                  <label className=" text-text-gray flex">
+                    อาคาร
+                    <h1 className="text-red-500 ml-2 font-bold">*</h1>
+                  </label>
+                  <SearchSelector
+                    options={buildingList}
+                    name="building"
+                    onChange={handleSelect}
+                    noClearButton
+                    error={errorInput && !input.building}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-1">
+                  <label className="text-text-gray">ชั้น</label>
+                  <SearchSelector
+                    isDisabled={!input.building}
+                    options={floorList}
+                    onChange={handleSelect}
+                    name="floor"
+                    noClearButton
+                    error={errorInput && !input.floor}
+                    value={input.floor && floorList?.find(list => list.value == input.floor)}
+                  />
+                </div>
+                <div className="flex flex-col gap-y-2 col-span-1">
+                  <label className="text-text-gray">ห้อง</label>
+                  <SearchSelector
+                    noClearButton
+                    name="room"
+                    options={roomList}
+                    onChange={handleSelect}
+                    isDisabled={!input.floor}
+                    error={errorInput && !input.room}
+                    value={input?.room && roomList?.find(list => list.value == input.room)}
+                  />
+                </div>
               </div>
-              <SearchSelector
-                options={sectorList}
-                name="sector"
-                onChange={handleSelect}
-                noClearButton
-                error={errorInput && !input.sector}
-                value={input.sector && { label: input.sector, value: input.sector }}
-              />
             </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className="text-text-gray">ภาควิชา</label>
-              <SearchSelector
-                options={subSectorList}
-                name="subSector"
-                onChange={handleSelect}
-                noClearButton
-                error={errorInput && !input.subSector}
-                value={input.subSector && { label: input.subSector, value: input.subSector }}
-              />
-            </div>
-          </div>
-          {/* Row 2 วัตถุประสงค์การขอยืม */}
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">วัตถุประสงค์การขอยืม</label>
-              <SearchSelector
-                options={purposeOfUseList}
-                name="borrowPurpose"
-                onChange={handleSelect}
-                noClearButton
-                error={errorInput && !input.borrowPurpose}
-                value={input.borrowPurpose && { label: input.borrowPurpose, value: input.borrowPurpose }}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray">ผู้ดำเนินการ</label>
-              <input
-                type="text"
-                name="handler"
-                value={input.handler}
-                onChange={handleChange}
-                className={`${errorInput && !input.handler && 'border-red-500'} border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-          <div className="text-xl">สถานที่ตั้งใหม่</div>
-          <div className="grid md:grid-cols-5 pt-4 gap-2 md:gap-20">
-            <div className="flex flex-col gap-y-2 col-span-2">
-              <label className=" text-text-gray flex">
-                อาคาร
-                <h1 className="text-red-500 ml-2 font-bold">*</h1>
-              </label>
-              <SearchSelector
-                options={buildingList}
-                name="building"
-                onChange={handleSelect}
-                noClearButton
-                error={errorInput && !input.building}
-                value={input.building && { label: input.building, value: input.building }}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-1 -mr-12">
-              <label className="text-text-gray">ชั้น</label>
-              <SearchSelector
-                isDisabled={!input.building}
-                options={floorList}
-                onChange={handleSelect}
-                name="floor"
-                noClearButton
-                error={errorInput && !input.floor}
-                value={input.floor && { label: input.floor, value: input.floor } || floorList?.find(list => list.value == input.floor)}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2 col-span-1 -mr-20">
-              <label className="text-text-gray">ห้อง</label>
-              <SearchSelector
-                noClearButton
-                name="room"
-                options={roomList}
-                onChange={handleSelect}
-                isDisabled={!input.floor}
-                error={errorInput && !input.room}
-                value={input?.room && { label: input.room, value: input.room } || roomList?.find(list => list.value == input.room)}
-              />
-            </div>
-          </div>
-        </div>
+          </>
+        }
       </div>
       {/* footer */}
       {/* <div className="bottom-0 bg-white  flex justify-end items-center gap-4 p-3 text-sm mr-3 "> */}

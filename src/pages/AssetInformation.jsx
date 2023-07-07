@@ -59,22 +59,24 @@ const AssetInformation = () => {
   }, []);
 
   async function initData() {
-    const type = await getTypeData()
-    const arrType = formArrayOption(type.data.type)
+    const types = await getTypeData()
+    const arrType = formArrayOption(types.data.type)
     setTypeList(arrType)
-    const kind = await getKindAll()
-    const arrKind = formArrayOption(kind.data.kind)
+    const kinds = await getKindAll()
+    const arrKind = formArrayOption(kinds.data.kind)
     setKindList(arrKind)
-    const res = await getAssetById(param.id);
-    const asset = (res.data.asset[0])
-    const category = await getCategory()
-    const arrCategory = formArrayOption(category.data.category)
+    const categorys = await getCategory()
+    const arrCategory = formArrayOption(categorys.data.category)
     setCategoryList(arrCategory)
+    const res = await getAssetById(param.id);
+    const asset = res.data.asset[0]
+
+    const type = arrType.find(ele => ele.value == asset.type)
+    const kind =arrKind.find(ele => ele.value == asset.kind)
+    const category =arrCategory.find(ele => ele.value == asset.category)
     setInput({
       engProductName: asset.engProductName,
       productName: asset.productName,
-      type: asset.type,
-      kind: asset.kind,
       realAssetId: asset.realAssetId,
       unit: asset.unit,
       brand: asset.brand,
@@ -90,33 +92,32 @@ const AssetInformation = () => {
       purposeOfUse: asset.purposeOfUse,
       assetGroupNumber: asset.assetGroupNumber,
       distributeToSector: asset.distributeToSector,
-      type: arrType.find(ele => ele.label == asset.type)?.ele || "",
-      category: arrCategory.find(ele => ele.label == asset.category)?.ele || "",
-      kind: arrKind.find(ele => ele.label == asset.kind)?.ele || "",
+      // ...asset,
+      type: { label: type.label,value: type.ele.value, name: asset.type } || { label: asset.type, name: asset.type },
+      kind: { label: kind.label,value: kind.ele.value, name: asset.kind } || { label: asset.kind, name: asset.kind },
+      category: { label: category.label,value: category.ele.value, name: asset.category } || { label: asset.category, name: asset.category },
     })
-    console.log(arrType.find(ele => ele.label == asset.type)?.ele, { name: asset.type, value: asset.type })
-    // console.log(asset.type, 'xx', { ...arrType.find(ele => ele.label == asset.type), name: asset.type })
-    setGenData(res.data.asset[0]?.genDataArray || [])
-    const docs = res.data.asset[0]?.documentArray
+
+    setInputContract({
+      ...asset?.purchaseContract,
+      receivedDate: new Date(asset?.purchaseContract.receivedDate),
+      purchaseYear: new Date(asset?.purchaseContract.purchaseYear),
+      purchaseDate: new Date(asset?.purchaseContract.purchaseDate),
+      documentDate: new Date(asset?.purchaseContract.documentDate),
+    })
+    setInputSale({
+      ...asset?.distribution,
+      distributeDocumentDate: new Date(asset?.distribution.distributeDocumentDate),
+      distributeApprovalReleaseDate: new Date(asset?.distribution.distributeApprovalReleaseDate),
+    })
+    setGenData(asset?.genDataArray || [])
+    const docs = asset?.documentArray
     docs.map(ele => {
       const name = ele.document
       ele.document = { name: name }
     })
     setArrayDocument(docs)
-    setArrayImage(res.data.asset[0]?.imageArray)
-
-    setInputContract({
-      ...asset.purchaseContract,
-      receivedDate: new Date(asset.purchaseContract.receivedDate),
-      purchaseYear: new Date(asset.purchaseContract.purchaseYear),
-      purchaseDate: new Date(asset.purchaseContract.purchaseDate),
-      documentDate: new Date(asset.purchaseContract.documentDate),
-    })
-    setInputSale({
-      ...asset.distribution,
-      distributeDocumentDate: new Date(asset.distribution.distributeDocumentDate),
-      distributeApprovalReleaseDate: new Date(asset.distribution.distributeApprovalReleaseDate),
-    })
+    setArrayImage(asset?.imageArray)
   }
 
   const getMasterData = async () => {
@@ -550,8 +551,9 @@ const AssetInformation = () => {
   const handleSubmit = async (e) => {
     let errInput, errContact, errSale, errTable
     // checkError
-    Object.entries(input).forEach(([key, value], index) => {
-      if (errInput || key == "distributeToSector") return
+    console.log({ input, ...inputSale, ...inputContract });
+    Object.values(input).map((value, index) => {
+      if (errInput) return
       if (!value) errInput = true
       // if (Object.keys(input).length > index + 2) errInput = false
     })
@@ -573,6 +575,7 @@ const AssetInformation = () => {
     Object.entries(inputSale).forEach(([key, value], index) => {
       if (errSale || key == "distributionNote") return
       if (!value) errSale = true
+      if (Object.keys(inputSale).length == index + 1) errSale = false
     })
     if (errInput) {
       setErrorGen(false)
@@ -580,10 +583,10 @@ const AssetInformation = () => {
       window.scrollTo({ top: 180, behavior: "smooth", });
     }
     setErrorAssestTable(errTable)
+    console.log(errInput, errContact, errSale, genData)
     if (errContact) setErrorContract(true)
     if (errSale) setErrorSale(true)
-
-    if (!(errInput || errContact || errSale || errTable)) setShowModalConfirm(true)
+    if (!(errInput || errContact || errSale)) setShowModalConfirm(true)
   }
 
   const submit = async (valStatus) => {
@@ -597,9 +600,10 @@ const AssetInformation = () => {
       category: input.category?.name,
       kind: input.kind?.name,
       type: input.type?.name,
-      status: valStatus || "not approve",
+      status: valStatus || "inStock",
       // existArrayDocument: [],
     });
+    
     const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
     formData.append("input", inputJSON);

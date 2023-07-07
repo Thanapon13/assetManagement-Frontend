@@ -113,9 +113,8 @@ function TableBorrowRecord({
           theme: "light",
         }
       );
-      clone[index].amount = "";
+      clone[index].amount = 1;
     }
-
     setSaveAssetWithdrawTableArray(clone);
   };
 
@@ -168,14 +167,18 @@ function TableBorrowRecord({
       quantity: 1,
       unit: ele?.unit || val.unit,
       isFetching: false,
-      pricePerUnit: ele.pricePerUnit,
-      brand: `${ele.brand}/${ele.size}`,
-      amount: 1,
-      maxQuantity: ele.quantity
+      // pricePerUnit: ele.pricePerUnit,
+      // brand: `${ele.brand}/${ele.size}`,
+      // amount: 1,
+      // maxQuantity: ele.quantity
+      // ^Friday
+      amount: ele?.quantity ? 1 : val.quantity || 0,
+      pricePerUnit: ele?.pricePerUnit,
+      brand: `${ele?.brand}/${ele?.size}`
     }
 
-    console.log(saveAssetWithdrawTableArray)
-    callbackList()
+    console.log(saveAssetWithdrawTableArray, '<<<<')
+    // setSaveAssetWithdrawTableArray(saveAssetWithdrawTableArray)
   }
 
   const handleName = async (value, label, ele) => {
@@ -195,9 +198,13 @@ function TableBorrowRecord({
       unit: ele ? ele[0].unit : "",
       //  isFetching: false
     }
-    console.log(saveAssetWithdrawTableArray[index], '*********')
-    callbackList()
+    // console.log(saveAssetWithdrawTableArray[index], '*********')
   }
+
+  useEffect(() => {
+// console.log(ele)
+callbackList()
+  }, [ele.productName, ele.assetNumber])
 
   return (
     <div
@@ -206,6 +213,7 @@ function TableBorrowRecord({
       <div className="col-span-1 ml-2 text-center flex justify-center items-center ">
         <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
           {index + 1}
+          {/* {assetList.length} */}
         </div>
       </div>
 
