@@ -15,8 +15,8 @@ function YearInput({ state, setState, error }) {
 
   // คศ to พศ + อีก10ปี
   const years = range(
-    new Date().getFullYear() - 10,
-    new Date().getFullYear() + 10,
+    new Date().getFullYear() - 15,
+    new Date().getFullYear() + 5,
     1
   );
   return (

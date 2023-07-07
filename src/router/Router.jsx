@@ -137,6 +137,7 @@ const Router = () => {
             element={<BorrowCheckDetail />}
           />
           <Route path="borrowRecord" element={<BorrowRecord />} />
+          <Route path="borrowRecord/:id" element={<BorrowRecord />} />
           <Route path="borrowApprove" element={<BorrowApprove />} />
           <Route
             path="borrowApproveDetail/:borrowId"
@@ -154,6 +155,7 @@ const Router = () => {
 
           <Route path="transferIndex" element={<TransferIndex />} />
           <Route path="saveTransferAsset" element={<SaveTransferAsset />} />
+          <Route path="saveTransferAsset/:id" element={<SaveTransferAsset />} />
           <Route
             path="approvalTransferAsset"
             element={<ApprovalTransferAsset />}

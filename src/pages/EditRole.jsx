@@ -612,7 +612,7 @@ function ScreenAll(props) {
             >
               <input type="checkbox" checked={check ? true : false} value={submenu.name} className='mx-2 rounded'
                 onChange={() => onChangeSub(check, submenu?.name, ele?.order)} />
-              {submenu.name} {check&& ele?.order}
+              {submenu.name}
             </div>
           )
         })}

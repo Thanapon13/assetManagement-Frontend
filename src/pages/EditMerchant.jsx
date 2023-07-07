@@ -12,7 +12,7 @@ import { useRef } from "react";
 import { useForm } from "react-hook-form";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { updateMerchant, getMerchantById } from '../api/merchant';
+import { updateMerchant, getMerchantById, createMerchant } from '../api/merchant';
 import { Spinner } from 'flowbite-react';
 import { useEffect } from 'react';
 import SearchSelector from '../components/selector/SearchSelector';
@@ -257,7 +257,11 @@ export const EditMerchant = () => {
     // formData.append("existArrayDocument", data)
 
     try {
-      await updateMerchant(formData, merchantId)
+      if(status != "saveDraft") {
+        await updateMerchant(formData, merchantId)
+      } else {
+        await createMerchant(formData)
+      }
       setShowModalConfirm(false)
       setShowModalSuccess(true)
     } catch (error) {
