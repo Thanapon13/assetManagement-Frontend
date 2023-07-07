@@ -59,9 +59,43 @@ const AssetInformation = () => {
   }, []);
 
   async function initData() {
+    const type = await getTypeData()
+    const arrType = formArrayOption(type.data.type)
+    setTypeList(arrType)
+    const kind = await getKindAll()
+    const arrKind = formArrayOption(kind.data.kind)
+    setKindList(arrKind)
     const res = await getAssetById(param.id);
-    console.log(res.data.asset)
-    setInput(res.data.asset[0])
+    const asset = (res.data.asset[0])
+    const category = await getCategory()
+    const arrCategory = formArrayOption(category.data.category)
+    setCategoryList(arrCategory)
+    setInput({
+      engProductName: asset.engProductName,
+      productName: asset.productName,
+      type: asset.type,
+      kind: asset.kind,
+      realAssetId: asset.realAssetId,
+      unit: asset.unit,
+      brand: asset.brand,
+      model: asset.model,
+      size: asset.size,
+      quantity: asset.quantity,
+      source: asset.source,
+      category: asset.category,
+      acquiredType: asset.acquiredType,
+      group: asset.group,
+      pricePerUnit: asset.pricePerUnit,
+      guaranteedMonth: asset.guaranteedMonth,
+      purposeOfUse: asset.purposeOfUse,
+      assetGroupNumber: asset.assetGroupNumber,
+      distributeToSector: asset.distributeToSector,
+      type: arrType.find(ele => ele.label == asset.type)?.ele || "",
+      category: arrCategory.find(ele => ele.label == asset.category)?.ele || "",
+      kind: arrKind.find(ele => ele.label == asset.kind)?.ele || "",
+    })
+    console.log(arrType.find(ele => ele.label == asset.type)?.ele, { name: asset.type, value: asset.type })
+    // console.log(asset.type, 'xx', { ...arrType.find(ele => ele.label == asset.type), name: asset.type })
     setGenData(res.data.asset[0]?.genDataArray || [])
     const docs = res.data.asset[0]?.documentArray
     docs.map(ele => {
@@ -70,21 +104,36 @@ const AssetInformation = () => {
     })
     setArrayDocument(docs)
     setArrayImage(res.data.asset[0]?.imageArray)
+
+    setInputContract({
+      ...asset.purchaseContract,
+      receivedDate: new Date(asset.purchaseContract.receivedDate),
+      purchaseYear: new Date(asset.purchaseContract.purchaseYear),
+      purchaseDate: new Date(asset.purchaseContract.purchaseDate),
+      documentDate: new Date(asset.purchaseContract.documentDate),
+    })
+    setInputSale({
+      ...asset.distribution,
+      distributeDocumentDate: new Date(asset.distribution.distributeDocumentDate),
+      distributeApprovalReleaseDate: new Date(asset.distribution.distributeApprovalReleaseDate),
+    })
   }
 
   const getMasterData = async () => {
-    const type = await getTypeData()
-    const arrType = formArrayOption(type.data.type)
-    setTypeList(arrType)
-    const kind = await getKindAll()
-    const arrKind = formArrayOption(kind.data.kind)
-    setKindList(arrKind)
+    if (!param.id) {
+      const type = await getTypeData()
+      const arrType = formArrayOption(type.data.type)
+      setTypeList(arrType)
+      const kind = await getKindAll()
+      const arrKind = formArrayOption(kind.data.kind)
+      setKindList(arrKind)
+      const category = await getCategory()
+      const arrCategory = formArrayOption(category.data.category)
+      setCategoryList(arrCategory)
+    }
     const brand = await getBrandData()
     const arrBrand = formArrayOption(brand.data.brand)
     setBrandList(arrBrand)
-    const category = await getCategory()
-    const arrCategory = formArrayOption(category.data.category)
-    setCategoryList(arrCategory)
     const group = await getGroupData()
     const arrGroup = formArrayOption(group.data.group)
     setGroupList(arrGroup)
@@ -127,7 +176,7 @@ const AssetInformation = () => {
     if (label == "kind" || label == "type" || label == "category") {
       setInput({ ...input, [label]: ele })
     } else {
-    setInput({ ...input, [label]: value })
+      setInput({ ...input, [label]: value })
     }
   }
 
@@ -469,7 +518,7 @@ const AssetInformation = () => {
         ...input,
         assetGroupNumber: assetGroupNumber
       })
-      
+
       for (let i = 0; i < input.quantity; i++) {
         arr.push({
           assetNumber: assetGroupNumber + '/'
@@ -477,7 +526,7 @@ const AssetInformation = () => {
           serialNumber: "",
           sector: input.distributeToSector,
           asset01: "",
-          replacedAssetNumber: "x",
+          replacedAssetNumber: "",
         })
       }
       setGenData(arr)
@@ -501,28 +550,29 @@ const AssetInformation = () => {
   const handleSubmit = async (e) => {
     let errInput, errContact, errSale, errTable
     // checkError
-    console.log({ input, ...inputSale, ...inputContract });
-    Object.values(input).map((value, index) => {
-      if (errInput) return
+    Object.entries(input).forEach(([key, value], index) => {
+      if (errInput || key == "distributeToSector") return
       if (!value) errInput = true
-      if (Object.keys(input).length > index + 2) errInput = false
+      // if (Object.keys(input).length > index + 2) errInput = false
     })
     genData.map(ele => {
-      if (!ele.sector) errTable = true
+      if (!ele.sector || !ele.serialNumber) errTable = true
       // Object.values(ele).map((value, index) => {
       //   if (errTable || Object.keys(ele).length == index + 1) return
       //   if (!value) errTable = true
       // })
+      console.log(ele.serialNumber)
     })
+    console.log(genData, input)
+
     Object.values(inputContract).map((value, index) => {
       if (errContact) return
       if (!value) errContact = true
       if (Object.keys(inputContract).length == index + 1) errContact = false
     })
-    Object.values(inputSale).map((value, index) => {
-      if (errSale) return
+    Object.entries(inputSale).forEach(([key, value], index) => {
+      if (errSale || key == "distributionNote") return
       if (!value) errSale = true
-      if (Object.keys(inputSale).length == index + 1) errSale = false
     })
     if (errInput) {
       setErrorGen(false)
@@ -532,7 +582,8 @@ const AssetInformation = () => {
     setErrorAssestTable(errTable)
     if (errContact) setErrorContract(true)
     if (errSale) setErrorSale(true)
-    if (!(errInput || errContact || errSale)) setShowModalConfirm(true)
+
+    if (!(errInput || errContact || errSale || errTable)) setShowModalConfirm(true)
   }
 
   const submit = async (valStatus) => {
@@ -1410,7 +1461,6 @@ const AssetInformation = () => {
               <div className="mb-1">เอกสารลงวันที่</div>
               <div className="flex h-[38px]">
                 <DateInput
-
                   // state={distributeDocumentDate}
                   // setState={setDistributeDocumentDate}
                   setState={(value) => handleChangeSelectSale("distributeDocumentDate", value)}

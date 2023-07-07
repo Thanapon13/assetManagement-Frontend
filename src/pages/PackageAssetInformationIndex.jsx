@@ -136,7 +136,7 @@ const PackageAssetInformationIndex = () => {
 
   const handleDelete = async (id, reason) => {
     try {
-      await deletePackageAsset(id, { reason: reason });
+      await deletePackageAsset(id, reason && { reason: reason });
       fetchPackageAssetList()
     } catch (err) {
       console.log(err);
@@ -467,7 +467,11 @@ function ModalDeleteAsset(props) {
               </button>
               <button
                 className="text-white hover:bg-red-600 bg-[#EB5757] px-10 py-3 border rounded-md "
-                onClick={() => remark ? props.confirmDelete(elem._id, remark) : setError(true)}
+                onClick={() => {
+                  elem.status == "saveDraft"
+                    ? props.confirmDelete(elem._id)
+                    : remark ? props.confirmDelete(elem._id, remark) : setError(true)
+                }}
               >
                 ยืนยันลบ
               </button>
