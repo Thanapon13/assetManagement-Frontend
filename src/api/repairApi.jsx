@@ -65,3 +65,7 @@ export function updateStatusForCheckJob(id) {
 export function deleteRepair(id) {
   return axios.patch(`/repair/delete/${id}`)
 }
+
+export function updateRecordRepairDetail(id, body) {
+  return axios.patch(`/repair/recordDetail/${id}`, body)
+}

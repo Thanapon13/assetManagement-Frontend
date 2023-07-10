@@ -41,7 +41,7 @@ const onlyDateInput = ({ state, setState, disabled, id, isValid, minDate }) => {
           location.pathname === "/addUserInformation" || 
           `/${location.pathname.split("/")[1]}` === "/editUserInformation"
             ? state[id]
-            : state
+            : state[id] || state
         } // Can be replace with string or dayjs object (e.g. "2020-12-31" or `dayjs()`)
         onChange={handleWatDatePickerChange}
         dateFormat={"yyyy-MM-dd"} // for set data purpose [using date-fns format](https://date-fns.org/v2.12.0/docs/format)

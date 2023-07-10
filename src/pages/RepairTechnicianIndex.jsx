@@ -240,8 +240,8 @@ const TableRepairTechnicianIndex = ({ data, fetchList }) => {
             <div className="col-span-1">{new Date(item.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.</div>
             <div className="col-span-2">{item.informRepairIdDoc}</div>
             <div className="col-span-2 ">{item.assetNumber}</div>
-            <div className="col-span-3">{item.repairDetail}</div>
-            <div className="col-span-1">{item.sector}</div>
+            <div className="col-span-3 text-left">{item.problemDetail}</div>
+            <div className="col-span-1 text-left">{item.courierSector}</div>
             <div className="col-span-1 flex justify-center">
               <div onClick={() => handleClick(item.emerygencyStatus)}
                 className={`${item.urgentStatus === 'ปกติ'
@@ -274,11 +274,13 @@ const TableRepairTechnicianIndex = ({ data, fetchList }) => {
                       ? 'bg-purple-600  text-white rounded-full'
                       : item.statusOfDetailRecord === 'waitApprove'
                         ? ' bg-[#F2C94C]  rounded-full'
-                        : item.statusOfDetailRecord === 'waitingRecord'
-                          ? ' bg-[#F2994A26] text-[#F2994A] rounded-full'
-                          : item.statusOfDetailRecord === 'completeOfDetailRecord'
-                            ? 'bg-sidebar-green text-text-green  rounded-full  '
-                            : 'bg-red-200 text-red-600 rounded-full '
+                        : item.statusOfDetailRecord === 'waitingApproval'
+                          ? 'bg-yellow-300 rounded-full'
+                          : item.statusOfDetailRecord === 'waitingRecord'
+                            ? ' bg-[#F2994A26] text-[#F2994A] rounded-full'
+                            : item.statusOfDetailRecord === 'completeOfDetailRecord'
+                              ? 'bg-sidebar-green text-text-green  rounded-full  '
+                              : 'bg-red-200 text-red-600 rounded-full '
                   }  p-2 w-[100px]`}
               >
                 {item.statusOfDetailRecord === 'waitTechnicianConfirm'
@@ -303,7 +305,7 @@ const TableRepairTechnicianIndex = ({ data, fetchList }) => {
               ) : item.statusOfDetailRecord === 'inProgressOfDetailRecord' ? (
                 <ActionInProgress />
               ) : item.statusOfDetailRecord === 'waitingApproval' ? (
-                <ActionWaitApprove />
+                <ActionWaitApprove id={item._id} item={item} />
               ) : item.statusOfDetailRecord === 'completeOfDetailRecord' ? (
                 <ActionDone />
               ) : (
@@ -515,22 +517,24 @@ const ActionInProgress = () => {
   )
 }
 
-const ActionWaitApprove = () => {
+const ActionWaitApprove = ({ id, item }) => {
   return (
     <>
-      <div className="col-span-2 flex justify-center gap-2">
+      <div className="col-span-2 flex justify-center gap-2 -mx-4">
         <Link
-          to="repairTechnicianRecord"
-          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg w-[100px]"
+          to={`repairTechnicianRecord/${id}`}
+          state={{ data: item }}
+          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg px-3"
         >
           ลงบันทึก
         </Link>
-        <button
-          type="button"
-          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg w-[100px]"
+        <Link
+          to={`repairOutsourceRecord/${id}`}
+          state={{ data: item }}
+          className="bg-text-green border-text-green hover:bg-green-800 text-white p-2 rounded-lg "
         >
           จ้างซ่อมภายนอก
-        </button>
+        </Link>
       </div>
     </>
   )
