@@ -313,17 +313,17 @@ const RepairRecord = () => {
             <div>
               <div className="text-xl">ข้อมูลครุภัณฑ์</div>
               {/* row 1 เลขที่ใบแจ้งซ่อม */}
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
-                <div className="text-text-gray flex items-center ">
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+                <div className="text-text-gray flex items-center">
                   เลขที่ใบแจ้งซ่อม
                 </div>
-                <div className="flex items-center ">
-                  {formData.informRepairIdDoc}
+                <div className="flex items-center md:col-span-2">
+                {formData.informRepairIdDoc}
                 </div>
-                <div className="text-text-gray flex items-center ">
-                  สถานะความเร่งด่วน
+                <div className="text-text-gray flex items-center">
+                สถานะความเร่งด่วน
                 </div>
-                <div className="sm:col-span-2 grid grid-cols-3  gap-5">
+                <div className="md:col-span-2 grid grid-cols-3  gap-2 -mr-3">
                   <div className="flex items-center gap-2">
                     <input
                       type="radio"
@@ -360,11 +360,11 @@ const RepairRecord = () => {
                 </div>
               </div>
               {/* row 2 เวลาที่แจ้งซ่อม*/}
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
                 <div className="text-text-gray flex items-center">
                   เวลาที่แจ้งซ่อม
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center md:col-span-2">
                   {new Date(formData.informRepairDate).toLocaleString("th", {
                     day: "2-digit",
                     month: "2-digit",
@@ -377,7 +377,7 @@ const RepairRecord = () => {
                 <div className="text-text-gray flex items-center">
                   เลขครุภัณฑ์
                 </div>
-                <div className="flex items-center gap-5">
+                <div className="flex items-center gap-5 md:col-span-2">
                   <SearchSelector
                     options={assetList}
                     name={"assetNumber"}
@@ -402,12 +402,12 @@ const RepairRecord = () => {
                 </div>
               </div>
               {/* row 3 อยู่ในประกัน*/}
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
                 <div className="text-text-gray flex items-center">
                   อยู่ในประกัน
                 </div>
                 <div
-                  className={`flex items-center ${formData.isInsurance == "" ? '-'
+                  className={`flex items-center md:col-span-2 ${formData.isInsurance == "" ? '-'
                     : formData.isInsurance ? "text-text-green" : "text-red-600"}`}
                 >
                   {formData.isInsurance === false ? "ไม่อยู่ในประกัน"
@@ -421,11 +421,11 @@ const RepairRecord = () => {
                 </div>
               </div>
               {/* row 4 เจ้าของครุภัณฑ์*/}
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
                 <div className="text-text-gray flex items-center">
                   เจ้าของครุภัณฑ์
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center md:col-span-2">
                   {formData.hostSector ? formData.hostSector : "-"}
                 </div>
                 <div className="text-text-gray flex items-center">
@@ -436,11 +436,11 @@ const RepairRecord = () => {
                 </div>
               </div>
               {/* row 5 วันที่เริ่มรับประกัน*/}
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
                 <div className="text-text-gray flex items-center">
                   วันที่เริ่มรับประกัน
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center md:col-span-2">
                   {formData.insuranceStartDate
                     ? new Date(formData.insuranceStartDate).toLocaleString(
                       "th",
@@ -458,7 +458,7 @@ const RepairRecord = () => {
                 <div className="text-text-gray flex items-center">
                   วันที่สิ้นสุดการรับประกัน
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center md:col-span-2">
                   {formData.insuranceEndDate
                     ? new Date(formData.insuranceEndDate).toLocaleString("th", {
                       day: "2-digit",
@@ -472,11 +472,11 @@ const RepairRecord = () => {
                 </div>
               </div>
               {/* row 6 รหัส cost center*/}
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
                 <div className="text-text-gray flex items-center">
                   รหัส cost center
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center md:col-span-2">
                   {" "}
                   {formData.costCenterCode ? formData.costCenterCode : "-"}
                 </div>
@@ -490,11 +490,11 @@ const RepairRecord = () => {
             <div className="pt-5">
               <div className="text-xl">ข้อมูลสถานที่ซ่อม</div>
               {/* row 1 ที่ตั้ง/อาคาร */}
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 p-2">
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-4 p-2">
                 <div className="text-text-gray flex items-center ">
                   ที่ตั้ง/อาคาร
                 </div>
-                <div className="flex items-center  h-[38px]">
+                <div className="flex items-center md:col-span-2 h-[38px]">
                   <SearchSelector
                     options={buildingList}
                     name="building"
@@ -504,7 +504,7 @@ const RepairRecord = () => {
                   />
                 </div>
                 <div className="text-text-gray flex items-center ">ชั้น</div>
-                <div className="flex items-center ">
+                <div className="flex items-center md:col-span-2">
                   <SearchSelector
                     isDisabled={!formData.building}
                     options={floorList}
@@ -520,9 +520,9 @@ const RepairRecord = () => {
                 </div>
               </div>
               {/* row 2 ห้อง */}
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 p-2">
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-2 p-2">
                 <div className="text-text-gray flex items-center">ห้อง</div>
-                <div className="flex items-center ">
+                <div className="flex items-center md:col-span-2 ">
                   <SearchSelector
                     noClearButton
                     name="room"
@@ -542,11 +542,11 @@ const RepairRecord = () => {
             <div className="pt-5">
               <div className="text-xl">ข้อมูลผู้เกี่ยวข้อง</div>
               {/* row 1 ผู้ส่งซ่อม */}
-              <div className="grid grid-cols-2  md:grid-cols-5 gap-2 p-2">
+              <div className="grid grid-cols-2  md:grid-cols-6 gap-4 p-2">
                 <div className="text-text-gray flex items-center ">
                   ผู้ส่งซ่อม
                 </div>
-                <div className="flex items-center ">
+                <div className="flex items-center  md:col-span-2">
                   <SearchSelector
                     options={nameRecorderList}
                     placeholder={"ผู้ส่งซ่อม"}
@@ -560,16 +560,16 @@ const RepairRecord = () => {
                 <div className="text-text-gray flex items-center ">
                   เบอร์โทรศัพท์
                 </div>
-                <div className="flex items-center p-2 bg-table-data border-[2px] rounded-md h-[38px]">
+                <div className="flex items-center p-2 bg-table-data border-[2px] rounded-md h-[38px] md:col-span-2">
                   {formData?.phoneNumber}
                 </div>
               </div>
               {/* row 2 ผู้ประสานงาน */}
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 p-2">
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-4 p-2">
                 <div className="text-text-gray flex items-center">
                   ผู้ประสานงาน
                 </div>
-                <div className="flex items-center ">
+                <div className="flex items-center md:col-span-2 ">
                   <SearchSelector
                     options={nameCourierList}
                     placeholder={"ผู้ประสานงาน"}
@@ -582,7 +582,7 @@ const RepairRecord = () => {
                 </div>
                 <div className="text-text-gray flex items-center">หน่วยงาน</div>
 
-                <div className="flex items-center p-2 bg-table-data border-[2px] rounded-md h-[38px]">
+                <div className="flex items-center p-2 bg-table-data border-[2px] rounded-md h-[38px] md:col-span-2">
                   {formData?.courierSector}
                 </div>
               </div>
@@ -594,7 +594,7 @@ const RepairRecord = () => {
             {/* row 1 ประเทภการซ่อม */}
             <div className="grid grid-cols-5 pt-5">
               <div className="col-span-1 flex items-center">ประเภทการซ่อม</div>
-              <div className=" col-span-3 flex items-center gap-5">
+              <div className=" col-span-4 flex items-center gap-5">
                 <input
                   type="radio"
                   className="border border-text-green p-2"
@@ -625,9 +625,9 @@ const RepairRecord = () => {
               </div>
             </div>
             {/* row 2 หน่วยงาน */}
-            <div className="grid grid-cols-5 pt-5">
+            <div className="grid grid-cols-5 pt-5 gap-1.5">
               <div className="col-span-1 flex items-center">หน่วยงานซ่อม</div>
-              <div className=" col-span-3 flex items-center">
+              <div className=" col-span-3 flex items-center max-lg:col-span-4">
                 <SearchSelector
                   options={sectorList}
                   name={"repairSector"}
@@ -640,11 +640,11 @@ const RepairRecord = () => {
               </div>
             </div>
             {/* row 3 ส่วนที่ชำรุดหรือเหตุขัดข้อง */}
-            <div className="grid grid-cols-5 pt-5">
+            <div className="grid grid-cols-5 pt-5 gap-1.5">
               <div className="col-span-1 flex items-center">
                 ส่วนที่ชำรุดหรือเหตุขัดข้อง
               </div>
-              <div className=" col-span-3 flex items-center">
+              <div className=" col-span-3 flex items-center max-lg:col-span-4">
                 <textarea
                   className={`border-[1px] w-full rounded-lg" ${error && !formData.problemDetail ? "border-red-500" : "border-gray-300"
                     }`}
