@@ -269,7 +269,7 @@ const BorrowRecord = () => {
     // const user = await getUserInfo
     const inputs = {
       ...input,
-      name_recorder: "userTest", //
+      name_recorder: "userTest", 
       dateTime_recorder: new Date(),
       name_courier: "",
       dateTime_courier: "",

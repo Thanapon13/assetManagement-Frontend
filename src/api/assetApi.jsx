@@ -103,3 +103,7 @@ export function deleteAsset(id, body) {
 export function getSectorOfAsset() {
   return axios.get(`/asset/sectorForSearch`);
 }
+
+export function getAllAssetForRepairDropdown() {
+  return axios.get(`asset/repairDropdown`);
+}

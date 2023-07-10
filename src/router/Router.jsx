@@ -70,6 +70,7 @@ import {
 
 import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
+import RepairOutSourceRecord from "../pages/RepairOutsourceRecord";
 
 const Router = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -189,21 +190,24 @@ const Router = () => {
           {/* <Route path="repairDashboard" element={<RepairDashboard />} /> */}
           <Route path="transferAsset" element={<TransferAsset />} />
           <Route path="repairIndex" element={<RepairIndex />} />
-          <Route path="repairIndex/repairDetail" element={<RepairDetail />} />
-          <Route path="repairIndex/repairEdit" element={<RepairEdit />} />
+          <Route path="repairIndex/repairDetail/:repairId" element={<RepairDetail />} />
+          <Route path="repairIndex/repairEdit/:repairId" element={<RepairEdit />} />
           <Route path="repairRecord" element={<RepairRecord />} />
           <Route
             path="repairTechnicianIndex"
             element={<RepairTechnicianIndex />}
           />
           <Route
-            path="repairTechnicianIndex/repairTechnicianRecord"
+            path="repairTechnicianIndex/repairTechnicianRecord/:id"
             element={<RepairTechnicianRecord />}
           />
           <Route
             path="repairTechnicianIndex/repairTechnicianDetail"
             element={<RepairTechnicianDetail />}
           />
+           <Route path="repairTechnicianIndex/repairDetail/:repairId" element={<RepairDetail />} />
+           <Route path="repairTechnicianIndex/repairTechnicianDetail/:repairId" element={<RepairDetail />} />
+           <Route path="repairTechnicianIndex/repairOutsourceRecord/:id" element={<RepairOutSourceRecord />} />
           <Route path="historyRepairIndex" element={<HistoryRepairIndex />} />
           <Route path="historyRepair/:id" element={<HistoryRepair />} />
           <Route path="repairOutsourceIndex" element={<RepairOutsourceIndex />} />

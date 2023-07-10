@@ -6,9 +6,12 @@ import Select from "react-select";
 export default function SearchSelector({ options, name, onChange, error, floatLabel, placeholder, isDisabled, value, noClearButton }) {
   // const searchInput = useRef();
   const [valueObj, setValueObj] = useState(value)
+  // console.log("value",value);
+  
   const handleChange = (newValue, meta) => {
     setValueObj(newValue)
     const label = meta.name;
+    
     onChange(newValue?.value, label, newValue?.ele)
     if (!newValue?.value) {
       setIsFloat(false)
@@ -38,7 +41,7 @@ export default function SearchSelector({ options, name, onChange, error, floatLa
   // },[value])
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <Select
         // defaultValue={{ value: value, label: value }}
         id="floating"

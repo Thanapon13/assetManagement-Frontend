@@ -9,7 +9,7 @@ import DateInput from "../components/date/DateInput";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import { getBorrowHistorySector, getBySearchBorrowHistory } from "../api/borrowApi";
 import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
-import { getRepairHistoryBySearch } from "../api/repairApi";
+import { getRepairHistoryBySearch, getRepairOutsourceBySearch } from "../api/repairApi";
 import SearchSelector from "../components/selector/SearchSelector";
 
 const RepairOutsourceIndex = () => {
@@ -97,8 +97,8 @@ const RepairOutsourceIndex = () => {
     fetchDataList({ ...search, [e.target.name]: e.target.value });
   };
 
-  // fetch dropdown sector
-  const fetchBorrowHistorySectorSelector = async () => {
+  // fetch dropdown 
+  const getDropdown = async () => {
     try {
       const res = await getBorrowHistorySector();
       console.log(res.data.sectors);
@@ -109,8 +109,8 @@ const RepairOutsourceIndex = () => {
   };
 
   useEffect(() => {
-    fetchBorrowHistorySectorSelector()
     fetchDataList()
+    getDropdown()
   }, [])
 
   return (
@@ -163,13 +163,25 @@ const RepairOutsourceIndex = () => {
         </div>
 
         <div className="md:col-span-3 ">
-          <SearchSelector
+          {/* <SearchSelector
             options={sectorList}
             placeholder={"ประเภทการซ่อม"}
             name={"sector"}
             onChange={(value, label) => setSearch({ ...search, [label]: value })}
             floatLabel
-          />
+          /> */}
+           <select
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+            name="status"
+            value={search.status}
+            onChange={handleChange}
+          >
+            <option defaultValue value="">
+              สถานะทั้งหมด
+            </option>
+            <option value="">รับใบซ่อม</option>
+            <option value="">รอเบิกวัสดุ</option>
+          </select>
         </div>
 
         <div className="md:col-span-3 h-full ">
@@ -230,74 +242,113 @@ const RepairOutsourceIndex = () => {
 
       </div>
 
-      {/* table */}
-      <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
-        <div className="w-[1000px] xl:w-full xl:h-full ">
-          {/* <div className="text-sm">ผลการค้นหา {search.total} รายการ</div> */}
-          <div className="text-sm">รายการใบแจ้งซ่อม</div>
-          <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
-            {/* top bar */}
-            <div className="grid grid-cols-9 gap-2 h-12 items-center text-center">
-              <div className="col-span-1">ลำดับ</div>
-              <div className="col-span-2">เลขที่ใบซ่อม</div>
-              <div className="col-span-2">อาการเสีย</div>
-              <div className="col-span-1">หน่วยงานที่ส่งซ่อม</div>
-              <div className="col-span-1">มูลค่างาน</div>
-              <div className="col-span-1">สถานะใบซ่อม</div>
-              <div className="col-span-1"></div>
-            </div>
-          </div>
-          <TableBorrowHistory data={dataList} search={search} />
+      <div className="grid">
+        <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
+          <div className="w-[1000px] xl:w-full xl:h-full ">
+            {/* <div className="text-sm">ผลการค้นหา {search.total} รายการ</div> */}
+            <div className="text-sm">รายการใบแจ้งซ่อม</div>
+            {/* <div className="flex text-sm">
+              <div className="flex text-blue-500 bg-blue-100 p-2 border rounded-2xl">
+                ซ่อมครุภัณฑ์
+                <div className="ml-2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                      fill="#CE4646"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex text-red-500 bg-red-100 p-2 border rounded-2xl">
+                ซ่อมทั่วไป
+                <div className="ml-2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM15 13.59L13.59 15L10 11.41L6.41 15L5 13.59L8.59 10L5 6.41L6.41 5L10 8.59L13.59 5L15 6.41L11.41 10L15 13.59Z"
+                      fill="#CE4646"
+                    />
+                  </svg>
+                </div>
 
-          {!dataList.length
-            ? <center className='p-5'>-</center>
-            : <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-              <div className="flex mr-10 items-center">
-                <div>Rows per page:</div>
-                <select
-                  id="limit"
-                  name="limit"
-                  className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  onChange={handlePaginationSearch}
+              </div>
+            </div> */}
+
+            <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
+              {/* top bar */}
+              <div className="grid grid-cols-9 gap-2 h-12 items-center text-center">
+                <div className="col-span-1">ลำดับ</div>
+                <div className="col-span-2">เลขที่ใบซ่อม</div>
+                <div className="col-span-2">อาการเสีย</div>
+                <div className="col-span-1">หน่วยงานที่ส่งซ่อม</div>
+                <div className="col-span-1">มูลค่างาน</div>
+                <div className="col-span-1">สถานะใบซ่อม</div>
+                <div className="col-span-1"></div>
+              </div>
+            </div>
+            <TableBorrowHistory data={dataList} search={search} />
+
+            {!dataList.length
+              ? <center className='p-5'>-</center>
+              : <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+                <div className="flex mr-10 items-center">
+                  <div>Rows per page:</div>
+                  <select
+                    id="limit"
+                    name="limit"
+                    className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    onChange={handlePaginationSearch}
+                  >
+                    <option value="5">5</option>
+                    <option value="10" selected="selected"> 10 </option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+
+                <div className="mx-5">
+                  {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + dataList.length} of {search.total}
+                </div>
+
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handleFirstPage}
                 >
-                  <option value="5">5</option>
-                  <option value="10" selected="selected"> 10 </option>
-                  <option value="20">20</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
+                  <CgPushChevronLeft className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handlePageDecrease}
+                >
+                  <HiChevronLeft className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handlePageIncrease}
+                >
+                  <HiChevronRight className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handleLastPage}
+                >
+                  <CgPushChevronRight className="text-lg font-bold" />
+                </button>
               </div>
-
-              <div className="mx-5">
-                {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + dataList.length} of {search.total}
-              </div>
-
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handleFirstPage}
-              >
-                <CgPushChevronLeft className="text-lg" />
-              </button>
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handlePageDecrease}
-              >
-                <HiChevronLeft className="text-lg" />
-              </button>
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handlePageIncrease}
-              >
-                <HiChevronRight className="text-lg" />
-              </button>
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handleLastPage}
-              >
-                <CgPushChevronRight className="text-lg font-bold" />
-              </button>
-            </div>
-          }
+            }
+          </div>
         </div>
       </div>
     </div>

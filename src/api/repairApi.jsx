@@ -1,4 +1,13 @@
+import { Input } from "@material-ui/icons";
 import axios from "../config/axios";
+
+export function createRepair(input) {
+  return axios.post("/repair/create",input)
+}
+
+export function updateRepair(repairId,input) {
+  return axios.patch(`/repair/update/${repairId}`,input)
+}
 
 export function getAllRepair() {
   return axios.get("/repair/getAll")
@@ -41,4 +50,20 @@ export function getRepairOutsourceBySearch(options) {
 
 export function getRepairTechnicianBySearch(options) {
   return axios.get(`/repair/searchDetailRecord${getQueryString(options)}`)
+}
+
+export function updateStatusForGetJobRepair(id, status, reason) {
+  return axios.patch(`/repair/updateStatusForGetJob/${id}?status=${status}`, reason)
+}
+
+export function updateStatusForCheckJob(id) {
+  return axios.patch(`/repair/updateStatusForCheckJob/${id}`)
+}
+
+export function deleteRepair(id) {
+  return axios.patch(`/repair/delete/${id}`)
+}
+
+export function updateRecordRepairDetail(id, body) {
+  return axios.patch(`/repair/recordDetail/${id}`, body)
 }
