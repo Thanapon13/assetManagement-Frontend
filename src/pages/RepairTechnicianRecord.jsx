@@ -17,59 +17,23 @@ const RepairTechnicianRecord = () => {
     ...location.state?.data,
     arriveAtPlaceDate: new Date(),
     workDate: new Date(),
-    repairDate: new Date()
   })
   const [error, setError] = useState(false)
   console.log(item)
-  // const item = {
-  //   informRepairDate: '12/09/2565 14:36 น.',
-  //   informRepairIdDoc: '20212334512',
-  //   assetIdCode: '7440-0036-032/1512',
-  //   repairDetail: 'จอมอนิเตอร์ดับ เปิดไม่ติด',
-  //   agencySendRepair: 'หน่วยงานที่ส่งซ่อม',
-  //   repairSender: 'ศรีตรัง',
-  //   repairStatus: 'waitApprove',
-  //   technicianStatus: 'waitTechnicianConfirm',
-  //   emerygencyStatus: 'normal',
-  //   repairCostList: [
-  //     {
-  //       list: 'รางไฟ',
-  //       quannity: '1',
-  //       unit: '-',
-  //       pricePerUnit: '3000',
-  //       totalPrice: '3000',
-  //     },
-  //     {
-  //       list: 'สายไฟ 220v outside wire 2.5sqm',
-  //       quannity: '10',
-  //       unit: 'เมตร',
-  //       pricePerUnit: '200',
-  //       totalPrice: '2000',
-  //     },
-  //     {
-  //       list: 'switch relay 220v to 12v for sn.7103671688',
-  //       quannity: '1',
-  //       unit: 'ตัว',
-  //       pricePerUnit: '6300',
-  //       totalPrice: '6300',
-  //     },
-  //   ],
-  // }
 
   const [countRow, setCountRow] = useState(1)
   const [countRow1, setCountRow1] = useState(1)
   const [countIndexArray, setCountIndexArray] = useState([0])
+  const [errorTable, setErrorTable] = useState(false)
+  const defaultTech = {
+    name: '',
+    workPerHour: '',
+    ratePerHour: '',
+    totalEarn: '',
+    amountExtra: '',
+  }
   const [arrayTechnician, setArrayTechnician] =
-    useState(item.informRepairManArray || [
-      {
-        // index: 0,
-        name: '',
-        workPerHour: '',
-        ratePerHour: '',
-        totalEarn: '',
-        extraPay: '',
-      },
-    ])
+    useState(item.informRepairManArray || [defaultTech])
   const [arrayCostRepair, setArrayCostRepair] =
     useState(item.costOfRepairArray || [
       {
@@ -88,14 +52,7 @@ const RepairTechnicianRecord = () => {
     setCountIndexArray([...countIndexArray, countRow])
 
     let clone = [...arrayTechnician]
-    const newCloneArray = {
-      name: '',
-      workPerHour: '',
-      ratePerHour: '',
-      totalEarn: '',
-      extraPay: '',
-    }
-    setArrayTechnician([...clone, newCloneArray])
+    setArrayTechnician([...clone, defaultTech])
   }
   const handleClickIncreaseCost = (e) => {
     e.preventDefault()
@@ -118,9 +75,9 @@ const RepairTechnicianRecord = () => {
       setCountRow(countRow - 1)
     }
 
-    let clone = [...saveAssetWithdrawTableArray]
+    let clone = [...arrayTechnician]
     clone.splice(index, 1)
-    setSaveAssetWithdrawTableArray(clone)
+    setArrayTechnician(clone)
   }
   const deleteRowCost = (index) => {
     if (countRow1 > 0) {
@@ -137,6 +94,7 @@ const RepairTechnicianRecord = () => {
   const { id } = useParams()
   async function submit(valStatus) {
     console.log(item, valStatus || item.statusOfDetailRecord, id)
+    console.log(arrayCostRepair)
     // return
     try {
       await updateRecordRepairDetail(id, {
@@ -147,23 +105,30 @@ const RepairTechnicianRecord = () => {
       })
       if (!valStatus) {
         console.log(valStatus, arrayTechnician, item.statusOfDetailRecord, arrayCostRepair)
+        setShowModalSuccess(true)
         return
+      } else {
+        window.location.href = -1
       }
-      setShowModalSuccess(true)
     } catch (err) {
       console.log(err)
     }
   }
 
   const handleSubmit = () => {
-    console.log(item)
-    let err
+    let err, errTable
     if (!item.repairMan) err = true
-    if (err) {
-      setError(true)
-      return
+    if (!arrayTechnician.length) {
+      setArrayTechnician([defaultTech])
+      errTable = true
     }
-    setShowModal(true)
+    arrayTechnician?.map(ele => {
+      if (!ele.name || !ele.totalEarn.length) errTable = true
+    })
+    setError(err)
+    setErrorTable(errTable)
+    console.log(err, errTable, arrayTechnician)
+    if (!(err || errTable)) setShowModal(true)
   }
 
   useEffect(() => {
@@ -172,7 +137,7 @@ const RepairTechnicianRecord = () => {
       total += cost.total
     })
     arrayTechnician?.map((tech) => {
-      total += tech.totalEarn
+      total += +tech.totalEarn
     })
     setItem({ ...item, totalPrice: total })
   }, [arrayTechnician, arrayCostRepair])
@@ -472,9 +437,11 @@ const RepairTechnicianRecord = () => {
                       const array = [...arrayTechnician]
                       array[idx][e.target.name] = e.target.value
                       array[idx].total = array[idx].workPerHour * array[idx].ratePerHour || 0
-                      array[idx].totalEarn = +array[idx].total + +array[idx].amountExtra || 0
+                      const totalEarn = +array[idx].total + +array[idx].amountExtra || 0
+                      array[idx].totalEarn = totalEarn.toString()
                       setArrayTechnician(array)
                     }}
+                    errorTable={errorTable}
                   />
                 )
               })}
@@ -604,14 +571,14 @@ const RepairTechnicianRecord = () => {
   )
 }
 
-const TableTechnicianRecord = ({ index, deleteRow, ele, arrayTechnician, onChange }) => {
+const TableTechnicianRecord = ({ index, deleteRow, ele, arrayTechnician, onChange, errorTable }) => {
 
   return (
     <div className="p-2 grid grid-cols-8 justify-center items-center gap-5 text-xs bg-white">
       <div className="col-span-2">
         <input
           type="text"
-          className="py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue"
+          className={`${errorTable && !ele.name && 'border-red-500'} py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="name"
           onChange={onChange}
           value={ele.name}
@@ -620,7 +587,7 @@ const TableTechnicianRecord = ({ index, deleteRow, ele, arrayTechnician, onChang
       <div className="col-span-1">
         <input
           type="text"
-          className="text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue"
+          className={`${errorTable && !ele.totalEarn && 'border-red-500'} text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="workPerHour"
           onChange={onChange}
           value={ele.workPerHour}
@@ -629,7 +596,7 @@ const TableTechnicianRecord = ({ index, deleteRow, ele, arrayTechnician, onChang
       <div className="col-span-1">
         <input
           type="text"
-          className="text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue"
+          className={`${errorTable && !ele.totalEarn && 'border-red-500'} text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="ratePerHour"
           onChange={onChange}
           value={ele.ratePerHour}
@@ -647,8 +614,8 @@ const TableTechnicianRecord = ({ index, deleteRow, ele, arrayTechnician, onChang
       <div className="col-span-1">
         <input
           type="text"
-          className="text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue"
-          name="extraPay"
+          className={`${errorTable && !ele.totalEarn && 'border-red-500'} text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+          name="amountExtra"
           onChange={onChange}
           value={ele.amountExtra}
         />
