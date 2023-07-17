@@ -487,7 +487,7 @@ const ModalCancel = ({ item, fetchList }) => {
                         <div className="text-text-gray flex items-center">
                           สาเหตุที่ยกเลิก
                         </div>
-                        <textarea className={`${error && !reason && "border-red-500"} col-span-3 border-[1px] p-2 h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}></textarea>
+                        <textarea className={`${error && !reason && "border-red-500"} col-span-3 border-[1px] p-2 min-h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}></textarea>
                       </div>
                     }
                   </div>
@@ -501,9 +501,8 @@ const ModalCancel = ({ item, fetchList }) => {
                   >
                     ย้อนกลับ
                   </button>
-                  <Link
-                    to="/borrowList"
-                    className="text-white bg-red-600 px-10 py-3 border rounded-md "
+                  <button
+                    className="text-white bg-red-500 hover:bg-red-600 px-10 py-3 border rounded-md "
                     // type="button"
                     onClick={() => {
                       item.status == "saveDraft"
@@ -512,7 +511,7 @@ const ModalCancel = ({ item, fetchList }) => {
                     }}
                   >
                     ยืนยันยกเลิก
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>

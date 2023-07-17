@@ -270,7 +270,7 @@ const TableRepairTechnicianIndex = ({ data, fetchList }) => {
                   ? 'bg-[#245BD826] text-blue-600 rounded-full '
                   : item.statusOfDetailRecord === 'waiting'
                     ? 'bg-[#245BD826] text-blue-600 rounded-full '
-                    : item.statusOfDetailRecord === 'inProinProgressOfDetailRecordgress'
+                    : item.statusOfDetailRecord === 'inProgressOfDetailRecord'
                       ? 'bg-purple-600  text-white rounded-full'
                       : item.statusOfDetailRecord === 'waitApprove'
                         ? ' bg-[#F2C94C]  rounded-full'
@@ -303,7 +303,7 @@ const TableRepairTechnicianIndex = ({ data, fetchList }) => {
               ) : item.statusOfDetailRecord === 'waitingRecord' ? (
                 <ActionWaitRecord id={item._id} item={item} />
               ) : item.statusOfDetailRecord === 'inProgressOfDetailRecord' ? (
-                <ActionInProgress />
+                <ActionInProgress id={item._id} item={item} />
               ) : item.statusOfDetailRecord === 'waitingApproval' ? (
                 <ActionWaitApprove id={item._id} item={item} />
               ) : item.statusOfDetailRecord === 'completeOfDetailRecord' ? (
@@ -501,17 +501,17 @@ const ActionWaitRecord = ({ id, item }) => {
   )
 }
 
-const ActionInProgress = () => {
+const ActionInProgress = ({ id, item }) => {
   return (
     <>
       <div className="col-span-2 flex justify-center gap-2">
-        <button
-          type="button"
+      <Link
+          to={`/repairTechnicianJobDetail/${id}`}
+          state={{ data: item }}
           className="border hover:bg-[#245BD826]  border-[#2F80ED] text-[#2F80ED] p-2 rounded-lg w-[120px]"
-          onClick={async () => await updateStatusForGetJobRepair('123', "waitingRecord")}
         >
           ปิดงาน
-        </button>
+        </Link>
       </div>
     </>
   )
@@ -573,7 +573,7 @@ const ActionCancel = (props) => {
       <div className="col-span-2 flex justify-center gap-2">
         <Link
           className="border-[1px] gap-2 border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[120px] flex justify-center items-center rounded-md"
-          to={`repairDetail/${props.item._id}`}
+          to={`repairTechnicianDetail/${props.item._id}`}
           state={{ data: props.item }}
         >
           <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />

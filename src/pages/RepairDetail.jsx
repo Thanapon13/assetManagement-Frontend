@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { BsArrowLeft, BsFillCheckCircleFill } from "react-icons/bs";
-import { getRepairById, updateStatusForGetJobRepair } from "../api/repairApi";
+import { deleteRepair, getRepairById, updateStatusForCheckJob, updateStatusForGetJobRepair } from "../api/repairApi";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
@@ -17,6 +17,7 @@ const RepairDetail = () => {
 
   const [showModal, setShowModal] = useState(false)
   const [showModalSuccess, setShowModalSuccess] = useState(false)
+  const [showModalCancel, setShowModalCancle] = useState(false)
 
   const status = {
     saveDraft: 'แบบร่าง',
@@ -86,18 +87,18 @@ const RepairDetail = () => {
               </>
             ) : (
               <>
-                {/* <button className="px-6 py-2 bg-red-500 hover:bg-red-700  text-white rounded-md">
-                  ยกเลิก
-                </button> */}
+                {!location.pathname.includes('/repairTechnicianIndex/repairTechnicianDetail/') &&
+                  <ButtonCancelAndModal item={item} />
+                }
                 <div className="flex items-center gap-2">
                   <h1>สถานะใบแจ้งซ่อม</h1>
                   {/* bg-sky-200 text-blue-600 */}
                   <div className={` text-sm py-2 px-4 rounded-2xl
                   ${!location.pathname.includes('/repairTechnicianIndex/')
                       ? (
-                        item.status == "inProgress" ? "bg-yellow-300 text-yellow-700" : item.status == "saveDraft" ? "bg-gray-300 border-gray-300" : item.status == "waiting" ? "bg-text-blue/[.2] text-blue-600 ": ""
+                        item.status == "inProgress" ? "bg-yellow-300 text-yellow-700" : item.status == "saveDraft" ? "bg-gray-300 border-gray-300" : item.status == "waiting" ? "bg-text-blue/[.2] text-blue-600 " : ""
                       ) : (
-                        item.statusOfDetailRecord == "waitTechnicianConfirm" ? "bg-text-blue/[.2] text-blue-600 ":"bg-red-200 text-red-600"
+                        item.statusOfDetailRecord == "waitTechnicianConfirm" ? "bg-text-blue/[.2] text-blue-600 " : "bg-red-200 text-red-600"
                       )}`}>
                     {location.pathname.includes('/repairTechnicianIndex/') ? statusTechnician[item.statusOfDetailRecord] || "ยกเลิก"
                       : status[item.status]}
@@ -267,20 +268,22 @@ const RepairDetail = () => {
           </div>
         </div>
         {location.pathname.includes('/repairTechnicianIndex/repairTechnicianDetail/') &&
+          item.statusOfDetailRecord == "waitTechnicianConfirm" &&
           <div className="flex justify-between items-center gap-10 p-5 text-sm mr-">
             <button
               type="button"
               className=" hover:bg-gray-100 text-text-gray text-sm rounded-md py-2 px-4"
             >
-              ยกเลิก
+              ยกเลิก 
             </button>
             <div className="flex justify-end gap-4">
               <button
                 className="bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-                onClick={() => showModalCancle(true)}
+                onClick={() => setShowModalCancle(true)}
               >
                 ไม่รับงาน
               </button>
+              {showModalCancel && <ModalCancleJob item={item} setShowModalCancle={setShowModalCancle} />}
               <button
                 id="form"
                 type="submit"
@@ -453,5 +456,189 @@ const ModalApproveDone = () => {
     </>
   );
 };
+
+const ButtonCancelAndModal = ({ item }) => {
+  const [showModal, setShowModal] = useState(false)
+  const [reason, setreason] = useState("")
+  const [error, setError] = useState(false)
+
+  async function onConfirm(id) {
+    try {
+      await deleteRepair(id, { reason: reason })
+      window.location.href = "/repairIndex"
+    } catch (error) {
+
+    }
+  }
+  return (
+    <>
+      <button
+        className="px-6 py-2 bg-red-500 hover:bg-red-600  text-white rounded-md"
+        onClick={() => setShowModal(true)}
+      >
+        ยกเลิก
+      </button>
+      {showModal ? (
+        <>
+          <div className="fixed inset-0 -left-10 bg-black opacity-50" />
+          <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
+            <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
+              <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
+
+                <div>
+                  <div className="flex justify-center items-center gap-5 p-5 ">
+                    <svg
+                      width="84"
+                      height="84"
+                      viewBox="0 0 84 84"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M42.0001 0.333984C39.9167 0.333984 37.8334 1.12565 36.1251 2.79232L2.79175 36.1256C-0.499919 39.3756 -0.499919 44.6256 2.79175 47.8756L36.1251 81.209C39.3751 84.5006 44.6251 84.5006 47.8751 81.209L81.2084 47.8756C84.5001 44.6256 84.5001 39.3756 81.2084 36.1256L47.8751 2.79232C46.1667 1.12565 44.0834 0.333984 42.0001 0.333984ZM37.8334 21.1673H46.1667V46.1673H37.8334V21.1673ZM37.8334 54.5006H46.1667V62.834H37.8334V54.5006Z"
+                        fill="#EB5757"
+                      />
+                    </svg>
+                    <h1 className="text-2xl text-red-700">ยกเลิกการแจ้งซ่อม</h1>
+                  </div>
+
+                  <div className="p-6 text-base">
+                    <div className="grid grid-cols-2  md:grid-cols-4 p-2">
+                      <div className="text-text-gray flex items-center ">
+                        เลขที่ใบแจ้งซ่อม
+                      </div>
+                      <div className="flex items-center ">
+                        {item?.informRepairIdDoc}
+                      </div>
+                      <div className="text-text-gray flex items-center ">
+                        เวลาที่แจ้งซ่อม
+                      </div>
+                      <div className="flex items-center ">
+                        {item?.informRepairDate && `${new Date(item?.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 p-2">
+                      <div className="text-text-gray flex items-center">
+                        ชื่อครุภัณฑ์
+                      </div>
+                      <div className="flex items-center">
+                        {item?.productName}
+                      </div>
+                      <div className="text-text-gray flex items-center">
+                        เลขครุภัณฑ์
+                      </div>
+                      <div className="flex items-center">
+                        {item?.assetNumber}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 p-2">
+                      <div className="text-text-gray flex items-center">
+                        รายละเอียด
+                      </div>
+                      <div className="flex items-center">
+                        {item?.problemDetail}
+                      </div>
+                      <div className="text-text-gray flex items-center">
+                        หน่วยงาน
+                      </div>
+                      <div className="flex items-center">
+                        {item?.courierSector}
+                      </div>
+                    </div>
+                    {item.status != "saveDraft" &&
+                      <div className="grid grid-cols-2 md:grid-cols-4 p-2">
+                        <div className="text-text-gray flex items-center">
+                          สาเหตุที่ยกเลิก
+                        </div>
+                        <textarea className={`${error && !reason && "border-red-500"} col-span-3 border-[1px] p-2 min-h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}></textarea>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
+                  <button
+                    className="px-10 py-3 text-white bg-gray-400/[.8] hover:bg-gray-400 bg-[#999999] shadow-sm rounded-md "
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                  >
+                    ย้อนกลับ
+                  </button>
+                  <button
+                    className="text-white bg-red-500 hover:bg-red-600 px-10 py-3 border rounded-md "
+                    onClick={() => {
+                      item.status == "saveDraft"
+                        ? onConfirm(item._id)
+                        : reason ? onConfirm(item._id) : setError(true)
+                    }}
+                  >
+                    ยืนยันยกเลิก
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null}
+    </>
+  )
+}
+
+const ModalCancleJob = ({ item, setShowModalCancle }) => {
+  const [reason, setreason] = useState("")
+  const [error, setError] = useState(false)
+
+  async function onConfirm(id) {
+    try {
+      await updateStatusForCheckJob(id, { reason: reason })
+      window.location.href = "/repairIndex"
+    } catch (error) {
+
+    }
+  }
+  return (
+    <>
+      <div className="fixed inset-0 -left-10 bg-black opacity-50" />
+      <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
+        <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
+          <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
+
+            <div>
+              <div className="flex items-center ml-8 pt-5 text-lg">
+                ระบุสาเหตุไม่รับงาน
+              </div>
+
+              <div className="p-6 text-base flex justify-center">
+                <textarea className={`${error && !reason && "border-red-500"} w-11/12 border-[1px] p-2 min-h-[38px] h-[7rem] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-5 justify-end p-6 pt-2 rounded-b">
+              <button
+                className="px-10 py-3 text-white bg-gray-400/[.8] hover:bg-gray-400 bg-[#999999] shadow-sm rounded-md "
+                type="button"
+                onClick={() => setShowModalCancle(false)}
+              >
+                ย้อนกลับ
+              </button>
+              <button
+                className="text-white bg-red-500 hover:bg-red-600 px-10 py-3 border rounded-md "
+                onClick={() => {
+                  item.status == "saveDraft"
+                    ? onConfirm(item._id)
+                    : reason ? onConfirm(item._id) : setError(true)
+                }}
+              >
+                ยืนยันยกเลิก
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
 
 export default RepairDetail;
