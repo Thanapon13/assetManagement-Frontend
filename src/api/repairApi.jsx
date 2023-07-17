@@ -67,3 +67,15 @@ export function deleteRepair(id) {
 export function updateRecordRepairDetail(id, body) {
   return axios.patch(`/repair/recordDetail/${id}`, body)
 }
+
+export function getListApprovalRepair() {
+  return axios.get(`/repair/searchTopApprove?listStatus=inProgressOfDetailRecord`)
+}
+
+export function approveAllWaitingRepair(body) {
+  return axios.patch(`/repair/approveAllWaiting`, body)
+}
+
+export function updateOutsourceRecord(id, body) {
+  return axios.patch(`/repair/outSourceRecord/${id}`, body)
+}
