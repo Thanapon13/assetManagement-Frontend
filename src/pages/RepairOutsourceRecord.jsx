@@ -14,6 +14,7 @@ import boxIcon from "../public/pics/boxIcon.png";
 import { ToastContainer, toast } from 'react-toastify'
 import docIcon from "../public/pics/docIcon.png";
 import { Spinner } from 'flowbite-react'
+import ModalRepairOutsourceMerchant from '../components/modal/ModalRepairOutsourceMerchant'
 
 const RepairOutSourceRecord = () => {
   let { id } = useParams();
@@ -84,7 +85,7 @@ const RepairOutSourceRecord = () => {
 
     getData()
   }, [])
-  console.log(item)
+  // console.log(item)
   // const location = useLocation()
   // const [item, setItem] = useState({
   //   // ...location.state?.data,
@@ -137,6 +138,7 @@ const RepairOutSourceRecord = () => {
   //   statusOutsourceRepair: ""
   // })
   const [error, setError] = useState(false)
+  const [showModalMerchant, setShowModalMerchant] = useState(false)
 
   function handleChange(e) {
     setItem({
@@ -155,7 +157,7 @@ const RepairOutSourceRecord = () => {
       totalPrice: item?.price * item?.tax || 0
     })
   }, [item?.price, item?.tax])
-  console.log(item)
+
   const [arrayCostRepair, setArrayCostRepair] = useState([
     {
       stuffName: '',
@@ -164,6 +166,17 @@ const RepairOutSourceRecord = () => {
       pricePerPiece: '',
     }]
   )
+  useEffect(() => {
+    let sumCostRepair = 0
+    arrayCostRepair.map(ele => {
+      sumCostRepair += ele.pricePerPiece * ele.quantity || 0
+    })
+    setItem({
+      ...item,
+      purchaseAmount: item?.totalPrice + sumCostRepair || 0
+    })
+  }, [item?.totalPrice, arrayCostRepair])
+
   const [countRow, setCountRow] = useState(1)
   const [countRow1, setCountRow1] = useState(1)
   const [countIndexArray, setCountIndexArray] = useState([0])
@@ -177,6 +190,7 @@ const RepairOutSourceRecord = () => {
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ];
+  console.log(arrayDocument)
   const handleFileChange = (e) => {
     const fileList = e.target.files;
     console.log(fileList);
@@ -253,14 +267,55 @@ const RepairOutSourceRecord = () => {
   }
 
   async function submit(valStatus) {
-    console.log(item)
+    // const baseArrayDocument = [];
+    // if (arrayDocument?.length > 0) {
+    //   arrayDocument.forEach((file) => {
+    //     baseArrayDocument.push({
+    //       document: file.document.name
+    //     });
+    //   });
+    // }
+
+    // const baseArrayDocumentJSON = JSON.stringify(baseArrayDocument);
+    // formData.append("baseArrayDocument", baseArrayDocumentJSON);
+
+    // if (arrayDocument?.length > 0) {
+
+    // }
+
+    console.log({item})
     // return
-    try {
-      await updateOutsourceRecord(id, {
+    const formData = new FormData({
         "input": item,
         "status": "waitingRecord",
         "costOfRepairArray": arrayCostRepair
-      })
+      });
+    try {
+      // formData.append("input", {item})
+      // formData.append("status", JSON.stringify("waitingRecord"))
+      // formData.append("costOfRepairArray", JSON.stringify(arrayCostRepair)) //err
+
+      arrayDocument?.filter(ele => !ele._id).forEach((file) => {
+        formData.append("arrayDocument", file.document);
+        const name = file.document.name || file.document
+        // return
+        // // for (let i = 2; i <= input.quantity; i++) {
+        // const duplicatedFile = new File(
+        //   [file.document],
+        //   `${name.split(".")[0]}_(${i - 1}).${name.split(".")[1]
+        //   }`,
+        //   { type: file.type }
+        // );
+        // formData.append("arrayDocument", duplicatedFile);
+        // // }
+      });
+// return
+      await updateOutsourceRecord(id, formData)
+      // await updateOutsourceRecord(id, {
+      //   "input": item,
+      //   "status": "waitingRecord",
+      //   "costOfRepairArray": arrayCostRepair
+      // })
       window.location.reload()
       // setShowModalSuccess(true)
     } catch (err) {
@@ -689,7 +744,7 @@ const RepairOutSourceRecord = () => {
 
                 <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
                   <div className="text-text-gray flex items-center">
-                    ชื่อผู้รับจ้าง
+                    ชื่อบริษัทผู้รับจ้าง
                   </div>
                   <div className="flex items-center col-span-2">
                     <input
@@ -700,10 +755,12 @@ const RepairOutSourceRecord = () => {
                       className={`${error && !item.contractorName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
                     />
                   </div>
-                  <div className='border border-text-green flex items-center justify-center rounded-md text-text-green'>
+                  <div className='border border-text-green flex items-center justify-center rounded-md text-text-green'
+                    onClick={() => setShowModalMerchant(true)}>
                     เลือกผู้รับจ้าง
                   </div>
                 </div>
+                {showModalMerchant && <ModalRepairOutsourceMerchant item={item} setShowModalMerchant={setShowModalMerchant} confirmChange={setItem} />}
 
                 <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
                   <div className="text-text-gray flex items-center">
@@ -722,7 +779,8 @@ const RepairOutSourceRecord = () => {
 
                 <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
                   <div className="text-text-gray flex items-center">
-                    หมายเลขโทรศัพท์
+                    {/* หมายเลขโทรศัพท์ */}
+                    เบอร์โทรศัพท์
                   </div>
                   <div className="flex items-center col-span-2">
                     <input
@@ -777,15 +835,15 @@ const RepairOutSourceRecord = () => {
                 <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
 
                   <div className="text-text-gray flex items-center">
-                    หมายเหตุ
+                    อีเมล์
                   </div>
                   <div className="flex items-center col-span-2">
                     <input
                       type="text"
-                      name="responsibleRemark"
+                      name="email"
                       onChange={handleChange}
-                      value={item.responsibleRemark}
-                      className={`${error && !item.responsibleRemark && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                      value={item.email}
+                      className={`${error && !item.email && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
                     />
                   </div>
                   <div className="text-text-gray flex items-center">
@@ -800,9 +858,22 @@ const RepairOutSourceRecord = () => {
                       className={`${error && !item.totalPrice && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
                     />
                   </div>
-                  {item.totalPrice}
                 </div>
 
+                <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+                  <div className="text-text-gray flex items-center">
+                    หมายเหตุ
+                  </div>
+                  <div className="flex items-center col-span-2">
+                    <input
+                      type="text"
+                      name="responsibleRemark"
+                      onChange={handleChange}
+                      value={item.responsibleRemark}
+                      className={`${error && !item.responsibleRemark && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                    />
+                  </div>
+                </div>
 
                 <div className="border-gray-300 border-2 rounded-md border-dashed mt-2">
                   <div className="sm:col-span-4 bg-background-page py-10 px-30 rounded-lg flex flex-col justify-center items-center gap-4 ">
@@ -868,7 +939,6 @@ const RepairOutSourceRecord = () => {
                     </div>
                   </div>
                   {arrayCostRepair?.map((el, idx) => {
-                    console.log(el)
                     return (
                       <TableTechnicianRepairCost
                         key={idx}
@@ -920,7 +990,19 @@ const RepairOutSourceRecord = () => {
                   <div className="text-text-gray flex items-center ">
                     สถานะใบตรวจรับ
                   </div>
-
+                  <div className='flex items-center col-span-2'>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="status"
+                        value=""
+                        className="sr-only peer"
+                      // onClick={onChange}
+                      />
+                      <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                    </label>
+                    <span className='ml-2 text-red-500'>ยกเลิกใบตรวจรับ</span>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
@@ -1069,7 +1151,6 @@ const RepairOutSourceRecord = () => {
 }
 
 const TableTechnicianRepairCost = ({ index, deleteRow, ele, onChange }) => {
-  console.log(ele)
   return (
     <div className="p-2 grid grid-cols-9 justify-center items-center gap-5 text-xs bg-white">
       <div className="col-span-1 ml-2 text-center flex justify-center items-center ">
