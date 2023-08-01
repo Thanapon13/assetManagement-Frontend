@@ -5,28 +5,38 @@ import OnlyDateInput from "../components/date/onlyDateInput";
 import ModalTransferRejectAllApprove from "../components/modal/ModalTransferRejectAllApprove";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoIosClose } from "react-icons/io";
-import { approveAllWaitingTransfer, getListApprovalTransferAsset, rejectIndividualWaitingTransfer } from "../api/transferApi";
+import {
+  approveAllWaitingTransfer,
+  getListApprovalTransferAsset,
+  rejectIndividualWaitingTransfer
+} from "../api/transferApi";
 import { useEffect } from "react";
 import { getSector } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import { Spinner } from "flowbite-react/lib/esm";
-import { approveAllWaitingRepair, getListApprovalRepair } from "../api/repairApi";
+import {
+  approveAllWaitingRepair,
+  getListApprovalRepair,
+  rejectIndividualWaitingRepair
+} from "../api/repairApi";
 import ModalRepairRejectAllApprove from "../components/modal/ModalRepairRejectAllApprove";
 
-function ApprovalRepair () {
-  const allStatus = ['inProgressOfDetailRecord', 'reject']
+function ApprovalRepair() {
+  const allStatus = ["inProgressOfDetailRecord", "reject"];
   const [search, setSearch] = useState({
     dateFrom: "",
     dateTo: new Date(),
     transferSector: "",
-    listStatus: allStatus,
+    listStatus: allStatus
   });
-  const [isFetch, setIsFetch] = useState(true)
+  const [isFetch, setIsFetch] = useState(true);
   const optionDate = { day: "2-digit", month: "2-digit", year: "numeric" };
   const optionTime = { hour: "2-digit", minute: "2-digit", our12: false };
 
   const [topApproveList, setTopApproveList] = useState([]);
+  console.log("topApproveList:", topApproveList);
   const [bottomApprovedList, setBottomApprovedList] = useState([]);
+  console.log("bottomApprovedList:", bottomApprovedList);
   const [totalAll, setTotalAll] = useState();
   const [totalReject, setTotalReject] = useState();
   const [totalWaitting, setTotalWaitting] = useState();
@@ -37,39 +47,40 @@ function ApprovalRepair () {
       const res = await getListApprovalRepair(search);
       setTopApproveList(res.data.topApproveList);
       setBottomApprovedList(res.data.bottomApproveList);
-      setTotalAll(res.data.totalAll)
-      setTotalReject(res.data.totalReject)
-      setTotalWaitting(res.data.totalWaiting)
-      setTotalApprove(res.data.totalApprove)
-      if (!search.listStatus.length) setSearch({ ...search, listStatus: allStatus })
-      setIsFetch(false)
+      setTotalAll(res.data.totalAll);
+      setTotalReject(res.data.totalReject);
+      setTotalWaitting(res.data.totalWaiting);
+      setTotalApprove(res.data.totalApprove);
+      if (!search.listStatus.length)
+        setSearch({ ...search, listStatus: allStatus });
+      setIsFetch(false);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const [sectorList, setSectorList] = useState()
+  const [sectorList, setSectorList] = useState();
 
   const fetchList = async () => {
-    const sector = await getSector()
-    const arrSector = []
+    const sector = await getSector();
+    const arrSector = [];
     sector.data.sector.map(ele => {
-      arrSector.push({ label: ele.name, value: ele.name })
-    })
-    setSectorList(arrSector)
-  }
+      arrSector.push({ label: ele.name, value: ele.name });
+    });
+    setSectorList(arrSector);
+  };
 
   useEffect(() => {
-    fetchSearchWaitingTransferList()
-    fetchList()
-  }, [])
+    fetchSearchWaitingTransferList();
+    fetchList();
+  }, []);
 
   useEffect(() => {
-    fetchSearchWaitingTransferList()
-  }, [isFetch])
+    fetchSearchWaitingTransferList();
+  }, [isFetch]);
 
   const boxStyle = {
-    boxStatus: `p-2 rounded-md flex flex-col items-center border-[2px] shadow-md`,
+    boxStatus: `p-2 rounded-md flex flex-col items-center border-[2px] shadow-md`
   };
 
   // main input date state
@@ -78,31 +89,34 @@ function ApprovalRepair () {
   );
 
   const [isCheckAll, setIsCheckAll] = useState(false);
-  const handleAllCheckboxChange = (list) => {
+  const handleAllCheckboxChange = list => {
     setIsCheckAll(!isCheckAll);
     const newCheck = !isCheckAll;
-    const newList = list.map((item) => {
+    const newList = list.map(item => {
       return { ...item, checked: newCheck };
     });
     setTopApproveList(newList);
   };
 
   const handleCheckboxChange = (list, id) => {
-    const newList = list.map((item) => {
+    const newList = list.map(item => {
       if (item._id === id) {
         return { ...item, checked: !item.checked };
       }
       return item;
     });
     setTopApproveList(newList);
-    if (!isCheckAll && newList?.filter(ele => ele.checked).length == topApproveList.length) {
-      setIsCheckAll(true)
+    if (
+      !isCheckAll &&
+      newList?.filter(ele => ele.checked).length == topApproveList.length
+    ) {
+      setIsCheckAll(true);
     } else {
-      setIsCheckAll(false)
+      setIsCheckAll(false);
     }
   };
 
-  const handleListStatusChange = (value) => {
+  const handleListStatusChange = value => {
     const listStatus = search.listStatus;
     const index = listStatus.indexOf(value);
     console.log(index);
@@ -140,8 +154,8 @@ function ApprovalRepair () {
                 <div className="flex h-[38px]">
                   <OnlyDateInput
                     id="dateFrom"
-                  state={search.dateFrom}
-                  // setState={setSearch}
+                    state={search.dateFrom}
+                    // setState={setSearch}
                   />
                 </div>
               </div>
@@ -151,7 +165,7 @@ function ApprovalRepair () {
                   <OnlyDateInput
                     id="dateTo"
                     state={search.dateTo}
-                  // setState={setSearch}
+                    // setState={setSearch}
                   />
                 </div>
               </div>
@@ -162,7 +176,9 @@ function ApprovalRepair () {
                 <SearchSelector
                   options={sectorList}
                   name={"sector"}
-                  onChange={(value) => setSearch({ ...search, transferSector: value || "" })}
+                  onChange={value =>
+                    setSearch({ ...search, transferSector: value || "" })
+                  }
                 />
               </div>
 
@@ -193,35 +209,42 @@ function ApprovalRepair () {
             </div>
             {/* status */}
             <div className="grid lg:grid-cols-4 md:grid-cols-2 py-5 border-b-2 gap-5 md:gap-10">
-              <div className={`${boxStyle.boxStatus} font-semibold border-blue-500`}>
+              <div
+                className={`${boxStyle.boxStatus} font-semibold border-blue-500`}
+              >
                 <h1>ทั้งหมด (รายการ)</h1>
-                <div className="text-2xl pt-3 text-blue-500">
-                  {totalAll}
-                </div>
+                <div className="text-2xl pt-3 text-blue-500">{totalAll}</div>
               </div>
-              <div className={`${boxStyle.boxStatus} font-semibold border-yellow-300`}>
+              <div
+                className={`${boxStyle.boxStatus} font-semibold border-yellow-300`}
+              >
                 <h1>รออนุมัติ (รายการ)</h1>
                 <div className="text-2xl pt-3 text-yellow-700">
                   {totalWaitting}
                 </div>
               </div>
-              <div className={`${boxStyle.boxStatus} font-semibold border-green-500`}>
+              <div
+                className={`${boxStyle.boxStatus} font-semibold border-green-500`}
+              >
                 <h1>อนุมัติ (รายการ)</h1>
                 <div className="text-2xl pt-3 text-green-600">
                   {totalApprove}
                 </div>
               </div>
-              <div className={`${boxStyle.boxStatus} font-semibold border-red-500`}>
+              <div
+                className={`${boxStyle.boxStatus} font-semibold border-red-500`}
+              >
                 <h1>ไม่อนุมัติ (รายการ)</h1>
-                <div className="text-2xl pt-3 text-red-500">
-                  {totalReject}
-                </div>
+                <div className="text-2xl pt-3 text-red-500">{totalReject}</div>
               </div>
             </div>
 
-            {!topApproveList.length
-              ? <div className="mt-5 py-10 w-full text-center">{isFetch ? <Spinner size="xl" /> : "ยังไม่มีรายการรออนุมัติ"}</div>
-              : <div className="flex justify-between mt-5">
+            {!topApproveList.length ? (
+              <div className="mt-5 py-10 w-full text-center">
+                {isFetch ? <Spinner size="xl" /> : "ยังไม่มีรายการรออนุมัติ"}
+              </div>
+            ) : (
+              <div className="flex justify-between mt-5">
                 <div className="flex items-center space-x-5">
                   <div className="flex">
                     <input
@@ -232,7 +255,10 @@ function ApprovalRepair () {
                     />
                     <h1 className="ml-2">เลือกทั้งหมด</h1>
                   </div>
-                  <h1 className="">เลือกแล้ว {topApproveList.filter(ele => ele.checked).length} รายการ</h1>
+                  <h1 className="">
+                    เลือกแล้ว {topApproveList.filter(ele => ele.checked).length}{" "}
+                    รายการ
+                  </h1>
                 </div>
                 <div className="flex space-x-2">
                   <ModalRepairRejectAllApprove
@@ -240,10 +266,13 @@ function ApprovalRepair () {
                     setState={setTopApproveList}
                     isFetch={isFetch}
                   />
-                  <ModalApproveAll selectedList={topApproveList?.filter(ele => ele.checked)} setIsFetch={setIsFetch} />
+                  <ModalApproveAll
+                    selectedList={topApproveList?.filter(ele => ele.checked)}
+                    setIsFetch={setIsFetch}
+                  />
                 </div>
               </div>
-            }
+            )}
 
             <ApproveListItem
               state={topApproveList}
@@ -256,14 +285,17 @@ function ApprovalRepair () {
           <div className="bg-white border-[1px] mb-5 p-4 rounded-lg shadow-sm text-sm mt-3 ">
             <div className="lg:flex items-center">
               <div className=" text-lg">รายการคำขอที่จัดการแล้ว</div>
-              {!!bottomApprovedList.length &&
+              {!!bottomApprovedList.length && (
                 <div className="inline-flex space-x-5 md:ml-5 mt-2">
                   <button
-                    className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${search.listStatus.includes("inProgressOfDetailRecord")
-                      ? "border-2 border-green-800 "
-                      : ""
-                      } `}
-                    onClick={() => handleListStatusChange("inProgressOfDetailRecord")}
+                    className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${
+                      search.listStatus.includes("inProgressOfDetailRecord")
+                        ? "border-2 border-green-800 "
+                        : ""
+                    } `}
+                    onClick={() =>
+                      handleListStatusChange("inProgressOfDetailRecord")
+                    }
                   >
                     อนุมัติแล้ว
                     <div className="ml-2 ">
@@ -282,10 +314,11 @@ function ApprovalRepair () {
                     </div>
                   </button>
                   <button
-                    className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${search.listStatus.includes("reject")
-                      ? "border-2 border-red-800 "
-                      : ""
-                      }`}
+                    className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${
+                      search.listStatus.includes("reject")
+                        ? "border-2 border-red-800 "
+                        : ""
+                    }`}
                     onClick={() => handleListStatusChange("reject")}
                   >
                     ไม่อนุมัติ
@@ -304,24 +337,24 @@ function ApprovalRepair () {
                       </svg>
                     </div>
                   </button>
-                  
                 </div>
-              }
+              )}
               {/* </div>
               </div> */}
             </div>
-            {!bottomApprovedList.length
-              ? <center className='p-5'>-</center>
-              : <BottomApprovedListItem data={bottomApprovedList} />
-            }
+            {!bottomApprovedList.length ? (
+              <center className="p-5">-</center>
+            ) : (
+              <BottomApprovedListItem data={bottomApprovedList} />
+            )}
           </div>
         </div>
       </div>
     </>
   );
-};
+}
 
-const ApproveListItem = (props) => {
+const ApproveListItem = props => {
   return (
     <>
       {props.state.map((item, idx) => {
@@ -347,7 +380,14 @@ const ApproveListItem = (props) => {
                   <h1>{item.informRepairIdDoc}</h1>
                 </div>
                 <div className="flex space-x-2 mr-5">
-                  {new Date(item.createdAt).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", our12: false })}
+                  {new Date(item.createdAt).toLocaleDateString("th-TH", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    our12: false
+                  })}
                 </div>
               </div>
               <div className="mt-4">
@@ -380,7 +420,7 @@ const ApproveListItem = (props) => {
   );
 };
 
-const BottomApprovedListItem = (props) => {
+const BottomApprovedListItem = props => {
   return (
     <div className="overflow-x-auto overflow-y-auto max-h-[60vh] scrollbar mt-2">
       {props.data.map((item, idx) => {
@@ -396,7 +436,19 @@ const BottomApprovedListItem = (props) => {
                   <h1>{item.informRepairIdDoc}</h1>
                 </div>
                 <div className="flex space-x-2 mr-5 text-text-gray">
-                  <h1>วันที่อนุมัติ: {new Date(item.dateTime_approver).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", our12: false })}
+                  <h1>
+                    วันที่อนุมัติ:{" "}
+                    {new Date(item.dateTime_approver).toLocaleDateString(
+                      "th-TH",
+                      {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        our12: false
+                      }
+                    )}
                   </h1>
                 </div>
               </div>
@@ -409,23 +461,31 @@ const BottomApprovedListItem = (props) => {
                   <div className="flex text-text-gray">
                     วันที่เสนอ
                     <div className="px-5 text-black">
-                      {new Date(item.createdAt).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", our12: false })}
+                      {new Date(item.createdAt).toLocaleDateString("th-TH", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        our12: false
+                      })}
                     </div>
                   </div>
                   <div className="">
                     <div
-                      className={` ${item.statusOfDetailRecord === "inProgressOfDetailRecord"
-                        ? " bg-sidebar-green  text-text-green    "
-                        : item.statusOfDetailRecord !== "reject"
+                      className={` ${
+                        item.statusOfDetailRecord === "inProgressOfDetailRecord"
+                          ? " bg-sidebar-green  text-text-green    "
+                          : item.statusOfDetailRecord !== "reject"
                           ? "text-orange-400 bg-orange-100  "
                           : "text-red-500 bg-red-100"
-                        } text-center px-4 py-2 rounded-full border`}
+                      } text-center px-4 py-2 rounded-full border`}
                     >
                       {item.statusOfDetailRecord === "inProgressOfDetailRecord"
                         ? "อนุมัติแล้ว"
                         : item.statusOfDetailRecord === "reject"
-                          ? "ไม่อนุมัติ"
-                          : item.statusOfDetailRecord}
+                        ? "ไม่อนุมัติ"
+                        : item.statusOfDetailRecord}
                     </div>
                   </div>
                 </div>
@@ -441,18 +501,18 @@ const BottomApprovedListItem = (props) => {
 const ModalApproveAll = ({ selectedList, setIsFetch }) => {
   const [showModal, setShowModal] = useState(false);
 
-  const handleApproveAllWaitingList = async (e) => {
-    e.preventDefault()
+  const handleApproveAllWaitingList = async e => {
+    e.preventDefault();
     try {
       await approveAllWaitingRepair({
         topApproveList: selectedList
-      })
-      setIsFetch(true)
-      setShowModal(false)
+      });
+      setIsFetch(true);
+      setShowModal(false);
     } catch (err) {
-      console.log('err', err)
+      console.log("err", err);
     }
-  }
+  };
 
   return (
     <>
@@ -478,18 +538,17 @@ const ModalApproveAll = ({ selectedList, setIsFetch }) => {
                       className="border-0 text-black float-right"
                       onClick={() => setShowModal(false)}
                     >
-                      <span
-                        className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
-                      >
+                      <span className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center">
                         <IoIosClose className="text-2xl" />
                       </span>
                     </button>
                   </div>
-                  {!selectedList.length
-                    ? <div className="flex justify-center items-center h-40">
+                  {!selectedList.length ? (
+                    <div className="flex justify-center items-center h-40">
                       ยังไม่มีรายการที่เลือก
                     </div>
-                    : <div className="overflow-x-auto scrollbar pt-4 mb-5">
+                  ) : (
+                    <div className="overflow-x-auto scrollbar pt-4 mb-5">
                       <div className="w-fit min-w-full lg:w-full">
                         <div className="grid grid-cols-8 gap-2 h-12 items-center text-center bg-table-gray rounded-md">
                           <div className="col-span-1">ลำดับ</div>
@@ -500,7 +559,7 @@ const ModalApproveAll = ({ selectedList, setIsFetch }) => {
                         <TableSummaryApprove data={selectedList} />
                       </div>
                     </div>
-                  }
+                  )}
                 </div>
 
                 <div className="flex items-center gap-5 justify-end p-6 border-t border-solid rounded-b">
@@ -528,11 +587,17 @@ const ModalApproveAll = ({ selectedList, setIsFetch }) => {
   );
 };
 
-const ModalIndividualReject = ({ item, state, setState, index, setIsFetch }) => {
+const ModalIndividualReject = ({
+  item,
+  state,
+  setState,
+  index,
+  setIsFetch
+}) => {
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(false);
 
-  const handleChangeArray = (e) => {
+  const handleChangeArray = e => {
     const clone = [...state];
     clone[index] = clone[index] || {};
     clone[index][e.target.name] = e.target.value;
@@ -541,38 +606,40 @@ const ModalIndividualReject = ({ item, state, setState, index, setIsFetch }) => 
   };
 
   const onChangeAllInIndexReason = (e, index) => {
-    setState((prevState) => {
+    setState(prevState => {
       const updatedDataTopApproveList = [...prevState];
       updatedDataTopApproveList[index].reason = e.target.value;
       updatedDataTopApproveList[index].subComponentTransfer?.forEach(
-        (subComponent) => (subComponent.reason = e.target.value)
+        subComponent => (subComponent.reason = e.target.value)
       );
       console.log(updatedDataTopApproveList);
       return updatedDataTopApproveList;
     });
   };
 
-  const handleReject = async (e) => {
-    e.preventDefault()
+  const handleReject = async e => {
+    e.preventDefault();
     if (!state[index].reason) {
-      setError(true)
-      return
+      setError(true);
+      return;
     }
-    const list = state[index]
-    list.assetIdArray.map(ele => {
-      ele.reason = state[index].reason
-    })
-    list.packageAssetIdArray.map(ele => {
-      ele.reason = state[index].reason
-    })
+    const list = state[index];
+    // list.assetIdArray.map(ele => {
+    //   ele.reason = state[index].reason;
+    // });
+    // list.packageAssetIdArray.map(ele => {
+    //   ele.reason = state[index].reason;
+    // });
+    console.log("list:", list);
+
     try {
-      await rejectIndividualWaitingTransfer({ topApproveList: list })
-      setIsFetch(true)
-      setShowModal(false)
+      await rejectIndividualWaitingRepair({ topApproveList: list });
+      setIsFetch(true);
+      setShowModal(false);
     } catch (err) {
-      console.log('err', state[index].reason)
+      console.log("err", state[index].reason);
     }
-  }
+  };
 
   return (
     <>
@@ -598,7 +665,8 @@ const ModalIndividualReject = ({ item, state, setState, index, setIsFetch }) => 
                     >
                       <span
                         // className="flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
-                        className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center">
+                        className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
+                      >
                         <IoIosClose className="text-2xl" />
                       </span>
                     </button>
@@ -627,8 +695,10 @@ const ModalIndividualReject = ({ item, state, setState, index, setIsFetch }) => 
                             type="text"
                             name="reason"
                             required
-                            className={`border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${error && !state[index].reason && 'border-red-500'}`}
-                            onChange={(e) => onChangeAllInIndexReason(e, index)}
+                            className={`border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${
+                              error && !state[index].reason && "border-red-500"
+                            }`}
+                            onChange={e => onChangeAllInIndexReason(e, index)}
                             value={state[index].reason}
                           />
                         </div>
@@ -672,7 +742,7 @@ const TableSummaryApprove = ({ data }) => {
   return (
     <>
       {data?.map((item, idx) => {
-        console.log(item)
+        console.log(item);
         return (
           <div className="grid grid-cols-8 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
             <div className="col-span-1  text-center flex justify-center items-center ">
@@ -687,7 +757,14 @@ const TableSummaryApprove = ({ data }) => {
               {item.repairSector}
             </div>
             <div className="col-span-2 bg-table-data h-[42px] flex justify-center items-center border-[2px] rounded-md">
-              {new Date(item.dateTime_recorder).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", our12: false })}
+              {new Date(item.dateTime_recorder).toLocaleDateString("th-TH", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                our12: false
+              })}
             </div>
           </div>
         );

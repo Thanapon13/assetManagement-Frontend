@@ -3,39 +3,46 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import RowofTableApprovalTransferDetail from "../components/table/RowofTableApprovalTransferDetail";
 import { useEffect } from "react";
-import { approvePartiallyTransfer, getTransferById, rejectIndividualWaitingTransfer } from "../api/transferApi";
+import {
+  approvePartiallyTransfer,
+  getTransferById,
+  rejectIndividualWaitingTransfer
+} from "../api/transferApi";
 import { IoIosClose } from "react-icons/io";
 import DropdownRejectReason from "../components/dropdown/DropdownRejectReason";
 
 const ApprovalRepairDetail = () => {
   let { transferId } = useParams();
 
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
+  console.log("data:", data);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getTransferById(transferId)
-        const totalArr = res.data.transfer.assets.concat(res.data.transfer.packageAssets)
+        const res = await getTransferById(transferId);
+        const totalArr = res.data.transfer.assets.concat(
+          res.data.transfer.packageAssets
+        );
         totalArr.map(ele => {
-          ele.checked = false
-        })
+          ele.checked = false;
+        });
         setData({
           ...res.data.transfer,
           subComponentTransfer: totalArr
-        })
+        });
       } catch (err) {
-        setData([])
+        setData([]);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   const [isChecked, setIsChecked] = useState(false);
 
   const handleAllCheckboxChange = () => {
     setIsChecked(!isChecked);
     const newCheck = !isChecked;
-    const newList = data.subComponentTransfer.map((item) => {
+    const newList = data.subComponentTransfer.map(item => {
       return { ...item, checked: newCheck };
     });
     setData({ ...data, subComponentTransfer: newList });
@@ -50,14 +57,18 @@ const ApprovalRepairDetail = () => {
     });
     setData({ ...data, subComponentTransfer: newList });
 
-    if (!isChecked && newList?.filter(ele => ele.checked).length == data.subComponentTransfer.length) {
-      setIsChecked(true)
+    if (
+      !isChecked &&
+      newList?.filter(ele => ele.checked).length ==
+        data.subComponentTransfer.length
+    ) {
+      setIsChecked(true);
     } else {
-      setIsChecked(false)
+      setIsChecked(false);
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const clone = { ...data };
     clone[e.target.name] = e.target.value;
     console.log(clone);
@@ -65,47 +76,51 @@ const ApprovalRepairDetail = () => {
   };
 
   async function handleSubmit(isAllReason) {
-    let err
+    let err;
     const modifiedAssetIdArray = data.assetIdArray?.map(asset => {
-      if (err) return
-      const ele = data.subComponentTransfer.find(ele => ele._id == asset.assetId)
+      if (err) return;
+      const ele = data.subComponentTransfer.find(
+        ele => ele._id == asset.assetId
+      );
       if (ele.checked == false) {
         if (isAllReason == "สาเหตุแบบหลายรายการ") {
-          if (!data.reason) err = true
+          if (!data.reason) err = true;
         } else {
-          if (!ele.reason) err = true
+          if (!ele.reason) err = true;
         }
-        return { ...asset, reason: ele.reason }
+        return { ...asset, reason: ele.reason };
       } else {
-        return asset
+        return asset;
       }
-    })
+    });
 
     const modifiedPackageAssetIdArray = data.packageAssetIdArray?.map(asset => {
-      if (err) return
-      const ele = data.subComponentTransfer.find(ele => ele._id == asset.assetId)
+      if (err) return;
+      const ele = data.subComponentTransfer.find(
+        ele => ele._id == asset.assetId
+      );
       if (ele.checked == false) {
         if (isAllReason == "สาเหตุแบบหลายรายการ") {
-          if (!data.reason) err = true
+          if (!data.reason) err = true;
         } else {
-          if (!ele.reason) err = true
+          if (!ele.reason) err = true;
         }
-        return { ...asset, reason: ele.reason }
+        return { ...asset, reason: ele.reason };
       }
-      return asset
-    })
-    console.log(modifiedAssetIdArray, modifiedPackageAssetIdArray)
-    if (err) return err
+      return asset;
+    });
+    console.log(modifiedAssetIdArray, modifiedPackageAssetIdArray);
+    if (err) return err;
     try {
       await approvePartiallyTransfer(transferId, {
         input: {
           assetIdArray: modifiedAssetIdArray,
           packageAssetIdArray: modifiedPackageAssetIdArray
         }
-      })
-      window.location.href = "/approvalTransferAsset"
+      });
+      window.location.href = "/approvalTransferAsset";
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -139,13 +154,9 @@ const ApprovalRepairDetail = () => {
           <div className="text-lg">รายละเอียดการโอน-ย้ายครุภัณฑ์</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3">
             <div className="text-gray-500">เลขที่เอกสารการโอนย้าย</div>
-            <div>
-              {data?.transferDocumentNumber}
-            </div>
+            <div>{data?.transferDocumentNumber}</div>
             <div className="text-gray-500">หน่วยงาน</div>
-            <div>
-              {data?.transferSector}
-            </div>
+            <div>{data?.transferSector}</div>
             <div className="text-gray-500">ภาควิชา</div>
             <div>{data?.subSector}</div>
             <div className="text-gray-500">ผู้ดำเนินการ</div>
@@ -186,7 +197,6 @@ const ApprovalRepairDetail = () => {
                     />
                   );
                 })}
-
               </div>
             </div>
           </div>
@@ -196,9 +206,7 @@ const ApprovalRepairDetail = () => {
           <div className="text-lg">สถานที่ตั้งใหม่</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-3 mt-3">
             <div className="text-gray-500">หน่วยงานที่รับโอน</div>
-            <div>
-              {data?.transferDocumentNumber}
-            </div>
+            <div>{data?.transferDocumentNumber}</div>
             <div className="text-gray-500">อาคาร</div>
             <div>{data?.building}</div>
             <div className="text-gray-500">ชั้น</div>
@@ -228,10 +236,14 @@ const ApprovalRepairDetail = () => {
           <ModalIndividualReject
             state={data}
             setState={setData}
-          //  index={idx}
-          //  item={item}
+            //  index={idx}
+            //  item={item}
           />
-          <ModalSummary state={data} setState={setData} handleSubmit={handleSubmit} />
+          <ModalSummary
+            state={data}
+            setState={setData}
+            handleSubmit={handleSubmit}
+          />
         </div>
 
         {/* user log progress */}
@@ -239,8 +251,13 @@ const ApprovalRepairDetail = () => {
           <div className="text-md space-y-3">
             <div>ผู้บันทึก</div>
             <div className="font-semibold">{data.name_recorder}</div>
-            <div className="text-sm text-text-gray">{new Date(data.dateTime_recorder
-            ).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric" })}</div>
+            <div className="text-sm text-text-gray">
+              {new Date(data.dateTime_recorder).toLocaleDateString("th-TH", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+              })}
+            </div>
           </div>
           {/* icon */}
           <svg
@@ -276,10 +293,15 @@ const ApprovalRepairDetail = () => {
           <div className="text-md space-y-3">
             <div>ผู้ส่งเรื่อง</div>
             <div className="font-semibold">{data.name_courier}</div>
-            <div className="text-sm text-text-gray">{new Date(data.dateTime_recorder
-            ).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric" })}</div>
+            <div className="text-sm text-text-gray">
+              {new Date(data.dateTime_recorder).toLocaleDateString("th-TH", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+              })}
+            </div>
           </div>
-          {data.name_approver &&
+          {data.name_approver && (
             <>
               <svg
                 width="63"
@@ -297,11 +319,18 @@ const ApprovalRepairDetail = () => {
                 <div>ผู้อนุมัติ</div>
                 <div className="font-semibold">{data.name_approver}</div>
                 <div className="text-sm text-text-gray">
-                  {!data.dateTime_approver ? <br /> : new Date(data.dateTime_approver).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                  {!data.dateTime_approver ? (
+                    <br />
+                  ) : (
+                    new Date(data.dateTime_approver).toLocaleDateString(
+                      "th-TH",
+                      { day: "2-digit", month: "2-digit", year: "numeric" }
+                    )
+                  )}
                 </div>
               </div>
             </>
-          }
+          )}
         </div>
       </div>
     </>
@@ -310,9 +339,9 @@ const ApprovalRepairDetail = () => {
 
 const ModalIndividualReject = ({ state, setState, item }) => {
   const [showModal, setShowModal] = useState(false);
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
 
-  const handleChangeArray = (e) => {
+  const handleChangeArray = e => {
     const clone = [...state];
     clone[index] = clone[index] || {};
     clone[index][e.target.name] = e.target.value;
@@ -321,13 +350,13 @@ const ModalIndividualReject = ({ state, setState, item }) => {
   };
 
   const onChangeAllInIndexReason = (e, index) => {
-    const value = e.target.value
+    const value = e.target.value;
     state.assetIdArray?.forEach(ele => {
-      ele.reason = value
-    })
+      ele.reason = value;
+    });
     state.packageAssetIdArray?.forEach(ele => {
-      ele.reason = value
-    })
+      ele.reason = value;
+    });
     // setState((prevState) => {
     //   const updatedDataTopApproveList = [...prevState];
     //   updatedDataTopApproveList[index].reason = e.target.value;
@@ -339,16 +368,16 @@ const ModalIndividualReject = ({ state, setState, item }) => {
     // });
   };
 
-  const handleReject = async (e) => {
-    e.preventDefault()
+  const handleReject = async e => {
+    e.preventDefault();
     try {
-      await rejectIndividualWaitingTransfer({ topApproveList: state })
-      setShowModal(false)
-      window.location.href = "/approvalTransferAsset"
+      await rejectIndividualWaitingTransfer({ topApproveList: state });
+      setShowModal(false);
+      window.location.href = "/approvalTransferAsset";
     } catch (err) {
       // console.log('err', state[index].reason)
     }
-  }
+  };
 
   return (
     <>
@@ -359,7 +388,7 @@ const ModalIndividualReject = ({ state, setState, item }) => {
       >
         ไม่อนุมัติ
       </button>
-      {showModal &&
+      {showModal && (
         <>
           <div className="fixed inset-0 -left-10 bg-black opacity-50" />
           <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
@@ -374,7 +403,8 @@ const ModalIndividualReject = ({ state, setState, item }) => {
                     >
                       <span
                         // className="flex justify-center items-center text-white opacity-7 h-6 w-6 text-xl bg-text-sidebar py-0 rounded-full">
-                        className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center">
+                        className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
+                      >
                         <IoIosClose className="text-2xl" />
                       </span>
                     </button>
@@ -388,7 +418,17 @@ const ModalIndividualReject = ({ state, setState, item }) => {
                           <h1>{state.transferDocumentNumber}</h1>
                         </div>
                         <div className="flex space-x-5 mr-5">
-                          <h1>{new Date(state.dateTime_recorder).toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", our12: false })}
+                          <h1>
+                            {new Date(
+                              state.dateTime_recorder
+                            ).toLocaleDateString("th-TH", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              our12: false
+                            })}
                           </h1>
                         </div>
                       </div>
@@ -403,8 +443,10 @@ const ModalIndividualReject = ({ state, setState, item }) => {
                             type="text"
                             name="reason"
                             required
-                            className={`border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${error && !state.reason && 'border-red-500'}`}
-                            onChange={(e) => onChangeAllInIndexReason(e)}
+                            className={`border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue ${
+                              error && !state.reason && "border-red-500"
+                            }`}
+                            onChange={e => onChangeAllInIndexReason(e)}
                             value={state.reason}
                           />
                         </div>
@@ -434,7 +476,7 @@ const ModalIndividualReject = ({ state, setState, item }) => {
             </div>
           </div>
         </>
-      }
+      )}
     </>
   );
 };
@@ -444,13 +486,13 @@ const ModalSummary = ({ state, setState, handleSubmit }) => {
   const [isAllReject, setAllReject] = useState("สาเหตุแบบหลายรายการ");
   const [error, setError] = useState(false);
 
-  const callback = (payload) => {
+  const callback = payload => {
     setAllReject(payload);
   };
 
   async function submit() {
-    const res = await handleSubmit(isAllReject)
-    setError(res)
+    const res = await handleSubmit(isAllReject);
+    setError(res);
   }
   return (
     <>
@@ -476,9 +518,7 @@ const ModalSummary = ({ state, setState, handleSubmit }) => {
                       className="border-0 text-black float-right"
                       onClick={() => setShowModal(false)}
                     >
-                      <span
-                        className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
-                      >
+                      <span className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center">
                         <IoIosClose className="text-2xl" />
                       </span>
                     </button>
@@ -506,7 +546,7 @@ const ModalSummary = ({ state, setState, handleSubmit }) => {
                     <h3 className="text-xl text-text-green">
                       รายการครุภัณฑ์ที่ไม่อนุมัติ
                     </h3>
-                    {state.subComponentTransfer.find(ele => !ele.checked) &&
+                    {state.subComponentTransfer.find(ele => !ele.checked) && (
                       <div className="flex items-center gap-5">
                         <h3>ประเภทการให้เหตุผล</h3>
                         <DropdownRejectReason
@@ -514,12 +554,20 @@ const ModalSummary = ({ state, setState, handleSubmit }) => {
                           header={isAllReject}
                         />
                       </div>
-                    }
+                    )}
                   </div>
                   {isAllReject === "สาเหตุแบบหลายรายการ" ? (
-                    <AllReject state={state} setState={setState} error={error} />
+                    <AllReject
+                      state={state}
+                      setState={setState}
+                      error={error}
+                    />
                   ) : (
-                    <EachReject state={state} setState={setState} error={error} />
+                    <EachReject
+                      state={state}
+                      setState={setState}
+                      error={error}
+                    />
                   )}
                 </div>
 
@@ -562,7 +610,11 @@ const EachReject = ({ state, setState, error }) => {
             <div className="col-span-2">เจ้าของครุภัณฑ์</div>
             <div className="col-span-4">สาเหตุที่ไม่อนุมัติ</div>
           </div>
-          <TableSummaryEachReject state={state} setState={setState} error={error} />
+          <TableSummaryEachReject
+            state={state}
+            setState={setState}
+            error={error}
+          />
         </div>
       </div>
     </div>
@@ -570,14 +622,14 @@ const EachReject = ({ state, setState, error }) => {
 };
 
 const AllReject = ({ state, setState, error }) => {
-  const handleChangeReason = (e) => {
+  const handleChangeReason = e => {
     setState({
       ...state,
       reason: e.target.value,
-      subComponentTransfer: state.subComponentTransfer.map((item) => ({
+      subComponentTransfer: state.subComponentTransfer.map(item => ({
         ...item,
-        reason: e.target.value,
-      })),
+        reason: e.target.value
+      }))
     });
   };
 
@@ -595,19 +647,21 @@ const AllReject = ({ state, setState, error }) => {
           <TableSummaryAllReject state={state} setState={setState} />
         </div>
       </div>
-      {state.subComponentTransfer.find(ele => !ele.checked) &&
-        < div className="p-4 text-sm mt-3 ">
+      {state.subComponentTransfer.find(ele => !ele.checked) && (
+        <div className="p-4 text-sm mt-3 ">
           <div className="text-lg ">สาเหตุที่ไม่อนุมัติ</div>
           <textarea
             maxLength=""
             name="reason"
-            className={`min-h-[100px] resize-none border-[1px] mt-5 rounded-md w-full focus:border-sky-300 ${error && !state.reason && 'border-red-500'}`}
+            className={`min-h-[100px] resize-none border-[1px] mt-5 rounded-md w-full focus:border-sky-300 ${
+              error && !state.reason && "border-red-500"
+            }`}
             onChange={handleChangeReason}
             value={state.reason}
           ></textarea>
         </div>
-      }
-    </div >
+      )}
+    </div>
   );
 };
 
@@ -619,10 +673,19 @@ const TableSummaryApprove = ({ subComponentTransfer }) => {
   };
 
   return (
-    <div className={`scrollbar overflow-y-auto min-h-[4rem] ${subComponentTransfer.find(ele => !ele.checked) ? "max-h-[20vh]" : "max-h-[40vh]"}`}>
+    <div
+      className={`scrollbar overflow-y-auto min-h-[4rem] ${
+        subComponentTransfer.find(ele => !ele.checked)
+          ? "max-h-[20vh]"
+          : "max-h-[40vh]"
+      }`}
+    >
       {subComponentTransfer.map((item, idx) => {
         return item.checked === true ? (
-          <div key={idx} className="grid grid-cols-13 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+          <div
+            key={idx}
+            className="grid grid-cols-13 gap-2 h-12 pt-2 text-xs text-center items-center bg-white"
+          >
             <div className="col-span-1 text-center flex justify-center items-center ">
               <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
                 {idx + 1}
@@ -657,10 +720,19 @@ const TableSummaryEachReject = ({ state, setState, error }) => {
   };
 
   return (
-    <div className={`scrollbar overflow-y-auto min-h-[5rem] mb-3 ${state.subComponentTransfer.find(ele => ele.checked) ? "max-h-[30vh]" : "max-h-45vh]"}`}>
+    <div
+      className={`scrollbar overflow-y-auto min-h-[5rem] mb-3 ${
+        state.subComponentTransfer.find(ele => ele.checked)
+          ? "max-h-[30vh]"
+          : "max-h-45vh]"
+      }`}
+    >
       {state.subComponentTransfer.map((item, idx) => {
         return item.checked === false ? (
-          <div key={idx} className="grid grid-cols-14 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+          <div
+            key={idx}
+            className="grid grid-cols-14 gap-2 h-12 pt-2 text-xs text-center items-center bg-white"
+          >
             <div className="col-span-1  text-center flex justify-center items-center ">
               <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
                 {idx + 1}
@@ -682,9 +754,11 @@ const TableSummaryEachReject = ({ state, setState, error }) => {
               <input
                 type="text"
                 name="reason"
-                onChange={(e) => handleChangeSubComponentTransfer(e, idx)}
+                onChange={e => handleChangeSubComponentTransfer(e, idx)}
                 value={item.reason}
-                className={`border-[1px] w-full p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none focus:border-focus-blue ${error && !item.reason && 'border-red-500'}`}
+                className={`border-[1px] w-full p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none focus:border-focus-blue ${
+                  error && !item.reason && "border-red-500"
+                }`}
               />
             </div>
           </div>
@@ -696,12 +770,20 @@ const TableSummaryEachReject = ({ state, setState, error }) => {
   );
 };
 const TableSummaryAllReject = ({ state, setState }) => {
-
   return (
-    <div className={`scrollbar overflow-y-auto min-h-[4rem] ${state.subComponentTransfer.find(ele => ele.checked) ? "max-h-[20vh]" : "max-h-[40vh]"}`}>
+    <div
+      className={`scrollbar overflow-y-auto min-h-[4rem] ${
+        state.subComponentTransfer.find(ele => ele.checked)
+          ? "max-h-[20vh]"
+          : "max-h-[40vh]"
+      }`}
+    >
       {state.subComponentTransfer.map((item, idx) => {
         return item.checked === false ? (
-          <div key={idx} className="grid grid-cols-13 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
+          <div
+            key={idx}
+            className="grid grid-cols-13 gap-2 h-12 pt-2 text-xs text-center items-center bg-white"
+          >
             <div className="col-span-1  text-center flex justify-center items-center ">
               <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
                 {idx + 1}

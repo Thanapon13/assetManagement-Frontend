@@ -7,7 +7,10 @@ import { CgPushChevronLeft } from "react-icons/cg";
 import { CgPushChevronRight } from "react-icons/cg";
 import DateInput from "../components/date/DateInput";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import { getBorrowHistorySector, getBySearchBorrowHistory } from "../api/borrowApi";
+import {
+  getBorrowHistorySector,
+  getBySearchBorrowHistory
+} from "../api/borrowApi";
 import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
 import { getRepairHistoryBySearch } from "../api/repairApi";
 
@@ -28,14 +31,15 @@ const HistoryRepairIndex = () => {
     sector: "",
     page: "",
     limit: 10,
-    total: 0,
+    total: 0
   });
 
   const [dataList, setDataList] = useState([]);
+  console.log("dataList:", dataList);
   const [sectorList, setSectorList] = useState([]);
 
   // handle
-  const handleChange = (e) => {
+  const handleChange = e => {
     console.log({ ...search, [e.target.name]: e.target.value });
     setSearch({ ...search, [e.target.name]: e.target.value });
   };
@@ -80,14 +84,14 @@ const HistoryRepairIndex = () => {
 
   const fetchDataList = async () => {
     try {
-      const res = await getRepairHistoryBySearch(search)
-      console.log(res.data)
-      setDataList(res.data.repair)
+      const res = await getRepairHistoryBySearch(search);
+      console.log(res.data);
+      setDataList(res.data.repair);
       setSearch({
         ...search,
         page: res.data.page,
         limit: res.data.limit,
-        total: res.data.total,
+        total: res.data.total
       });
       setAmountPage(Math.ceil(res.data.total / res.data.limit));
     } catch (err) {
@@ -99,7 +103,7 @@ const HistoryRepairIndex = () => {
     fetchDataList();
   };
 
-  const handlePaginationSearch = (e) => {
+  const handlePaginationSearch = e => {
     console.log({ ...search, [e.target.name]: e.target.value });
     setSearch({ ...search, [e.target.name]: e.target.value });
     fetchDataList({ ...search, [e.target.name]: e.target.value });
@@ -117,9 +121,9 @@ const HistoryRepairIndex = () => {
   };
 
   useEffect(() => {
-    fetchBorrowHistorySectorSelector()
-    fetchDataList()
-  }, [])
+    fetchBorrowHistorySectorSelector();
+    fetchDataList();
+  }, []);
 
   return (
     <div className="bg-background-page px-5 pt-5 pb-36 ">
@@ -220,81 +224,86 @@ const HistoryRepairIndex = () => {
       </div>
 
       <div className="grid">
-      <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
-        <div className="w-[1000px] xl:w-full xl:h-full ">
-          <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
-          <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
-            {/* top bar */}
-            <div className="grid grid-cols-9 gap-2 h-12 items-center text-center">
-              <div className="col-span-1">เลขที่ใบแจ้งซ่อม</div>
-              <div className="col-span-2">เลขครุภัณฑ์</div>
-              <div className="col-span-2">ชื่อครุภัณฑ์</div>
-              <div className="col-span-1">หน่วยงานที่ส่งซ่อม</div>
-              <div className="col-span-1">วันที่แจ้งซ่อม</div>
-              <div className="col-span-1">สถานะความเร่งด่วน</div>
-              <div className="col-span-1"></div>
+        <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
+          <div className="w-[1000px] xl:w-full xl:h-full ">
+            <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
+            <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-b-[1px] border-border-gray-table mt-5">
+              {/* top bar */}
+              <div className="grid grid-cols-9 gap-2 h-12 items-center text-center">
+                <div className="col-span-1">เลขที่ใบแจ้งซ่อม</div>
+                <div className="col-span-2">เลขครุภัณฑ์</div>
+                <div className="col-span-2">ชื่อครุภัณฑ์</div>
+                <div className="col-span-1">หน่วยงานที่ส่งซ่อม</div>
+                <div className="col-span-1">วันที่แจ้งซ่อม</div>
+                <div className="col-span-1">สถานะความเร่งด่วน</div>
+                <div className="col-span-1"></div>
+              </div>
             </div>
-          </div>
-          <TableBorrowHistory data={dataList} search={search} />
+            <TableBorrowHistory data={dataList} search={search} />
 
-          {!dataList.length
-            ? <center className='p-5'>-</center>
-            : <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
-              <div className="flex mr-10 items-center">
-                <div>Rows per page:</div>
-                <select
-                  id="limit"
-                  name="limit"
-                  className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  onChange={handlePaginationSearch}
+            {!dataList.length ? (
+              <center className="p-5">-</center>
+            ) : (
+              <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+                <div className="flex mr-10 items-center">
+                  <div>Rows per page:</div>
+                  <select
+                    id="limit"
+                    name="limit"
+                    className="h-8 ml-2 bg-gray-50  border border-gray-300  text-gray-500 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    onChange={handlePaginationSearch}
+                  >
+                    <option value="5">5</option>
+                    <option value="10" selected="selected">
+                      {" "}
+                      10{" "}
+                    </option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
+
+                <div className="mx-5">
+                  {search.limit * (search.page - 1) + 1}-
+                  {search.limit * (search.page - 1) + dataList.length} of{" "}
+                  {search.total}
+                </div>
+
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handleFirstPage}
                 >
-                  <option value="5">5</option>
-                  <option value="10" selected="selected"> 10 </option>
-                  <option value="20">20</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
+                  <CgPushChevronLeft className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handlePageDecrease}
+                >
+                  <HiChevronLeft className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handlePageIncrease}
+                >
+                  <HiChevronRight className="text-lg" />
+                </button>
+                <button
+                  className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
+                  onClick={handleLastPage}
+                >
+                  <CgPushChevronRight className="text-lg font-bold" />
+                </button>
               </div>
-
-              <div className="mx-5">
-                {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + dataList.length} of {search.total}
-              </div>
-
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handleFirstPage}
-              >
-                <CgPushChevronLeft className="text-lg" />
-              </button>
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handlePageDecrease}
-              >
-                <HiChevronLeft className="text-lg" />
-              </button>
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handlePageIncrease}
-              >
-                <HiChevronRight className="text-lg" />
-              </button>
-              <button
-                className="flex justify-center items-center hover:bg-gray-200 rounded-full text-icon-dark-gray focus:text-black w-6 h-6 px-1 py-1"
-                onClick={handleLastPage}
-              >
-                <CgPushChevronRight className="text-lg font-bold" />
-              </button>
-            </div>
-          }
+            )}
+          </div>
         </div>
       </div>
-      </div>
-
     </div>
   );
 };
 
-const TableBorrowHistory = (props) => {
+const TableBorrowHistory = props => {
   let options = { day: "2-digit", month: "2-digit", year: "numeric" };
   return (
     <>
@@ -308,29 +317,31 @@ const TableBorrowHistory = (props) => {
               {props.search.page > 1 ? props.search.limit + idx + 1 : idx + 1}
             </div>
             <div className="col-span-2">{item.assetNumber}</div>
+            <p>sadasd</p>
             <div className="col-span-2 ">{item.productName}</div>
             <div className="col-span-1">{item.hostSector}</div>
             <div className="col-span-1">
               {new Date(item.repairedDate).toLocaleDateString("th-TH", options)}
             </div>
-            <div onClick={() => handleClick(item.status)}
-              className={`rounded-full text-white  ${item.urgentStatus === 'rush'
-                ? 'bg-red-600 '
-                : item.urgentStatus === 'rush'
-                  ? 'bg-yellow-300'
-                  : item.urgentStatus === 'normal'
-                    ? ' bg-blue-600'
-                    : 'bg-red-200 text-red-600  border-red-200'
-                } border border-spacing-5 p-2 w-full`}
+            <div
+              onClick={() => handleClick(item.status)}
+              className={`rounded-full text-white  ${
+                item.urgentStatus === "rush"
+                  ? "bg-red-600 "
+                  : item.urgentStatus === "rush"
+                  ? "bg-yellow-300"
+                  : item.urgentStatus === "normal"
+                  ? " bg-blue-600"
+                  : "bg-red-200 text-red-600  border-red-200"
+              } border border-spacing-5 p-2 w-full`}
             >
-              {item.urgentStatus === 'rush'
-                ? 'ฉุกเฉิน'
-                : item.urgentStatus === 'rush'
-                  ? 'เร่งด่วน'
-                  : item.urgentStatus === 'normal'
-                    ? 'ปกติ'
-                    : ''
-              }
+              {item.urgentStatus === "rush"
+                ? "ฉุกเฉิน"
+                : item.urgentStatus === "rush"
+                ? "เร่งด่วน"
+                : item.urgentStatus === "normal"
+                ? "ปกติ"
+                : ""}
             </div>
             <div className="col-span-1 flex justify-center">
               <Link

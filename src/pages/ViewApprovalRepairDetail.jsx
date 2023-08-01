@@ -16,18 +16,19 @@ const ViewApprovalRepairDetail = () => {
 
   const [showAll, setShowAll] = useState(false);
   const [item, setItem] = useState({});
-  const [approveArray, setApproveArray] = useState()
-  const [rejectArray, setRejectArray] = useState()
-  const [error, setError] = useState()
-  const [reason, setReason] = useState()
+  console.log("item:", item);
+  const [approveArray, setApproveArray] = useState();
+  const [rejectArray, setRejectArray] = useState();
+  const [error, setError] = useState();
+  const [reason, setReason] = useState();
 
   useEffect(() => {
     const fetchList = async () => {
-      const res = await getRepairById(id)
-      setItem(res.data.repair)
-    }
-    fetchList()
-  }, [])
+      const res = await getRepairById(id);
+      setItem(res.data.repair);
+    };
+    fetchList();
+  }, []);
 
   // const [isAllReject, setAllReject] = useState(
   //   data.reason === "" ? "แยกการให้สาเหตุแต่ละรายการ" : "สาเหตุแบบหลายรายการ"
@@ -39,9 +40,7 @@ const ViewApprovalRepairDetail = () => {
   return (
     <>
       <div className="bg-background-page pt-5 p-3">
-
         <div>
-
           <div className="text-2xl text-text-green flex items-center ">
             <Link
               to={-1}
@@ -68,13 +67,13 @@ const ViewApprovalRepairDetail = () => {
                 อนุมัติซ่อม
               </Link>
               <div className="text-text-gray">/</div>
-              <div className="text-text-gray ml-2">รายละเอียดการอนุมัติซ่อม</div>
+              <div className="text-text-gray ml-2">
+                รายละเอียดการอนุมัติซ่อม
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-end gap-5">
-
-          </div>
+          <div className="flex justify-end gap-5"></div>
         </div>
 
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-2">
@@ -89,14 +88,18 @@ const ViewApprovalRepairDetail = () => {
               <div className="text-text-gray flex items-center ">
                 สถานะความเร่งด่วน
               </div>
-              <div className={`flex justify-center items-end md:-mt-3 py-2 w-fit px-3.5 rounded-full
-              ${item.urgentStatus === 'ปกติ'
-                  ? 'bg-blue-600 text-white '
-                  : item.urgentStatus === 'เร่งด่วน'
-                    ? 'bg-[#F2994A] text-white '
-                    : item.urgentStatus === 'ฉุกเฉิน'
-                      ? 'bg-red-700 text-white '
-                      : 'border-0'}`}>
+              <div
+                className={`flex justify-center items-end md:-mt-3 py-2 w-fit px-3.5 rounded-full
+              ${
+                item.urgentStatus === "ปกติ"
+                  ? "bg-blue-600 text-white "
+                  : item.urgentStatus === "เร่งด่วน"
+                  ? "bg-[#F2994A] text-white "
+                  : item.urgentStatus === "ฉุกเฉิน"
+                  ? "bg-red-700 text-white "
+                  : "border-0"
+              }`}
+              >
                 {item.urgentStatus}
               </div>
             </div>
@@ -106,7 +109,15 @@ const ViewApprovalRepairDetail = () => {
                 เวลาที่แจ้งซ่อม
               </div>
               <div className="flex items-center">
-                {item.informRepairDate && `${new Date(item.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}
+                {item.informRepairDate &&
+                  `${new Date(item.informRepairDate).toLocaleString("th", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                  })} น.`}
               </div>
               <div className="text-text-gray flex items-center">
                 รหัสครุภัณฑ์
@@ -118,7 +129,11 @@ const ViewApprovalRepairDetail = () => {
               <div className="text-text-gray flex items-center">
                 อยู่ในประกัน
               </div>
-              <div className={`flex items-center ${item.isInsurance ? "text-text-green" : "text-red-500"}`}>
+              <div
+                className={`flex items-center ${
+                  item.isInsurance ? "text-text-green" : "text-red-500"
+                }`}
+              >
                 {item.isInsurance ? "อยู่ในประกัน" : "ไม่อยู่ในประกัน"}
               </div>
               <div className="text-text-gray flex items-center">
@@ -131,36 +146,55 @@ const ViewApprovalRepairDetail = () => {
               <div className="text-text-gray flex items-center">
                 เจ้าของครุภัณฑ์
               </div>
-              <div className="flex items-center">{item.hostSector || '-'}</div>
+              <div className="flex items-center">{item.hostSector || "-"}</div>
               <div className="text-text-gray flex items-center">
                 ชื่อครุภัณฑ์
               </div>
-              <div className="flex items-center">
-                {item.productName || '-'}
-              </div>
+              <div className="flex items-center">{item.productName || "-"}</div>
             </div>
             {/* row 5 วันที่เริ่มรับประกัน*/}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2 max-md:pb-0">
               <div className="text-text-gray flex items-center">
                 วันที่เริ่มรับประกัน
               </div>
-              <div className="flex items-center">{(item.insuranceStartDate)
-                ? `${new Date(item.insuranceStartDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`
-                : '-'}</div>
+              <div className="flex items-center">
+                {item.insuranceStartDate
+                  ? `${new Date(item.insuranceStartDate).toLocaleString("th", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false
+                    })} น.`
+                  : "-"}
+              </div>
               <div className="text-text-gray flex items-center">
                 วันที่สิ้นสุดการรับประกัน
               </div>
-              <div className="flex items-center">{item.insuranceEndDate ? `${new Date(item.insuranceEndDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`
-                : '-'}</div>
+              <div className="flex items-center">
+                {item.insuranceEndDate
+                  ? `${new Date(item.insuranceEndDate).toLocaleString("th", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false
+                    })} น.`
+                  : "-"}
+              </div>
             </div>
             {/* row 6 รหัส cost center*/}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2 max-md:pb-0">
               <div className="text-text-gray flex items-center">
                 รหัส cost center
               </div>
-              <div className="flex items-center">{item.costCenterCode || '-'}</div>
+              <div className="flex items-center">
+                {item.costCenterCode || "-"}
+              </div>
               <div className="text-text-gray flex items-center">สท.01</div>
-              <div className="flex items-center">{item.asset01 || '-'}</div>
+              <div className="flex items-center">{item.asset01 || "-"}</div>
             </div>
           </div>
           {/* ข้อมูลสถานที่ซ่อม */}
@@ -171,14 +205,14 @@ const ViewApprovalRepairDetail = () => {
               <div className="text-text-gray flex items-center ">
                 ที่ตั้ง/อาคาร
               </div>
-              <div className="flex items-center ">{item.building || '-'}</div>
+              <div className="flex items-center ">{item.building || "-"}</div>
               <div className="text-text-gray flex items-center ">ชั้น</div>
-              <div className="flex items-center ">{item.floor || '-'}</div>
+              <div className="flex items-center ">{item.floor || "-"}</div>
             </div>
             {/* row 2 ห้อง */}
             <div className="grid grid-cols-2 md:grid-cols-5 p-2">
               <div className="text-text-gray flex items-center">ห้อง</div>
-              <div className="flex items-center">{item.room || '-'}</div>
+              <div className="flex items-center">{item.room || "-"}</div>
             </div>
           </div>
           {/* ข้อมูลผู้เกี่ยวข้อง */}
@@ -189,7 +223,9 @@ const ViewApprovalRepairDetail = () => {
               <div className="text-text-gray flex items-center ">
                 ผู้ส่งซ่อม
               </div>
-              <div className="flex items-center ">{item.name_courier || '-'}</div>
+              <div className="flex items-center ">
+                {item.name_courier || "-"}
+              </div>
               <div className="text-text-gray flex items-center ">
                 เบอร์โทรศัพท์
               </div>
@@ -200,11 +236,11 @@ const ViewApprovalRepairDetail = () => {
               <div className="text-text-gray flex items-center">
                 ผู้ประสานงาน
               </div>
-              <div className="flex items-center">
-                {item.name_recorder}
-              </div>
+              <div className="flex items-center">{item.name_recorder}</div>
               <div className="text-text-gray flex items-center">หน่วยงาน</div>
-              <div className="flex items-center">{item.courierSector || '-'}</div>
+              <div className="flex items-center">
+                {item.courierSector || "-"}
+              </div>
             </div>
           </div>
         </div>
@@ -237,8 +273,7 @@ const ViewApprovalRepairDetail = () => {
 
         <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
           <div>
-            <div className="text-xl">ค่าใช้จ่ายในการซ่อม</div>
-
+            <TableRepairCost data={item.costOfRepairArray} />
           </div>
         </div>
 
@@ -246,31 +281,35 @@ const ViewApprovalRepairDetail = () => {
           <div>
             <div className="text-xl">หมายเหตุ</div>
             <div className="p-2 py-3 flex justify-center">
-              <textarea className={`${error && !reason && "border-red-500"} disabled:bg-gray-100 w-full border-[1px] p-2 min-h-[38px] h-[7rem] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none focus:border-focus-blue`}
-              disabled={item.statusOfDetailRecord != "waitingApproval"}/>
+              <textarea
+                className={`${
+                  error && !reason && "border-red-500"
+                } disabled:bg-gray-100 w-full border-[1px] p-2 min-h-[38px] h-[7rem] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none focus:border-focus-blue`}
+                disabled={item.statusOfDetailRecord != "waitingApproval"}
+              />
             </div>
           </div>
         </div>
 
-        {item.statusOfDetailRecord == "waitingApproval" &&
+        {item.statusOfDetailRecord == "waitingApproval" && (
           <div className="flex justify-between items-center gap-10 p-5 text-sm mr-">
-             <button
-        className="p-2 w-[115px] text-center border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-500/[.15]"
-        type="button"
-        // onClick={() => setShowModal(true)}
-      >
-        ไม่อนุมัติ
-      </button>
+            <button
+              className="p-2 w-[115px] text-center border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-500/[.15]"
+              type="button"
+              // onClick={() => setShowModal(true)}
+            >
+              ไม่อนุมัติ
+            </button>
 
-      <button
-        className="bg-text-green px-10 hover:bg-green-800 text-white text-sm rounded-md p-2"
-        type="button"
-        // onClick={() => setShowModal(true)}
-      >
-        อนุมัติ
-      </button>
+            <button
+              className="bg-text-green px-10 hover:bg-green-800 text-white text-sm rounded-md p-2"
+              type="button"
+              // onClick={() => setShowModal(true)}
+            >
+              อนุมัติ
+            </button>
           </div>
-        }
+        )}
 
         {item.repairStatus === "waitApprove" ? (
           <>
@@ -321,7 +360,11 @@ const ViewApprovalRepairDetail = () => {
   );
 };
 
-const TableRepairCost = (props) => {
+const TableRepairCost = props => {
+  const totalSum = props?.data?.reduce(
+    (sum, item) => sum + item.quantity * item.pricePerPiece,
+    0
+  );
   return (
     <>
       <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar border-[1px]">
@@ -349,26 +392,26 @@ const TableRepairCost = (props) => {
                   </div>
                 </div>
                 <div className="col-span-3 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
-                  {item.list}
+                  {item.stuffName}
                 </div>
                 <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
-                  {item.quannity}
+                  {item.quantity}
                 </div>
                 <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
                   {item.unit}
                 </div>
                 <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
-                  {item.pricePerUnit}
+                  {item.pricePerPiece}
                 </div>
                 <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
-                  {item.totalPrice}
+                  {item.quantity * item.pricePerPiece}
                 </div>
               </div>
             );
           })}
           <div className="bg-table-data h-[40px] p-6 flex justify-between items-center mt-10">
             <div className="text-sm  font-semibold">รวมจำนวนเงินทั้งหมด</div>
-            <div className="text-sm font-semibold">{"11300.00"} บาท</div>
+            <div className="text-sm font-semibold">{totalSum} บาท</div>
           </div>
         </div>
       </div>
@@ -388,7 +431,7 @@ const ModalApproveDone = () => {
       >
         ตรวจรับ
       </button>
-      {showModal &&
+      {showModal && (
         <>
           <div className="fixed inset-0 -left-10 bg-black opacity-50" />
           <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
@@ -404,7 +447,7 @@ const ModalApproveDone = () => {
             </div>
           </div>
         </>
-      }
+      )}
     </>
   );
 };
