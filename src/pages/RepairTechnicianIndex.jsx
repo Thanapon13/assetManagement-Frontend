@@ -293,7 +293,7 @@ const TableRepairTechnicianIndex = ({ data, fetchList }) => {
                         ? 'รอลงบันทึก'
                         : item.statusOfDetailRecord === 'completeOfDetailRecord'
                           ? 'เสร็จสิ้น'
-                          : 'ยกเลิก'}
+                          : item.statusOfDetailRecord}
               </div>
             </div>
             <div className="col-span-2">

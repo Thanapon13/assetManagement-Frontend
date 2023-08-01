@@ -139,7 +139,7 @@ const ApprovalTransferAsset = () => {
                 <div className="flex h-[38px]">
                   <OnlyDateInput
                     id="dateFrom"
-                  // state={search}
+                  state={search.dateFrom}
                   // setState={setSearch}
                   />
                 </div>

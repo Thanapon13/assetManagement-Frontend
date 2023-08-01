@@ -129,7 +129,7 @@ const TableBorrowList = (props) => {
   );
 };
 
-const ModalCancel = ({ item,fetchLists }) => {
+const ModalCancel = ({ item, fetchLists }) => {
   const [showModal, setShowModal] = useState(false);
 
   const callback = (payload) => {
