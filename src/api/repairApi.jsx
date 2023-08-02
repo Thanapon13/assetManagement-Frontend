@@ -81,10 +81,15 @@ export function getListApprovalRepair() {
 export function approveAllWaitingRepair(body) {
   return axios.patch(`/repair/approveAllWaiting`, body);
 }
+export function approveIndividualWaitingRepair(body) {
+  return axios.patch(`/repair/approveIndividualWaiting`, body);
+}
 
 export function updateOutsourceRecord(id, body) {
   return axios.patch(`/repair/outSourceRecord/${id}`, body);
 }
 
-export const rejectIndividualWaitingRepair = topApproveList =>
-  axios.patch("/repair/rejectAllWaiting", topApproveList);
+export function rejectIndividualWaitingRepair(topApproveList) {
+  console.log("topApproveList:", topApproveList);
+  return axios.patch(`/repair/rejectIndividualWaiting`, topApproveList);
+}

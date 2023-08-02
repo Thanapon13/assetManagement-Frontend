@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import Selector from '../components/selector/Selector'
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
-import { AiOutlineSearch } from 'react-icons/ai'
-import { BsFillPencilFill, BsFillEyeFill } from 'react-icons/bs'
-import DateInput from '../components/date/DateInput'
-import { getRepairTechnicianBySearch, updateStatusForGetJobRepair } from '../api/repairApi'
-import SearchSelector from '../components/selector/SearchSelector'
-import ModalConfirmSave from '../components/modal/ModalConfirmSave'
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Selector from "../components/selector/Selector";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import { AiOutlineSearch } from "react-icons/ai";
+import { BsFillPencilFill, BsFillEyeFill } from "react-icons/bs";
+import DateInput from "../components/date/DateInput";
+import {
+  getRepairTechnicianBySearch,
+  updateStatusForGetJobRepair
+} from "../api/repairApi";
+import SearchSelector from "../components/selector/SearchSelector";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
 const RepairTechnicianIndex = () => {
   const [search, setSearch] = useState({
@@ -16,46 +19,46 @@ const RepairTechnicianIndex = () => {
     statusOfDetailRecord: "",
     dateFrom: "",
     dateTo: new Date(),
-    sector: "",
+    sector: ""
   });
 
-  const [data, setData] = useState([])
-  const [sectorArray, setSectorArray] = useState([])
+  const [data, setData] = useState([]);
+  const [sectorArray, setSectorArray] = useState([]);
 
   useEffect(() => {
-    fetchList()
+    fetchList();
     // getMaster()
-  }, [])
+  }, []);
 
   async function fetchList() {
-    const res = await getRepairTechnicianBySearch(search)
-    setData(res.data.repair)
-    console.log(res.data.repair)
+    const res = await getRepairTechnicianBySearch(search);
+    setData(res.data.repair);
+    console.log(res.data.repair);
     setSearch({
       ...search,
       page: res.data.page,
       limit: res.data.limit,
-      total: res.data.total,
-    })
+      total: res.data.total
+    });
   }
 
   async function getMaster() {
-    const sector = await getSectorOfRepair()
-    const arrSector = []
+    const sector = await getSectorOfRepair();
+    const arrSector = [];
     sector.data.sector.map(ele => {
-      arrSector.push({ label: ele.sector, value: ele.sector })
-    })
-    setSectorArray(arrSector)
+      arrSector.push({ label: ele.sector, value: ele.sector });
+    });
+    setSectorArray(arrSector);
   }
 
-  const handlePagination = (e) => {
-    setSearch({ ...search, [e.target.name]: e.target.value })
-    fetchList({ ...search, [e.target.name]: e.target.value })
-  }
+  const handlePagination = e => {
+    setSearch({ ...search, [e.target.name]: e.target.value });
+    fetchList({ ...search, [e.target.name]: e.target.value });
+  };
 
-  const handleChange = (e) => {
-    setSearch({ ...search, [e.target.name]: e.target.value })
-  }
+  const handleChange = e => {
+    setSearch({ ...search, [e.target.name]: e.target.value });
+  };
 
   return (
     <div className="bg-background-page px-5 pt-5 pb-36 ">
@@ -81,7 +84,7 @@ const RepairTechnicianIndex = () => {
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 md:pl-5">
         <div className="text-xs font-semibold">ค้นหาโดย</div>
         <div className="md:col-span-2">
-          <Selector placeholder={'เลขที่ใบแจ้งซ่อม'} />
+          <Selector placeholder={"เลขที่ใบแจ้งซ่อม"} />
         </div>
 
         <div className="md:col-span-4  h-[38px] relative">
@@ -143,7 +146,9 @@ const RepairTechnicianIndex = () => {
             options={sectorArray}
             placeholder={"หน่วยงานที่โอน"}
             name={"sector"}
-            onChange={(value, label) => setSearch({ ...search, [label]: value })}
+            onChange={(value, label) =>
+              setSearch({ ...search, [label]: value })
+            }
             floatLabel
           />
         </div>
@@ -161,7 +166,7 @@ const RepairTechnicianIndex = () => {
         </div>
       </div>
 
-      <div className='grid'>
+      <div className="grid">
         <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
           <div className="min-w-[1070px] lg:w-full lg:h-full h-[500px]">
             <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
@@ -190,7 +195,10 @@ const RepairTechnicianIndex = () => {
                   onChange={handlePagination}
                 >
                   <option value="5">5</option>
-                  <option value="10" selected="selected"> 10 </option>
+                  <option value="10" selected="selected">
+                    {" "}
+                    10{" "}
+                  </option>
                   <option value="20">20</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
@@ -198,7 +206,9 @@ const RepairTechnicianIndex = () => {
               </div>
 
               <div className="mx-5">
-                {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + data.length} of {search.total}
+                {search.limit * (search.page - 1) + 1}-
+                {search.limit * (search.page - 1) + data.length} of{" "}
+                {search.total}
               </div>
 
               <button className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
@@ -212,21 +222,21 @@ const RepairTechnicianIndex = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const TableRepairTechnicianIndex = ({ data, fetchList }) => {
-  const [isClick, setIsClick] = useState(false)
+  const [isClick, setIsClick] = useState(false);
 
-  let navigate = useNavigate()
+  let navigate = useNavigate();
 
-  const handleClick = (status) => {
-    setIsClick(!isClick)
+  const handleClick = status => {
+    setIsClick(!isClick);
 
-    if (status === 'waitToReturn') {
-      navigate('/repairIndex')
+    if (status === "waitToReturn") {
+      navigate("/repairIndex");
     }
-  }
+  };
   //   waitTechnicianConfirm , inProgress , draftRepair, waitApprove, done , cancel
   // emerygencyStatus , normal , emergency, rushing
   return (
@@ -237,23 +247,36 @@ const TableRepairTechnicianIndex = ({ data, fetchList }) => {
             key={idx}
             className={`grid grid-cols-14 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
-            <div className="col-span-1">{new Date(item.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.</div>
+            <div className="col-span-1">
+              {new Date(item.informRepairDate).toLocaleString("th", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+              })}{" "}
+              น.
+            </div>
             <div className="col-span-2">{item.informRepairIdDoc}</div>
             <div className="col-span-2 ">{item.assetNumber}</div>
             <div className="col-span-3 text-left">{item.problemDetail}</div>
             <div className="col-span-1 text-left">{item.courierSector}</div>
             <div className="col-span-1 flex justify-center">
-              <div onClick={() => handleClick(item.emerygencyStatus)}
-                className={`${item.urgentStatus === 'ปกติ'
-                  ? 'bg-blue-600 text-white rounded-full '
-                  : item.urgentStatus === 'เร่งด่วน'
-                    ? 'bg-[#F2994A] text-white  rounded-full'
-                    : item.urgentStatus === 'ฉุกเฉิน'
-                      ? 'bg-red-700 text-white  rounded-full'
-                      : 'border-0'
-                  } border border-spacing-5 p-2 w-[80px]`}
+              <div
+                onClick={() => handleClick(item.emerygencyStatus)}
+                className={`${
+                  item.urgentStatus === "ปกติ"
+                    ? "bg-blue-600 text-white rounded-full "
+                    : item.urgentStatus === "เร่งด่วน"
+                    ? "bg-[#F2994A] text-white  rounded-full"
+                    : item.urgentStatus === "ฉุกเฉิน"
+                    ? "bg-red-700 text-white  rounded-full"
+                    : "border-0"
+                } border border-spacing-5 p-2 w-[80px]`}
               >
-                {item.urgentStatus
+                {
+                  item.urgentStatus
                   // === 'normal'
                   //   ? 'ปกติ'
                   //   : item.urgentStatus === 'rushing'
@@ -265,66 +288,72 @@ const TableRepairTechnicianIndex = ({ data, fetchList }) => {
               </div>
             </div>
             <div className="col-span-2 flex justify-center">
-              <div onClick={() => handleClick(item.status)}
-                className={`${item.statusOfDetailRecord === 'waitTechnicianConfirm'
-                  ? 'bg-[#245BD826] text-blue-600 rounded-full '
-                  : item.statusOfDetailRecord === 'waiting'
-                    ? 'bg-[#245BD826] text-blue-600 rounded-full '
-                    : item.statusOfDetailRecord === 'inProgressOfDetailRecord'
-                      ? 'bg-purple-600  text-white rounded-full'
-                      : item.statusOfDetailRecord === 'waitApprove'
-                        ? ' bg-[#F2C94C]  rounded-full'
-                        : item.statusOfDetailRecord === 'waitingApproval'
-                          ? 'bg-yellow-300 rounded-full'
-                          : item.statusOfDetailRecord === 'waitingRecord'
-                            ? ' bg-[#F2994A26] text-[#F2994A] rounded-full'
-                            : item.statusOfDetailRecord === 'completeOfDetailRecord'
-                              ? 'bg-sidebar-green text-text-green  rounded-full  '
-                              : 'bg-red-200 text-red-600 rounded-full '
-                  }  p-2 w-[100px]`}
+              <div
+                onClick={() => handleClick(item.status)}
+                className={`${
+                  item.statusOfDetailRecord === "waitTechnicianConfirm"
+                    ? "bg-[#245BD826] text-blue-600 rounded-full "
+                    : item.statusOfDetailRecord === "waiting"
+                    ? "bg-[#245BD826] text-blue-600 rounded-full "
+                    : item.statusOfDetailRecord === "inProgressOfDetailRecord"
+                    ? "bg-purple-600  text-white rounded-full"
+                    : item.statusOfDetailRecord === "waitApprove"
+                    ? " bg-[#F2C94C]  rounded-full"
+                    : item.statusOfDetailRecord === "waitingApproval"
+                    ? "bg-yellow-300 rounded-full"
+                    : item.statusOfDetailRecord === "waitingRecord"
+                    ? " bg-[#F2994A26] text-[#F2994A] rounded-full"
+                    : item.statusOfDetailRecord === "completeOfDetailRecord"
+                    ? "bg-sidebar-green text-text-green  rounded-full  "
+                    : "bg-red-200 text-red-600 rounded-full "
+                }  p-2 w-[100px]`}
               >
-                {item.statusOfDetailRecord === 'waitTechnicianConfirm'
-                  ? 'รอช่างรับงาน'
-                  : item.statusOfDetailRecord === 'inProgressOfDetailRecord'
-                    ? 'ดำเนินการ'
-                    : item.statusOfDetailRecord === 'waitingApproval'
-                      ? 'รออนุมัติ'
-                      : item.statusOfDetailRecord === 'waitingRecord'
-                        ? 'รอลงบันทึก'
-                        : item.statusOfDetailRecord === 'completeOfDetailRecord'
-                          ? 'เสร็จสิ้น'
-                          : item.statusOfDetailRecord}
+                {item.statusOfDetailRecord === "waiting"
+                  ? "รอช่างรับงาน"
+                  : item.statusOfDetailRecord === "inProgressOfDetailRecord"
+                  ? "ดำเนินการ"
+                  : item.statusOfDetailRecord === "waitingApproval"
+                  ? "รออนุมัติ"
+                  : item.statusOfDetailRecord === "waitingRecord"
+                  ? "รอลงบันทึก"
+                  : item.statusOfDetailRecord === "completeOfDetailRecord"
+                  ? "เสร็จสิ้น"
+                  : item.statusOfDetailRecord}
               </div>
             </div>
             <div className="col-span-2">
               {/*  completeOfDetailRecord  cancleOfDetailRecord  reject  */}
-              {item.statusOfDetailRecord === 'waitTechnicianConfirm' ? (
-                <ActionWaitTechnicalConfirm id={item._id} item={item} fetchList={fetchList} />
-              ) : item.statusOfDetailRecord === 'waitingRecord' ? (
+              {item.statusOfDetailRecord === "waiting" ? (
+                <ActionWaitTechnicalConfirm
+                  id={item._id}
+                  item={item}
+                  fetchList={fetchList}
+                />
+              ) : item.statusOfDetailRecord === "waitingRecord" ? (
                 <ActionWaitRecord id={item._id} item={item} />
-              ) : item.statusOfDetailRecord === 'inProgressOfDetailRecord' ? (
+              ) : item.statusOfDetailRecord === "inProgressOfDetailRecord" ? (
                 <ActionInProgress id={item._id} item={item} />
-              ) : item.statusOfDetailRecord === 'waitingApproval' ? (
+              ) : item.statusOfDetailRecord === "waitingApproval" ? (
                 <ActionWaitApprove id={item._id} item={item} />
-              ) : item.statusOfDetailRecord === 'completeOfDetailRecord' ? (
+              ) : item.statusOfDetailRecord === "completeOfDetailRecord" ? (
                 <ActionDone />
               ) : (
                 <ActionCancel item={item} />
               )}
             </div>
           </div>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
 const ModalCancel = () => {
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
 
-  const callback = (payload) => {
-    setAllReject(payload)
-  }
+  const callback = payload => {
+    setAllReject(payload);
+  };
   return (
     <>
       <button
@@ -378,13 +407,13 @@ const ModalCancel = () => {
                         เลขที่ใบแจ้งซ่อม
                       </div>
                       <div className="flex items-center ">
-                        {'mnt-0308/65-002'}
+                        {"mnt-0308/65-002"}
                       </div>
                       <div className="text-text-gray flex items-center ">
                         เวลาที่แจ้งซ่อม
                       </div>
                       <div className="flex items-center ">
-                        {'18/03/2566 , 09.42 น.'}
+                        {"18/03/2566 , 09.42 น."}
                       </div>
                     </div>
                     {/* row 2 ผู้ประสานงาน */}
@@ -393,13 +422,13 @@ const ModalCancel = () => {
                         ผู้ประสานงาน
                       </div>
                       <div className="flex items-center">
-                        {'เมตตา ดวงรุ่งเรืองโรจน์'}
+                        {"เมตตา ดวงรุ่งเรืองโรจน์"}
                       </div>
                       <div className="text-text-gray flex items-center">
                         หน่วยงาน
                       </div>
                       <div className="flex items-center">
-                        {'กองงานบัญชีกลาง'}
+                        {"กองงานบัญชีกลาง"}
                       </div>
                     </div>
                     {/* สาเหตุที่ยกเลิก */}
@@ -435,11 +464,11 @@ const ModalCancel = () => {
         </>
       ) : null}
     </>
-  )
-}
+  );
+};
 
-const ActionWaitTechnicalConfirm = (props) => {
-  const [showModal, setShowModal] = useState(false)
+const ActionWaitTechnicalConfirm = props => {
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
@@ -452,11 +481,11 @@ const ActionWaitTechnicalConfirm = (props) => {
           confirmText="รับงาน"
           onSave={async () => {
             try {
-              await updateStatusForGetJobRepair(props.id, "waitingRecord")
-              props.fetchList()
-              setShowModal(false)
+              await updateStatusForGetJobRepair(props.id, "waitingRecord");
+              props.fetchList();
+              setShowModal(false);
             } catch (error) {
-              console.log(error)
+              console.log(error);
             }
           }}
         />
@@ -475,8 +504,8 @@ const ActionWaitTechnicalConfirm = (props) => {
         </Link>
       </div>
     </>
-  )
-}
+  );
+};
 
 const ActionWaitRecord = ({ id, item }) => {
   return (
@@ -498,14 +527,14 @@ const ActionWaitRecord = ({ id, item }) => {
         </Link>
       </div>
     </>
-  )
-}
+  );
+};
 
 const ActionInProgress = ({ id, item }) => {
   return (
     <>
       <div className="col-span-2 flex justify-center gap-2">
-      <Link
+        <Link
           to={`/repairTechnicianJobDetail/${id}`}
           state={{ data: item }}
           className="border hover:bg-[#245BD826]  border-[#2F80ED] text-[#2F80ED] p-2 rounded-lg w-[120px]"
@@ -514,8 +543,8 @@ const ActionInProgress = ({ id, item }) => {
         </Link>
       </div>
     </>
-  )
-}
+  );
+};
 
 const ActionWaitApprove = ({ id, item }) => {
   return (
@@ -537,8 +566,8 @@ const ActionWaitApprove = ({ id, item }) => {
         </Link>
       </div>
     </>
-  )
-}
+  );
+};
 
 const ActionDone = () => {
   return (
@@ -564,10 +593,10 @@ const ActionDone = () => {
         </button>
       </div>
     </>
-  )
-}
+  );
+};
 
-const ActionCancel = (props) => {
+const ActionCancel = props => {
   return (
     <>
       <div className="col-span-2 flex justify-center gap-2">
@@ -581,6 +610,6 @@ const ActionCancel = (props) => {
         </Link>
       </div>
     </>
-  )
-}
-export default RepairTechnicianIndex
+  );
+};
+export default RepairTechnicianIndex;

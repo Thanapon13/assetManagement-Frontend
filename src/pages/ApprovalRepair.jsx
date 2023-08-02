@@ -7,8 +7,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { IoIosClose } from "react-icons/io";
 import {
   approveAllWaitingTransfer,
-  getListApprovalTransferAsset,
-  rejectIndividualWaitingTransfer
+  getListApprovalTransferAsset
 } from "../api/transferApi";
 import { useEffect } from "react";
 import { getSector } from "../api/masterApi";
@@ -16,8 +15,7 @@ import SearchSelector from "../components/selector/SearchSelector";
 import { Spinner } from "flowbite-react/lib/esm";
 import {
   approveAllWaitingRepair,
-  getListApprovalRepair,
-  rejectIndividualWaitingRepair
+  getListApprovalRepair
 } from "../api/repairApi";
 import ModalRepairRejectAllApprove from "../components/modal/ModalRepairRejectAllApprove";
 
@@ -36,17 +34,18 @@ function ApprovalRepair() {
   const [topApproveList, setTopApproveList] = useState([]);
   console.log("topApproveList:", topApproveList);
   const [bottomApprovedList, setBottomApprovedList] = useState([]);
-  console.log("bottomApprovedList:", bottomApprovedList);
+  // console.log("bottomApprovedList:", bottomApprovedList);
   const [totalAll, setTotalAll] = useState();
   const [totalReject, setTotalReject] = useState();
   const [totalWaitting, setTotalWaitting] = useState();
   const [totalApprove, setTotalApprove] = useState();
 
-  const fetchSearchWaitingTransferList = async () => {
+  const fetchSearchWaitingRepairList = async () => {
     try {
       const res = await getListApprovalRepair(search);
       setTopApproveList(res.data.topApproveList);
       setBottomApprovedList(res.data.bottomApproveList);
+      // console.log("res.data:", res.data);
       setTotalAll(res.data.totalAll);
       setTotalReject(res.data.totalReject);
       setTotalWaitting(res.data.totalWaiting);
@@ -71,12 +70,12 @@ function ApprovalRepair() {
   };
 
   useEffect(() => {
-    fetchSearchWaitingTransferList();
+    fetchSearchWaitingRepairList();
     fetchList();
   }, []);
 
   useEffect(() => {
-    fetchSearchWaitingTransferList();
+    fetchSearchWaitingRepairList();
   }, [isFetch]);
 
   const boxStyle = {
@@ -100,6 +99,7 @@ function ApprovalRepair() {
 
   const handleCheckboxChange = (list, id) => {
     const newList = list.map(item => {
+      console.log("newList:", newList);
       if (item._id === id) {
         return { ...item, checked: !item.checked };
       }
@@ -186,7 +186,7 @@ function ApprovalRepair() {
                 <button
                   type="button"
                   className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-                  onClick={fetchSearchWaitingTransferList}
+                  onClick={fetchSearchWaitingRepairList}
                 >
                   <div className="text-xl text-white">
                     <AiOutlineSearch />
@@ -499,6 +499,7 @@ const BottomApprovedListItem = props => {
 };
 
 const ModalApproveAll = ({ selectedList, setIsFetch }) => {
+  // console.log("selectedList:", selectedList);
   const [showModal, setShowModal] = useState(false);
 
   const handleApproveAllWaitingList = async e => {
@@ -742,7 +743,7 @@ const TableSummaryApprove = ({ data }) => {
   return (
     <>
       {data?.map((item, idx) => {
-        console.log(item);
+        console.log("item:", item);
         return (
           <div className="grid grid-cols-8 gap-2 h-12 pt-2 text-xs text-center items-center bg-white">
             <div className="col-span-1  text-center flex justify-center items-center ">

@@ -8,13 +8,20 @@ import { useRef } from "react";
 import { BsArrowLeft, BsFillCheckCircleFill } from "react-icons/bs";
 import { Spinner } from "flowbite-react/lib/esm";
 import { getTransferApproveDetailById } from "../api/transferApi";
-import { getRepairById } from "../api/repairApi";
+import {
+  getRepairById,
+  approveAllWaitingRepair,
+  getListApprovalRepair,
+  approveIndividualWaitingRepair,
+  rejectIndividualWaitingRepair
+} from "../api/repairApi";
 
 const ViewApprovalRepairDetail = () => {
   let { id } = useParams();
   const printRef = useRef();
 
-  const [showAll, setShowAll] = useState(false);
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
   const [item, setItem] = useState({});
   console.log("item:", item);
   const [approveArray, setApproveArray] = useState();
@@ -296,7 +303,7 @@ const ViewApprovalRepairDetail = () => {
             <button
               className="p-2 w-[115px] text-center border-[2px] text-red-500 border-red-400 rounded-md hover:bg-red-500/[.15]"
               type="button"
-              // onClick={() => setShowModal(true)}
+              onClick={() => setShowRejectModal(true)}
             >
               ไม่อนุมัติ
             </button>
@@ -304,10 +311,24 @@ const ViewApprovalRepairDetail = () => {
             <button
               className="bg-text-green px-10 hover:bg-green-800 text-white text-sm rounded-md p-2"
               type="button"
-              // onClick={() => setShowModal(true)}
+              onClick={() => setShowApproveModal(true)}
             >
               อนุมัติ
             </button>
+
+            <ModalApprove
+              open={showApproveModal}
+              onClose={() => setShowApproveModal(false)}
+              data={item}
+              title="สรุปรายการขออนุมัติ"
+            />
+
+            <ModalReject
+              open={showRejectModal}
+              onClose={() => setShowRejectModal(false)}
+              data={item}
+              title="สรุปรายการไม่อนุมัติ"
+            />
           </div>
         )}
 
@@ -448,6 +469,318 @@ const ModalApproveDone = () => {
           </div>
         </>
       )}
+    </>
+  );
+};
+
+// Modal Approve
+const ModalApprove = ({ open, onClose, title, data }) => {
+  console.log("data:", data);
+
+  const handleApproveAllWaiting = async e => {
+    e.preventDefault();
+    try {
+      await approveIndividualWaitingRepair({
+        topApproveList: { _id: data._id, assetId: data.assetId }
+      });
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
+
+  return (
+    <>
+      {open && (
+        <>
+          <div className="fixed inset-0 -left-10 bg-black opacity-50" />
+          <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
+            <div className="w-[1075px] max-w-[1040px] border border-white shadow-md rounded-xl ">
+              <div className="rounded-lg shadow-lg flex flex-col w-full bg-white p-2">
+                <div>
+                  <div className="flex items-center justify-between p-5 ">
+                    <h3 className="text-xl text-text-back">{title}</h3>
+
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className=" text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        ></path>
+                      </svg>
+                      <span className="sr-only">Close modal</span>
+                    </button>
+                  </div>
+
+                  {!data ? (
+                    <div className="flex justify-center items-center h-40">
+                      ยังไม่มีรายการที่เลือก
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto scrollbar pt-4 mb-5">
+                      <div className="w-fit min-w-full lg:w-full">
+                        <div>
+                          <p className="text-xl px-4">ค่าใช้จ่ายในการซ่อม</p>
+                        </div>
+
+                        <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-border-gray-table mt-5">
+                          <div className="grid grid-cols-8 gap-2 h-12 items-center text-center">
+                            <div className="col-span-1">ลำดับ</div>
+                            <div className="col-span-3">รายการ</div>
+                            <div className="col-span-1">จำนวน</div>
+                            <div className="col-span-1">หน่วย</div>
+                            <div className="col-span-1">ราคา / หน่วย (บาท)</div>
+                            <div className="col-span-1">รวมทั้งหมด(บาท)</div>
+                          </div>
+                        </div>
+                        <TableSummaryApprove data={data.costOfRepairArray} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-5 justify-center p-6 mt-20">
+                  <button
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md hover:bg-gray-200"
+                    type="button"
+                    onClick={onClose}
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    className="text-white bg-text-green px-10 py-2 border rounded-md "
+                    // type="button"
+                    onClick={handleApproveAllWaiting}
+                  >
+                    ยืนยัน
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+const TableSummaryApprove = props => {
+  const totalSum = props?.data?.reduce(
+    (sum, item) => sum + item.quantity * item.pricePerPiece,
+    0
+  );
+  return (
+    <>
+      {props?.data?.map((item, idx) => {
+        return (
+          <div
+            key={idx}
+            className={`grid grid-cols-8 gap-2 h-12 pt-2 text-xs text-center items-center bg-white`}
+          >
+            <div className="col-span-1  text-center flex justify-center items-center ">
+              <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+                {idx + 1}
+              </div>
+            </div>
+
+            <div className="col-span-3 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+              {item.stuffName || "-"}
+            </div>
+
+            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+              {item.quantity || "-"}
+            </div>
+
+            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
+              {item.unit || "-"}
+            </div>
+
+            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+              {item.pricePerPiece}
+            </div>
+
+            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
+              {item.quantity * item.pricePerPiece}
+            </div>
+          </div>
+        );
+      })}
+      <div className="bg-table-data h-[40px] p-6 flex justify-between items-center mt-10">
+        <div className="text-sm  font-semibold">รวมจำนวนเงินทั้งหมด</div>
+        <div className="text-sm font-semibold">{totalSum} บาท</div>
+      </div>
+    </>
+  );
+};
+
+//Modal reject
+const ModalReject = ({ open, onClose, title, data }) => {
+  console.log("dataModalReject:", data);
+
+  const handleRejectWaiting = async e => {
+    e.preventDefault();
+    try {
+      await rejectIndividualWaitingRepair({
+        topApproveList: {
+          _id: data._id,
+          assetId: data.assetId
+        }
+      });
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
+
+  return (
+    <>
+      {open && (
+        <>
+          <div className="fixed inset-0 -left-10 bg-black opacity-50" />
+          <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
+            <div className="w-[1075px] max-w-[1040px] border border-white shadow-md rounded-xl ">
+              <div className="rounded-lg shadow-lg flex flex-col w-full bg-white p-2">
+                <div>
+                  <div className="flex items-center justify-between p-5 ">
+                    <h3 className="text-xl text-text-back">{title}</h3>
+
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className=" text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        ></path>
+                      </svg>
+                      <span className="sr-only">Close modal</span>
+                    </button>
+                  </div>
+
+                  {!data ? (
+                    <div className="flex justify-center items-center h-40">
+                      ยังไม่มีรายการที่เลือก
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto scrollbar pt-4 mb-5">
+                      <div className="w-fit min-w-full lg:w-full">
+                        <div>
+                          <p className="text-xl px-4">ค่าใช้จ่ายในการซ่อม</p>
+                        </div>
+
+                        <div className="text-text-black-table text-xs font-semibold bg-table-gray rounded-t-lg border-border-gray-table mt-5">
+                          <div className="grid grid-cols-8 gap-2 h-12 items-center text-center">
+                            <div className="col-span-1">ลำดับ</div>
+                            <div className="col-span-3">รายการ</div>
+                            <div className="col-span-1">จำนวน</div>
+                            <div className="col-span-1">หน่วย</div>
+                            <div className="col-span-1">ราคา / หน่วย (บาท)</div>
+                            <div className="col-span-1">รวมทั้งหมด(บาท)</div>
+                          </div>
+                        </div>
+                        <TableSummaryReject data={data.costOfRepairArray} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-6">
+                  <p>สาเหตุที่ไม่อนุมัติ</p>
+                  <textarea
+                    className="resize-none w-full  rounded-md "
+                    rows="4"
+                    cols="50"
+                  />
+                </div>
+
+                <div className="flex items-center gap-5 justify-center p-6 mt-20">
+                  <button
+                    className="px-10 py-2 border-[1px] shadow-sm rounded-md hover:bg-gray-200"
+                    type="button"
+                    onClick={onClose}
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    className="text-white bg-text-green px-10 py-2 border rounded-md "
+                    // type="button"
+                    onClick={handleRejectWaiting}
+                  >
+                    ยืนยัน
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+const TableSummaryReject = props => {
+  const totalSum = props?.data?.reduce(
+    (sum, item) => sum + item.quantity * item.pricePerPiece,
+    0
+  );
+  return (
+    <>
+      {props?.data?.map((item, idx) => {
+        return (
+          <div
+            key={idx}
+            className={`grid grid-cols-8 gap-2 h-12 pt-2 text-xs text-center items-center bg-white`}
+          >
+            <div className="col-span-1  text-center flex justify-center items-center ">
+              <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+                {idx + 1}
+              </div>
+            </div>
+
+            <div className="col-span-3 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+              {item.stuffName || "-"}
+            </div>
+
+            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+              {item.quantity || "-"}
+            </div>
+
+            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
+              {item.unit || "-"}
+            </div>
+
+            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+              {item.pricePerPiece}
+            </div>
+
+            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
+              {item.quantity * item.pricePerPiece}
+            </div>
+          </div>
+        );
+      })}
+      <div className="bg-table-data h-[40px] p-6 flex justify-between items-center mt-10">
+        <div className="text-sm  font-semibold">รวมจำนวนเงินทั้งหมด</div>
+        <div className="text-sm font-semibold">{totalSum} บาท</div>
+      </div>
     </>
   );
 };
