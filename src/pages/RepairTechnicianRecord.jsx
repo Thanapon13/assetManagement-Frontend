@@ -6,7 +6,7 @@ import Selector from "../components/selector/Selector";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 import { BsArrowLeft } from "react-icons/bs";
 import ModalSuccess from "../components/modal/ModalSuccess";
-import { updateRecordRepairDetail } from "../api/repairApi";
+import { updateRecordRepairDetail, getRepairById } from "../api/repairApi";
 import OnlyDateInput from "../components/date/onlyDateInput";
 import DateInput from "../components/date/DateInput";
 
@@ -42,7 +42,7 @@ const RepairTechnicianRecord = () => {
         stuffName: "",
         quantity: "",
         unit: "",
-        amountPerUnit: ""
+        pricePerPiece: ""
       }
     ]
   );
@@ -67,7 +67,7 @@ const RepairTechnicianRecord = () => {
       stuffName: "",
       quantity: "",
       unit: "",
-      amountPerUnit: ""
+      pricePerPiece: ""
     };
     setArrayCostRepair([...clone, newCloneArray]);
   };
@@ -94,6 +94,8 @@ const RepairTechnicianRecord = () => {
   const [showModal, setShowModal] = useState();
   const [showModalSuccess, setShowModalSuccess] = useState();
   const { id } = useParams();
+  console.log("id:", id);
+
   async function submit(valStatus) {
     console.log(item, valStatus || item.statusOfDetailRecord, id);
     console.log("arrayCostRepair:", arrayCostRepair);
@@ -117,7 +119,7 @@ const RepairTechnicianRecord = () => {
         setShowModalSuccess(true);
         return;
       } else {
-        window.location.href = -1;
+        window.location.href = "/repairTechnicianIndex";
       }
     } catch (err) {
       console.log(err);
@@ -151,6 +153,28 @@ const RepairTechnicianRecord = () => {
     setItem({ ...item, totalPrice: total });
   }, [arrayTechnician, arrayCostRepair]);
   // console.log(item.totalPrice);
+  console.log("arrayCostRepair:", arrayCostRepair);
+
+  const getData = async () => {
+    const res = await getRepairById(id);
+    const repair = res.data.repair;
+
+    repair.costOfRepairArray.map(el => {
+      el.total = el.quantity * el.pricePerPiece;
+    });
+
+    setArrayCostRepair(repair.costOfRepairArray);
+    console.log("repair:", repair);
+    setItem({
+      ...res.data.repair,
+      arriveAtPlaceDate: new Date(),
+      workDate: new Date()
+    });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <>
@@ -566,7 +590,7 @@ const RepairTechnicianRecord = () => {
                       array[idx][e.target.name] = e.target.value;
                       console.log(array);
                       array[idx].total =
-                        array[idx].quantity * array[idx].pricePerUnit || 0;
+                        array[idx].quantity * array[idx].pricePerPiece || 0;
                       setArrayCostRepair(array);
                     }}
                   />
@@ -747,6 +771,7 @@ const TableTechnicianRecord = ({
 };
 
 const TableTechnicianRepairCost = ({ index, deleteRow, ele, onChange }) => {
+  console.log("ele:", ele);
   return (
     <div className="p-2 grid grid-cols-9 justify-center items-center gap-5 text-xs bg-white">
       <div className="col-span-1 ml-2 text-center flex justify-center items-center ">
@@ -785,9 +810,9 @@ const TableTechnicianRepairCost = ({ index, deleteRow, ele, onChange }) => {
         <input
           type="text"
           className="text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue"
-          name="pricePerUnit"
+          name="pricePerPiece"
           onChange={onChange}
-          value={ele.pricePerUnit}
+          value={ele.pricePerPiece}
         />
       </div>
       <div className="col-span-1">
@@ -798,7 +823,7 @@ const TableTechnicianRepairCost = ({ index, deleteRow, ele, onChange }) => {
           onChange={onChange}
           value={ele.total}
         />
-      </div>
+      </div>{" "}
       <div className="col-span-1 flex justify-center items-center">
         <button
           className="flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 "

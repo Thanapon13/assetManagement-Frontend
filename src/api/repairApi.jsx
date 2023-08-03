@@ -27,6 +27,14 @@ function getQueryString(options) {
   return option;
 }
 
+// function getQueryString(search) {
+//   const params = Object.keys(search)
+//     .filter(key => search[key] !== "") // remove empty values
+//     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(search[key])}`)
+//     .join("&");
+//   return params;
+// }
+
 export function getRepairBySearch(options) {
   return axios.get(`/repair/search${getQueryString(options)}`);
 }
@@ -72,10 +80,15 @@ export function updateRecordRepairDetail(id, body) {
   return axios.patch(`/repair/recordDetail/${id}`, body);
 }
 
-export function getListApprovalRepair() {
-  return axios.get(
-    `/repair/searchTopApprove?listStatus=inProgressOfDetailRecord`
-  );
+// export function getListApprovalRepair() {
+//   return axios.get(
+//     `/repair/searchTopApprove?listStatus=inProgressOfDetailRecord`
+//   );
+// }
+
+export function getListApprovalRepair(options) {
+  const queryString = getQueryString(options);
+  return axios.get(`/repair/searchTopApprove?${queryString}`);
 }
 
 export function approveAllWaitingRepair(body) {
@@ -89,7 +102,5 @@ export function updateOutsourceRecord(id, body) {
   return axios.patch(`/repair/outSourceRecord/${id}`, body);
 }
 
-export function rejectIndividualWaitingRepair(topApproveList) {
-  console.log("topApproveList:", topApproveList);
-  return axios.patch(`/repair/rejectIndividualWaiting`, topApproveList);
-}
+export const rejectIndividualWaitingRepair = topApproveList =>
+  axios.patch("/repair/rejectIndividualWaiting", topApproveList);

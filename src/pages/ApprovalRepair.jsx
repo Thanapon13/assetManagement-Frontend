@@ -15,7 +15,8 @@ import SearchSelector from "../components/selector/SearchSelector";
 import { Spinner } from "flowbite-react/lib/esm";
 import {
   approveAllWaitingRepair,
-  getListApprovalRepair
+  getListApprovalRepair,
+  rejectIndividualWaitingRepair
 } from "../api/repairApi";
 import ModalRepairRejectAllApprove from "../components/modal/ModalRepairRejectAllApprove";
 
@@ -23,10 +24,11 @@ function ApprovalRepair() {
   const allStatus = ["inProgressOfDetailRecord", "reject"];
   const [search, setSearch] = useState({
     dateFrom: "",
-    dateTo: new Date(),
+    // dateTo: new Date(),
     transferSector: "",
     listStatus: allStatus
   });
+
   const [isFetch, setIsFetch] = useState(true);
   const optionDate = { day: "2-digit", month: "2-digit", year: "numeric" };
   const optionTime = { hour: "2-digit", minute: "2-digit", our12: false };
@@ -43,6 +45,7 @@ function ApprovalRepair() {
   const fetchSearchWaitingRepairList = async () => {
     try {
       const res = await getListApprovalRepair(search);
+
       setTopApproveList(res.data.topApproveList);
       setBottomApprovedList(res.data.bottomApproveList);
       // console.log("res.data:", res.data);
@@ -162,11 +165,11 @@ function ApprovalRepair() {
               <div className="md:col-span-2 flex flex-col gap-y-2">
                 <label className=" text-text-gray flex">วันที่สิ้นสุด</label>
                 <div className="flex h-[38px]">
-                  <OnlyDateInput
+                  {/* <OnlyDateInput
                     id="dateTo"
                     state={search.dateTo}
                     // setState={setSearch}
-                  />
+                  /> */}
                 </div>
               </div>
               <div className="md:col-span-2 flex flex-col gap-y-2">

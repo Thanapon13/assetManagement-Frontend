@@ -483,6 +483,7 @@ const ModalApprove = ({ open, onClose, title, data }) => {
       await approveIndividualWaitingRepair({
         topApproveList: { _id: data._id, assetId: data.assetId }
       });
+      onClose();
     } catch (err) {
       console.log("err", err);
     }
@@ -543,13 +544,13 @@ const ModalApprove = ({ open, onClose, title, data }) => {
                             <div className="col-span-1">รวมทั้งหมด(บาท)</div>
                           </div>
                         </div>
-                        <TableSummaryApprove data={data.costOfRepairArray} />
+                        <TableSummary data={data.costOfRepairArray} />
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="flex items-center gap-5 justify-center p-6 mt-20">
+                <div className="flex items-center gap-5 justify-center p-6">
                   <button
                     className="px-10 py-2 border-[1px] shadow-sm rounded-md hover:bg-gray-200"
                     type="button"
@@ -574,55 +575,6 @@ const ModalApprove = ({ open, onClose, title, data }) => {
   );
 };
 
-const TableSummaryApprove = props => {
-  const totalSum = props?.data?.reduce(
-    (sum, item) => sum + item.quantity * item.pricePerPiece,
-    0
-  );
-  return (
-    <>
-      {props?.data?.map((item, idx) => {
-        return (
-          <div
-            key={idx}
-            className={`grid grid-cols-8 gap-2 h-12 pt-2 text-xs text-center items-center bg-white`}
-          >
-            <div className="col-span-1  text-center flex justify-center items-center ">
-              <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
-                {idx + 1}
-              </div>
-            </div>
-
-            <div className="col-span-3 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
-              {item.stuffName || "-"}
-            </div>
-
-            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
-              {item.quantity || "-"}
-            </div>
-
-            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
-              {item.unit || "-"}
-            </div>
-
-            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
-              {item.pricePerPiece}
-            </div>
-
-            <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
-              {item.quantity * item.pricePerPiece}
-            </div>
-          </div>
-        );
-      })}
-      <div className="bg-table-data h-[40px] p-6 flex justify-between items-center mt-10">
-        <div className="text-sm  font-semibold">รวมจำนวนเงินทั้งหมด</div>
-        <div className="text-sm font-semibold">{totalSum} บาท</div>
-      </div>
-    </>
-  );
-};
-
 //Modal reject
 const ModalReject = ({ open, onClose, title, data }) => {
   console.log("dataModalReject:", data);
@@ -633,9 +585,11 @@ const ModalReject = ({ open, onClose, title, data }) => {
       await rejectIndividualWaitingRepair({
         topApproveList: {
           _id: data._id,
-          assetId: data.assetId
+          assetId: data.assetId,
+          packageAssetId: data.packageAssetId
         }
       });
+      onClose();
     } catch (err) {
       console.log("err", err);
     }
@@ -696,7 +650,7 @@ const ModalReject = ({ open, onClose, title, data }) => {
                             <div className="col-span-1">รวมทั้งหมด(บาท)</div>
                           </div>
                         </div>
-                        <TableSummaryReject data={data.costOfRepairArray} />
+                        <TableSummary data={data.costOfRepairArray} />
                       </div>
                     </div>
                   )}
@@ -736,7 +690,7 @@ const ModalReject = ({ open, onClose, title, data }) => {
   );
 };
 
-const TableSummaryReject = props => {
+const TableSummary = props => {
   const totalSum = props?.data?.reduce(
     (sum, item) => sum + item.quantity * item.pricePerPiece,
     0
