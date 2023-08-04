@@ -98,8 +98,8 @@ export function approveIndividualWaitingRepair(body) {
   return axios.patch(`/repair/approveIndividualWaiting`, body);
 }
 
-export function updateOutsourceRecord(id, body) {
-  return axios.patch(`/repair/outSourceRecord/${id}`, body);
+export function updateOutsourceRecord(id, formData) {
+  return axios.patch(`/repair/outSourceRecord/${id}`, formData);
 }
 
 export const rejectIndividualWaitingRepair = topApproveList =>

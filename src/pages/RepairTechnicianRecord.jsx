@@ -35,6 +35,7 @@ const RepairTechnicianRecord = () => {
   const [arrayTechnician, setArrayTechnician] = useState(
     item.informRepairManArray || [defaultTech]
   );
+  console.log("arrayTechnician:", arrayTechnician);
   const [arrayCostRepair, setArrayCostRepair] = useState(
     item.costOfRepairArray || [
       {

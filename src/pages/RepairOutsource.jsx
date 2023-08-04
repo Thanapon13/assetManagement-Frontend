@@ -7,28 +7,31 @@ import { CgPushChevronLeft } from "react-icons/cg";
 import { CgPushChevronRight } from "react-icons/cg";
 import DateInput from "../components/date/DateInput";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import { getBorrowHistorySector, getBySearchBorrowHistory } from "../api/borrowApi";
+import {
+  getBorrowHistorySector,
+  getBySearchBorrowHistory
+} from "../api/borrowApi";
 import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
 import { getRepairById } from "../api/repairApi";
 import { BsArrowLeft, BsFillEyeFill } from "react-icons/bs";
 
 const RepairOutsource = () => {
-  const { id } = useParams()
-  const [data, setData] = useState([])
+  const { id } = useParams();
+  const [data, setData] = useState([]);
 
   const fetchDataList = async () => {
     try {
-      const res = await getRepairById(id)
-      console.log(res.data, id)
-      setData(res.data.repair)
+      const res = await getRepairById(id);
+      console.log(res.data, id);
+      setData(res.data.repair);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    fetchDataList()
-  }, [])
+    fetchDataList();
+  }, []);
 
   return (
     <div className="bg-background-page py-5 p-3 min-h-full">
@@ -60,147 +63,178 @@ const RepairOutsource = () => {
             ตรวจสอบการจ้างซ่อมภายนอก
           </Link>
           <div className="text-text-gray">/</div>
-          <div className="text-text-gray ml-2">
-            รายละเอียดการจ้างซ่อมภายนอก
-          </div>
+          <div className="text-text-gray ml-2">รายละเอียดการจ้างซ่อมภายนอก</div>
         </div>
       </div>
 
       <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-5">
-          <div className="text-lg">ข้อมูลครุภัณฑ์</div>
+        <div className="text-lg">ข้อมูลครุภัณฑ์</div>
 
         <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1">เลขที่ใบแจ้งซ่อม</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            เลขที่ใบแจ้งซ่อม
+          </div>
           <div className="sm:col-span-4 col-span-2">
             {data?.transferDocumentNumber}
           </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">สถานะความเร่งด่วน</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            สถานะความเร่งด่วน
+          </div>
           <div className="sm:col-span-4 col-span-2">
-            <div className={`rounded-full text-white  ${data.urgentStatus === 'rush'
-              ? 'bg-red-600 '
-              : data.urgentStatus === 'rush'
-                ? 'bg-yellow-300'
-                : data.urgentStatus === 'normal'
-                  ? ' bg-blue-600'
-                  : 'bg-red-200 text-red-600  border-red-200'
+            <div
+              className={`rounded-full text-white  ${
+                data.urgentStatus === "ฉุกเฉิน"
+                  ? "bg-red-600 "
+                  : data.urgentStatus === "เร่งด่วน"
+                  ? "bg-yellow-300"
+                  : data.urgentStatus === "ปกติ"
+                  ? " bg-blue-600"
+                  : "bg-red-200 text-red-600  border-red-200"
               } border border-spacing-5 p-2 w-fit`}
             >
-              {data.urgentStatus === 'rush'
-                ? 'ฉุกเฉิน'
-                : data.urgentStatus === 'rush'
-                  ? 'เร่งด่วน'
-                  : data.urgentStatus === 'normal'
-                    ? 'ปกติ'
-                    : ''
-              }
+              {data.urgentStatus}
             </div>
           </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วัน-เวลาที่แจ้งซ่อม</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วัน-เวลาที่แจ้งซ่อม
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.subSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">รหัสครุภัณฑ์</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            รหัสครุภัณฑ์
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.name_courier}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">อยู่ในประกัน</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            อยู่ในประกัน
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.subSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">เลขครุภัณฑ์</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            เลขครุภัณฑ์
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.name_courier}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่เริ่มรับประกัน</div>
-          <div className="sm:col-span-4 col-span-2">{new Date(data?.insuranceStartDate).toLocaleDateString('th')}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ชื่อครุภัณฑ์</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่เริ่มรับประกัน
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {new Date(data?.insuranceStartDate).toLocaleDateString("th")}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ชื่อครุภัณฑ์
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.name_courier}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่สิ้นสุดการรับประกัน</div>
-          <div className="sm:col-span-4 col-span-2">{new Date(data?.insuranceEndDate).toLocaleDateString('th')}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ยกเลิกใบซ่อม</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่สิ้นสุดการรับประกัน
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {new Date(data?.insuranceEndDate).toLocaleDateString("th")}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ยกเลิกใบซ่อม
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.hostSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">รหัส cost center</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            รหัส cost center
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.costCenterCode}</div>
         </div>
 
         <div className="text-lg mt-5">ข้อมูลสถานที่ซ่อม</div>
         <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ที่ตั้ง/อาคาร</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.building}
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ที่ตั้ง/อาคาร
           </div>
+          <div className="sm:col-span-4 col-span-2">{data?.building}</div>
           <div className="text-gray-500 sm:col-span-3 col-span-1">ชั้น</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.floor}
-          </div>
+          <div className="sm:col-span-4 col-span-2">{data?.floor}</div>
           <div className="text-gray-500 sm:col-span-3 col-span-1">ห้อง</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.room}
-          </div>
+          <div className="sm:col-span-4 col-span-2">{data?.room}</div>
         </div>
 
         <div className="text-lg mt-5">ข้อมูลผู้เกี่ยวข้อง</div>
         <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ผู้ส่งซ่อม</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ผู้ส่งซ่อม
+          </div>
           <div className="sm:col-span-4 col-span-2">
             {data?.transfereeSector}
           </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">เบอร์โทรศัพท์</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.building}
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            เบอร์โทรศัพท์
           </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ผู้ประสานงาน</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.floor}
+          <div className="sm:col-span-4 col-span-2">{data?.building}</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ผู้ประสานงาน
           </div>
+          <div className="sm:col-span-4 col-span-2">{data?.floor}</div>
           <div className="text-gray-500 sm:col-span-3 col-span-1">หน่วยงาน</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.room}
-          </div>
+          <div className="sm:col-span-4 col-span-2">{data?.room}</div>
         </div>
       </div>
 
       <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
         <div className="text-lg">วันที่-เวลาซ่อม</div>
         <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1"> วันที่-เวลาจ่ายงานช่าง</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            {" "}
+            วันที่-เวลาจ่ายงานช่าง
+          </div>
           <div className="sm:col-span-4 col-span-2">
             {data?.transfereeSector}
           </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่-เวลาถึงสถานที่ซ่อม</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.building}
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่-เวลาถึงสถานที่ซ่อม
           </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่-เวลาทำการซ่อม</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.floor}
+          <div className="sm:col-span-4 col-span-2">{data?.building}</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่-เวลาทำการซ่อม
           </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่-เวลาซ่อมเสร็จ</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.room}
+          <div className="sm:col-span-4 col-span-2">{data?.floor}</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่-เวลาซ่อมเสร็จ
           </div>
+          <div className="sm:col-span-4 col-span-2">{data?.room}</div>
         </div>
 
         <div className="text-lg pt-5">ผลการซ่อม</div>
         <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ผลการซ่อม</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ผลการซ่อม
+          </div>
           <div className="sm:col-span-4 col-span-2">
             {data?.transfereeSector}
           </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">สถานะใบซ่อมแซม</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.building}
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            สถานะใบซ่อมแซม
           </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ความเห็นช่าง</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.building}
+          <div className="sm:col-span-4 col-span-2">{data?.building}</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ความเห็นช่าง
           </div>
+          <div className="sm:col-span-4 col-span-2">{data?.building}</div>
         </div>
-
       </div>
 
       <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
         <div className="text-lg">เปิดใบจ้างซ่อมภายนอก (ซ่อมทั่วไป)</div>
         <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1">เลขที่ใบจ้างภายนอก</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">เลขที่อ้างอิงหน่วยช่าง</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            เลขที่ใบจ้างภายนอก
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            เลขที่อ้างอิงหน่วยช่าง
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่ทำการซ่อม</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ชื่อเรื่อง</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่ทำการซ่อม
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ชื่อเรื่อง
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
         </div>
       </div>
@@ -208,32 +242,68 @@ const RepairOutsource = () => {
       <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
         <div className="text-lg">ผู้รับผิดชอบ</div>
         <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1">เลขที่ใบจ้างภายนอก</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ชื่อผู้รับผิดชอบ</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            เลขที่ใบจ้างภายนอก
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ชื่อผู้รับผิดชอบ
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่ได้รับการอนุมัติ</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">เลขที่หนังสือ</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่ได้รับการอนุมัติ
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            เลขที่หนังสือ
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่อนุมัติ (ฝ่ายช่างส่งพัสดุ)</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่คาดว่าจะส่งมอบ</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่อนุมัติ (ฝ่ายช่างส่งพัสดุ)
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่คาดว่าจะส่งมอบ
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ชื่อผู้ว่าจ้าง</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ชื่อผู้ว่าจ้าง
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
           <div className="text-gray-500 sm:col-span-3 col-span-1">ที่อยู่</div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ชื่อผู้ว่าจ้าง</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">หมายเลขโทรศัพท์</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ชื่อผู้ว่าจ้าง
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            หมายเลขโทรศัพท์
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
           <div className="text-gray-500 sm:col-span-3 col-span-1">ราคาจ้าง</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ชื่อผู้ติดต่อ</div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ชื่อผู้ติดต่อ
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ภาษีมูลค่าเพิ่ม</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ภาษีมูลค่าเพิ่ม
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
           <div className="text-gray-500 sm:col-span-3 col-span-1">หมายเหตุ</div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
           <div className="text-gray-500 sm:col-span-3 col-span-1">ราคารวม</div>
@@ -241,7 +311,6 @@ const RepairOutsource = () => {
         </div>
 
         <div className="text-lg pt-5">เอกสารใบสั่งซื้อ / สั่งจอง</div>
-
       </div>
 
       <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
@@ -263,12 +332,14 @@ const RepairOutsource = () => {
               {data.costOfRepairArray?.map((ele, ind) => {
                 return (
                   <div className="grid grid-cols-8 gap-2 text-center">
-                    <div className="ml-2 col-span-1">{ind+1}</div>
+                    <div className="ml-2 col-span-1">{ind + 1}</div>
                     <div className="col-span-3 text-left">{ele.listName}</div>
                     <div className="col-span-1">{ele.quantity}</div>
                     <div className="col-span-1">{ele.unit}</div>
                     <div className="col-span-1">{ele.amountPerUnit}</div>
-                    <div className="col-span-1 pr-2">{ele.amountPerUnit*ele.quantity}</div>
+                    <div className="col-span-1 pr-2">
+                      {ele.amountPerUnit * ele.quantity}
+                    </div>
                   </div>
                 );
               })}
@@ -280,34 +351,57 @@ const RepairOutsource = () => {
       <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
         <div className="text-lg">ข้อมูลการตรวจรับงาน</div>
         <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1">เลขที่ใบตรวจรับงาน</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ยกเลิกใบตรวจรับ</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            เลขที่ใบตรวจรับงาน
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ยกเลิกใบตรวจรับ
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่อนุมัติจ้าง / ซ่อม</div>
-          <div className="sm:col-span-4 col-span-2">{data?.transfereeSector}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่ตรวจรับ</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่อนุมัติจ้าง / ซ่อม
+          </div>
+          <div className="sm:col-span-4 col-span-2">
+            {data?.transfereeSector}
+          </div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่ตรวจรับ
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">เลขที่ใบสั่งจ้าง</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            เลขที่ใบสั่งจ้าง
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่วางฏีกา (วันส่งเบิกเงิน)</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่วางฏีกา (วันส่งเบิกเงิน)
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่รับใบสั่งจ้าง</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่รับใบสั่งจ้าง
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">วันที่หมดประกัน</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            วันที่หมดประกัน
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ระยะเวลารับประกัน ( เดือน)</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            ระยะเวลารับประกัน ( เดือน)
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">จำนวนเงินซื้อ / จ้าง (บาท)</div>
+          <div className="text-gray-500 sm:col-span-3 col-span-1">
+            จำนวนเงินซื้อ / จ้าง (บาท)
+          </div>
           <div className="sm:col-span-4 col-span-2">{data?.building}</div>
         </div>
       </div>
-
     </div>
   );
 };
 
-const TableBorrowHistory = (props) => {
+const TableBorrowHistory = props => {
   let options = { day: "2-digit", month: "2-digit", year: "numeric" };
   return (
     <>
@@ -326,24 +420,19 @@ const TableBorrowHistory = (props) => {
             <div className="col-span-1">
               {new Date(item.repairedDate).toLocaleDateString("th-TH", options)}
             </div>
-            <div onClick={() => handleClick(item.status)}
-              className={`rounded-full text-white  ${item.urgentStatus === 'rush'
-                ? 'bg-red-600 '
-                : item.urgentStatus === 'rush'
-                  ? 'bg-yellow-300'
-                  : item.urgentStatus === 'normal'
-                    ? ' bg-blue-600'
-                    : 'bg-red-200 text-red-600  border-red-200'
-                } border border-spacing-5 p-2 w-full`}
+            <div
+              onClick={() => handleClick(item.status)}
+              className={`rounded-full text-white  ${
+                item.urgentStatus === "ฉุกเฉิน"
+                  ? "bg-red-600 "
+                  : item.urgentStatus === "เร่งด่วน"
+                  ? "bg-yellow-300"
+                  : item.urgentStatus === "ปกติ"
+                  ? " bg-blue-600"
+                  : "bg-red-200 text-red-600  border-red-200"
+              } border border-spacing-5 p-2 w-full`}
             >
-              {item.urgentStatus === 'rush'
-                ? 'ฉุกเฉิน'
-                : item.urgentStatus === 'rush'
-                  ? 'เร่งด่วน'
-                  : item.urgentStatus === 'normal'
-                    ? 'ปกติ'
-                    : ''
-              }
+              {item.urgentStatus}
             </div>
             <div className="col-span-1 flex justify-center">
               <Link

@@ -22,10 +22,14 @@ import ModalRepairOutsourceMerchant from "../components/modal/ModalRepairOutsour
 
 const RepairOutSourceRecord = () => {
   let { id } = useParams();
-  console.log("id:", id);
+  // console.log("id:", id);
+
   const [isLoading, setIsLoading] = useState(true);
   const [item, setItem] = useState();
   console.log("item:", item);
+
+  const [showModalSuccess, setShowModalSuccess] = useState();
+
   useEffect(() => {
     async function getData() {
       const res = await getRepairById(id);
@@ -156,6 +160,8 @@ const RepairOutSourceRecord = () => {
       pricePerPiece: ""
     }
   ]);
+  console.log("arrayCostRepair:", arrayCostRepair);
+
   useEffect(() => {
     let sumCostRepair = 0;
     arrayCostRepair.map(ele => {
@@ -175,16 +181,21 @@ const RepairOutSourceRecord = () => {
 
   const inputDoc = useRef();
   const [arrayDocument, setArrayDocument] = useState([]);
+
   const fileTypes = [
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   ];
   console.log("arrayDocument:", arrayDocument);
+
   const handleFileChange = e => {
     const fileList = e.target.files;
-    console.log(fileList);
+    console.log("fileList:", fileList);
+
     const cloneFile = [...arrayDocument];
+    console.log("cloneFile:", cloneFile);
+
     for (let i = 0; i < fileList.length; i++) {
       if (fileTypes.includes(fileList[i].type)) {
         cloneFile.push({ document: fileList[i] });
@@ -204,6 +215,7 @@ const RepairOutSourceRecord = () => {
         );
       }
     }
+
     setArrayDocument(cloneFile);
   };
   const deleteDoc = idx => {
@@ -253,67 +265,42 @@ const RepairOutSourceRecord = () => {
       setError(true);
       return;
     }
-    setShowModal(true);
+    // setShowModal(true);
+    setShowModalConfirm(true);
   };
 
-  async function submit(valStatus) {
-    // const baseArrayDocument = [];
-    // if (arrayDocument?.length > 0) {
-    //   arrayDocument.forEach((file) => {
-    //     baseArrayDocument.push({
-    //       document: file.document.name
-    //     });
-    //   });
-    // }
+  const submit = async valStatus => {
+    console.log("item:", { item });
 
-    // const baseArrayDocumentJSON = JSON.stringify(baseArrayDocument);
-    // formData.append("baseArrayDocument", baseArrayDocumentJSON);
-
-    // if (arrayDocument?.length > 0) {
-
-    // }
-
-    console.log({ item });
-    // return
-    const formData = new FormData({
-      input: item,
-      status: "waitingRecord",
-      costOfRepairArray: arrayCostRepair
-    });
     try {
-      // formData.append("input", {item})
-      // formData.append("status", JSON.stringify("waitingRecord"))
-      // formData.append("costOfRepairArray", JSON.stringify(arrayCostRepair)) //err
+      const formData = new FormData();
+      formData.append("input", JSON.stringify(item));
+      formData.append("status", valStatus || item.statusOfDetailRecord);
+      formData.append("costOfRepairArray", JSON.stringify(arrayCostRepair));
+      formData.append("existArrayDocument", JSON.stringify([]));
 
       arrayDocument
         ?.filter(ele => !ele._id)
         .forEach(file => {
           formData.append("arrayDocument", file.document);
           const name = file.document.name || file.document;
-          // return
-          // // for (let i = 2; i <= input.quantity; i++) {
-          // const duplicatedFile = new File(
-          //   [file.document],
-          //   `${name.split(".")[0]}_(${i - 1}).${name.split(".")[1]
-          //   }`,
-          //   { type: file.type }
-          // );
-          // formData.append("arrayDocument", duplicatedFile);
-          // // }
+          console.log("name:", name);
+          // return;
         });
-      // return
+
+      console.log("formInput:", formData.get("input"));
+      console.log("formStatus:", formData.get("status"));
+      console.log("formCostOfRepairArray:", formData.get("costOfRepairArray"));
+      console.log("formArrayDocument:", formData.get("arrayDocument"));
+
       await updateOutsourceRecord(id, formData);
-      // await updateOutsourceRecord(id, {
-      //   "input": item,
-      //   "status": "waitingRecord",
-      //   "costOfRepairArray": arrayCostRepair
-      // })
+
       window.location.reload();
-      // setShowModalSuccess(true)
+      setShowModalSuccess(true);
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   return (
     <>
@@ -1069,7 +1056,7 @@ const RepairOutSourceRecord = () => {
                   <button
                     type="button"
                     className="w-full mt-5 h-[38px] flex justify-center items-center py-1 px-6 mr-5 border-2 focus:border-transparent border-text-green shadow-sm text-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-                    // onClick={handleClickIncrease}
+                    onClick={handleClickIncrease}
                   >
                     + เพิ่มรายการ
                   </button>
@@ -1257,7 +1244,7 @@ const RepairOutSourceRecord = () => {
             id="form"
             type="submit"
             className="bg-text-green hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(true)}
           >
             บันทึกและขออนุมัติ
           </button>
@@ -1267,9 +1254,9 @@ const RepairOutSourceRecord = () => {
             onClose={() => setShowModalConfirm(false)}
             onSave={() => submit("waitingApproval")}
           />
-          {/* {showModalSuccess && (
+          {showModalSuccess && (
             <ModalSuccess urlPath="/repairTechnicianIndex" />
-          )} */}
+          )}
         </div>
       </div>
     </>
