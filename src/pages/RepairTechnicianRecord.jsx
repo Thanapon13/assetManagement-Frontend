@@ -35,7 +35,7 @@ const RepairTechnicianRecord = () => {
   const [arrayTechnician, setArrayTechnician] = useState(
     item.informRepairManArray || [defaultTech]
   );
-  console.log("arrayTechnician:", arrayTechnician);
+  // console.log("arrayTechnician:", arrayTechnician);
   const [arrayCostRepair, setArrayCostRepair] = useState(
     item.costOfRepairArray || [
       {
@@ -95,21 +95,21 @@ const RepairTechnicianRecord = () => {
   const [showModal, setShowModal] = useState();
   const [showModalSuccess, setShowModalSuccess] = useState();
   const { id } = useParams();
-  console.log("id:", id);
+  // console.log("id:", id);
 
-  async function submit(valStatus) {
-    console.log(item, valStatus || item.statusOfDetailRecord, id);
-    console.log("arrayCostRepair:", arrayCostRepair);
-    console.log("arrayTechnician:", arrayTechnician);
-    // return;
-
+  const submit = async valStatus => {
     try {
+      arrayCostRepair.map((el, idx) => {
+        delete el.total;
+      });
+      console.log("arrayCostRepair:", arrayCostRepair);
       await updateRecordRepairDetail(id, {
         input: item,
         status: valStatus || item.statusOfDetailRecord,
-        informRepairManArray: arrayTechnician,
+        informRepairManArray: [],
         costOfRepairArray: arrayCostRepair
       });
+      console.log("costOfRepairArray:", costOfRepairArray);
       if (!valStatus) {
         console.log(
           valStatus,
@@ -120,12 +120,13 @@ const RepairTechnicianRecord = () => {
         setShowModalSuccess(true);
         return;
       } else {
-        window.location.href = "/repairTechnicianIndex";
+        // window.location.href = "/repairTechnicianIndex";
+        console.log("err");
       }
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const handleSubmit = () => {
     let err, errTable;
@@ -154,7 +155,7 @@ const RepairTechnicianRecord = () => {
     setItem({ ...item, totalPrice: total });
   }, [arrayTechnician, arrayCostRepair]);
   // console.log(item.totalPrice);
-  console.log("arrayCostRepair:", arrayCostRepair);
+  // console.log("arrayCostRepair:", arrayCostRepair);
 
   const getData = async () => {
     const res = await getRepairById(id);
@@ -640,11 +641,11 @@ const RepairTechnicianRecord = () => {
           <ModalConfirmSave
             isVisible={showModal}
             onClose={() => setShowModal(false)}
-            onSave={() => submit("waitingApproval")}
+            onSave={() => submit()}
           />
-          {showModalSuccess && (
+          {/* {showModalSuccess && (
             <ModalSuccess urlPath="/repairTechnicianIndex" />
-          )}
+          )} */}
         </div>
       </div>
       {/* footer */}
@@ -673,9 +674,9 @@ const RepairTechnicianRecord = () => {
                 onClose={() => setShowModalConfirm(false)}
                 onSave={() => submit("waitingApproval")}
               />
-              {showModalSuccess && (
+              {/* {showModalSuccess && (
                 <ModalSuccess urlPath="/repairTechnicianIndex" />
-              )}
+              )} */}
             </div>
           </div>
         </>
@@ -772,7 +773,6 @@ const TableTechnicianRecord = ({
 };
 
 const TableTechnicianRepairCost = ({ index, deleteRow, ele, onChange }) => {
-  console.log("ele:", ele);
   return (
     <div className="p-2 grid grid-cols-9 justify-center items-center gap-5 text-xs bg-white">
       <div className="col-span-1 ml-2 text-center flex justify-center items-center ">

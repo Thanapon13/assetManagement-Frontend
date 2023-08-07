@@ -535,7 +535,7 @@ const ActionInProgress = ({ id, item }) => {
     <>
       <div className="col-span-2 flex justify-center gap-2">
         <Link
-          to={`/repairTechnicianJobDetail/${id}`}
+          to={`/repairTechnicianIndex/RepairOffwork/${id}`}
           state={{ data: item }}
           className="border hover:bg-[#245BD826]  border-[#2F80ED] text-[#2F80ED] p-2 rounded-lg w-[120px]"
         >

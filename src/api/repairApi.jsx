@@ -77,14 +77,10 @@ export function deleteRepair(id) {
 }
 
 export function updateRecordRepairDetail(id, body) {
+  console.log("id:", id);
+  console.log("body:", body);
   return axios.patch(`/repair/recordDetail/${id}`, body);
 }
-
-// export function getListApprovalRepair() {
-//   return axios.get(
-//     `/repair/searchTopApprove?listStatus=inProgressOfDetailRecord`
-//   );
-// }
 
 export function getListApprovalRepair(options) {
   const queryString = getQueryString(options);
@@ -104,3 +100,13 @@ export function updateOutsourceRecord(id, formData) {
 
 export const rejectIndividualWaitingRepair = topApproveList =>
   axios.patch("/repair/rejectIndividualWaiting", topApproveList);
+
+export const offWorkRepair = (id, input) => {
+  console.log("input:", input);
+  console.log("id:", id);
+  axios.patch(`/repair/offwork/${id}`, { input: input });
+};
+
+export const updateStatusForCheckJobRepair = id => {
+  axios.patch(`/repair/updateStatusForCheckJob/${id}`);
+};

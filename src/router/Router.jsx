@@ -65,7 +65,7 @@ import {
   EditRole,
   DefaultAsset,
   HistoryTransferAsset,
-  ViewTransferAsset,
+  ViewTransferAsset
 } from "../pages";
 
 import { useContext } from "react";
@@ -74,11 +74,13 @@ import RepairOutSourceRecord from "../pages/RepairOutsourceRecord";
 import ApprovalRepair from "../pages/ApprovalRepair";
 import ApprovalRepairDetail from "../pages/ApprovalRepairDetail";
 import ViewApprovalRepairDetail from "../pages/ViewApprovalRepairDetail";
+import RepairOffwork from "../pages/RepairOffwork";
+import UpdateStatusForCheckJobRepair from "../pages/UpdateStatusForCheckJobRepair";
 
 const Router = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const { user } = useContext(AuthContext);
-  const menu = user?.roleId?.accessScreen || []
+  const menu = user?.roleId?.accessScreen || [];
   return (
     <Routes>
       {isLoggedIn ? (
@@ -108,7 +110,10 @@ const Router = () => {
             path="packageAssetInformation"
             element={<PackageAssetInformation />}
           />
-          <Route path="packageAssetInformation/:id" element={<PackageAssetInformation />} />
+          <Route
+            path="packageAssetInformation/:id"
+            element={<PackageAssetInformation />}
+          />
           <Route
             path="viewPackageAssetInformation/:packageAssetId"
             element={<ViewPackageAssetInformation />}
@@ -180,21 +185,41 @@ const Router = () => {
             path="editTransferAsset/:transferId"
             element={<EditTransferAsset />}
           />
-          <Route path="historyTransferAsset" element={<HistoryTransferAsset />} />
-          <Route path="viewTransferAsset/:transferId" element={<ViewTransferAsset />} />
+          <Route
+            path="historyTransferAsset"
+            element={<HistoryTransferAsset />}
+          />
+          <Route
+            path="viewTransferAsset/:transferId"
+            element={<ViewTransferAsset />}
+          />
 
           <Route path="merchantIndex" element={<MerchantIndex />} />
           <Route path="saveMerchant" element={<SaveMerchant />} />
           <Route path="editMerchant/:merchantId" element={<EditMerchant />} />
           <Route path="viewMerchant/:merchantId" element={<ViewMerchant />} />
           <Route path="reportMerchantInfo" element={<ReportMerchantInfo />} />
-          <Route path="viewReportMerchantInfo/:merchantId" element={<ViewReportMerchantInfo />} />
+          <Route
+            path="viewReportMerchantInfo/:merchantId"
+            element={<ViewReportMerchantInfo />}
+          />
 
           {/* <Route path="repairDashboard" element={<RepairDashboard />} /> */}
           <Route path="transferAsset" element={<TransferAsset />} />
           <Route path="repairIndex" element={<RepairIndex />} />
-          <Route path="repairIndex/repairDetail/:repairId" element={<RepairDetail />} />
-          <Route path="repairIndex/repairEdit/:repairId" element={<RepairEdit />} />
+          <Route
+            path="repairIndex/repairDetail/:repairId"
+            element={<RepairDetail />}
+          />
+          <Route
+            path="repairIndex/repairEdit/:repairId"
+            element={<RepairEdit />}
+          />
+          <Route
+            path="repairIndex/updateStatusForCheckJob/:id"
+            element={<UpdateStatusForCheckJobRepair />}
+          />
+
           <Route path="repairRecord" element={<RepairRecord />} />
           <Route
             path="repairTechnicianIndex"
@@ -208,15 +233,39 @@ const Router = () => {
             path="repairTechnicianIndex/repairTechnicianDetail"
             element={<RepairTechnicianDetail />}
           /> */}
-          <Route path="repairTechnicianIndex/repairDetail/:repairId" element={<RepairDetail />} />
-          <Route path="repairTechnicianIndex/repairTechnicianDetail/:repairId" element={<RepairDetail />} />
-          <Route path="repairTechnicianIndex/repairOutsourceRecord/:id" element={<RepairOutSourceRecord />} />
+          <Route
+            path="repairTechnicianIndex/repairDetail/:repairId"
+            element={<RepairDetail />}
+          />
+          <Route
+            path="repairTechnicianIndex/repairTechnicianDetail/:repairId"
+            element={<RepairDetail />}
+          />
+          <Route
+            path="repairTechnicianIndex/repairOutsourceRecord/:id"
+            element={<RepairOutSourceRecord />}
+          />
+
+          <Route
+            path="repairTechnicianIndex/RepairOffwork/:id"
+            element={<RepairOffwork />}
+          />
+
           <Route path="approvalRepair" element={<ApprovalRepair />} />
-          <Route path="repairTechnicianJobDetail/:id" element={<RepairTechnicianJobDetail />} />
-          <Route path="viewApprovalRepairDetail/:id" element={<ViewApprovalRepairDetail />} />
+          <Route
+            path="repairTechnicianJobDetail/:id"
+            element={<RepairTechnicianJobDetail />}
+          />
+          <Route
+            path="viewApprovalRepairDetail/:id"
+            element={<ViewApprovalRepairDetail />}
+          />
           <Route path="historyRepairIndex" element={<HistoryRepairIndex />} />
           <Route path="historyRepair/:id" element={<HistoryRepair />} />
-          <Route path="repairOutsourceIndex" element={<RepairOutsourceIndex />} />
+          <Route
+            path="repairOutsourceIndex"
+            element={<RepairOutsourceIndex />}
+          />
           <Route path="repairOutsource/:id" element={<RepairOutsource />} />
 
           <Route path="defaultData" element={<DefaultData />} />
@@ -231,7 +280,10 @@ const Router = () => {
             element={<UserInformationIndex />}
           />
           <Route path="addUserInformation" element={<AddUserInformation />} />
-          <Route path="editUserInformation/:userId" element={<EditUserInformation />} />
+          <Route
+            path="editUserInformation/:userId"
+            element={<EditUserInformation />}
+          />
           {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
           <Route path="/" element={<Dashboard />} />
         </Route>

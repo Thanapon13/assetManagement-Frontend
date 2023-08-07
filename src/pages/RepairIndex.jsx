@@ -1,64 +1,68 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import Selector from '../components/selector/Selector'
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
-import { AiOutlineSearch } from 'react-icons/ai'
-import { BsFillPencilFill, BsFillEyeFill } from 'react-icons/bs'
-import DateInput from '../components/date/DateInput'
-import { useEffect } from 'react'
-import { deleteRepair, getRepairBySearch, getSectorOfRepair } from '../api/repairApi'
-import SearchSelector from '../components/selector/SearchSelector'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Selector from "../components/selector/Selector";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import { AiOutlineSearch } from "react-icons/ai";
+import { BsFillPencilFill, BsFillEyeFill } from "react-icons/bs";
+import DateInput from "../components/date/DateInput";
+import { useEffect } from "react";
+import {
+  deleteRepair,
+  getRepairBySearch,
+  getSectorOfRepair
+} from "../api/repairApi";
+import SearchSelector from "../components/selector/SearchSelector";
 
 const RepairIndex = () => {
-  const [perPage, setPerPage] = useState(10)
-  const [totalRow, setTotalRow] = useState(25)
-  const [withdrawDate, setWithdrawDate] = useState(new Date())
+  const [perPage, setPerPage] = useState(10);
+  const [totalRow, setTotalRow] = useState(25);
+  const [withdrawDate, setWithdrawDate] = useState(new Date());
   const [search, setSearch] = useState({
     typeTextSearch: "informRepairIdDoc",
     textSearch: "",
     status: "",
     dateFrom: "",
     dateTo: new Date(),
-    sector: "",
+    sector: ""
   });
   //* แก้ ใช้ state คนละตัว *
-  const [data, setData] = useState([])
-  const [sectorArray, setSectorArray] = useState([])
+  const [data, setData] = useState([]);
+  const [sectorArray, setSectorArray] = useState([]);
 
   useEffect(() => {
-    fetchList()
-    getMaster()
-  }, [])
+    fetchList();
+    getMaster();
+  }, []);
 
   async function fetchList() {
-    const res = await getRepairBySearch(search)
-    setData(res.data.repair)
-    console.log(res.data.repair, search)
+    const res = await getRepairBySearch(search);
+    setData(res.data.repair);
+    console.log(res.data.repair, search);
     setSearch({
       ...search,
       page: res.data.page,
       limit: res.data.limit,
-      total: res.data.total,
-    })
+      total: res.data.total
+    });
   }
 
   async function getMaster() {
-    const sector = await getSectorOfRepair()
-    const arrSector = []
+    const sector = await getSectorOfRepair();
+    const arrSector = [];
     sector.data.courierSector?.map(ele => {
-      arrSector.push({ label: ele.courierSector, value: ele.courierSector })
-    })
-    setSectorArray(arrSector)
+      arrSector.push({ label: ele.courierSector, value: ele.courierSector });
+    });
+    setSectorArray(arrSector);
   }
 
-  const handlePagination = (e) => {
-    setSearch({ ...search, [e.target.name]: e.target.value })
-    fetchList({ ...search, [e.target.name]: e.target.value })
-  }
+  const handlePagination = e => {
+    setSearch({ ...search, [e.target.name]: e.target.value });
+    fetchList({ ...search, [e.target.name]: e.target.value });
+  };
 
-  const handleChange = (e) => {
-    setSearch({ ...search, [e.target.name]: e.target.value })
-  }
+  const handleChange = e => {
+    setSearch({ ...search, [e.target.name]: e.target.value });
+  };
 
   return (
     <div className="bg-background-page px-5 pt-5 pb-6 ">
@@ -106,7 +110,7 @@ const RepairIndex = () => {
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 md:pl-5">
         <div className="text-xs font-semibold">ค้นหาโดย</div>
         <div className="md:col-span-2">
-          <Selector placeholder={'เลขที่ใบแจ้งซ่อม'} />
+          <Selector placeholder={"เลขที่ใบแจ้งซ่อม"} />
         </div>
 
         <div className="md:col-span-4  h-[38px] relative">
@@ -168,7 +172,9 @@ const RepairIndex = () => {
             options={sectorArray}
             placeholder={"หน่วยงาน"}
             name={"sector"}
-            onChange={(value, label) => setSearch({ ...search, [label]: value })}
+            onChange={(value, label) =>
+              setSearch({ ...search, [label]: value })
+            }
             floatLabel
           />
         </div>
@@ -186,7 +192,7 @@ const RepairIndex = () => {
         </div>
       </div>
 
-      <div className='grid'>
+      <div className="grid">
         <div className="bg-white rounded-lg p-4 my-3 overflow-x-auto scrollbar">
           <div className="min-w-[1000px] lg:w-full h-full ">
             <div className="text-sm">ผลการค้นหา {search.total} รายการ</div>
@@ -214,7 +220,10 @@ const RepairIndex = () => {
                   onChange={handlePagination}
                 >
                   <option value="5">5</option>
-                  <option value="10" selected="selected"> 10 </option>
+                  <option value="10" selected="selected">
+                    {" "}
+                    10{" "}
+                  </option>
                   <option value="20">20</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
@@ -222,7 +231,9 @@ const RepairIndex = () => {
               </div>
 
               <div className="mx-5">
-                {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + data.length} of {search.total}
+                {search.limit * (search.page - 1) + 1}-
+                {search.limit * (search.page - 1) + data.length} of{" "}
+                {search.total}
               </div>
 
               <button className="flex justify-center items-center hover:bg-gray-200 rounded-full  text-icon-dark-gray focus:text-black w-8 h-8 px-1 py-1">
@@ -235,23 +246,22 @@ const RepairIndex = () => {
           </div>
         </div>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-const TableRepairIndex = (props) => {
-  const [isClick, setIsClick] = useState(false)
+const TableRepairIndex = props => {
+  const [isClick, setIsClick] = useState(false);
 
-  let navigate = useNavigate()
+  let navigate = useNavigate();
 
-  const handleClick = (status) => {
-    setIsClick(!isClick)
+  const handleClick = status => {
+    setIsClick(!isClick);
 
-    if (status === 'waitToReturn') {
-      navigate('/repairIndex')
+    if (status === "waitToReturn") {
+      navigate("/repairIndex");
     }
-  }
+  };
   //   waitTechnicianConfirm , inProgress , draftRepair, waitApprove, done , cancel
   return (
     <>
@@ -261,7 +271,17 @@ const TableRepairIndex = (props) => {
             key={idx}
             className={`grid grid-cols-13 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
-            <div className="col-span-1">{item.informRepairDate && `${new Date(item.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}</div>
+            <div className="col-span-1">
+              {item.informRepairDate &&
+                `${new Date(item.informRepairDate).toLocaleString("th", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false
+                })} น.`}
+            </div>
             <div className="col-span-2">{item.informRepairIdDoc}</div>
             <div className="col-span-2">{item.assetNumber}</div>
             <div className="col-span-3 text-left">{item.problemDetail}</div>
@@ -269,37 +289,39 @@ const TableRepairIndex = (props) => {
             <div className="col-span-1 text-left">{item.name_courier}</div>
             <div className="col-span-1">
               <div className="flex justify-center">
-                <div onClick={() => handleClick(item.status)}
-                  className={`${item.status === 'waiting'
-                    ? 'bg-text-blue/[.2] text-blue-600 rounded-full border-sky-200'
-                    : item.status === 'inProgress'
-                      ? 'bg-yellow-300 text-yellow-700 border-yellow-300 rounded-full'
-                      // : item.status === 'waiting'
-                      //   ? ' bg-purple-600 border-purple-600 text-white rounded-full'
-                      : item.status === 'saveDraft'
-                        ? ' bg-gray-300 border-gray-300 text-black rounded-full'
-                        : item.status === 'complete'
-                          ? 'bg-text-green/[.15] text-text-green  rounded-full border-sidebar-green '
-                          : 'bg-red-200 text-red-600 rounded-full border-red-200'
-                    }  border-spacing-5 p-2 w-full`}
+                <div
+                  onClick={() => handleClick(item.status)}
+                  className={`${
+                    item.status === "waiting"
+                      ? "bg-text-blue/[.2] text-blue-600 rounded-full border-sky-200"
+                      : item.status === "inProgress"
+                      ? "bg-yellow-300 text-yellow-700 border-yellow-300 rounded-full"
+                      : item.status === "waitingForCheck"
+                      ? " bg-purple-600 border-purple-600 text-white rounded-full"
+                      : item.status === "saveDraft"
+                      ? " bg-gray-300 border-gray-300 text-black rounded-full"
+                      : item.status === "complete"
+                      ? "bg-text-green/[.15] text-text-green  rounded-full border-sidebar-green "
+                      : "bg-red-200 text-red-600 rounded-full border-red-200"
+                  }  border-spacing-5 p-2 w-full`}
                 >
-                  {item.status === 'waiting'
-                    ? 'รอช่างรับงาน'
-                    : item.status === 'inProgress'
-                      ? 'ดำเนินการ'
-                      : item.status === 'waitingApproval'
-                        ? 'รอตรวจรับ'
-                        : item.status === 'saveDraft'
-                          ? 'แบบร่าง'
-                          : item.status === 'complete'
-                            ? 'เสร็จสิ้น'
-                            : 'ยกเลิก'}
+                  {item.status === "waiting"
+                    ? "รอช่างรับงาน"
+                    : item.status === "inProgress"
+                    ? "ดำเนินการ"
+                    : item.status === "waitingForCheck"
+                    ? "รอตรวจรับ"
+                    : item.status === "saveDraft"
+                    ? "แบบร่าง"
+                    : item.status === "complete"
+                    ? "เสร็จสิ้น"
+                    : "ยกเลิก"}
                 </div>
               </div>
             </div>
             <div className="col-span-2 grid grid-cols-2 items-center">
               <div className="flex justify-center col-span-2">
-                {item.status === 'waiting' ? (
+                {item.status === "waiting" ? (
                   <div className="flex gap-1">
                     <Link
                       to={`repairDetail/${item._id}`}
@@ -317,7 +339,7 @@ const TableRepairIndex = (props) => {
                     </Link>
                     <ModalCancel item={item} fetchList={props.fetchList} />
                   </div>
-                ) : item.status === 'inProgress' ? (
+                ) : item.status === "inProgress" ? (
                   <div className="flex gap-1">
                     <Link
                       to={`repairDetail/${item._id}`}
@@ -328,7 +350,7 @@ const TableRepairIndex = (props) => {
                       <h1>ดูรายละเอียด</h1>
                     </Link>
                   </div>
-                ) : item.status === 'saveDraft' ? (
+                ) : item.status === "saveDraft" ? (
                   <div className="flex gap-1">
                     <Link
                       to={`repairDetail/${item._id}`}
@@ -346,7 +368,7 @@ const TableRepairIndex = (props) => {
                     </Link>
                     <ModalCancel item={item} fetchList={props.fetchList} />
                   </div>
-                ) : item.status === 'waitingForCheck' ? (
+                ) : item.status === "waitingForCheck" ? (
                   <div className="flex gap-3">
                     <Link
                       to={`repairDetail/${item._id}`}
@@ -355,9 +377,14 @@ const TableRepairIndex = (props) => {
                     >
                       <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
                     </Link>
-                    <button className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-lg">
-                      ตรวจรับ
-                    </button>
+
+                    <Link
+                      to={`/repairIndex/updateStatusForCheckJob/${item._id}`}
+                    >
+                      <button className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-lg">
+                        ตรวจรับ
+                      </button>
+                    </Link>
                   </div>
                 ) : (
                   <div className="flex gap-1">
@@ -373,25 +400,25 @@ const TableRepairIndex = (props) => {
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
 const ModalCancel = ({ item, fetchList }) => {
-  const [showModal, setShowModal] = useState(false)
-  const [reason, setreason] = useState("")
-  const [error, setError] = useState(false)
-  console.log(item)
+  const [showModal, setShowModal] = useState(false);
+  const [reason, setreason] = useState("");
+  const [error, setError] = useState(false);
+  console.log(item);
   async function onConfirm(id) {
-    await deleteRepair(id, { reason: reason })
-    fetchList()
+    await deleteRepair(id, { reason: reason });
+    fetchList();
   }
 
-  const callback = (payload) => {
-    setAllReject(payload)
-  }
+  const callback = payload => {
+    setAllReject(payload);
+  };
 
   return (
     <>
@@ -450,7 +477,18 @@ const ModalCancel = ({ item, fetchList }) => {
                         เวลาที่แจ้งซ่อม
                       </div>
                       <div className="flex items-center ">
-                        {item?.informRepairDate && `${new Date(item?.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}
+                        {item?.informRepairDate &&
+                          `${new Date(item?.informRepairDate).toLocaleString(
+                            "th",
+                            {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: false
+                            }
+                          )} น.`}
                       </div>
                     </div>
 
@@ -482,14 +520,18 @@ const ModalCancel = ({ item, fetchList }) => {
                         {item?.courierSector}
                       </div>
                     </div>
-                    {item.status != "saveDraft" &&
+                    {item.status != "saveDraft" && (
                       <div className="grid grid-cols-2 md:grid-cols-4 p-2">
                         <div className="text-text-gray flex items-center">
                           สาเหตุที่ยกเลิก
                         </div>
-                        <textarea className={`${error && !reason && "border-red-500"} col-span-3 border-[1px] p-2 min-h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}></textarea>
+                        <textarea
+                          className={`${
+                            error && !reason && "border-red-500"
+                          } col-span-3 border-[1px] p-2 min-h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                        ></textarea>
                       </div>
-                    }
+                    )}
                   </div>
                 </div>
                 {/* footer */}
@@ -507,7 +549,9 @@ const ModalCancel = ({ item, fetchList }) => {
                     onClick={() => {
                       item.status == "saveDraft"
                         ? onConfirm(item._id)
-                        : reason ? onConfirm(item._id) : setError(true)
+                        : reason
+                        ? onConfirm(item._id)
+                        : setError(true);
                     }}
                   >
                     ยืนยันยกเลิก
@@ -519,7 +563,7 @@ const ModalCancel = ({ item, fetchList }) => {
         </>
       ) : null}
     </>
-  )
-}
+  );
+};
 
-export default RepairIndex
+export default RepairIndex;
