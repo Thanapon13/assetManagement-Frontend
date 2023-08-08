@@ -19,7 +19,6 @@ const RepairTechnicianRecord = () => {
     workDate: new Date()
   });
   const [error, setError] = useState(false);
-  console.log(item);
 
   const [countRow, setCountRow] = useState(1);
   const [countRow1, setCountRow1] = useState(1);
@@ -32,12 +31,9 @@ const RepairTechnicianRecord = () => {
     totalEarn: "",
     amountExtra: ""
   };
-  const [arrayTechnician, setArrayTechnician] = useState(
-    item.informRepairManArray || [defaultTech]
-  );
-  console.log("arrayTechnician:", arrayTechnician);
+  const [arrayTechnician, setArrayTechnician] = useState([defaultTech]);
   const [arrayCostRepair, setArrayCostRepair] = useState(
-    item.costOfRepairArray || [
+    [
       {
         // index: 0,
         stuffName: "",
@@ -104,16 +100,15 @@ const RepairTechnicianRecord = () => {
       delete inputs.arrayTechnician;
 
       await updateRecordRepairDetail(id, {
-        input: inputs,
+        input: item,
         status: valStatus || item.statusOfDetailRecord,
         informRepairManArray: arrayTechnician,
         costOfRepairArray: arrayCostRepair
       });
       if (!valStatus) {
         setShowModalSuccess(true);
-        return;
-      } else {
-        window.location.href = "/repairTechnicianIndex";
+      // } else {
+      //   window.location.href = "/repairTechnicianIndex";
       }
     } catch (err) {
       console.log(err);
@@ -128,7 +123,7 @@ const RepairTechnicianRecord = () => {
       errTable = true;
     }
     arrayTechnician?.map(ele => {
-      if (!ele.name || !ele.totalEarn.length) errTable = true;
+      if (!ele.name || !ele.totalEarn) errTable = true;
     });
     setError(err);
     setErrorTable(errTable);
@@ -164,6 +159,7 @@ const RepairTechnicianRecord = () => {
       arriveAtPlaceDate: new Date(),
       workDate: new Date()
     });
+    setArrayTechnician(repair.informRepairManArray)
   };
 
   useEffect(() => {
@@ -635,15 +631,14 @@ const RepairTechnicianRecord = () => {
             onClose={() => setShowModal(false)}
             onSave={() => submit("waitingApproval")}
           />
-          {/* {showModalSuccess && (
+          {showModalSuccess && (
             <ModalSuccess urlPath="/repairTechnicianIndex" />
-          )} */}
+          )}
         </div>
       </div>
-      {/* footer */}
+
       {item.repairStatus === "waitApprove" ? (
         <>
-          {/* footer */}
           <div className="flex justify-between p-3 border-t-[1px] bg-white">
             <div className="text-text-gray text-sm flex items-center">
               ยกเลิก
@@ -666,9 +661,9 @@ const RepairTechnicianRecord = () => {
                 onClose={() => setShowModalConfirm(false)}
                 onSave={() => submit("waitingApproval")}
               />
-              {/* {showModalSuccess && (
+              {showModalSuccess && (
                 <ModalSuccess urlPath="/repairTechnicianIndex" />
-              )} */}
+              )}
             </div>
           </div>
         </>
