@@ -2,47 +2,50 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { BsArrowLeft, BsFillCheckCircleFill } from "react-icons/bs";
-import { deleteRepair, getRepairById, updateStatusForCheckJob, updateStatusForGetJobRepair } from "../api/repairApi";
+import {
+  deleteRepair,
+  getRepairById,
+  updateStatusForCheckJob,
+  updateStatusForGetJobRepair
+} from "../api/repairApi";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
 const RepairDetail = () => {
   const location = useLocation();
   const item = location.state.data;
-  console.log(item)
+  console.log("item:", item);
   const getData = async () => {
     const res = await getRepairById(param.repairId);
-    console.log(res.data.repair)
+    console.log(res.data.repair);
   };
 
-  const [showModal, setShowModal] = useState(false)
-  const [showModalSuccess, setShowModalSuccess] = useState(false)
-  const [showModalCancel, setShowModalCancle] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+  const [showModalSuccess, setShowModalSuccess] = useState(false);
+  const [showModalCancel, setShowModalCancle] = useState(false);
 
   const status = {
-    saveDraft: 'แบบร่าง',
-    waiting: 'รอช่างรับงาน',
-    waitingForCheck: 'รอตรวจรับ',
-    inProgress: 'ดำเนินการ',
-    cancel: 'ยกเลิก',
-    complete: 'เสร็จสิ้น'
-  }
+    saveDraft: "แบบร่าง",
+    waiting: "รอช่างรับงาน",
+    waitingForCheck: "รอตรวจรับ",
+    inProgress: "ดำเนินการ",
+    reject: "ยกเลิก",
+    complete: "เสร็จสิ้น"
+  };
   const statusTechnician = {
     // cancelOfDetailRecord: 'ไม่รับงาน',
-    reject: 'ไม่อนุมัติ',
-    waitTechnicianConfirm: 'รอช่างรับงาน',
-    waitingRecord: 'รอลงบันทึก',
-    inProgressOfDetailRecord: 'ดำเนินการ',
-    waitingApproval: 'รออนุมัติ',
-    completeOfDetailRecord: 'เสร็จสิ้น'
-  }
+    reject: "ไม่อนุมัติ",
+    waitTechnicianConfirm: "รอช่างรับงาน",
+    waitingRecord: "รอลงบันทึก",
+    inProgressOfDetailRecord: "ดำเนินการ",
+    waitingApproval: "รออนุมัติ",
+    completeOfDetailRecord: "เสร็จสิ้น"
+  };
 
   return (
     <>
       <div className="bg-background-page pt-5 p-3">
-
         <div>
-
           <div className="text-2xl text-text-green flex items-center ">
             <Link
               to={-1}
@@ -87,20 +90,34 @@ const RepairDetail = () => {
               </>
             ) : (
               <>
-                {!location.pathname.includes('/repairTechnicianIndex/repairTechnicianDetail/') &&
-                  <ButtonCancelAndModal item={item} />
-                }
+                {!location.pathname.includes(
+                  "/repairTechnicianIndex/repairTechnicianDetail/"
+                ) && <ButtonCancelAndModal item={item} />}
                 <div className="flex items-center gap-2">
                   <h1>สถานะใบแจ้งซ่อม</h1>
                   {/* bg-sky-200 text-blue-600 */}
-                  <div className={` text-sm py-2 px-4 rounded-2xl
-                  ${!location.pathname.includes('/repairTechnicianIndex/')
-                      ? (
-                        item.status == "inProgress" ? "bg-yellow-300 text-yellow-700" : item.status == "saveDraft" ? "bg-gray-300 border-gray-300" : item.status == "waiting" ? "bg-text-blue/[.2] text-blue-600 " : ""
-                      ) : (
-                        item.statusOfDetailRecord == "waitTechnicianConfirm" ? "bg-text-blue/[.2] text-blue-600 " : "bg-red-200 text-red-600"
-                      )}`}>
-                    {location.pathname.includes('/repairTechnicianIndex/') ? statusTechnician[item.statusOfDetailRecord] || "ยกเลิก"
+                  <div
+                    className={` text-sm py-2 px-4 rounded-2xl
+                  ${
+                    !location.pathname.includes("/repairTechnicianIndex/")
+                      ? item.status == "inProgress"
+                        ? "bg-yellow-300 text-yellow-700"
+                        : item.status == "saveDraft"
+                        ? "bg-gray-300 border-gray-300"
+                        : item.status == "waiting"
+                        ? "bg-text-blue/[.2] text-blue-600 "
+                        : item.status === "complete"
+                        ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D]"
+                        : item.status === "reject"
+                        ? "bg-red-200 text-red-600"
+                        : ""
+                      : item.statusOfDetailRecord == "reject"
+                      ? "bg-red-200 text-red-600"
+                      : "bg-[#38821D] bg-opacity-[15%] text-[#38821D]"
+                  }`}
+                  >
+                    {location.pathname.includes("/repairTechnicianIndex/")
+                      ? statusTechnician[item.statusOfDetailRecord] || "ยกเลิก"
                       : status[item.status]}
                   </div>
                 </div>
@@ -122,14 +139,18 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center ">
                 สถานะความเร่งด่วน
               </div>
-              <div className={`flex justify-center items-end -mt-3 py-2 w-fit px-3.5 rounded-full
-              ${item.urgentStatus === 'ปกติ'
-                  ? 'bg-blue-600 text-white '
-                  : item.urgentStatus === 'เร่งด่วน'
-                    ? 'bg-[#F2994A] text-white '
-                    : item.urgentStatus === 'ฉุกเฉิน'
-                      ? 'bg-red-700 text-white '
-                      : 'border-0'}`}>
+              <div
+                className={`flex justify-center items-end -mt-3 py-2 w-fit px-3.5 rounded-full
+              ${
+                item.urgentStatus === "ปกติ"
+                  ? "bg-blue-600 text-white "
+                  : item.urgentStatus === "เร่งด่วน"
+                  ? "bg-[#F2994A] text-white "
+                  : item.urgentStatus === "ฉุกเฉิน"
+                  ? "bg-red-700 text-white "
+                  : "border-0"
+              }`}
+              >
                 {item.urgentStatus}
               </div>
             </div>
@@ -139,7 +160,15 @@ const RepairDetail = () => {
                 เวลาที่แจ้งซ่อม
               </div>
               <div className="flex items-center">
-                {item.informRepairDate && `${new Date(item.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}
+                {item.informRepairDate &&
+                  `${new Date(item.informRepairDate).toLocaleString("th", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                  })} น.`}
               </div>
               <div className="text-text-gray flex items-center">
                 รหัสครุภัณฑ์
@@ -151,7 +180,11 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center">
                 อยู่ในประกัน
               </div>
-              <div className={`flex items-center ${item.isInsurance ? "text-text-green" : "text-red-500"}`}>
+              <div
+                className={`flex items-center ${
+                  item.isInsurance ? "text-text-green" : "text-red-500"
+                }`}
+              >
                 {item.isInsurance ? "อยู่ในประกัน" : "ไม่อยู่ในประกัน"}
               </div>
               <div className="text-text-gray flex items-center">
@@ -164,36 +197,55 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center">
                 เจ้าของครุภัณฑ์
               </div>
-              <div className="flex items-center">{item.hostSector || '-'}</div>
+              <div className="flex items-center">{item.hostSector || "-"}</div>
               <div className="text-text-gray flex items-center">
                 ชื่อครุภัณฑ์
               </div>
-              <div className="flex items-center">
-                {item.productName || '-'}
-              </div>
+              <div className="flex items-center">{item.productName || "-"}</div>
             </div>
             {/* row 5 วันที่เริ่มรับประกัน*/}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
               <div className="text-text-gray flex items-center">
                 วันที่เริ่มรับประกัน
               </div>
-              <div className="flex items-center">{(item.insuranceStartDate)
-                ? `${new Date(item.insuranceStartDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`
-                : '-'}</div>
+              <div className="flex items-center">
+                {item.insuranceStartDate
+                  ? `${new Date(item.insuranceStartDate).toLocaleString("th", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false
+                    })} น.`
+                  : "-"}
+              </div>
               <div className="text-text-gray flex items-center">
                 วันที่สิ้นสุดการรับประกัน
               </div>
-              <div className="flex items-center">{item.insuranceEndDate ? `${new Date(item.insuranceEndDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`
-                : '-'}</div>
+              <div className="flex items-center">
+                {item.insuranceEndDate
+                  ? `${new Date(item.insuranceEndDate).toLocaleString("th", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false
+                    })} น.`
+                  : "-"}
+              </div>
             </div>
             {/* row 6 รหัส cost center*/}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-5 p-2">
               <div className="text-text-gray flex items-center">
                 รหัส cost center
               </div>
-              <div className="flex items-center">{item.costCenterCode || '-'}</div>
+              <div className="flex items-center">
+                {item.costCenterCode || "-"}
+              </div>
               <div className="text-text-gray flex items-center">สท.01</div>
-              <div className="flex items-center">{item.asset01 || '-'}</div>
+              <div className="flex items-center">{item.asset01 || "-"}</div>
             </div>
           </div>
           {/* ข้อมูลสถานที่ซ่อม */}
@@ -204,14 +256,14 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center ">
                 ที่ตั้ง/อาคาร
               </div>
-              <div className="flex items-center ">{item.building || '-'}</div>
+              <div className="flex items-center ">{item.building || "-"}</div>
               <div className="text-text-gray flex items-center ">ชั้น</div>
-              <div className="flex items-center ">{item.floor || '-'}</div>
+              <div className="flex items-center ">{item.floor || "-"}</div>
             </div>
             {/* row 2 ห้อง */}
             <div className="grid grid-cols-2 md:grid-cols-5 p-2">
               <div className="text-text-gray flex items-center">ห้อง</div>
-              <div className="flex items-center">{item.room || '-'}</div>
+              <div className="flex items-center">{item.room || "-"}</div>
             </div>
           </div>
           {/* ข้อมูลผู้เกี่ยวข้อง */}
@@ -222,7 +274,9 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center ">
                 ผู้ส่งซ่อม
               </div>
-              <div className="flex items-center ">{item.name_courier || '-'}</div>
+              <div className="flex items-center ">
+                {item.name_courier || "-"}
+              </div>
               <div className="text-text-gray flex items-center ">
                 เบอร์โทรศัพท์
               </div>
@@ -233,11 +287,11 @@ const RepairDetail = () => {
               <div className="text-text-gray flex items-center">
                 ผู้ประสานงาน
               </div>
-              <div className="flex items-center">
-                {item.name_recorder}
-              </div>
+              <div className="flex items-center">{item.name_recorder}</div>
               <div className="text-text-gray flex items-center">หน่วยงาน</div>
-              <div className="flex items-center">{item.courierSector || '-'}</div>
+              <div className="flex items-center">
+                {item.courierSector || "-"}
+              </div>
             </div>
           </div>
         </div>
@@ -267,51 +321,63 @@ const RepairDetail = () => {
             </div>
           </div>
         </div>
-        {location.pathname.includes('/repairTechnicianIndex/repairTechnicianDetail/') &&
-          item.statusOfDetailRecord == "waitTechnicianConfirm" &&
-          <div className="flex justify-between items-center gap-10 p-5 text-sm mr-">
-            <button
-              type="button"
-              className=" hover:bg-gray-100 text-text-gray text-sm rounded-md py-2 px-4"
-            >
-              ยกเลิก 
-            </button>
-            <div className="flex justify-end gap-4">
+        {location.pathname.includes(
+          "/repairTechnicianIndex/repairTechnicianDetail/"
+        ) &&
+          item.statusOfDetailRecord == "waitTechnicianConfirm" && (
+            <div className="flex justify-between items-center gap-10 p-5 text-sm mr-">
               <button
-                className="bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-                onClick={() => setShowModalCancle(true)}
+                type="button"
+                className=" hover:bg-gray-100 text-text-gray text-sm rounded-md py-2 px-4"
               >
-                ไม่รับงาน
+                ยกเลิก
               </button>
-              {showModalCancel && <ModalCancleJob item={item} setShowModalCancle={setShowModalCancle} />}
-              <button
-                id="form"
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
-                onClick={() => setShowModal(true)}
-              >
-                รับงาน
-              </button>
+              <div className="flex justify-end gap-4">
+                <button
+                  className="bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
+                  onClick={() => setShowModalCancle(true)}
+                >
+                  ไม่รับงาน
+                </button>
+                {showModalCancel && (
+                  <ModalCancleJob
+                    item={item}
+                    setShowModalCancle={setShowModalCancle}
+                  />
+                )}
+                <button
+                  id="form"
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-white text-sm rounded-md py-2 px-4"
+                  onClick={() => setShowModal(true)}
+                >
+                  รับงาน
+                </button>
 
-              <ModalConfirmSave
-                isVisible={showModal}
-                onClose={() => setShowModal(false)}
-                text={`คุณต้องการรับงานเลขที่ใบแจ้งซ่อม ${item?.informRepairIdDoc} นี้หรือไม่`}
-                header="ยืนยันการรับงาน"
-                confirmText="รับงาน"
-                onSave={async () => {
-                  try {
-                    await updateStatusForGetJobRepair(item._id, "waitingRecord")
-                    setShowModalSuccess(true)
-                  } catch (error) {
-                    console.log(error)
-                  }
-                }}
-              />
-              {showModalSuccess && <ModalSuccess urlPath='/repairTechnicianIndex' />}
+                <ModalConfirmSave
+                  isVisible={showModal}
+                  onClose={() => setShowModal(false)}
+                  text={`คุณต้องการรับงานเลขที่ใบแจ้งซ่อม ${item?.informRepairIdDoc} นี้หรือไม่`}
+                  header="ยืนยันการรับงาน"
+                  confirmText="รับงาน"
+                  onSave={async () => {
+                    try {
+                      await updateStatusForGetJobRepair(
+                        item._id,
+                        "waitingRecord"
+                      );
+                      setShowModalSuccess(true);
+                    } catch (error) {
+                      console.log(error);
+                    }
+                  }}
+                />
+                {showModalSuccess && (
+                  <ModalSuccess urlPath="/repairTechnicianIndex" />
+                )}
+              </div>
             </div>
-          </div>
-        }
+          )}
 
         {item.repairStatus === "waitApprove" ? (
           <>
@@ -362,7 +428,7 @@ const RepairDetail = () => {
   );
 };
 
-const TableRepairCost = (props) => {
+const TableRepairCost = props => {
   //   waitTechnicianConfirm , inProgress , draftRepair, waitApprove, done , cancel
   return (
     <>
@@ -423,7 +489,7 @@ const TableRepairCost = (props) => {
 const ModalApproveDone = () => {
   const [showModal, setShowModal] = useState(false);
 
-  const callback = (payload) => {
+  const callback = payload => {
     setAllReject(payload);
   };
   return (
@@ -458,17 +524,15 @@ const ModalApproveDone = () => {
 };
 
 const ButtonCancelAndModal = ({ item }) => {
-  const [showModal, setShowModal] = useState(false)
-  const [reason, setreason] = useState("")
-  const [error, setError] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+  const [reason, setreason] = useState("");
+  const [error, setError] = useState(false);
 
   async function onConfirm(id) {
     try {
-      await deleteRepair(id, { reason: reason })
-      window.location.href = "/repairIndex"
-    } catch (error) {
-
-    }
+      await deleteRepair(id, { reason: reason });
+      window.location.href = "/repairIndex";
+    } catch (error) {}
   }
   return (
     <>
@@ -484,7 +548,6 @@ const ButtonCancelAndModal = ({ item }) => {
           <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
             <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
               <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
-
                 <div>
                   <div className="flex justify-center items-center gap-5 p-5 ">
                     <svg
@@ -514,7 +577,18 @@ const ButtonCancelAndModal = ({ item }) => {
                         เวลาที่แจ้งซ่อม
                       </div>
                       <div className="flex items-center ">
-                        {item?.informRepairDate && `${new Date(item?.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}
+                        {item?.informRepairDate &&
+                          `${new Date(item?.informRepairDate).toLocaleString(
+                            "th",
+                            {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: false
+                            }
+                          )} น.`}
                       </div>
                     </div>
 
@@ -546,14 +620,18 @@ const ButtonCancelAndModal = ({ item }) => {
                         {item?.courierSector}
                       </div>
                     </div>
-                    {item.status != "saveDraft" &&
+                    {item.status != "saveDraft" && (
                       <div className="grid grid-cols-2 md:grid-cols-4 p-2">
                         <div className="text-text-gray flex items-center">
                           สาเหตุที่ยกเลิก
                         </div>
-                        <textarea className={`${error && !reason && "border-red-500"} col-span-3 border-[1px] p-2 min-h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}></textarea>
+                        <textarea
+                          className={`${
+                            error && !reason && "border-red-500"
+                          } col-span-3 border-[1px] p-2 min-h-[38px] w-10/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                        ></textarea>
                       </div>
-                    }
+                    )}
                   </div>
                 </div>
 
@@ -570,7 +648,9 @@ const ButtonCancelAndModal = ({ item }) => {
                     onClick={() => {
                       item.status == "saveDraft"
                         ? onConfirm(item._id)
-                        : reason ? onConfirm(item._id) : setError(true)
+                        : reason
+                        ? onConfirm(item._id)
+                        : setError(true);
                     }}
                   >
                     ยืนยันยกเลิก
@@ -582,20 +662,18 @@ const ButtonCancelAndModal = ({ item }) => {
         </>
       ) : null}
     </>
-  )
-}
+  );
+};
 
 const ModalCancleJob = ({ item, setShowModalCancle }) => {
-  const [reason, setreason] = useState("")
-  const [error, setError] = useState(false)
+  const [reason, setreason] = useState("");
+  const [error, setError] = useState(false);
 
   async function onConfirm(id) {
     try {
-      await updateStatusForCheckJob(id, { reason: reason })
-      window.location.href = "/repairIndex"
-    } catch (error) {
-
-    }
+      await updateStatusForCheckJob(id, { reason: reason });
+      window.location.href = "/repairIndex";
+    } catch (error) {}
   }
   return (
     <>
@@ -603,14 +681,16 @@ const ModalCancleJob = ({ item, setShowModalCancle }) => {
       <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
         <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
           <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
-
             <div>
               <div className="flex items-center ml-8 pt-5 text-lg">
                 ระบุสาเหตุไม่รับงาน
               </div>
 
               <div className="p-6 text-base flex justify-center">
-                <textarea className={`${error && !reason && "border-red-500"} w-11/12 border-[1px] p-2 min-h-[38px] h-[7rem] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                <textarea
+                  className={`${
+                    error && !reason && "border-red-500"
+                  } w-11/12 border-[1px] p-2 min-h-[38px] h-[7rem] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
                 />
               </div>
             </div>
@@ -628,7 +708,9 @@ const ModalCancleJob = ({ item, setShowModalCancle }) => {
                 onClick={() => {
                   item.status == "saveDraft"
                     ? onConfirm(item._id)
-                    : reason ? onConfirm(item._id) : setError(true)
+                    : reason
+                    ? onConfirm(item._id)
+                    : setError(true);
                 }}
               >
                 ยืนยันยกเลิก
@@ -638,7 +720,7 @@ const ModalCancleJob = ({ item, setShowModalCancle }) => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default RepairDetail;

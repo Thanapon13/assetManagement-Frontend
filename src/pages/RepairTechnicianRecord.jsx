@@ -99,6 +99,10 @@ const RepairTechnicianRecord = () => {
 
   const submit = async valStatus => {
     try {
+      const inputs = item;
+      delete inputs.arrayCostRepair;
+      delete inputs.arrayTechnician;
+
       await updateRecordRepairDetail(id, {
         input: inputs,
         status: valStatus || item.statusOfDetailRecord,

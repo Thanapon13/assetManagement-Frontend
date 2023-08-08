@@ -1,99 +1,101 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
-import { FaArrowLeft } from 'react-icons/fa'
-import { HiTrash } from 'react-icons/hi'
-import Selector from '../components/selector/Selector'
-import ModalConfirmSave from '../components/modal/ModalConfirmSave'
-import { BsArrowLeft } from 'react-icons/bs'
-import ModalSuccess from '../components/modal/ModalSuccess'
-import { updateRecordRepairDetail } from '../api/repairApi'
-import OnlyDateInput from "../components/date/onlyDateInput"
-import DateInput from '../components/date/DateInput'
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
+import { HiTrash } from "react-icons/hi";
+import Selector from "../components/selector/Selector";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
+import { BsArrowLeft } from "react-icons/bs";
+import ModalSuccess from "../components/modal/ModalSuccess";
+import { updateRecordRepairDetail } from "../api/repairApi";
+import OnlyDateInput from "../components/date/onlyDateInput";
+import DateInput from "../components/date/DateInput";
 
 const RepairTechnicianJobDetail = () => {
-  const location = useLocation()
+  const location = useLocation();
   // const item = location.state?.data
   const [item, setItem] = useState({
     ...location.state?.data,
     arriveAtPlaceDate: new Date(),
     workDate: new Date(),
     repairDate: new Date()
-  })
-  const [error, setError] = useState(false)
-  console.log(item)
+  });
+  const [error, setError] = useState(false);
+  console.log(item);
 
-  const [countRow, setCountRow] = useState(1)
-  const [countRow1, setCountRow1] = useState(1)
-  const [countIndexArray, setCountIndexArray] = useState([0])
+  const [countRow, setCountRow] = useState(1);
+  const [countRow1, setCountRow1] = useState(1);
+  const [countIndexArray, setCountIndexArray] = useState([0]);
   const defaultTech = {
-    name: '',
-    workPerHour: '',
-    ratePerHour: '',
-    totalEarn: '',
-    amountExtra: '',
-  }
-  const [arrayTechnician, setArrayTechnician] =
-    useState(item.informRepairManArray || [defaultTech])
-  const [arrayCostRepair, setArrayCostRepair] =
-    useState(item.costOfRepairArray || [
+    name: "",
+    workPerHour: "",
+    ratePerHour: "",
+    totalEarn: "",
+    amountExtra: ""
+  };
+  const [arrayTechnician, setArrayTechnician] = useState(
+    item.informRepairManArray || [defaultTech]
+  );
+  const [arrayCostRepair, setArrayCostRepair] = useState(
+    item.costOfRepairArray || [
       {
         // index: 0,
-        stuffName: '',
-        quantity: '',
-        unit: '',
-        pricePerUnit: '',
-      },
-    ])
-  const [showModalConfirm, setShowModalConfirm] = useState(false)
+        stuffName: "",
+        quantity: "",
+        unit: "",
+        pricePerUnit: ""
+      }
+    ]
+  );
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
   //handle bottom table
-  const handleClickIncrease = (e) => {
-    e.preventDefault()
-    setCountRow(countRow + 1)
-    setCountIndexArray([...countIndexArray, countRow])
+  const handleClickIncrease = e => {
+    e.preventDefault();
+    setCountRow(countRow + 1);
+    setCountIndexArray([...countIndexArray, countRow]);
 
-    let clone = [...arrayTechnician]
-    setArrayTechnician([...clone, defaultTech])
-  }
-  const handleClickIncreaseCost = (e) => {
-    e.preventDefault()
-    setCountRow(countRow + 1)
-    setCountIndexArray([...countIndexArray, countRow])
+    let clone = [...arrayTechnician];
+    setArrayTechnician([...clone, defaultTech]);
+  };
+  const handleClickIncreaseCost = e => {
+    e.preventDefault();
+    setCountRow(countRow + 1);
+    setCountIndexArray([...countIndexArray, countRow]);
 
-    let clone = [...arrayCostRepair]
+    let clone = [...arrayCostRepair];
     const newCloneArray = {
       // index: countRow,
-      stuffName: '',
-      quantity: '',
-      unit: '',
-      pricePerUnit: '',
-    }
-    setArrayCostRepair([...clone, newCloneArray])
-  }
+      stuffName: "",
+      quantity: "",
+      unit: "",
+      pricePerUnit: ""
+    };
+    setArrayCostRepair([...clone, newCloneArray]);
+  };
 
-  const deleteRow = (index) => {
+  const deleteRow = index => {
     if (countRow > 0) {
-      setCountRow(countRow - 1)
+      setCountRow(countRow - 1);
     }
 
-    let clone = [...arrayTechnician]
-    clone.splice(index, 1)
-    setArrayTechnician(clone)
-  }
-  const deleteRowCost = (index) => {
+    let clone = [...arrayTechnician];
+    clone.splice(index, 1);
+    setArrayTechnician(clone);
+  };
+  const deleteRowCost = index => {
     if (countRow1 > 0) {
-      setCountRow(countRow1 - 1)
+      setCountRow(countRow1 - 1);
     }
 
-    let clone = [...arrayCostRepair]
-    clone.splice(index, 1)
-    setArrayCostRepair(clone)
-  }
+    let clone = [...arrayCostRepair];
+    clone.splice(index, 1);
+    setArrayCostRepair(clone);
+  };
 
-  const [showModal, setShowModal] = useState()
-  const [showModalSuccess, setShowModalSuccess] = useState()
-  const { id } = useParams()
+  const [showModal, setShowModal] = useState();
+  const [showModalSuccess, setShowModalSuccess] = useState();
+  const { id } = useParams();
   async function submit(valStatus) {
-    console.log(item, valStatus || item.statusOfDetailRecord, id)
+    console.log(item, valStatus || item.statusOfDetailRecord, id);
     // return
     try {
       await updateRecordRepairDetail(id, {
@@ -101,51 +103,57 @@ const RepairTechnicianJobDetail = () => {
         status: valStatus || item.statusOfDetailRecord,
         informRepairManArray: arrayTechnician,
         costOfRepairArray: arrayCostRepair
-      })
+      });
       if (!valStatus) {
-        console.log(valStatus, arrayTechnician, item.statusOfDetailRecord, arrayCostRepair)
-        return
+        console.log(
+          valStatus,
+          arrayTechnician,
+          item.statusOfDetailRecord,
+          arrayCostRepair
+        );
+        return;
       }
-      setShowModalSuccess(true)
+      setShowModalSuccess(true);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
   const handleSubmit = () => {
-    let err, errTable
-    if (!item.repairMan) err = true
+    let err, errTable;
+    if (!item.repairMan) err = true;
     if (!arrayTechnician.length) {
-      setArrayTechnician([defaultTech])
-      errTable = true
+      setArrayTechnician([defaultTech]);
+      errTable = true;
     }
     arrayTechnician?.map(ele => {
-      if (!ele.name || !ele.totalEarn.length) errTable = true
-    })
-    setError(err)
-    setErrorTable(errTable)
-    console.log(err, errTable, arrayTechnician)
-    if (!(err || errTable)) setShowModal(true)
-  }
+      if (!ele.name || !ele.totalEarn.length) errTable = true;
+    });
+    setError(err);
+    setErrorTable(errTable);
+    console.log(err, errTable, arrayTechnician);
+    if (!(err || errTable)) setShowModal(true);
+  };
 
   useEffect(() => {
-    let total = 0
+    let total = 0;
     arrayCostRepair?.map(cost => {
-      total += cost.total
-    })
-    arrayTechnician?.map((tech) => {
-      total += +tech.totalEarn
-    })
-    setItem({ ...item, totalPrice: total })
-  }, [arrayTechnician, arrayCostRepair])
-  console.log(item.totalPrice)
+      total += cost.total;
+    });
+    arrayTechnician?.map(tech => {
+      total += +tech.totalEarn;
+    });
+    setItem({ ...item, totalPrice: total });
+  }, [arrayTechnician, arrayCostRepair]);
+  console.log(item.totalPrice);
 
   return (
     <>
       <div className="bg-background-page pt-5 p-3">
         <div>
           <div className="text-xl text-text-green flex items-center">
-            <Link to={`/repairTechnicianIndex`}
+            <Link
+              to={`/repairTechnicianIndex`}
               className="flex justify-center items-center hover:bg-gray-200 rounded-full w-8 h-8 px-2 py-2 mr-2"
             >
               <BsArrowLeft className="text-lg" />
@@ -178,14 +186,21 @@ const RepairTechnicianJobDetail = () => {
           <div className="flex justify-end gap-5 mr-5">
             <div className="flex items-center gap-2">
               <h1>สถานะใบแจ้งซ่อม</h1>
-              <div className={`text-sm p-2 rounded-full px-3 
-              ${item.statusOfDetailRecord == "inProgressOfDetailRecord" ? "bg-purple-600  text-white"
-                  : item.statusOfDetailRecord == "waitingApproval" ? "bg-yellow-300"
-                    : ""}`}
+              <div
+                className={`text-sm p-2 rounded-full px-3 
+              ${
+                item.statusOfDetailRecord == "inProgressOfDetailRecord"
+                  ? "bg-purple-600  text-white"
+                  : item.statusOfDetailRecord == "waitingApproval"
+                  ? "bg-yellow-300"
+                  : ""
+              }`}
               >
-                {item.statusOfDetailRecord == "inProgressOfDetailRecord" ? "ดำเนินการ"
-                  : item.statusOfDetailRecord == "waitingApproval" ? "รออนุมัติ"
-                    : ""}
+                {item.statusOfDetailRecord == "inProgressOfDetailRecord"
+                  ? "ดำเนินการ"
+                  : item.statusOfDetailRecord == "waitingApproval"
+                  ? "รออนุมัติ"
+                  : ""}
               </div>
             </div>
           </div>
@@ -199,18 +214,24 @@ const RepairTechnicianJobDetail = () => {
               <div className="text-text-gray flex items-center ">
                 เลขที่ใบแจ้งซ่อม
               </div>
-              <div className="flex items-center col-span-2">{item.informRepairIdDoc}</div>
+              <div className="flex items-center col-span-2">
+                {item.informRepairIdDoc}
+              </div>
               <div className="text-text-gray flex items-center ">
                 สถานะความเร่งด่วน
               </div>
-              <div className={`flex justify-center items-end md:-mt-3 py-2 w-fit px-3.5 rounded-full col-span-2 h-fit
-              ${item.urgentStatus === 'ปกติ'
-                  ? 'bg-blue-600 text-white '
-                  : item.urgentStatus === 'เร่งด่วน'
-                    ? 'bg-[#F2994A] text-white '
-                    : item.urgentStatus === 'ฉุกเฉิน'
-                      ? 'bg-red-700 text-white '
-                      : 'border-0'}`}>
+              <div
+                className={`flex justify-center items-end md:-mt-3 py-2 w-fit px-3.5 rounded-full col-span-2 h-fit
+              ${
+                item.urgentStatus === "ปกติ"
+                  ? "bg-blue-600 text-white "
+                  : item.urgentStatus === "เร่งด่วน"
+                  ? "bg-[#F2994A] text-white "
+                  : item.urgentStatus === "ฉุกเฉิน"
+                  ? "bg-red-700 text-white "
+                  : "border-0"
+              }`}
+              >
                 {item.urgentStatus}
               </div>
             </div>
@@ -220,37 +241,55 @@ const RepairTechnicianJobDetail = () => {
                 เวลาที่แจ้งซ่อม
               </div>
               <div className="flex items-center col-span-2">
-                {item.informRepairDate && `${new Date(item.informRepairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}
+                {item.informRepairDate &&
+                  `${new Date(item.informRepairDate).toLocaleString("th", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                  })} น.`}
               </div>
               <div className="text-text-gray flex items-center">
                 รหัสครุภัณฑ์
               </div>
-              <div className="flex items-center col-span-2">{item.assetGroupNumber}</div>
+              <div className="flex items-center col-span-2">
+                {item.assetGroupNumber}
+              </div>
             </div>
             {/* row 3 */}
             <div className="grid grid-cols-3 gap-2 md:grid-cols-6 p-2 max-md:pb-0">
               <div className="text-text-gray flex items-center">
                 อยู่ในประกัน
               </div>
-              <div className={`flex items-center col-span-2 ${item.isInsurance ? "text-text-green" : "text-red-500"}`}>
+              <div
+                className={`flex items-center col-span-2 ${
+                  item.isInsurance ? "text-text-green" : "text-red-500"
+                }`}
+              >
                 {item.isInsurance ? "อยู่ในประกัน" : "ไม่อยู่ในประกัน"}
               </div>
               <div className="text-text-gray flex items-center">
                 เลขครุภัณฑ์
               </div>
-              <div className="flex items-center col-span-2">{item.assetNumber}</div>
+              <div className="flex items-center col-span-2">
+                {item.assetNumber}
+              </div>
             </div>
             {/* row 4 */}
             <div className="grid grid-cols-3 gap-2 md:grid-cols-6 p-2 max-md:pb-0">
               <div className="text-text-gray flex items-center">
                 เจ้าของครุภัณฑ์
               </div>
-              <div className="flex items-center col-span-2">{item.hostSector || '-'}</div>
+              <div className="flex items-center col-span-2">
+                {item.hostSector || "-"}
+              </div>
               <div className="text-text-gray flex items-center">
                 ชื่อครุภัณฑ์
               </div>
               <div className="flex items-center col-span-2">
-                {item.productName || '-'}
+                {item.productName || "-"}
               </div>
             </div>
             {/* row 5 */}
@@ -258,23 +297,46 @@ const RepairTechnicianJobDetail = () => {
               <div className="text-text-gray flex items-center">
                 วันที่เริ่มรับประกัน
               </div>
-              <div className="flex items-center col-span-2">{(item.insuranceStartDate)
-                ? `${new Date(item.insuranceStartDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`
-                : '-'}</div>
+              <div className="flex items-center col-span-2">
+                {item.insuranceStartDate
+                  ? `${new Date(item.insuranceStartDate).toLocaleString("th", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false
+                    })} น.`
+                  : "-"}
+              </div>
               <div className="text-text-gray flex items-center">
                 วันที่สิ้นสุดการรับประกัน
               </div>
-              <div className="flex items-center col-span-2">{item.insuranceEndDate ? `${new Date(item.insuranceEndDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`
-                : '-'}</div>
+              <div className="flex items-center col-span-2">
+                {item.insuranceEndDate
+                  ? `${new Date(item.insuranceEndDate).toLocaleString("th", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false
+                    })} น.`
+                  : "-"}
+              </div>
             </div>
             {/* row 6 */}
             <div className="grid grid-cols-3 gap-2 md:grid-cols-6 p-2 max-md:pb-0">
               <div className="text-text-gray flex items-center">
                 รหัส cost center
               </div>
-              <div className="flex items-center col-span-2">{item.costCenterCode || '-'}</div>
+              <div className="flex items-center col-span-2">
+                {item.costCenterCode || "-"}
+              </div>
               <div className="text-text-gray flex items-center">สท.01</div>
-              <div className="flex items-center col-span-2">{item.asset01 || '-'}</div>
+              <div className="flex items-center col-span-2">
+                {item.asset01 || "-"}
+              </div>
             </div>
           </div>
 
@@ -285,7 +347,9 @@ const RepairTechnicianJobDetail = () => {
               <div className="text-text-gray flex items-center ">
                 ที่ตั้ง/อาคาร
               </div>
-              <div className="flex items-center col-span-2">{item.building}</div>
+              <div className="flex items-center col-span-2">
+                {item.building}
+              </div>
               <div className="text-text-gray flex items-center ">ชั้น</div>
               <div className="flex items-center col-span-2 ">{item.floor}</div>
             </div>
@@ -303,11 +367,15 @@ const RepairTechnicianJobDetail = () => {
               <div className="text-text-gray flex items-center ">
                 ผู้ส่งซ่อม
               </div>
-              <div className="flex items-center col-span-2 ">{item.name_courier}</div>
+              <div className="flex items-center col-span-2 ">
+                {item.name_courier}
+              </div>
               <div className="text-text-gray flex items-center ">
                 เบอร์โทรศัพท์
               </div>
-              <div className="flex items-center col-span-2 ">{item.phoneNumber}</div>
+              <div className="flex items-center col-span-2 ">
+                {item.phoneNumber}
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-2 md:grid-cols-6 p-2 max-md:pb-0">
@@ -318,9 +386,10 @@ const RepairTechnicianJobDetail = () => {
                 {item.name_recorder}
               </div>
               <div className="text-text-gray flex items-center">หน่วยงาน</div>
-              <div className="flex items-center col-span-2">{item.courierSector}</div>
+              <div className="flex items-center col-span-2">
+                {item.courierSector}
+              </div>
             </div>
-
           </div>
         </div>
 
@@ -333,12 +402,28 @@ const RepairTechnicianJobDetail = () => {
                 วันที่-เวลาจ่ายงานช่าง
               </div>
               <div className="flex items-center col-span-2">
-                {item.assignDate && `${new Date(item.assignDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}
+                {item.assignDate &&
+                  `${new Date(item.assignDate).toLocaleString("th", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                  })} น.`}
               </div>
               <div className="text-text-gray flex items-center ">
                 วันที่-เวลาถึงสถานที่ซ่อม
               </div>
-              {item.arriveAtPlaceDate && `${new Date(item.arriveAtPlaceDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}
+              {item.arriveAtPlaceDate &&
+                `${new Date(item.arriveAtPlaceDate).toLocaleString("th", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false
+                })} น.`}
             </div>
           </div>
 
@@ -347,13 +432,29 @@ const RepairTechnicianJobDetail = () => {
               วันที่-เวลาทำการซ่อม
             </div>
             <div className="flex mr-2 col-span-2">
-              {item.workDate && `${new Date(item.workDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}
+              {item.workDate &&
+                `${new Date(item.workDate).toLocaleString("th", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false
+                })} น.`}
             </div>
             <div className="text-text-gray flex items-center ">
               วันที่-เวลาซ่อมเสร็จ
             </div>
             <div className="flex mr-2 h-full col-span-2">
-              {item.repairDate && `${new Date(item.repairDate).toLocaleString('th', { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })} น.`}
+              {item.repairDate &&
+                `${new Date(item.repairDate).toLocaleString("th", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false
+                })} น.`}
             </div>
           </div>
         </div>
@@ -414,7 +515,7 @@ const RepairTechnicianJobDetail = () => {
 
               <div className="p-4 rounded-md bg-background-gray-table mt-2 flex justify-between">
                 <h1>รวมจำนวนเงินทั้งหมด</h1>
-                <div>{item?.totalPrice || ''} บาท</div>
+                <div>{item?.totalPrice || ""} บาท</div>
               </div>
             </div>
           </div>
@@ -428,10 +529,12 @@ const RepairTechnicianJobDetail = () => {
             <div className="flex items-center md:col-span-5 md:w-11/12">
               <input
                 type="text"
-                className={`${error && !ele.name && 'border-red-500'} py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  error && !ele.name && "border-red-500"
+                } py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
                 name="name"
-              // onChange={onChange}
-              // value={ele.name}
+                // onChange={onChange}
+                // value={ele.name}
               />
             </div>
           </div>
@@ -440,15 +543,17 @@ const RepairTechnicianJobDetail = () => {
             <div className="flex items-center md:col-span-5 md:w-11/12">
               <input
                 type="text"
-                className={`${error && !ele.name && 'border-red-500'} py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  error && !ele.name && "border-red-500"
+                } py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
                 name="name"
-              // onChange={onChange}
-              // value={ele.name}
+                // onChange={onChange}
+                // value={ele.name}
               />
             </div>
           </div>
-        </div >
-      </div >
+        </div>
+      </div>
 
       <div className="flex justify-between items-center gap-10 p-5 text-sm mr-">
         <button
@@ -472,20 +577,28 @@ const RepairTechnicianJobDetail = () => {
           onClose={() => setShowModal(false)}
           onSave={() => submit("waitingApproval")}
         />
-        {showModalSuccess && <ModalSuccess urlPath='/repairTechnicianIndex' />}
+        {showModalSuccess && <ModalSuccess urlPath="/repairTechnicianIndex" />}
       </div>
     </>
-  )
-}
+  );
+};
 
-const TableTechnicianRecord = ({ index, deleteRow, ele, arrayTechnician, onChange, errorTable }) => {
-
+const TableTechnicianRecord = ({
+  index,
+  deleteRow,
+  ele,
+  arrayTechnician,
+  onChange,
+  errorTable
+}) => {
   return (
     <div className="p-2 grid grid-cols-8 justify-center items-center gap-5 text-xs bg-white">
       <div className="col-span-2">
         <input
           type="text"
-          className={`${errorTable && !ele.name && 'border-red-500'} py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+          className={`${
+            errorTable && !ele.name && "border-red-500"
+          } py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="name"
           onChange={onChange}
           value={ele.name}
@@ -494,7 +607,9 @@ const TableTechnicianRecord = ({ index, deleteRow, ele, arrayTechnician, onChang
       <div className="col-span-1">
         <input
           type="text"
-          className={`${errorTable && !ele.totalEarn && 'border-red-500'} text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+          className={`${
+            errorTable && !ele.totalEarn && "border-red-500"
+          } text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="workPerHour"
           onChange={onChange}
           value={ele.workPerHour}
@@ -503,7 +618,9 @@ const TableTechnicianRecord = ({ index, deleteRow, ele, arrayTechnician, onChang
       <div className="col-span-1">
         <input
           type="text"
-          className={`${errorTable && !ele.totalEarn && 'border-red-500'} text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+          className={`${
+            errorTable && !ele.totalEarn && "border-red-500"
+          } text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="ratePerHour"
           onChange={onChange}
           value={ele.ratePerHour}
@@ -515,13 +632,17 @@ const TableTechnicianRecord = ({ index, deleteRow, ele, arrayTechnician, onChang
           className="py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none focus:border-focus-blue text-center"
           name="total"
           // onChange={onChange}
-          value={arrayTechnician[index].total || ele.workPerHour * ele.ratePerHour}
+          value={
+            arrayTechnician[index].total || ele.workPerHour * ele.ratePerHour
+          }
         />
       </div>
       <div className="col-span-1">
         <input
           type="text"
-          className={`${errorTable && !ele.totalEarn && 'border-red-500'} text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+          className={`${
+            errorTable && !ele.totalEarn && "border-red-500"
+          } text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="amountExtra"
           onChange={onChange}
           value={ele.amountExtra}
@@ -539,15 +660,15 @@ const TableTechnicianRecord = ({ index, deleteRow, ele, arrayTechnician, onChang
         <button
           className="flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 "
           onClick={() => {
-            deleteRow(index)
+            deleteRow(index);
           }}
         >
           <HiTrash className="text-lg" />
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const TableTechnicianRepairCost = ({ index, deleteRow, ele, onChange }) => {
   return (
@@ -606,13 +727,13 @@ const TableTechnicianRepairCost = ({ index, deleteRow, ele, onChange }) => {
         <button
           className="flex justify-center items-center text-white bg-button-red hover:bg-red-600 rounded-lg focus:border-2 focus:outline-none  focus:border-red-700 w-8 h-8 "
           onClick={() => {
-            deleteRow(index)
+            deleteRow(index);
           }}
         >
           <HiTrash className="text-lg" />
         </button>
       </div>
     </div>
-  )
-}
-export default RepairTechnicianJobDetail
+  );
+};
+export default RepairTechnicianJobDetail;

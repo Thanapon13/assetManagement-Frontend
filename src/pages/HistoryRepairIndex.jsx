@@ -113,7 +113,7 @@ const HistoryRepairIndex = () => {
   const fetchBorrowHistorySectorSelector = async () => {
     try {
       const res = await getBorrowHistorySector();
-      console.log(res.data.sectors);
+      console.log("res:", res.data.sectors);
       setSectorList(res.data.sectors);
     } catch (err) {
       console.log(err);

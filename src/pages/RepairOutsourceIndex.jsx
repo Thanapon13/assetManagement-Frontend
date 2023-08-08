@@ -7,9 +7,15 @@ import { CgPushChevronLeft } from "react-icons/cg";
 import { CgPushChevronRight } from "react-icons/cg";
 import DateInput from "../components/date/DateInput";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import { getBorrowHistorySector, getBySearchBorrowHistory } from "../api/borrowApi";
+import {
+  getBorrowHistorySector,
+  getBySearchBorrowHistory
+} from "../api/borrowApi";
 import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
-import { getRepairHistoryBySearch, getRepairOutsourceBySearch } from "../api/repairApi";
+import {
+  getRepairHistoryBySearch,
+  getRepairOutsourceBySearch
+} from "../api/repairApi";
 import SearchSelector from "../components/selector/SearchSelector";
 
 const RepairOutsourceIndex = () => {
@@ -22,14 +28,15 @@ const RepairOutsourceIndex = () => {
     sector: "",
     page: "",
     limit: 10,
-    total: 0,
+    total: 0
   });
 
   const [dataList, setDataList] = useState([]);
+  console.log("dataList:", dataList);
   const [sectorList, setSectorList] = useState([]);
 
   // handle
-  const handleChange = (e) => {
+  const handleChange = e => {
     console.log({ ...search, [e.target.name]: e.target.value });
     setSearch({ ...search, [e.target.name]: e.target.value });
   };
@@ -74,30 +81,31 @@ const RepairOutsourceIndex = () => {
 
   const fetchDataList = async () => {
     try {
-      const res = await getRepairOutsourceBySearch(search)
-      setDataList(res.data.repair)
+      const res = await getRepairOutsourceBySearch(search);
+      console.log("res:", res.data.repair);
+      setDataList(res.data.repair);
       setSearch({
         ...search,
         page: res.data.page,
         limit: res.data.limit,
-        total: res.data.total,
+        total: res.data.total
       });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const handleSearch = () => {
     fetchDataList();
   };
 
-  const handlePaginationSearch = (e) => {
+  const handlePaginationSearch = e => {
     console.log({ ...search, [e.target.name]: e.target.value });
     setSearch({ ...search, [e.target.name]: e.target.value });
     fetchDataList({ ...search, [e.target.name]: e.target.value });
   };
 
-  // fetch dropdown 
+  // fetch dropdown
   const getDropdown = async () => {
     try {
       const res = await getBorrowHistorySector();
@@ -109,9 +117,9 @@ const RepairOutsourceIndex = () => {
   };
 
   useEffect(() => {
-    fetchDataList()
-    getDropdown()
-  }, [])
+    fetchDataList();
+    getDropdown();
+  }, []);
 
   return (
     <div className="bg-background-page px-5 pt-5 pb-36 ">
@@ -170,7 +178,7 @@ const RepairOutsourceIndex = () => {
             onChange={(value, label) => setSearch({ ...search, [label]: value })}
             floatLabel
           /> */}
-           <select
+          <select
             className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
             name="status"
             value={search.status}
@@ -211,7 +219,9 @@ const RepairOutsourceIndex = () => {
             options={sectorList}
             placeholder={"อาคาร"}
             name={"sector"}
-            onChange={(value, label) => setSearch({ ...search, [label]: value })}
+            onChange={(value, label) =>
+              setSearch({ ...search, [label]: value })
+            }
             floatLabel
           />
         </div>
@@ -223,7 +233,9 @@ const RepairOutsourceIndex = () => {
                 options={sectorList}
                 placeholder={"ชั้น"}
                 name={"sector"}
-                onChange={(value, label) => setSearch({ ...search, [label]: value })}
+                onChange={(value, label) =>
+                  setSearch({ ...search, [label]: value })
+                }
                 floatLabel
               />
             </div>
@@ -239,7 +251,6 @@ const RepairOutsourceIndex = () => {
             </button>
           </div>
         </div>
-
       </div>
 
       <div className="grid">
@@ -299,9 +310,10 @@ const RepairOutsourceIndex = () => {
             </div>
             <TableBorrowHistory data={dataList} search={search} />
 
-            {!dataList.length
-              ? <center className='p-5'>-</center>
-              : <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+            {!dataList.length ? (
+              <center className="p-5">-</center>
+            ) : (
+              <div className="flex justify-end gap-2 h-12 pr-12 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
                 <div className="flex mr-10 items-center">
                   <div>Rows per page:</div>
                   <select
@@ -311,7 +323,10 @@ const RepairOutsourceIndex = () => {
                     onChange={handlePaginationSearch}
                   >
                     <option value="5">5</option>
-                    <option value="10" selected="selected"> 10 </option>
+                    <option value="10" selected="selected">
+                      {" "}
+                      10{" "}
+                    </option>
                     <option value="20">20</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
@@ -319,7 +334,9 @@ const RepairOutsourceIndex = () => {
                 </div>
 
                 <div className="mx-5">
-                  {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + dataList.length} of {search.total}
+                  {search.limit * (search.page - 1) + 1}-
+                  {search.limit * (search.page - 1) + dataList.length} of{" "}
+                  {search.total}
                 </div>
 
                 <button
@@ -347,7 +364,7 @@ const RepairOutsourceIndex = () => {
                   <CgPushChevronRight className="text-lg font-bold" />
                 </button>
               </div>
-            }
+            )}
           </div>
         </div>
       </div>
@@ -355,7 +372,7 @@ const RepairOutsourceIndex = () => {
   );
 };
 
-const TableBorrowHistory = (props) => {
+const TableBorrowHistory = props => {
   let options = { day: "2-digit", month: "2-digit", year: "numeric" };
   return (
     <>
@@ -374,20 +391,21 @@ const TableBorrowHistory = (props) => {
             <div className="col-span-1">
               {new Date(item.repairedDate).toLocaleDateString("th-TH", options)}
             </div>
-            <div onClick={() => handleClick(item.status)}
-              className={`rounded-full border-0 ${item.urgentStatus === 'rush'
-                ? 'bg-text-green/[.2] text-text-green '
-                : item.urgentStatus === 'rush'
-                  ? 'bg-yellow-300'
-                  : 'bg-red-200 text-red-600  border-red-200'
-                } border border-spacing-5 p-2 w-full`}
+            <div
+              onClick={() => handleClick(item.status)}
+              className={`rounded-full border-0 ${
+                item.urgentStatus === "rush"
+                  ? "bg-text-green/[.2] text-text-green "
+                  : item.urgentStatus === "rush"
+                  ? "bg-yellow-300"
+                  : "bg-red-200 text-red-600  border-red-200"
+              } border border-spacing-5 p-2 w-full`}
             >
-              {item.urgentStatus === 'rush'
-                ? 'รับใบซ่อม'
-                : item.urgentStatus === 'rush'
-                  ? 'รอเบิกวัสดุ'
-                  : 'ยกเลิก'
-              }
+              {item.urgentStatus === "rush"
+                ? "รับใบซ่อม"
+                : item.urgentStatus === "rush"
+                ? "รอเบิกวัสดุ"
+                : "ยกเลิก"}
             </div>
             <div className="col-span-1 flex justify-center">
               <Link

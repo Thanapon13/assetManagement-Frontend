@@ -27,6 +27,7 @@ const RepairIndex = () => {
   });
   //* แก้ ใช้ state คนละตัว *
   const [data, setData] = useState([]);
+  console.log("data:", data);
   const [sectorArray, setSectorArray] = useState([]);
 
   useEffect(() => {
@@ -140,7 +141,7 @@ const RepairIndex = () => {
             <option value="inProgress">ดำเนินการ</option>
             <option value="waitingForCheck">รอตรวจรับ</option>
             <option value="complete">เสร็จสิ้น</option>
-            <option value="cancel">ยกเลิก</option>
+            <option value="reject">ยกเลิก</option>
             <option value="saveDraft">แบบร่าง</option>
           </select>
         </div>
@@ -340,6 +341,28 @@ const TableRepairIndex = props => {
                     <ModalCancel item={item} fetchList={props.fetchList} />
                   </div>
                 ) : item.status === "inProgress" ? (
+                  <div className="flex gap-1">
+                    <Link
+                      to={`repairDetail/${item._id}`}
+                      state={{ data: item }}
+                      className="border-[1px] gap-2 border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[120px] flex justify-center items-center rounded-md"
+                    >
+                      <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
+                      <h1>ดูรายละเอียด</h1>
+                    </Link>
+                  </div>
+                ) : item.status === "complete" ? (
+                  <div className="flex gap-1">
+                    <Link
+                      to={`repairDetail/${item._id}`}
+                      state={{ data: item }}
+                      className="border-[1px] gap-2 border-text-green  focus:border-transparent shadow-sm text-sm font-medium  text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800  h-[31px] w-[120px] flex justify-center items-center rounded-md"
+                    >
+                      <BsFillEyeFill className="w-[16px] h-[16px] text-text-green" />
+                      <h1>ดูรายละเอียด</h1>
+                    </Link>
+                  </div>
+                ) : item.status === "reject" ? (
                   <div className="flex gap-1">
                     <Link
                       to={`repairDetail/${item._id}`}

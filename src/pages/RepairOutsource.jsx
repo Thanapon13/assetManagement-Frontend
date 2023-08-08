@@ -43,7 +43,7 @@ const RepairOutsource = () => {
           <BsArrowLeft className="text-lg" />
         </Link>
         <div className="text-2xl text-text-green ">
-          รายละเอียดการจ้างซ่อมภายนอก
+          รายละเอียดการจ้างซ่อมภายนอกssssssssss
         </div>
       </div>
 
