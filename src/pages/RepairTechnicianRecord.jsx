@@ -99,29 +99,21 @@ const RepairTechnicianRecord = () => {
 
   const submit = async valStatus => {
     try {
-      arrayCostRepair.map((el, idx) => {
-        delete el.total;
-      });
-      console.log("arrayCostRepair:", arrayCostRepair);
+      const inputs = item
+      delete inputs.arrayCostRepair
+      delete inputs.arrayTechnician
+      // console.log(inputs, item);
       await updateRecordRepairDetail(id, {
-        input: item,
+        input: inputs,
         status: valStatus || item.statusOfDetailRecord,
-        informRepairManArray: [],
+        informRepairManArray: arrayTechnician,
         costOfRepairArray: arrayCostRepair
       });
-      console.log("costOfRepairArray:", costOfRepairArray);
       if (!valStatus) {
-        console.log(
-          valStatus,
-          arrayTechnician,
-          item.statusOfDetailRecord,
-          arrayCostRepair
-        );
         setShowModalSuccess(true);
         return;
       } else {
-        // window.location.href = "/repairTechnicianIndex";
-        console.log("err");
+        window.location.href = "/repairTechnicianIndex";
       }
     } catch (err) {
       console.log(err);
@@ -219,19 +211,18 @@ const RepairTechnicianRecord = () => {
               <h1>สถานะใบแจ้งซ่อม</h1>
               <div
                 className={`text-sm p-2 rounded-full px-3 
-              ${
-                item.statusOfDetailRecord == "waitingRecord"
-                  ? "bg-[#F2994A26] text-[#F2994A]"
-                  : item.statusOfDetailRecord == "waitingApproval"
-                  ? "bg-yellow-300"
-                  : ""
-              }`}
+              ${item.statusOfDetailRecord == "waitingRecord"
+                    ? "bg-[#F2994A26] text-[#F2994A]"
+                    : item.statusOfDetailRecord == "waitingApproval"
+                      ? "bg-yellow-300"
+                      : ""
+                  }`}
               >
                 {item.statusOfDetailRecord == "waitingRecord"
                   ? "รอลงบันทึก"
                   : item.statusOfDetailRecord == "waitingApproval"
-                  ? "รออนุมัติ"
-                  : ""}
+                    ? "รออนุมัติ"
+                    : ""}
               </div>
             </div>
           </div>
@@ -253,15 +244,14 @@ const RepairTechnicianRecord = () => {
               </div>
               <div
                 className={`flex justify-center items-end -mt-3 py-2 w-fit px-3.5 rounded-full h-fit
-              ${
-                item.urgentStatus === "ปกติ"
-                  ? "bg-blue-600 text-white "
-                  : item.urgentStatus === "เร่งด่วน"
-                  ? "bg-[#F2994A] text-white "
-                  : item.urgentStatus === "ฉุกเฉิน"
-                  ? "bg-red-700 text-white "
-                  : "border-0"
-              }`}
+              ${item.urgentStatus === "ปกติ"
+                    ? "bg-blue-600 text-white "
+                    : item.urgentStatus === "เร่งด่วน"
+                      ? "bg-[#F2994A] text-white "
+                      : item.urgentStatus === "ฉุกเฉิน"
+                        ? "bg-red-700 text-white "
+                        : "border-0"
+                  }`}
               >
                 {item.urgentStatus}
               </div>
@@ -295,9 +285,8 @@ const RepairTechnicianRecord = () => {
                 อยู่ในประกัน
               </div>
               <div
-                className={`flex items-center col-span-2 ${
-                  item.isInsurance ? "text-text-green" : "text-red-500"
-                }`}
+                className={`flex items-center col-span-2 ${item.isInsurance ? "text-text-green" : "text-red-500"
+                  }`}
               >
                 {item.isInsurance ? "อยู่ในประกัน" : "ไม่อยู่ในประกัน"}
               </div>
@@ -331,13 +320,13 @@ const RepairTechnicianRecord = () => {
               <div className="flex items-center col-span-2">
                 {item.insuranceStartDate
                   ? `${new Date(item.insuranceStartDate).toLocaleString("th", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false
-                    })} น.`
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                  })} น.`
                   : "-"}
               </div>
               <div className="text-text-gray flex items-center">
@@ -356,13 +345,13 @@ const RepairTechnicianRecord = () => {
               <div className="flex items-center col-span-2">
                 {item.insuranceEndDate
                   ? `${new Date(item.insuranceEndDate).toLocaleString("th", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false
-                    })} น.`
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                  })} น.`
                   : "-"}
               </div>
               <div className="text-text-gray flex items-center">สท.01</div>
@@ -435,9 +424,8 @@ const RepairTechnicianRecord = () => {
             <div className="grid grid-cols-2 md:grid-cols-6 p-2">
               <div className="text-text-gray flex items-center">ผู้รับซ่อม</div>
               <input
-                className={`p-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue ${
-                  error && !item.repairMan && "border-red-500"
-                } col-span-2`}
+                className={`p-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue ${error && !item.repairMan && "border-red-500"
+                  } col-span-2`}
                 value={item.repairMan}
                 onChange={e => {
                   setItem({
@@ -483,7 +471,7 @@ const RepairTechnicianRecord = () => {
                   id="arriveAtPlaceDate"
                   state={item}
                   setState={e => setItem({ ...item, arriveAtPlaceDate: e })}
-                  // lable="date to"
+                // lable="date to"
                 />
               </div>
             </div>
@@ -641,7 +629,7 @@ const RepairTechnicianRecord = () => {
           <ModalConfirmSave
             isVisible={showModal}
             onClose={() => setShowModal(false)}
-            onSave={() => submit()}
+            onSave={() => submit('waitingApproval')}
           />
           {/* {showModalSuccess && (
             <ModalSuccess urlPath="/repairTechnicianIndex" />
@@ -698,9 +686,8 @@ const TableTechnicianRecord = ({
       <div className="col-span-2">
         <input
           type="text"
-          className={`${
-            errorTable && !ele.name && "border-red-500"
-          } py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+          className={`${errorTable && !ele.name && "border-red-500"
+            } py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="name"
           onChange={onChange}
           value={ele.name}
@@ -709,9 +696,8 @@ const TableTechnicianRecord = ({
       <div className="col-span-1">
         <input
           type="text"
-          className={`${
-            errorTable && !ele.totalEarn && "border-red-500"
-          } text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+          className={`${errorTable && !ele.totalEarn && "border-red-500"
+            } text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="workPerHour"
           onChange={onChange}
           value={ele.workPerHour}
@@ -720,9 +706,8 @@ const TableTechnicianRecord = ({
       <div className="col-span-1">
         <input
           type="text"
-          className={`${
-            errorTable && !ele.totalEarn && "border-red-500"
-          } text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+          className={`${errorTable && !ele.totalEarn && "border-red-500"
+            } text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="ratePerHour"
           onChange={onChange}
           value={ele.ratePerHour}
@@ -742,9 +727,8 @@ const TableTechnicianRecord = ({
       <div className="col-span-1">
         <input
           type="text"
-          className={`${
-            errorTable && !ele.totalEarn && "border-red-500"
-          } text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+          className={`${errorTable && !ele.totalEarn && "border-red-500"
+            } text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
           name="amountExtra"
           onChange={onChange}
           value={ele.amountExtra}
