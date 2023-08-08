@@ -359,7 +359,6 @@ const RepairOutSourceRecord = () => {
             </div>
           </div>
         </div>
-      
 
         {isLoading ? (
           <div className="mt-5 py-10 w-full text-center">

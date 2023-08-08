@@ -35,27 +35,34 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
     "กันยายน ",
     "ตุลาคม ",
     "พฤศจิกายน ",
-    "ธันวาคม ",
+    "ธันวาคม "
   ];
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   function updateToBuddhist(date) {
-    const dateBuddhist = (new Date(new Date(date).setFullYear(new Date(date).getFullYear() + 543))).toLocaleString([], { hour12: false })
+    const dateBuddhist = new Date(
+      new Date(date).setFullYear(new Date(date).getFullYear() + 543)
+    ).toLocaleString([], { hour12: false });
     const spaceArray = dateBuddhist.split(" ");
-    const splitDate = spaceArray[0].split("/")
-    const dateFormat = splitDate[1]?.padStart(2, "0") + "/" + splitDate[0].padStart(2, "0") + "/" + splitDate[2];
+    const splitDate = spaceArray[0].split("/");
+    const dateFormat =
+      splitDate[1]?.padStart(2, "0") +
+      "/" +
+      splitDate[0].padStart(2, "0") +
+      "/" +
+      splitDate[2];
 
     const splitTime = spaceArray[1].split(":");
-    const timeFormat = splitTime[0] + ":" + splitTime[1]
-    const formatTime = dateFormat + " " + timeFormat + " น."
+    const timeFormat = splitTime[0] + ":" + splitTime[1];
+    const formatTime = dateFormat + " " + timeFormat + " น.";
 
     if (date) {
-      return formatTime.toLocaleString("th-TH")
+      return formatTime.toLocaleString("th-TH");
     }
   }
 
-  const isDateTo_FROM = lable == "date to" || lable == "date from"
+  const isDateTo_FROM = lable == "date to" || lable == "date from";
 
   return (
     <>
@@ -63,7 +70,8 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
         <div className="text-xs font-semibold w-32 absolute -top-2 z-10 left-2 w-max px-1">
           {/* bg-gradient-to-t from-transparent  from-0% via-white via-1%  to-transparent to-0%  */}
           {lable}
-          {location.pathname === "/borrowHistory" || location.pathname === "/borrowCheckIndex" && ` (วันที่ยืม)`}
+          {location.pathname === "/borrowHistory" ||
+            (location.pathname === "/borrowCheckIndex" && ` (วันที่ยืม)`)}
         </div>
       </div>
       <DatePicker
@@ -77,13 +85,13 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
           decreaseMonth,
           increaseMonth,
           prevMonthButtonDisabled,
-          nextMonthButtonDisabled,
+          nextMonthButtonDisabled
         }) => (
           <div
             style={{
               margin: "2px 10px ",
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "center"
             }}
           >
             <button
@@ -91,7 +99,7 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
               disabled={prevMonthButtonDisabled}
               style={{
                 border: "1px solid black",
-                padding: "0 5px",
+                padding: "0 5px"
               }}
             >
               {"<"}
@@ -101,10 +109,10 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
               onChange={({ target: { value } }) => changeYear(value)}
               style={{
                 fontSize: "0.8rem",
-                padding: "0px 40px 0px 10px",
+                padding: "0px 40px 0px 10px"
               }}
             >
-              {years.reverse().map((year) => (
+              {years.reverse().map(year => (
                 <option key={year} value={year}>
                   {year + 543}
                 </option>
@@ -118,10 +126,10 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
               }
               style={{
                 fontSize: "0.8rem",
-                padding: "0px 40px 0px 10px",
+                padding: "0px 40px 0px 10px"
               }}
             >
-              {months.map((option) => (
+              {months.map(option => (
                 <option key={option} value={option}>
                   {option}
                 </option>
@@ -133,7 +141,7 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
               disabled={nextMonthButtonDisabled}
               style={{
                 border: "1px solid black",
-                padding: "0 5px",
+                padding: "0 5px"
               }}
             >
               {">"}
@@ -148,9 +156,13 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
         timeFormat="p"
         dateFormat="Pp"
         timeIntervals={1}
-        className={`${error && "border-red-500"} w-full h-[38px] shadow-sm focus:border-2 focus:outline-none  focus:border-focus-blue  sm:text-xs border-[1px] border-gray-300 rounded-md pl-2`}
+        className={`${
+          error && "border-red-500"
+        } w-full h-[38px] shadow-sm focus:border-2 focus:outline-none  focus:border-focus-blue  sm:text-xs border-[1px] border-gray-300 rounded-md pl-2`}
         // value={(new Date(new Date(state[id]).setFullYear(new Date(state[id]).getFullYear() + 543))).toLocaleString()}
-        value={updateToBuddhist(isDateTo_FROM ? state[id] : id ? state[id] : state)}
+        value={updateToBuddhist(
+          isDateTo_FROM ? state[id] : id ? state[id] : state
+        )}
         selected={isDateTo_FROM ? state[id] : id ? state[id] : state}
         // selected={
         //   location.pathname === "/assetInformationIndex" ||
@@ -162,7 +174,7 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
         //     ? state[id]
         //     : state
         // }
-        onChange={(date) => {
+        onChange={date => {
           if (
             location.pathname === "/assetInformationIndex" ||
             location.pathname === "/packageAssetInformationIndex" ||
@@ -171,7 +183,7 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
             location.pathname === "/borrowCheckIndex" ||
             location.pathname === "/addUserInformation"
           ) {
-            setState((prevState) => ({ ...prevState, [id]: date }));
+            setState(prevState => ({ ...prevState, [id]: date }));
           } else {
             setState(date);
           }
@@ -179,8 +191,10 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
         minDate={minDate}
       />
       <div className="items-center relative">
-        <i className="fa-regular fa-calendar absolute top-3.5 -left-6  text-black text-sm sm:text-xs cursor-pointer"
-          onClick={() => setOpen(!open)}></i>
+        <i
+          className="fa-regular fa-calendar absolute top-3.5 -left-6  text-black text-sm sm:text-xs cursor-pointer"
+          onClick={() => setOpen(!open)}
+        ></i>
       </div>
     </>
   );

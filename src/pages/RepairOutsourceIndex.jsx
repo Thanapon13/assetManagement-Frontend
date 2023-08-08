@@ -137,8 +137,7 @@ const RepairOutsourceIndex = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
-        <div className="text-xs font-semibold">ค้นหาโดย</div>
-        <div className="md:col-span-2">
+        {/* <div className="md:col-span-2">
           <select
             className="border-[1px] p-2 h-[38px] text-xs text-gray-500 sm:text-sm border-gray-300 rounded-md w-full"
             name="typeTextSearch"
@@ -146,38 +145,36 @@ const RepairOutsourceIndex = () => {
             onChange={handleChange}
           >
             <option defaultValue value="borrowIdDoc">
-              เลขที่ใบซ่อม
+              เลขที่ใบซ่อมแซม
             </option>
-            {/* <option defaultValue value="assetNumber">
+            <option defaultValue value="assetNumber">
               เลขครุภัณฑ์
-            </option> */}
+            </option>
           </select>
-        </div>
+        </div> */}
 
-        <div className="md:col-span-4  h-[38px] relative">
-          <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
+        <div className="md:col-span-2  h-[38px] relative">
           <input
             type="text"
             name="textSearch"
             onChange={handleChange}
             value={search.textSearch}
-            placeholder={
-              search.typeTextSearch === "borrowIdDoc"
-                ? "เลขที่ใบจ้างซ่อมภายนอก"
-                : "เลขครุภัณฑ์"
-            }
+            placeholder="เลขที่ใบแจ้งซ่อม"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
         </div>
 
+        <div className="md:col-span-2  h-[38px] relative">
+          <input
+            type="text"
+            name="textSearch"
+            onChange={handleChange}
+            value={search.textSearch}
+            placeholder="เลขที่ใบแจ้งซ่อมภายนอก"
+            className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+          />
+        </div>
         <div className="md:col-span-3 ">
-          {/* <SearchSelector
-            options={sectorList}
-            placeholder={"ประเภทการซ่อม"}
-            name={"sector"}
-            onChange={(value, label) => setSearch({ ...search, [label]: value })}
-            floatLabel
-          /> */}
           <select
             className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
             name="status"
@@ -185,36 +182,41 @@ const RepairOutsourceIndex = () => {
             onChange={handleChange}
           >
             <option defaultValue value="">
-              สถานะทั้งหมด
+              สถานะใบแจ้งซ่อมภายนอก
             </option>
-            <option value="">รับใบซ่อม</option>
-            <option value="">รอเบิกวัสดุ</option>
+            <option value="">สถานะใบแจ้งซ่อมภายนอก1</option>
+            <option value="">สถานะใบแจ้งซ่อมภายนอก2</option>
           </select>
         </div>
 
-        <div className="md:col-span-3 h-full ">
+        <div className="md:col-span-3 ">
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+            name="status"
+            value={search.status}
+            onChange={handleChange}
+          >
+            <option defaultValue value="">
+              ประเภทการซ่อม
+            </option>
+            <option value="">ประเภทการซ่อม1</option>
+            <option value="">ประเภทการซ่อม2</option>
+          </select>
+        </div>
+
+        <div className="md:col-span-2 h-full ">
           <div className="flex h-full">
-            <DateInput
-              id="dateFrom"
-              state={search}
-              setState={setSearch}
-              lable="date from"
-            />
+            <DateInput id="dateFrom" state={search} setState={setSearch} />
           </div>
         </div>
 
-        <div className="md:col-span-3 h-full ">
+        <div className="md:col-span-2 h-full ">
           <div className="flex h-full">
-            <DateInput
-              id="dateTo"
-              state={search}
-              setState={setSearch}
-              lable="date to"
-            />
+            <DateInput id="dateTo" state={search} setState={setSearch} />
           </div>
         </div>
 
-        <div className="md:col-span-2">
+        <div className="md:col-span-3">
           <SearchSelector
             options={sectorList}
             placeholder={"อาคาร"}
@@ -226,9 +228,9 @@ const RepairOutsourceIndex = () => {
           />
         </div>
 
-        <div className="md:col-span-2">
-          <div className="flex justify-between">
-            <div className="w-full -ml-2 mr-2">
+        <div className="md:col-span-3">
+          <div className="flex justify-between gap-4">
+            <div className="w-2/4 md:col-span-2">
               <SearchSelector
                 options={sectorList}
                 placeholder={"ชั้น"}
@@ -242,11 +244,11 @@ const RepairOutsourceIndex = () => {
 
             <button
               type="button"
-              className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+              className="w-2/4 flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
               onClick={handleSearch}
             >
-              <div className="text-xl text-white">
-                <AiOutlineSearch />
+              <div className="text-base text-white">
+                <h1>ค้นหา</h1>
               </div>
             </button>
           </div>
@@ -382,13 +384,19 @@ const TableBorrowHistory = props => {
             key={idx}
             className={`grid grid-cols-9 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
-            <div className="col-span-1">
+            <div className="col-span-1 flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2 m-auto">
               {props.search.page > 1 ? props.search.limit + idx + 1 : idx + 1}
             </div>
-            <div className="col-span-2">{item.assetNumber}</div>
-            <div className="col-span-2 ">{item.productName}</div>
-            <div className="col-span-1">{item.hostSector}</div>
-            <div className="col-span-1">
+            <div className="col-span-2 py-2 w-full border-[1px] bg-[#CACACA] rounded-md">
+              {item.assetNumber}
+            </div>
+            <div className="col-span-2  py-2 w-full border-[1px] bg-[#CACACA] rounded-md">
+              {item.productName}
+            </div>
+            <div className="col-span-1  py-2 w-full border-[1px] bg-[#CACACA] rounded-md">
+              {item.hostSector}
+            </div>
+            <div className="col-span-1  py-2 w-full border-[1px] bg-[#CACACA] rounded-md">
               {new Date(item.repairedDate).toLocaleDateString("th-TH", options)}
             </div>
             <div
@@ -424,7 +432,6 @@ const TableBorrowHistory = props => {
                     fill="#38821D"
                   />
                 </svg>
-                ดูรายละเอียด
               </Link>
             </div>
           </div>
