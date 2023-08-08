@@ -35,7 +35,7 @@ const RepairTechnicianRecord = () => {
   const [arrayTechnician, setArrayTechnician] = useState(
     item.informRepairManArray || [defaultTech]
   );
-  // console.log("arrayTechnician:", arrayTechnician);
+  console.log("arrayTechnician:", arrayTechnician);
   const [arrayCostRepair, setArrayCostRepair] = useState(
     item.costOfRepairArray || [
       {
@@ -99,17 +99,12 @@ const RepairTechnicianRecord = () => {
 
   const submit = async valStatus => {
     try {
-      arrayCostRepair.map((el, idx) => {
-        delete el.total;
-      });
-      console.log("arrayCostRepair:", arrayCostRepair);
       await updateRecordRepairDetail(id, {
         input: item,
         status: valStatus || item.statusOfDetailRecord,
-        informRepairManArray: [],
+        informRepairManArray: arrayTechnician,
         costOfRepairArray: arrayCostRepair
       });
-      console.log("costOfRepairArray:", costOfRepairArray);
       if (!valStatus) {
         console.log(
           valStatus,
