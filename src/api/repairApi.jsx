@@ -102,8 +102,6 @@ export const rejectIndividualWaitingRepair = topApproveList =>
   axios.patch("/repair/rejectIndividualWaiting", topApproveList);
 
 export const offWorkRepair = (id, input) => {
-  console.log("input:", input);
-  console.log("id:", id);
   axios.patch(`/repair/offwork/${id}`, { input: input });
 };
 
