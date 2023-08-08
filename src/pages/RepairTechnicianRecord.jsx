@@ -100,23 +100,16 @@ const RepairTechnicianRecord = () => {
   const submit = async valStatus => {
     try {
       await updateRecordRepairDetail(id, {
-        input: item,
+        input: inputs,
         status: valStatus || item.statusOfDetailRecord,
         informRepairManArray: arrayTechnician,
         costOfRepairArray: arrayCostRepair
       });
       if (!valStatus) {
-        console.log(
-          valStatus,
-          arrayTechnician,
-          item.statusOfDetailRecord,
-          arrayCostRepair
-        );
         setShowModalSuccess(true);
         return;
       } else {
-        // window.location.href = "/repairTechnicianIndex";
-        console.log("err");
+        window.location.href = "/repairTechnicianIndex";
       }
     } catch (err) {
       console.log(err);
@@ -636,7 +629,7 @@ const RepairTechnicianRecord = () => {
           <ModalConfirmSave
             isVisible={showModal}
             onClose={() => setShowModal(false)}
-            onSave={() => submit()}
+            onSave={() => submit("waitingApproval")}
           />
           {/* {showModalSuccess && (
             <ModalSuccess urlPath="/repairTechnicianIndex" />
