@@ -48,7 +48,7 @@ const HistoryRepair = () => {
         </div>
       </div>
 
-      <div className="flex pt-3">
+      <div className="flex pt-3 justify-between">
         <div className="flex text-xs">
           <Link
             to="/"
@@ -57,20 +57,50 @@ const HistoryRepair = () => {
             Home
           </Link>
           <div className="text-text-gray">/</div>
-          <Link
-            to="/historyTransferAsset"
-            className="text-text-green underline text-xs focus:text-sky-700 focus:underline mx-2"
-          >
-            ประวัติการซ่อม
-          </Link>
-          <div className="text-text-gray">/</div>
           <div className="text-text-gray ml-2">รายละเอียดประวัติการซ่อม</div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <h1 className="text-xs">สถานะใบแจ้งซ่อมแซม</h1>
+          <div className="flex items-center justify-center">
+            {data.statusOutsourceRepair === "gotRepair" ? (
+              <div className="bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl">
+                รับใบซ่อม
+              </div>
+            ) : (
+              <div className="bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-sm p-2 rounded-2xl">
+                รอเบิกวัสดุ
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-2">
         <div>
-          <div className="text-xl">ข้อมูลครุภัณฑ์</div>
+          <div className="flex justify-between">
+            <div className="text-xl">ข้อมูลครุภัณฑ์</div>
+            <div className="col-span-1 flex justify-center">
+              <Link
+                to={`/historyRepair/historyRepairBurableArticles/${data._id}`}
+                className="border flex gap-1 items-center p-1 rounded-md border-text-green text-text-green hover:bg-sidebar-green "
+              >
+                <svg
+                  width="17"
+                  height="11"
+                  viewBox="0 0 17 11"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.49967 8.65592C9.33787 8.65592 10.0492 8.36374 10.6335 7.77936C11.2179 7.19499 11.5101 6.4837 11.5101 5.64551C11.5101 4.80731 11.2179 4.09603 10.6335 3.51165C10.0492 2.92728 9.33787 2.63509 8.49967 2.63509C7.66148 2.63509 6.9502 2.92728 6.36582 3.51165C5.78145 4.09603 5.48926 4.80731 5.48926 5.64551C5.48926 6.4837 5.78145 7.19499 6.36582 7.77936C6.9502 8.36374 7.66148 8.65592 8.49967 8.65592ZM8.49967 7.62884C7.94481 7.62884 7.47554 7.437 7.09186 7.05332C6.70818 6.66964 6.51634 6.20037 6.51634 5.64551C6.51634 5.09065 6.70818 4.62138 7.09186 4.23769C7.47554 3.85401 7.94481 3.66217 8.49967 3.66217C9.05453 3.66217 9.52381 3.85401 9.90749 4.23769C10.2912 4.62138 10.483 5.09065 10.483 5.64551C10.483 6.20037 10.2912 6.66964 9.90749 7.05332C9.52381 7.437 9.05453 7.62884 8.49967 7.62884ZM8.49967 10.958C6.77606 10.958 5.21773 10.4681 3.82467 9.48822C2.43162 8.50835 1.39273 7.22745 0.708008 5.64551C1.39273 4.06356 2.43162 2.78266 3.82467 1.8028C5.21773 0.822938 6.77606 0.333008 8.49967 0.333008C10.2233 0.333008 11.7816 0.822938 13.1747 1.8028C14.5677 2.78266 15.6066 4.06356 16.2913 5.64551C15.6066 7.22745 14.5677 8.50835 13.1747 9.48822C11.7816 10.4681 10.2233 10.958 8.49967 10.958Z"
+                    fill="#38821D"
+                  />
+                </svg>
+                ดูประวัติของครุภัณฑ์นี้
+              </Link>
+            </div>
+          </div>
           {/* row 1 */}
           <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
             <div className="text-text-gray flex items-center ">
@@ -86,9 +116,9 @@ const HistoryRepair = () => {
               className={`rounded-full text-white  ${
                 data.urgentStatus === "ฉุกเฉิน"
                   ? "bg-red-600 "
-                  : data.urgentStatus === "rush"
+                  : data.urgentStatus === "เร่งด่วน"
                   ? "bg-yellow-300"
-                  : data.urgentStatus === "normal"
+                  : data.urgentStatus === "ปกติ"
                   ? " bg-blue-600"
                   : "bg-red-200 text-red-600  border-red-200"
               } border border-spacing-5 p-2 w-fit`}
@@ -112,9 +142,11 @@ const HistoryRepair = () => {
                   hour12: false
                 })} น.`}
             </div>
-            <div className="text-text-gray flex items-center">รหัสครุภัณฑ์</div>
+            <div className="text-text-gray flex items-center">
+              ลำดับครุภัณฑ์ (ID)
+            </div>
             <div className="flex items-center col-span-2">
-              {data.assetGroupNumber}
+              {data.realAssetId || "-"}
             </div>
           </div>
           {/* row 3 */}
@@ -173,9 +205,11 @@ const HistoryRepair = () => {
                   })} น.`
                 : "-"}
             </div>
-            <div className="text-text-gray flex items-center">ยกเลิกใบซ่อม</div>
+            <div className="text-text-gray flex items-center">
+              เจ้าของครุภัณฑ์
+            </div>
             <div className="flex items-center col-span-2">
-              {data.asset01 || "-"}
+              {data.sector || "-"}
             </div>
           </div>
           {/* row 7 */}
@@ -300,179 +334,47 @@ const HistoryRepair = () => {
                 })} `}
             </div>
           </div>
-          <div className="text-xl mt-3">ผลการซ่อม</div>
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
-            <div className="text-text-gray flex items-center ">ผลการซ่อม</div>
-            <div className="flex items-center col-span-2 ">
-              <h1>{data.repairResult}</h1>
-            </div>
-            <div className="text-text-gray flex items-center ">
-              สถานะใบซ่อมแซม
-            </div>
-            <div className="flex items-center col-span-2 ">
-              {data.statusCheckJob === "normal" ? (
-                <div className="bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl">
-                  รับใบซ่อม
-                </div>
-              ) : (
-                <div className="bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl">
-                  รอเบิกวัสดุ
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
-            <div className="text-text-gray flex items-center ">
-              ความเห็นช่าง
-            </div>
-            <div className="flex items-center col-span-2 ">
-              <h1>{data.mechinicComment}</h1>
-            </div>
-          </div>{" "}
         </div>
       </div>
 
-      <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-        <div className="text-lg">เปิดใบจ้างซ่อมภายนอก (ซ่อมทั่วไป)</div>
-        <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            เลขที่ใบจ้างภายนอก
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.outSourceRepairNumber}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            เลขที่อ้างอิงหน่วยช่าง
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.repairSectorRefNumber}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            วันที่ทำการซ่อม
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data.repairDateCreateOutsourceRepair &&
-              `${new Date(data.repairDateCreateOutsourceRepair).toLocaleString(
-                "th",
-                {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false
-                }
-              )} `}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            ชื่อเรื่อง
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.descriptionCreateOutsourceRepair}
+      <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
+        <div className="text-lg">ข้อมูลรายชื่อช่าง</div>
+
+        <div className="overflow-x-auto scrollbar pt-4">
+          <div className="w-[1000px] lg:w-full p-2">
+            <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+              <div className="grid grid-cols-7 gap-2 text-center">
+                <div className="ml-2 col-span-2">ชื่อช่าง</div>
+                <div className="col-span-1">จำนวนชั่วโมงที่ทำ</div>
+                <div className="col-span-1">อัตราต่อชั่วโมง</div>
+                <div className="col-span-1">รวมเป็นเงิน</div>
+                <div className="col-span-1">เงินพิเศษ</div>
+                <div className="col-span-1 pr-2">รวมทั้งหมด (บาท)</div>
+              </div>
+            </div>
+            <div className="scrollbar max-h-[45vh] overflow-y-auto">
+              {data.informRepairManArray?.map((el, idx) => {
+                return <TableTechnicianListInformation ele={el} key={idx} />;
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-        <div className="text-lg">ผู้รับผิดชอบ</div>
-        <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            เลขที่ใบจ้างภายนอก
+      <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 grid">
+        <div className="text-xl mt-3">ผลการซ่อม</div>
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+          <div className="text-text-gray flex items-center ">ผลการซ่อม</div>
+          <div className="flex items-center col-span-2 ">
+            <h1>{data.repairResult}</h1>
           </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.outSourceRepairNumber}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            ชื่อผู้รับผิดชอบ
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.responsibleName}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            วันที่ได้รับการอนุมัติ
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data.approveDate &&
-              `${new Date(data.approveDate).toLocaleString("th", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false
-              })} `}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            เลขที่หนังสือ
-          </div>
-          <div className="sm:col-span-4 col-span-2">{data?.bookNumber}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            วันที่อนุมัติ (ฝ่ายช่างส่งพัสดุ)
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data.approveDateOfDelivery &&
-              `${new Date(data.approveDateOfDelivery).toLocaleString("th", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false
-              })} `}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            วันที่คาดว่าจะส่งมอบ
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data.deliverDate &&
-              `${new Date(data.deliverDate).toLocaleString("th", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false
-              })} `}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            ชื่อผู้ว่าจ้าง
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.responsibleName}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ที่อยู่</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.responsibleAddress}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            หมายเลขโทรศัพท์
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {" "}
-            {data?.phoneNumber
-              ? `${data.phoneNumber.slice(0, 3)}-${data.phoneNumber.slice(3)}`
-              : ""}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ราคาจ้าง</div>
-          <div className="sm:col-span-4 col-span-2">{data?.price}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            ชื่อผู้ติดต่อ
-          </div>
-          <div className="sm:col-span-4 col-span-2">{data?.contactName}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            ภาษีมูลค่าเพิ่ม
-          </div>
-          <div className="sm:col-span-4 col-span-2">{data?.tax}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">หมายเหตุ</div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.responsibleRemark}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">ราคารวม</div>
-          <div className="sm:col-span-4 col-span-2">{data?.totalPrice}</div>
         </div>
-
-        <div className="text-lg pt-5">เอกสารใบสั่งซื้อ / สั่งจอง</div>
-        {/* <h1>{data?.documentArray[0]?.document}</h1> */}
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+          <div className="text-text-gray flex items-center ">ความเห็นช่าง</div>
+          <div className="flex items-center col-span-2 ">
+            <h1>{data.mechinicComment}</h1>
+          </div>
+        </div>{" "}
       </div>
 
       <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
@@ -515,7 +417,7 @@ const HistoryRepair = () => {
                       {ele.pricePerPiece}
                     </div>
                     <div className="col-span-1 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
-                      {ele.quantity * ele.pricePerPiece || 0}
+                      {ele.quantity * ele.pricePerPiece}
                     </div>
                   </div>
                 );
@@ -527,9 +429,11 @@ const HistoryRepair = () => {
                     รวมจำนวนเงินทั้งหมด
                   </div>
                   <div className="text-sm font-semibold">
-                    {data.costOfRepairArray[0].quantity *
-                      data.costOfRepairArray[0].pricePerPiece || 0}
-                    &nbsp; บาท
+                    {" "}
+                    {data.costOfRepairArray.reduce(
+                      (sum, ele) => sum + ele.quantity * ele.pricePerPiece,
+                      0
+                    )}
                   </div>
                 </div>
               )}
@@ -537,106 +441,70 @@ const HistoryRepair = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
 
-      <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3 ">
-        <div className="text-lg">ข้อมูลการตรวจรับงาน</div>
-        <div className="grid grid-cols-3 sm:grid-cols-14 gap-x-5 gap-y-3 mt-3 text-sm">
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            เลขที่ใบตรวจรับงาน
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.checkJobReceiptNumber}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            ยกเลิกใบตรวจรับ
-          </div>
-          <div className="sm:col-span-4 col-span-2">{data?.building}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            วันที่อนุมัติจ้าง / ซ่อม
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data.approveHireDate &&
-              `${new Date(data.approveHireDate).toLocaleString("th", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false
-              })} `}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            วันที่ตรวจรับ
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {" "}
-            {data.checkJobDate &&
-              `${new Date(data.checkJobDate).toLocaleString("th", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false
-              })} `}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            เลขที่ใบสั่งจ้าง
-          </div>
-          <div className="sm:col-span-4 col-span-2">{data?.hireNumber}</div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            วันที่วางฏีกา (วันส่งเบิกเงิน)
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data.sendWithDrawMoneyDate &&
-              `${new Date(data.sendWithDrawMoneyDate).toLocaleString("th", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false
-              })} `}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            วันที่รับใบสั่งจ้าง
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data.receiveWorkOrderDate &&
-              `${new Date(data.receiveWorkOrderDate).toLocaleString("th", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false
-              })} `}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            วันที่หมดประกัน
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data.checkJobInsuranceEndDate &&
-              `${new Date(data.checkJobInsuranceEndDate).toLocaleString("th", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false
-              })} `}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            ระยะเวลารับประกัน ( เดือน)
-          </div>
-          <div className="sm:col-span-4 col-span-2">
-            {data?.checkJobWarrantyPeriod}
-          </div>
-          <div className="text-gray-500 sm:col-span-3 col-span-1">
-            จำนวนเงินซื้อ / จ้าง (บาท)
-          </div>
-          <div className="sm:col-span-4 col-span-2">{data?.purchaseAmount}</div>
-        </div>
+const TableTechnicianListInformation = ({ ele }) => {
+  return (
+    <div className="p-2 grid grid-cols-8 justify-center items-center border-2 gap-5 text-xs bg-white">
+      <div className="col-span-3">
+        <input
+          type="text"
+          className="py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-black  focus:ring-transparent  bg-[#F0F0F0]"
+          name="name"
+          defaultValue={ele.name || "-"}
+          readOnly
+        />
+      </div>
+
+      <div className="col-span-1">
+        <input
+          type="text"
+          className="text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-black focus:ring-transparent bg-[#F0F0F0]"
+          name="workHour"
+          defaultValue={ele.workHour || "-"}
+          readOnly
+        />
+      </div>
+      <div className="col-span-1">
+        <input
+          type="text"
+          className="text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-black focus:ring-transparent bg-[#F0F0F0]"
+          name="amountPerHour"
+          defaultValue={ele.amountPerHour || "-"}
+          readOnly
+        />
+      </div>
+      <div className="col-span-1">
+        <input
+          type="text"
+          className="text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-black focus:ring-transparent bg-[#F0F0F0]"
+          name="total"
+          defaultValue={ele.workHour * ele.amountPerHour || "-"}
+          readOnly
+        />
+      </div>
+      <div className="col-span-1">
+        <input
+          type="text"
+          className="text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-black focus:ring-transparent bg-[#F0F0F0]"
+          name="amountExtra"
+          defaultValue={ele.amountExtra || "-"}
+          readOnly
+        />
+      </div>
+
+      <div className="col-span-1">
+        <input
+          type="text"
+          className="text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-black focus:ring-transparent bg-[#F0F0F0]"
+          name="totalAmount"
+          defaultValue={
+            ele.workHour * ele.amountPerHour + ele.amountExtra || "-"
+          }
+          readOnly
+        />
       </div>
     </div>
   );

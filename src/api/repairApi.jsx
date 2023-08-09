@@ -95,6 +95,7 @@ export function approveIndividualWaitingRepair(body) {
 }
 
 export function updateOutsourceRecord(id, formData) {
+  console.log("formData:", formData);
   return axios.patch(`/repair/outSourceRecord/${id}`, formData);
 }
 
@@ -108,3 +109,6 @@ export const offWorkRepair = (id, input) => {
 export const updateStatusForCheckJobRepair = id => {
   axios.patch(`/repair/updateStatusForCheckJob/${id}`);
 };
+
+export const getSectorForSearchHistory = () =>
+  axios.get("/repair/sectorForSearchHistory");

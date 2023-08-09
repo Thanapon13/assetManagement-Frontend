@@ -91,28 +91,6 @@ const RepairTechnicianRecord = () => {
   const { id } = useParams();
   // console.log("id:", id);
 
-  // const submit = async valStatus => {
-  //   try {
-  //     const inputs = item;
-  //     delete inputs.arrayCostRepair;
-  //     delete inputs.arrayTechnician;
-
-  //     await updateRecordRepairDetail(id, {
-  //       input: item,
-  //       status: valStatus || item.statusOfDetailRecord,
-  //       informRepairManArray: arrayTechnician,
-  //       costOfRepairArray: arrayCostRepair
-  //     });
-  //     if (!valStatus) {
-  //       setShowModalSuccess(true);
-  //     // } else {
-  //     //   window.location.href = "/repairTechnicianIndex";
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
   const submit = async valStatus => {
     const inputs = item;
     delete inputs.informRepairManArray;

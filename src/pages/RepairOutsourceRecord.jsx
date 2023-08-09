@@ -272,12 +272,18 @@ const RepairOutSourceRecord = () => {
   const submit = async valStatus => {
     console.log("item:", { item });
 
+    const inputs = item;
+    delete inputs.arrayCostRepair;
+    delete inputs.documentArray;
+
     try {
       const formData = new FormData();
       formData.append("input", JSON.stringify(item));
       formData.append("status", valStatus || item.statusOfDetailRecord);
       formData.append("costOfRepairArray", JSON.stringify(arrayCostRepair));
       formData.append("existArrayDocument", JSON.stringify([]));
+
+      console.log("arrayDocument:", arrayDocument);
 
       arrayDocument
         ?.filter(ele => !ele._id)
@@ -1061,10 +1067,20 @@ const RepairOutSourceRecord = () => {
                     + เพิ่มรายการ
                   </button>
 
-                  <div className="p-4 rounded-md bg-background-gray-table mt-10 flex justify-between">
-                    <h1>รวมจำนวนเงินทั้งหมด</h1>
-                    <div>{item?.totalPrice || "0"} บาท</div>
-                  </div>
+                  {item.costOfRepairArray?.length > 0 && (
+                    <div className="bg-table-data h-[40px] p-6 flex justify-between items-center mt-10">
+                      <div className="text-sm  font-semibold">
+                        รวมจำนวนเงินทั้งหมด
+                      </div>
+                      <div className="text-sm font-semibold">
+                        {" "}
+                        {item.costOfRepairArray.reduce(
+                          (sum, ele) => sum + ele.quantity * ele.pricePerPiece,
+                          0
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -1312,7 +1328,6 @@ const TableTechnicianRepairCost = ({ index, deleteRow, ele, onChange }) => {
           type="text"
           className="text-center py-2 w-full border-[1px] border-block-green rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue"
           name="total"
-          // onChange={onChange}
           value={ele.quantity * ele.pricePerPiece || 0}
         />
       </div>

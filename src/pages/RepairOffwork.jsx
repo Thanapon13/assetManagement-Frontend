@@ -533,9 +533,17 @@ export default function RepairOffwork() {
                   );
                 })}
 
-                <div className="p-4 rounded-md bg-background-gray-table mt-10 flex justify-between">
-                  <h1>รวมจำนวนเงินทั้งหมด</h1>
-                  <div>{item?.totalPrice || "0"} บาท</div>
+                <div className="bg-table-data h-[40px] p-6 flex justify-between items-center mt-10">
+                  <div className="text-sm  font-semibold">
+                    รวมจำนวนเงินทั้งหมด
+                  </div>
+                  <div className="text-sm font-semibold">
+                    {" "}
+                    {item.costOfRepairArray.reduce(
+                      (sum, ele) => sum + ele.quantity * ele.pricePerPiece,
+                      0
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

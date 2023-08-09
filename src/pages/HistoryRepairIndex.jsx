@@ -7,12 +7,13 @@ import { CgPushChevronLeft } from "react-icons/cg";
 import { CgPushChevronRight } from "react-icons/cg";
 import DateInput from "../components/date/DateInput";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import {
-  getBorrowHistorySector,
-  getBySearchBorrowHistory
-} from "../api/borrowApi";
+
 import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
-import { getRepairHistoryBySearch } from "../api/repairApi";
+import {
+  getRepairHistoryBySearch,
+  getSectorForSearchHistory
+} from "../api/repairApi";
+import SearchSelector from "../components/selector/SearchSelector";
 
 const HistoryRepairIndex = () => {
   const todayThaiDate = ChangeDateToBuddhist(
@@ -23,24 +24,25 @@ const HistoryRepairIndex = () => {
 
   // search
   const [search, setSearch] = useState({
-    typeTextSearch: "borrowIdDoc",
-    textSearch: "",
+    informRepairIdDocTextSearch: "",
+    assetNumberTextSearch: "",
     status: "",
     dateFrom: "",
     dateTo: new Date(),
     sector: "",
     page: "",
-    limit: 10,
-    total: 0
+    limit: 10
   });
+  console.log("search:", search);
 
   const [dataList, setDataList] = useState([]);
   console.log("dataList:", dataList);
   const [sectorList, setSectorList] = useState([]);
+  console.log("sectorList:", sectorList);
 
   // handle
   const handleChange = e => {
-    console.log({ ...search, [e.target.name]: e.target.value });
+    console.log("handleChange", { ...search, [e.target.name]: e.target.value });
     setSearch({ ...search, [e.target.name]: e.target.value });
   };
 
@@ -85,7 +87,7 @@ const HistoryRepairIndex = () => {
   const fetchDataList = async () => {
     try {
       const res = await getRepairHistoryBySearch(search);
-      console.log(res.data);
+      // console.log("resfetchDataList:", res.data);
       setDataList(res.data.repair);
       setSearch({
         ...search,
@@ -104,24 +106,24 @@ const HistoryRepairIndex = () => {
   };
 
   const handlePaginationSearch = e => {
-    console.log({ ...search, [e.target.name]: e.target.value });
+    // console.log({ ...search, [e.target.name]: e.target.value });
     setSearch({ ...search, [e.target.name]: e.target.value });
     fetchDataList({ ...search, [e.target.name]: e.target.value });
   };
 
   // fetch dropdown sector
-  const fetchBorrowHistorySectorSelector = async () => {
+  const fetchSectorForSearchHistory = async () => {
     try {
-      const res = await getBorrowHistorySector();
-      console.log("res:", res.data.sectors);
-      setSectorList(res.data.sectors);
+      const res = await getSectorForSearchHistory();
+      // console.log("resFetch:", res.data.courierSector);
+      setSectorList(res.data.courierSector);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    fetchBorrowHistorySectorSelector();
+    fetchSectorForSearchHistory();
     fetchDataList();
   }, []);
 
@@ -142,82 +144,68 @@ const HistoryRepairIndex = () => {
 
       {/* search bar */}
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
-        <div className="text-xs font-semibold">ค้นหาโดย</div>
-        <div className="md:col-span-2">
-          {/* <Selector placeholder={"ID"} /> */}
-          <select
-            className="border-[1px] p-2 h-[38px] text-xs text-gray-500 sm:text-sm border-gray-300 rounded-md w-full"
-            name="typeTextSearch"
-            value={search.typeTextSearch}
+        {/* เลขครุภัณฑ์ */}
+        <div className="md:col-span-2  h-[38px] relative">
+          <input
+            type="text"
+            name="assetNumberTextSearch"
             onChange={handleChange}
-          >
-            <option defaultValue value="borrowIdDoc">
-              เลขที่เอกสารการยืม
-            </option>
-            <option defaultValue value="assetNumber">
-              เลขครุภัณฑ์
-            </option>
-          </select>
+            value={search.assetNumberTextSearch}
+            placeholder="เลขครุภัณฑ์"
+            className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+          />
         </div>
 
-        <div className="md:col-span-4  h-[38px] relative">
-          <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
+        {/* ID  ไม่แน่*/}
+        <div className="md:col-span-2  h-[38px] relative">
+          <input
+            type="text"
+            name="informRepairIdDocTextSearch"
+            onChange={handleChange}
+            value={search.informRepairIdDocTextSearch}
+            placeholder="ID"
+            className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
+          />
+        </div>
+
+        {/* หาย */}
+        <div className="md:col-span-2 h-[38px] relative">
           <input
             type="text"
             name="textSearch"
             onChange={handleChange}
             value={search.textSearch}
-            placeholder={
-              search.typeTextSearch === "borrowIdDoc"
-                ? "เลขที่เอกสารการยืม"
-                : "เลขครุภัณฑ์"
-            }
+            placeholder="เลขที่ใบแจ้งซ่อม"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
         </div>
 
-        <div className="md:col-span-3 ">
-          <BorrowHistorySectorSelector
-            placeholder={"หน่วยงาน"}
-            state={search}
-            setState={setSearch}
-            search={search}
-            setSearch={setSearch}
-            id={"sector"}
-            data={sectorList}
-          />
+        {/* หน่วยงาน */}
+        <div className="md:col-span-2 ">
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+            name="sector"
+            value={search.sector}
+            onChange={handleChange}
+          >
+            <option value="">หน่วยงาน</option>
+
+            {sectorList.map((el, idx) => (
+              <option key={idx} value={el.courierSector}>
+                {el.courierSector}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="md:col-span-3 h-full ">
-          <div className="flex h-full">
-            <DateInput
-              id="dateFrom"
-              state={search}
-              setState={setSearch}
-              lable="date from"
-            />
-          </div>
-        </div>
-
-        <div className="md:col-span-3 h-full ">
-          <div className="flex h-full">
-            <DateInput
-              id="dateTo"
-              state={search}
-              setState={setSearch}
-              lable="date to"
-            />
-          </div>
-        </div>
-
-        <div className="md:col-span-4 flex justify-end">
+        <div className="md:col-span-2">
           <button
             type="button"
-            className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+            className="flex justify-center w-full h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
             onClick={handleSearch}
           >
-            <div className="text-xl text-white">
-              <AiOutlineSearch />
+            <div className="text-base text-white">
+              <h1>ค้นหา</h1>
             </div>
           </button>
         </div>
@@ -313,11 +301,10 @@ const TableBorrowHistory = props => {
             key={idx}
             className={`grid grid-cols-9 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
           >
-            <div className="col-span-1">
+            <div className="col-span-1 flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2 m-auto">
               {props.search.page > 1 ? props.search.limit + idx + 1 : idx + 1}
             </div>
             <div className="col-span-2">{item.assetNumber}</div>
-            <p>sadasd</p>
             <div className="col-span-2 ">{item.productName}</div>
             <div className="col-span-1">{item.hostSector}</div>
             <div className="col-span-1">
@@ -326,22 +313,16 @@ const TableBorrowHistory = props => {
             <div
               onClick={() => handleClick(item.status)}
               className={`rounded-full text-white  ${
-                item.urgentStatus === "rush"
+                item.urgentStatus === "ฉุกเฉิน"
                   ? "bg-red-600 "
-                  : item.urgentStatus === "rush"
+                  : item.urgentStatus === "เร่งด่วน"
                   ? "bg-yellow-300"
-                  : item.urgentStatus === "normal"
+                  : item.urgentStatus === "ปกติ"
                   ? " bg-blue-600"
                   : "bg-red-200 text-red-600  border-red-200"
               } border border-spacing-5 p-2 w-full`}
             >
-              {item.urgentStatus === "rush"
-                ? "ฉุกเฉิน"
-                : item.urgentStatus === "rush"
-                ? "เร่งด่วน"
-                : item.urgentStatus === "normal"
-                ? "ปกติ"
-                : ""}
+              {item.urgentStatus}
             </div>
             <div className="col-span-1 flex justify-center">
               <Link

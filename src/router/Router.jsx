@@ -76,6 +76,7 @@ import ApprovalRepairDetail from "../pages/ApprovalRepairDetail";
 import ViewApprovalRepairDetail from "../pages/ViewApprovalRepairDetail";
 import RepairOffwork from "../pages/RepairOffwork";
 import UpdateStatusForCheckJobRepair from "../pages/UpdateStatusForCheckJobRepair";
+import HistoryRepairBurableArticles from "../pages/HistoryRepairBurableArticles";
 
 const Router = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -262,6 +263,10 @@ const Router = () => {
           />
           <Route path="historyRepairIndex" element={<HistoryRepairIndex />} />
           <Route path="historyRepair/:id" element={<HistoryRepair />} />
+          <Route
+            path="historyRepair/historyRepairBurableArticles/:id"
+            element={<HistoryRepairBurableArticles />}
+          />
           <Route
             path="repairOutsourceIndex"
             element={<RepairOutsourceIndex />}

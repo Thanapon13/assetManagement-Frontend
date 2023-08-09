@@ -7,10 +7,6 @@ import { CgPushChevronLeft } from "react-icons/cg";
 import { CgPushChevronRight } from "react-icons/cg";
 import DateInput from "../components/date/DateInput";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
-import {
-  getBorrowHistorySector,
-  getBySearchBorrowHistory
-} from "../api/borrowApi";
 import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
 import {
   getRepairHistoryBySearch,
@@ -31,13 +27,16 @@ const RepairOutsourceIndex = () => {
     total: 0
   });
 
+  console.log("search:", search);
+
   const [dataList, setDataList] = useState([]);
   console.log("dataList:", dataList);
   const [sectorList, setSectorList] = useState([]);
+  console.log("sectorList:", sectorList);
 
   // handle
   const handleChange = e => {
-    console.log({ ...search, [e.target.name]: e.target.value });
+    console.log("handleChange", { ...search, [e.target.name]: e.target.value });
     setSearch({ ...search, [e.target.name]: e.target.value });
   };
 
@@ -109,7 +108,7 @@ const RepairOutsourceIndex = () => {
   const getDropdown = async () => {
     try {
       const res = await getBorrowHistorySector();
-      console.log(res.data.sectors);
+      console.log("res.data.sectors:", res.data.sectors);
       setSectorList(res.data.sectors);
     } catch (err) {
       console.log(err);
@@ -159,7 +158,7 @@ const RepairOutsourceIndex = () => {
             name="textSearch"
             onChange={handleChange}
             value={search.textSearch}
-            placeholder="เลขที่ใบแจ้งซ่อม"
+            placeholder="เลขที่ใบซ่อมแซม"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
         </div>
@@ -180,6 +179,7 @@ const RepairOutsourceIndex = () => {
             name="status"
             value={search.status}
             onChange={handleChange}
+            defaultValue="status"
           >
             <option defaultValue value="">
               สถานะใบแจ้งซ่อมภายนอก
@@ -195,24 +195,35 @@ const RepairOutsourceIndex = () => {
             name="status"
             value={search.status}
             onChange={handleChange}
+            defaultValue="status"
           >
             <option defaultValue value="">
               ประเภทการซ่อม
             </option>
-            <option value="">ประเภทการซ่อม1</option>
-            <option value="">ประเภทการซ่อม2</option>
+            <option value="repairType01">ประเภทการซ่อม1</option>
+            <option value="repairType02">ประเภทการซ่อม2</option>
           </select>
         </div>
 
         <div className="md:col-span-2 h-full ">
           <div className="flex h-full">
-            <DateInput id="dateFrom" state={search} setState={setSearch} />
+            <DateInput
+              id="dateFrom"
+              state={search}
+              setState={setSearch}
+              lable="date from"
+            />
           </div>
         </div>
 
         <div className="md:col-span-2 h-full ">
           <div className="flex h-full">
-            <DateInput id="dateTo" state={search} setState={setSearch} />
+            <DateInput
+              id="dateTo"
+              state={search}
+              setState={setSearch}
+              lable="date to"
+            />
           </div>
         </div>
 
@@ -401,23 +412,39 @@ const TableBorrowHistory = props => {
             </div>
             <div
               onClick={() => handleClick(item.status)}
-              className={`rounded-full border-0 ${
-                item.urgentStatus === "rush"
-                  ? "bg-text-green/[.2] text-text-green "
-                  : item.urgentStatus === "rush"
-                  ? "bg-yellow-300"
-                  : "bg-red-200 text-red-600  border-red-200"
-              } border border-spacing-5 p-2 w-full`}
+              // className={`rounded-full border-0 ${
+              //   item.urgentStatus === "x"
+              //     ? "bg-text-green/[.2] text-text-green "
+              //     : item.urgentStatus === "เร่งด่วน"
+              //     ? "bg-yellow-300"
+              //     : "bg-red-200 text-red-600  border-red-200"
+              // } border border-spacing-5 p-2 w-full`}
+
+              className="`rounded-full border-0"
             >
-              {item.urgentStatus === "rush"
+              {/* {item.urgentStatus === "เร่งด่วน"
                 ? "รับใบซ่อม"
-                : item.urgentStatus === "rush"
+                : item.urgentStatus === "เร่งด่วน"
                 ? "รอเบิกวัสดุ"
-                : "ยกเลิก"}
+                : "ยกเลิก"} */}
+
+              <div className="flex items-center justify-center">
+                {item.statusCheckJob === "ปกติ" ? (
+                  <div className="bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl">
+                    รับใบซ่อม
+                  </div>
+                ) : (
+                  <div className="bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-sm p-2 rounded-2xl">
+                    รอเบิกวัสดุ
+                  </div>
+                )}
+
+                {/* {item.gotRepair} */}
+              </div>
             </div>
             <div className="col-span-1 flex justify-center">
               <Link
-                to={`/historyRepair/${item._id}`}
+                to={`/repairOutsource/${item._id}`}
                 className="border flex gap-1 items-center p-1 rounded-md border-text-green text-text-green hover:bg-sidebar-green "
               >
                 <svg
