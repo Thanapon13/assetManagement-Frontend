@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ModalBorrowRejectAllApprove from "../components/modal/ModalBorrowRejectAllApprove";
-import OnlyDateInput from "../components/date/onlyDateInput";
 import ModalTransferRejectAllApprove from "../components/modal/ModalTransferRejectAllApprove";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoIosClose } from "react-icons/io";
-import {
-  approveAllWaitingTransfer,
-  getListApprovalTransferAsset
-} from "../api/transferApi";
+import OnlyDateInput from "../components/date/onlyDateInput";
 import { useEffect } from "react";
 import { getSector } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
@@ -23,11 +19,12 @@ import ModalRepairRejectAllApprove from "../components/modal/ModalRepairRejectAl
 function ApprovalRepair() {
   const allStatus = ["inProgressOfDetailRecord", "reject"];
   const [search, setSearch] = useState({
+    listStatus: "",
     dateFrom: "",
-    // dateTo: new Date(),
-    transferSector: "",
-    listStatus: allStatus
+    dateTo: ""
   });
+
+  console.log("search:", search);
 
   const [isFetch, setIsFetch] = useState(true);
   const optionDate = { day: "2-digit", month: "2-digit", year: "numeric" };
@@ -132,6 +129,12 @@ function ApprovalRepair() {
     setSearch({ ...search, listStatus: listStatus });
   };
 
+  // handle
+  const handleChange = e => {
+    console.log("handleChange", { ...search, [e.target.name]: e.target.value });
+    setSearch({ ...search, [e.target.name]: e.target.value });
+  };
+
   return (
     <>
       <div className="bg-background-page pt-5 p-3 min-h-full">
@@ -165,11 +168,11 @@ function ApprovalRepair() {
               <div className="md:col-span-2 flex flex-col gap-y-2">
                 <label className=" text-text-gray flex">วันที่สิ้นสุด</label>
                 <div className="flex h-[38px]">
-                  {/* <OnlyDateInput
+                  <OnlyDateInput
                     id="dateTo"
                     state={search.dateTo}
                     // setState={setSearch}
-                  /> */}
+                  />
                 </div>
               </div>
               <div className="md:col-span-2 flex flex-col gap-y-2">

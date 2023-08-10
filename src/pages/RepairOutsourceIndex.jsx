@@ -1,38 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import Selector from "../components/selector/Selector";
+import OnlyDateInput from "../components/date/onlyDateInput";
+import SearchSelector from "../components/selector/SearchSelector";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CgPushChevronLeft } from "react-icons/cg";
 import { CgPushChevronRight } from "react-icons/cg";
-import DateInput from "../components/date/DateInput";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
 import {
   getRepairHistoryBySearch,
-  getRepairOutsourceBySearch
+  getRepairOutsourceBySearch,
+  getBuildingOutsourceForSearchOutsource,
+  getRepairTypeOutsourceForSearchOutsource,
+  getFloorForSearchOutsource
 } from "../api/repairApi";
-import SearchSelector from "../components/selector/SearchSelector";
 
 const RepairOutsourceIndex = () => {
   const [search, setSearch] = useState({
-    typeTextSearch: "borrowIdDoc",
-    textSearch: "",
-    status: "",
+    informRepairIdDocTextSearch: "",
+    outSourceRepairNumberTextSearch: "",
+    statusOutsourceRepairTextSearch: "",
+    typeOfRepairTextSearch: "",
     dateFrom: "",
     dateTo: new Date(),
-    sector: "",
+    building: "",
+    floor: "",
+    building: "",
     page: "",
-    limit: 10,
-    total: 0
+    limit: 10
   });
 
   console.log("search:", search);
 
   const [dataList, setDataList] = useState([]);
   console.log("dataList:", dataList);
-  const [sectorList, setSectorList] = useState([]);
-  console.log("sectorList:", sectorList);
+  const [buildingList, setBuildingList] = useState([]);
+  // console.log("buildingList:", buildingList);
+
+  const [typeOfRepairList, setTypeOfRepairList] = useState([]);
+  // console.log("typeOfRepairList:", typeOfRepairList);
+
+  const [floorList, setFloorList] = useState([]);
+  // console.log("floorList:", floorList);
 
   // handle
   const handleChange = e => {
@@ -81,7 +92,7 @@ const RepairOutsourceIndex = () => {
   const fetchDataList = async () => {
     try {
       const res = await getRepairOutsourceBySearch(search);
-      console.log("res:", res.data.repair);
+      // console.log("res:", res.data.repair);
       setDataList(res.data.repair);
       setSearch({
         ...search,
@@ -104,12 +115,32 @@ const RepairOutsourceIndex = () => {
     fetchDataList({ ...search, [e.target.name]: e.target.value });
   };
 
-  // fetch dropdown
-  const getDropdown = async () => {
+  // fetch dropdown Building
+  const getDropdownBuilding = async () => {
     try {
-      const res = await getBorrowHistorySector();
-      console.log("res.data.sectors:", res.data.sectors);
-      setSectorList(res.data.sectors);
+      const res = await getBuildingOutsourceForSearchOutsource();
+      setBuildingList(res.data.building);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // fetch dropdown Floor
+  const getDropdownFloor = async () => {
+    try {
+      const res = await getFloorForSearchOutsource();
+      console.log("res:", res.data);
+      setFloorList(res.data.floor);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // fetch dropdown typeOfRepair
+  const getDropdownTypeOfRepair = async () => {
+    try {
+      const res = await getRepairTypeOutsourceForSearchOutsource();
+      setTypeOfRepairList(res.data.typeOfRepair);
     } catch (err) {
       console.log(err);
     }
@@ -117,7 +148,9 @@ const RepairOutsourceIndex = () => {
 
   useEffect(() => {
     fetchDataList();
-    getDropdown();
+    getDropdownBuilding();
+    getDropdownFloor();
+    getDropdownTypeOfRepair();
   }, []);
 
   return (
@@ -136,28 +169,12 @@ const RepairOutsourceIndex = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 pl-5">
-        {/* <div className="md:col-span-2">
-          <select
-            className="border-[1px] p-2 h-[38px] text-xs text-gray-500 sm:text-sm border-gray-300 rounded-md w-full"
-            name="typeTextSearch"
-            value={search.typeTextSearch}
-            onChange={handleChange}
-          >
-            <option defaultValue value="borrowIdDoc">
-              เลขที่ใบซ่อมแซม
-            </option>
-            <option defaultValue value="assetNumber">
-              เลขครุภัณฑ์
-            </option>
-          </select>
-        </div> */}
-
         <div className="md:col-span-2  h-[38px] relative">
           <input
             type="text"
-            name="textSearch"
+            name="informRepairIdDocTextSearch"
             onChange={handleChange}
-            value={search.textSearch}
+            value={search.informRepairIdDocTextSearch}
             placeholder="เลขที่ใบซ่อมแซม"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
@@ -166,9 +183,9 @@ const RepairOutsourceIndex = () => {
         <div className="md:col-span-2  h-[38px] relative">
           <input
             type="text"
-            name="textSearch"
+            name="outSourceRepairNumberTextSearch"
             onChange={handleChange}
-            value={search.textSearch}
+            value={search.outSourceRepairNumberTextSearch}
             placeholder="เลขที่ใบแจ้งซ่อมภายนอก"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
@@ -176,83 +193,100 @@ const RepairOutsourceIndex = () => {
         <div className="md:col-span-3 ">
           <select
             className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
-            name="status"
-            value={search.status}
+            name="statusOutsourceRepairTextSearch"
+            value={search.statusOutsourceRepairTextSearch}
             onChange={handleChange}
-            defaultValue="status"
           >
             <option defaultValue value="">
               สถานะใบแจ้งซ่อมภายนอก
             </option>
-            <option value="">สถานะใบแจ้งซ่อมภายนอก1</option>
-            <option value="">สถานะใบแจ้งซ่อมภายนอก2</option>
+            <option value="gotRepair">รับใบซ่อม</option>
+            <option value="waitingForMaterial">รอเบิกวัสดุ</option>
+            <option value="inProgress">กำลังดำเนินการซ่อม</option>
+            <option value="complete">เสร็จสิ้น</option>
+            <option value="all">ทั้งหมด</option>
           </select>
         </div>
 
         <div className="md:col-span-3 ">
           <select
             className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
-            name="status"
-            value={search.status}
+            name="typeOfRepairTextSearch"
+            value={search.typeOfRepairTextSearch}
             onChange={handleChange}
             defaultValue="status"
           >
             <option defaultValue value="">
               ประเภทการซ่อม
             </option>
-            <option value="repairType01">ประเภทการซ่อม1</option>
-            <option value="repairType02">ประเภทการซ่อม2</option>
+
+            {typeOfRepairList.map((el, idx) => (
+              <option key={idx} value={el.typeOfRepair}>
+                {el.typeOfRepair}
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="md:col-span-2 h-full ">
+          <label className=" text-text-gray flex">วันที่เริ่มต้น</label>
           <div className="flex h-full">
-            <DateInput
+            <OnlyDateInput
               id="dateFrom"
-              state={search}
-              setState={setSearch}
-              lable="date from"
+              state={search.dateFrom}
+              // setState={setSearch}
             />
           </div>
         </div>
 
         <div className="md:col-span-2 h-full ">
+          <label className=" text-text-gray flex">วันที่สิ้นสุด</label>
           <div className="flex h-full">
-            <DateInput
+            <OnlyDateInput
               id="dateTo"
-              state={search}
-              setState={setSearch}
-              lable="date to"
+              state={search.dateTo}
+              // setState={setSearch}
             />
           </div>
         </div>
 
+        {/* อาคาร */}
         <div className="md:col-span-3">
-          <SearchSelector
-            options={sectorList}
-            placeholder={"อาคาร"}
-            name={"sector"}
-            onChange={(value, label) =>
-              setSearch({ ...search, [label]: value })
-            }
-            floatLabel
-          />
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+            name="building"
+            value={search.building}
+            onChange={handleChange}
+          >
+            <option value="">อาคาร</option>
+
+            {buildingList.map((el, idx) => (
+              <option key={idx} value={el.building}>
+                {el.building}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="md:col-span-3">
           <div className="flex justify-between gap-4">
-            <div className="w-2/4 md:col-span-2">
-              <SearchSelector
-                options={sectorList}
-                placeholder={"ชั้น"}
-                name={"sector"}
-                onChange={(value, label) =>
-                  setSearch({ ...search, [label]: value })
-                }
-                floatLabel
-              />
-            </div>
+            {/* ขั้น */}
+            <div className="w-2/4">
+              <select
+                className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+                name="floor"
+                value={search.floor}
+                onChange={handleChange}
+              >
+                <option value="">ชั้น</option>
 
+                {floorList.map((el, idx) => (
+                  <option key={idx} value={el.floor}>
+                    {el.floor}
+                  </option>
+                ))}
+              </select>
+            </div>
             <button
               type="button"
               className="w-2/4 flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
@@ -399,16 +433,16 @@ const TableBorrowHistory = props => {
               {props.search.page > 1 ? props.search.limit + idx + 1 : idx + 1}
             </div>
             <div className="col-span-2 py-2 w-full border-[1px] bg-[#CACACA] rounded-md">
-              {item.assetNumber}
+              {item.informRepairIdDoc || "-"}
             </div>
             <div className="col-span-2  py-2 w-full border-[1px] bg-[#CACACA] rounded-md">
-              {item.productName}
+              {item.productName || "-"}
             </div>
             <div className="col-span-1  py-2 w-full border-[1px] bg-[#CACACA] rounded-md">
-              {item.hostSector}
+              {item.hostSector || "-"}
             </div>
             <div className="col-span-1  py-2 w-full border-[1px] bg-[#CACACA] rounded-md">
-              {new Date(item.repairedDate).toLocaleDateString("th-TH", options)}
+              {item.price || "-"}
             </div>
             <div
               onClick={() => handleClick(item.status)}
@@ -422,24 +456,28 @@ const TableBorrowHistory = props => {
 
               className="`rounded-full border-0"
             >
-              {/* {item.urgentStatus === "เร่งด่วน"
-                ? "รับใบซ่อม"
-                : item.urgentStatus === "เร่งด่วน"
-                ? "รอเบิกวัสดุ"
-                : "ยกเลิก"} */}
-
-              <div className="flex items-center justify-center">
-                {item.statusCheckJob === "ปกติ" ? (
-                  <div className="bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl">
-                    รับใบซ่อม
-                  </div>
-                ) : (
-                  <div className="bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-sm p-2 rounded-2xl">
-                    รอเบิกวัสดุ
-                  </div>
-                )}
-
-                {/* {item.gotRepair} */}
+              <div
+                className={`flex items-center justify-center ${
+                  item.statusOutsourceRepair === "gotRepair"
+                    ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
+                    : item.statusOutsourceRepair === "waitingForMaterial"
+                    ? "bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-sm p-2 rounded-2xl"
+                    : item.statusOutsourceRepair === "inProgress"
+                    ? "bg-yellow-300 text-yellow-700 text-sm p-2 rounded-2xl"
+                    : item.statusOutsourceRepair === "complete"
+                    ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
+                    : ""
+                }`}
+              >
+                {item.statusOutsourceRepair === "gotRepair"
+                  ? "รับใบซ่อม"
+                  : item.statusOutsourceRepair === "waitingForMaterial"
+                  ? " รอเบิกวัสดุ"
+                  : item.statusOutsourceRepair === "inProgress"
+                  ? " กำลังดำเนินการซ่อม"
+                  : item.statusOutsourceRepair === "complete"
+                  ? " เสร็จสิ้น"
+                  : ""}
               </div>
             </div>
             <div className="col-span-1 flex justify-center">

@@ -57,9 +57,21 @@ export function getRepairOutsourceBySearch(options) {
   return axios.get(`/repair/searchOutsource${getQueryString(options)}`);
 }
 
+export const getBuildingOutsourceForSearchOutsource = async () =>
+  axios.get("/repair/getBuildingOutsourceForSearchOutsource");
+
+export const getRepairTypeOutsourceForSearchOutsource = async () =>
+  axios.get("/repair/getRepairTypeOutsourceForSearchOutsource");
+
+export const getFloorForSearchOutsource = async options =>
+  axios.get(`/repair/getFloorForSearchOutsource${getQueryString(options)}`);
+
 export function getRepairTechnicianBySearch(options) {
   return axios.get(`/repair/searchDetailRecord${getQueryString(options)}`);
 }
+
+export const getSectorForSearchDetailRecord = () =>
+  axios("/repair/sectorForSearchDetailRecord");
 
 export function updateStatusForGetJobRepair(id, status, reason) {
   return axios.patch(

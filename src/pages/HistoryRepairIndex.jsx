@@ -46,6 +46,11 @@ const HistoryRepairIndex = () => {
     setSearch({ ...search, [e.target.name]: e.target.value });
   };
 
+  const handleSelect = (value, label) => {
+    console.log({ ...search, [label]: value });
+    setSearch({ ...search, [label]: value || "" });
+  };
+
   const handleFirstPage = () => {
     if (search.page === 1) {
       // window.alert("You are already on the first page.");
@@ -115,7 +120,7 @@ const HistoryRepairIndex = () => {
   const fetchSectorForSearchHistory = async () => {
     try {
       const res = await getSectorForSearchHistory();
-      // console.log("resFetch:", res.data.courierSector);
+
       setSectorList(res.data.courierSector);
     } catch (err) {
       console.log(err);
@@ -156,25 +161,24 @@ const HistoryRepairIndex = () => {
           />
         </div>
 
-        {/* ID  ไม่แน่*/}
+        {/* ID */}
         <div className="md:col-span-2  h-[38px] relative">
           <input
             type="text"
-            name="informRepairIdDocTextSearch"
+            name="id"
             onChange={handleChange}
-            value={search.informRepairIdDocTextSearch}
+            value={search.id}
             placeholder="ID"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
         </div>
 
-        {/* หาย */}
         <div className="md:col-span-2 h-[38px] relative">
           <input
             type="text"
-            name="textSearch"
+            name="informRepairIdDocTextSearch"
             onChange={handleChange}
-            value={search.textSearch}
+            value={search.informRepairIdDocTextSearch}
             placeholder="เลขที่ใบแจ้งซ่อม"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />

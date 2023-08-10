@@ -327,15 +327,31 @@ const RepairOutsource = () => {
               สถานะใบซ่อมแซม
             </div>
             <div className="flex items-center col-span-2 ">
-              {data.statusCheckJob === "ปกติ" ? (
-                <div className="bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl">
-                  รับใบซ่อม
-                </div>
-              ) : (
-                <div className="bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-sm p-2 rounded-2xl">
-                  รอเบิกวัสดุ
-                </div>
-              )}
+              <div
+                className={`flex items-center justify-center ${
+                  data.statusOutsourceRepair === "gotRepair"
+                    ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
+                    : data.statusOutsourceRepair === "waitingForMaterial"
+                    ? "bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-sm p-2 rounded-2xl"
+                    : data.statusOutsourceRepair === "inProgress"
+                    ? "bg-yellow-300 text-yellow-700 text-sm p-2 rounded-2xl"
+                    : data.statusOutsourceRepair === "complete"
+                    ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
+                    : data.statusOutsourceRepair === "waitingApproval"
+                    ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
+                    : ""
+                }`}
+              >
+                {data.statusOutsourceRepair === "gotRepair"
+                  ? "รับใบซ่อม"
+                  : data.statusOutsourceRepair === "waitingForMaterial"
+                  ? " รอเบิกวัสดุ"
+                  : data.statusOutsourceRepair === "inProgress"
+                  ? " กำลังดำเนินการซ่อม"
+                  : data.statusOutsourceRepair === "complete"
+                  ? " เสร็จสิ้น"
+                  : ""}
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">

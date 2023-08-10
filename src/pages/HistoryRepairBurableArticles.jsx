@@ -17,14 +17,17 @@ import { BsArrowLeft, BsFillEyeFill } from "react-icons/bs";
 
 const HistoryRepairBurableArticles = () => {
   const { id } = useParams();
+
   const [data, setData] = useState([]);
   console.log("data:", data);
 
   const fetchDataList = async () => {
     try {
       const res = await getRepairById(id);
-      console.log(res.data, id);
-      setData(res.data.repair);
+
+      const dataArray = [res.data.repair];
+      // console.log("dataArray:", dataArray);
+      setData(dataArray);
     } catch (err) {
       console.log(err);
     }
@@ -60,113 +63,214 @@ const HistoryRepairBurableArticles = () => {
       </div>
 
       <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-2">
-        <div className="flex justify-between">
-          <div className="text-xl">รายละเอียดครุภัณฑ์</div>
-        </div>
-        {/* row 1 */}
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
-          <div className="text-text-gray flex items-center ">ID ครุภัณฑ์</div>
-          <div className="flex items-center col-span-2">
-            {" "}
-            {/* {data.assets[0].serialNumber} */}-
-          </div>
+        {data.map((el, idx) => (
+          <>
+            <div className="flex justify-between">
+              <div className="text-xl">รายละเอียดครุภัณฑ์</div>
+            </div>
+            {/* row 1 */}
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+              <div className="text-text-gray flex items-center ">
+                ID ครุภัณฑ์
+              </div>
+              <div className="flex items-center col-span-2">{el.assetId}</div>
 
-          <div className="text-text-gray flex items-center ">ราคาที่ซื้อ</div>
-          <div className={"flex items-center col-span-2"}>
-            {" "}
-            <p>-</p>
-          </div>
-        </div>
-        {/* row 2 */}
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
-          <div className="text-text-gray flex items-center">เลขครุภัณฑ์ </div>
-          <div className="flex items-center col-span-2">
-            {" "}
-            {data.assetNumber}
-          </div>
+              <div className="text-text-gray flex items-center ">
+                ราคาที่ซื้อ
+              </div>
+              <div className={"flex items-center col-span-2"}>
+                {el.totalPrice}
+              </div>
+            </div>
+            {/* row 2 */}
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+              <div className="text-text-gray flex items-center">
+                เลขครุภัณฑ์{" "}
+              </div>
+              <div className="flex items-center col-span-2">
+                {el.assetNumber}
+              </div>
 
-          <div className="text-text-gray flex items-center">ผู้ขาย</div>
-          <div className="flex items-center col-span-2">ผู้ขาย</div>
-        </div>
-        {/* row 3 */}
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
-          <div className="text-text-gray flex items-center">ชื่อครุภัณฑ์</div>
-          <div className="flex items-center col-span-2">
-            {" "}
-            {data.productName}
-          </div>
+              <div className="text-text-gray flex items-center">ผู้ขาย</div>
+              <div className="flex items-center col-span-2">
+                {" "}
+                <p>-</p>
+              </div>
+            </div>
+            {/* row 3 */}
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+              <div className="text-text-gray flex items-center">
+                ชื่อครุภัณฑ์
+              </div>
+              <div className="flex items-center col-span-2">
+                {el.productName}
+              </div>
 
-          <div className="text-text-gray flex items-center">
-            หน่วยงานเจ้าของ
-          </div>
-          <div className="flex items-center col-span-2">
-            <p>-</p>
-          </div>
-        </div>
-        {/* row 4 */}
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
-          <div className="text-text-gray flex items-center">วันที่ซื้อ</div>
-          <div className="flex items-center col-span-2">
-            {" "}
-            <p>-</p>
-          </div>
+              <div className="text-text-gray flex items-center">
+                หน่วยงานเจ้าของ
+              </div>
+              <div className="flex items-center col-span-2">{el.sector}</div>
+            </div>
+            {/* row 4 */}
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+              <div className="text-text-gray flex items-center">วันที่ซื้อ</div>
+              <div className="flex items-center col-span-2">
+                {el.purchaseDate || "-"}
+              </div>
 
-          <div className="text-text-gray flex items-center">ผู้รับผิดชอบ</div>
-          <div className="flex items-center col-span-2">
-            {data.responsibleName}
-          </div>
-        </div>
+              <div className="text-text-gray flex items-center">
+                ผู้รับผิดชอบ
+              </div>
+              <div className="flex items-center col-span-2">
+                {el.responsiblePerson || "-"}
+              </div>
+            </div>
 
-        {/* row 6 */}
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
-          <div className="text-text-gray flex items-center">
-            การรับประกัน (เดือน)
-          </div>
-          <div className="flex items-center col-span-2">
-            {data.insuranceEndDate
-              ? `${new Date(data.insuranceEndDate).toLocaleString("th", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false
-                })} น.`
-              : "-"}
-          </div>
+            {/* row 6 */}
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+              <div className="text-text-gray flex items-center">
+                การรับประกัน (เดือน)
+              </div>
+              <div className="flex items-center col-span-2">
+                {el.insuranceEndDate
+                  ? `${new Date(el.insuranceEndDate).toLocaleString("th", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false
+                    })} น.`
+                  : "-"}
+              </div>
 
-          <div className="text-text-gray flex items-center">
-            รายละเอียดประกัน
-          </div>
-          <div className="flex items-center col-span-2">
-            {" "}
-            <p>-</p>
-          </div>
-        </div>
-        {/* row 7 */}
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
-          <div className="text-text-gray flex items-center">
-            วันที่เริ่มรับประกัน
-          </div>
-          <div className="flex items-center col-span-2">-</div>
-        </div>
+              <div className="text-text-gray flex items-center">
+                รายละเอียดประกัน
+              </div>
+              <div className="flex items-center col-span-2">
+                {" "}
+                <p>-</p>
+              </div>
+            </div>
+            {/* row 7 */}
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+              <div className="text-text-gray flex items-center">
+                วันที่เริ่มรับประกัน
+              </div>
+              <div className="flex items-center col-span-2">
+                {el.insuranceStartDate
+                  ? `${new Date(el.insuranceStartDate).toLocaleString("th", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false
+                    })} น.`
+                  : "-"}
+              </div>
+            </div>
 
-        {/* row 8 */}
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
-          <div className="text-text-gray flex items-center">
-            วันที่สิ้นสุดการรับประกัน
-          </div>
-          <div className="flex items-center col-span-2">
-            {data.insuranceEndDate
-              ? `${new Date(data.insuranceEndDate).toLocaleString("th", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false
-                })} น.`
-              : "-"}
+            {/* row 8 */}
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
+              <div className="text-text-gray flex items-center">
+                วันที่สิ้นสุดการรับประกัน
+              </div>
+              <div className="flex items-center col-span-2">
+                {el.insuranceEndDate
+                  ? `${new Date(el.insuranceEndDate).toLocaleString("th", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false
+                    })} น.`
+                  : "-"}
+              </div>
+            </div>
+          </>
+        ))}
+      </div>
+
+      <div className="bg-white border-[1px] p-4 rounded-lg shadow-sm text-sm mt-3">
+        <div className="text-lg">ประวัติการซ่อม</div>
+
+        <div className="overflow-x-auto scrollbar pt-4">
+          <div className="w-[1000px] lg:w-full p-2">
+            <div className="bg-background-gray-table text-xs py-5 items-center justify-center rounded-lg">
+              <div className="grid grid-cols-12 gap-2 text-center">
+                <div className="ml-2 col-span-1 ">ลำดับ</div>
+                <div className="col-span-2">เลขที่ใบซ่อม</div>
+                <div className="col-span-3">อาการเสีย</div>
+                <div className="col-span-2">หน่วยซ่อม</div>
+                <div className="col-span-2">มูลค่างาน</div>
+                <div className="col-span-2 pr-2">สถานะใบซ่อม</div>
+              </div>
+            </div>
+
+            <div className="scrollbar max-h-[45vh] overflow-y-auto">
+              {data.map((el, idx) => (
+                <div
+                  key={idx}
+                  className={`grid grid-cols-12 gap-2 h-12 pt-2 text-xs text-center items-center bg-white`}
+                >
+                  <div className="col-span-1  text-center flex justify-center items-center ">
+                    <div className=" flex justify-center items-center bg-gray-200 rounded-full w-6 h-6 px-2 py-2">
+                      {idx + 1}
+                    </div>
+                  </div>
+                  <div className="col-span-2 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+                    {el.informRepairIdDoc}
+                  </div>
+                  <div className="col-span-3 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+                    {el.productName}
+                  </div>
+                  <div className="col-span-2 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md ">
+                    {el.hostSector}
+                  </div>
+                  <div className="col-span-2 bg-table-data h-[40px] flex justify-center items-center border-[1px] rounded-md">
+                    {el.price}
+                  </div>
+
+                  <div className="col-span-2 m-auto">
+                    <div
+                      className={`flex items-center justify-center ${
+                        el.statusOutsourceRepair === "gotRepair"
+                          ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-xs p-2 rounded-2xl"
+                          : el.statusOutsourceRepair === "waitingForMaterial"
+                          ? "bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-xs p-2 rounded-2xl"
+                          : el.statusOutsourceRepair === "inProgress"
+                          ? "bg-yellow-300 text-yellow-700 text-sm p-2 rounded-2xl"
+                          : el.statusOutsourceRepair === "complete"
+                          ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-xs p-2 rounded-2xl"
+                          : ""
+                      }`}
+                    >
+                      {el.statusOutsourceRepair === "gotRepair"
+                        ? "รับใบซ่อม"
+                        : el.statusOutsourceRepair === "waitingForMaterial"
+                        ? " รอเบิกวัสดุ"
+                        : el.statusOutsourceRepair === "inProgress"
+                        ? " กำลังดำเนินการซ่อม"
+                        : el.statusOutsourceRepair === "complete"
+                        ? " เสร็จสิ้น"
+                        : ""}
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <div className="bg-table-data h-[40px] p-6 flex justify-between items-center mt-10">
+                <div className="w-full flex justify-between text-sm  font-semibold">
+                  รวมจำนวนเงินทั้งหมด
+                  <div className="text-sm font-semibold">
+                    {" "}
+                    {data.reduce((sum, ele) => sum + ele.price, 0)}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -93,7 +93,6 @@ export default function RepairOffwork() {
         totalPrice: resRepair.totalPrice || 0,
 
         checkJobReceiptNumber: resRepair.checkJobReceiptNumber,
-        statusCheckJob: resRepair.statusCheckJob,
 
         approveHireDate: resRepair.approveHireDate
           ? new Date(resRepair.approveHireDate)

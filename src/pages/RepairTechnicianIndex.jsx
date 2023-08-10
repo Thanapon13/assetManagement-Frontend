@@ -7,24 +7,30 @@ import { BsFillPencilFill, BsFillEyeFill } from "react-icons/bs";
 import DateInput from "../components/date/DateInput";
 import {
   getRepairTechnicianBySearch,
-  updateStatusForGetJobRepair
+  updateStatusForGetJobRepair,
+  getSectorForSearchDetailRecord
 } from "../api/repairApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
 const RepairTechnicianIndex = () => {
   const [search, setSearch] = useState({
-    typeTextSearch: "informRepairIdDoc",
+    typeTextSearch: "",
     textSearch: "",
-    statusOfDetailRecord: "",
+    status: "",
     dateFrom: "",
     dateTo: new Date(),
-    sector: ""
+    sector: "",
+    page: "",
+    limit: ""
   });
 
   const [data, setData] = useState([]);
   console.log("data:", data);
   const [sectorArray, setSectorArray] = useState([]);
+
+  const [sectorList, setSectorList] = useState([]);
+  console.log("sectorList:", sectorList);
 
   useEffect(() => {
     fetchList();
@@ -42,6 +48,20 @@ const RepairTechnicianIndex = () => {
       total: res.data.total
     });
   }
+
+  // fetch dropdown sector
+  const fetchSectorForSearchDetailRecord = async () => {
+    try {
+      const res = await getSectorForSearchDetailRecord();
+      setSectorList(res.data.courierSector);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSectorForSearchDetailRecord();
+  }, []);
 
   async function getMaster() {
     const sector = await getSectorOfRepair();
@@ -92,10 +112,10 @@ const RepairTechnicianIndex = () => {
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
-            // name="requestedId"
-            // id="requestedId"
-            // onChange={(e) => setRequestedId(e.target.value)}
-            // value={requestedId}
+            name="typeTextSearch"
+            id="billNumber"
+            onChange={handleChange}
+            value={search.textSearch}
             placeholder="ค้นหาโดยเลขที่ใบเบิก"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
@@ -142,16 +162,21 @@ const RepairTechnicianIndex = () => {
           </div>
         </div>
 
-        <div className="md:col-span-3">
-          <SearchSelector
-            options={sectorArray}
-            placeholder={"หน่วยงานที่โอน"}
-            name={"sector"}
-            onChange={(value, label) =>
-              setSearch({ ...search, [label]: value })
-            }
-            floatLabel
-          />
+        <div className="md:col-span-2 ">
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+            name="sector"
+            value={search.sector}
+            onChange={handleChange}
+          >
+            <option value="">หน่วยงาน</option>
+
+            {sectorList.map((el, idx) => (
+              <option key={idx} value={el.courierSector}>
+                {el.courierSector}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="flex justify-end">
