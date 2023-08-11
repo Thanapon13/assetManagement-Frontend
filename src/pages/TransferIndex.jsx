@@ -9,7 +9,13 @@ import RowOfTableTransferIndex from "../components/table/RowOfTableTransferIndex
 import SearchSelector from "../components/selector/SearchSelector";
 import Select from "react-select";
 import { useEffect } from "react";
-import { deleteTransfer, getAllTransfer, getSectorOfTransfer, getSectorOfTransferee, getTransferAssetBySearch } from "../api/transferApi";
+import {
+  deleteTransfer,
+  getAllTransfer,
+  getSectorOfTransfer,
+  getSectorOfTransferee,
+  getTransferAssetBySearch
+} from "../api/transferApi";
 import { getSector } from "../api/masterApi";
 import ModalReasonDelete from "../components/modal/ModalReasonDelete";
 import { Spinner } from "flowbite-react/lib/esm";
@@ -26,8 +32,8 @@ const TransferIndex = () => {
     { name: "อนุมัติบางส่วน", value: "partiallyApprove" },
     { name: "ไม่อนุมัติ", value: "reject" },
     { name: "แบบร่าง", value: "saveDraft" },
-    { name: "ยกเลิก", value: "cancle" }, //
-  ]
+    { name: "ยกเลิก", value: "cancle" } //
+  ];
 
   const [perPage, setPerPage] = useState(10);
   const [withdrawDate, setWithdrawDate] = useState(todayThaiDate);
@@ -42,44 +48,50 @@ const TransferIndex = () => {
     sector: "",
     page: "",
     limit: 10,
-    total: 0,
+    total: 0
   });
-  const [transferArray, setTransferArray] = useState([])
-  const [transferSectorArray, setTransferSectorArray] = useState([])
-  const [transfereeSectorArray, setTransfereeSectorArray] = useState([])
-  const [showModalDelete, setShowModalDelete] = useState(false)
-  const [reasonDelete, setReasonDelete] = useState("")
-  const [isLoading, setIsLoading] = useState(true)
+  const [transferArray, setTransferArray] = useState([]);
+  const [transferSectorArray, setTransferSectorArray] = useState([]);
+  const [transfereeSectorArray, setTransfereeSectorArray] = useState([]);
+  const [showModalDelete, setShowModalDelete] = useState(false);
+  const [reasonDelete, setReasonDelete] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    initData()
-  }, [])
+    initData();
+  }, []);
 
   const initData = async () => {
-    const response = await getTransferAssetBySearch(search)
-    setTransferArray(response.data.transfer)
+    const response = await getTransferAssetBySearch(search);
+    setTransferArray(response.data.transfer);
     setSearch({
       ...search,
       limit: response.data.limit,
       page: response.data.page,
       total: response.data.total
-    })
-    const sectorTransfer = await getSectorOfTransfer()
-    const transferSector = []
+    });
+    const sectorTransfer = await getSectorOfTransfer();
+    const transferSector = [];
     sectorTransfer.data.transferSector.map(ele => {
-      transferSector.push({ label: ele.transferSector, value: ele.transferSector })
-    })
-    setTransferSectorArray(transferSector)
-    const sectorTransferee = await getSectorOfTransferee()
-    const transfereeSector = []
+      transferSector.push({
+        label: ele.transferSector,
+        value: ele.transferSector
+      });
+    });
+    setTransferSectorArray(transferSector);
+    const sectorTransferee = await getSectorOfTransferee();
+    const transfereeSector = [];
     sectorTransferee.data.transfereeSector.map(ele => {
-      transfereeSector.push({ label: ele.transfereeSector, value: ele.transfereeSector })
-    })
-    setTransfereeSectorArray(transfereeSector)
-    setIsLoading(false)
-  }
+      transfereeSector.push({
+        label: ele.transfereeSector,
+        value: ele.transfereeSector
+      });
+    });
+    setTransfereeSectorArray(transfereeSector);
+    setIsLoading(false);
+  };
 
-  const handleChange = (e) => {
-    setSearch({ ...search, [e.target.name]: e.target.value })
+  const handleChange = e => {
+    setSearch({ ...search, [e.target.name]: e.target.value });
   };
 
   // const handleSelect = (e, data) => {
@@ -87,31 +99,31 @@ const TransferIndex = () => {
   //   setSearch({ ...search, [data.name]: e.value })
   // }
   const handleSelect = (value, label) => {
-    console.log({ ...search, [label]: value })
-    setSearch({ ...search, [label]: value || "" })
-  }
+    console.log({ ...search, [label]: value });
+    setSearch({ ...search, [label]: value || "" });
+  };
 
-  const handleSearch = async (valueSet) => {
-    const res = await getTransferAssetBySearch(valueSet || search)
-    setTransferArray(res.data.transfer)
+  const handleSearch = async valueSet => {
+    const res = await getTransferAssetBySearch(valueSet || search);
+    setTransferArray(res.data.transfer);
     setSearch({
       ...search,
       limit: res.data.limit,
       page: res.data.page,
       total: res.data.total
-    })
-  }
+    });
+  };
 
   async function submitDelete(val) {
-    console.log(val, showModalDelete)
-    const id = showModalDelete
-    setIsLoading(true)
+    console.log(val, showModalDelete);
+    const id = showModalDelete;
+    setIsLoading(true);
     try {
-      await deleteTransfer(id)
+      await deleteTransfer(id);
       // setShowModalDelete(false)
       // initData()
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -165,9 +177,11 @@ const TransferIndex = () => {
           <div className="text-xs font-semibold flex-none px-3">ค้นหาโดย</div>
           <select
             className="ml-2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
-          // onChange={(e) => setPerPage(e.target.value)}
+            // onChange={(e) => setPerPage(e.target.value)}
           >
-            <option value="" selected="selected">ID</option>
+            <option value="" selected="selected">
+              ID
+            </option>
           </select>
         </div>
 
@@ -196,9 +210,13 @@ const TransferIndex = () => {
             value={search.status}
             onChange={handleChange}
           >
-            <option value="" selected="selected">สถานะทั้งหมด</option>
+            <option value="" selected="selected">
+              สถานะทั้งหมด
+            </option>
             {status.map((ele, idx) => (
-              <option key={idx} value={ele.value}>{ele.name}</option>
+              <option key={idx} value={ele.value}>
+                {ele.name}
+              </option>
             ))}
           </select>
         </div>
@@ -258,28 +276,30 @@ const TransferIndex = () => {
       </div>
 
       <div className="grid">
-      <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
-        {isLoading
-          ? <div className="mt-5 py-10 w-full text-center"><Spinner size="xl" /></div>
-          :
-          <div className="w-max lg:w-full">
-            <div>
-              <div className="flex p-4">
-                <div className=" text-sm text-text-gray">ผลการค้นหา </div>
-                <div className="ml-2 text-sm">{search.total} รายการ </div>
-              </div>
-              <div className="grid grid-cols-18 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
-                <div className="col-span-2 ml-2">วันที่/เวลาโอน</div>
-                <div className="col-span-3">เลขที่เอกสารการโอนย้าย</div>
-                <div className="col-span-3">หน่วยงานที่โอน</div>
-                <div className="col-span-3">หน่วยงานรับโอน</div>
-                <div className="col-span-3">สถานที่ตั้งใหม่</div>
-                <div className="col-span-2 text-center">สถานะ</div>
-                <div className="col-span-2 text-center font-bold mr-2">
-                  Action
+        <div className="bg-white rounded-lg  my-3  overflow-x-auto scrollbar">
+          {isLoading ? (
+            <div className="mt-5 py-10 w-full text-center">
+              <Spinner size="xl" />
+            </div>
+          ) : (
+            <div className="w-max lg:w-full">
+              <div>
+                <div className="flex p-4">
+                  <div className=" text-sm text-text-gray">ผลการค้นหา </div>
+                  <div className="ml-2 text-sm">{search.total} รายการ </div>
+                </div>
+                <div className="grid grid-cols-18 gap-2 h-12 items-center text-text-black-table text-xs text-center font-semibold bg-border-gray-table  border-b-[1px] border-border-gray-table">
+                  <div className="col-span-2 ml-2">วันที่/เวลาโอน</div>
+                  <div className="col-span-3">เลขที่เอกสารการโอนย้าย</div>
+                  <div className="col-span-3">หน่วยงานที่โอน</div>
+                  <div className="col-span-3">หน่วยงานรับโอน</div>
+                  <div className="col-span-3">สถานที่ตั้งใหม่</div>
+                  <div className="col-span-2 text-center">สถานะ</div>
+                  <div className="col-span-2 text-center font-bold mr-2">
+                    Action
+                  </div>
                 </div>
               </div>
-            </div>
               {transferArray?.map((ele, idx) => {
                 return (
                   <RowOfTableTransferIndex
@@ -289,31 +309,37 @@ const TransferIndex = () => {
                     ele={ele}
                     status={status}
                     setShowModalDelete={setShowModalDelete}
-                  // transferPendingDateTime={el.transferPendingDateTime}
-                  // transferDocumentNumber={el.transferDocumentNumber}
-                  // transferSector={el.transferSector}
-                  // transfereeSector={el.transfereeSector}
-                  // building={el.building}
-                  // status={el.status}
+                    // transferPendingDateTime={el.transferPendingDateTime}
+                    // transferDocumentNumber={el.transferDocumentNumber}
+                    // transferSector={el.transferSector}
+                    // transfereeSector={el.transfereeSector}
+                    // building={el.building}
+                    // status={el.status}
                   />
                 );
               })}
 
-            <ModalReasonDelete isVisible={showModalDelete} textSubmit="ยกเลิกโอนย้าย"
-              reason={reasonDelete}
-              setReason={setReasonDelete}
-              onClose={() => setShowModalDelete(false)}
-              onSubmit={submitDelete}
-            />
-            {!search.total
-              ? <center className='p-5'>-</center>
-              : <Pagination  search={search} data={transferArray} fetchLists={handleSearch}/>
-            }
-          </div>
-        }
+              <ModalReasonDelete
+                isVisible={showModalDelete}
+                textSubmit="ยกเลิกโอนย้าย"
+                reason={reasonDelete}
+                setReason={setReasonDelete}
+                onClose={() => setShowModalDelete(false)}
+                onSubmit={submitDelete}
+              />
+              {!search.total ? (
+                <center className="p-5">-</center>
+              ) : (
+                <Pagination
+                  search={search}
+                  data={transferArray}
+                  fetchLists={handleSearch}
+                />
+              )}
+            </div>
+          )}
+        </div>
       </div>
-      </div>
-
     </div>
   );
 };

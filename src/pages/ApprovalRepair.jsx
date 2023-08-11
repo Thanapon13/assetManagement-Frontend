@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ModalBorrowRejectAllApprove from "../components/modal/ModalBorrowRejectAllApprove";
 import ModalTransferRejectAllApprove from "../components/modal/ModalTransferRejectAllApprove";
+import DateInput from "../components/date/DateInput";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoIosClose } from "react-icons/io";
-import OnlyDateInput from "../components/date/onlyDateInput";
 import { useEffect } from "react";
 import { getSector } from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
@@ -21,7 +21,7 @@ function ApprovalRepair() {
   const [search, setSearch] = useState({
     listStatus: "",
     dateFrom: "",
-    dateTo: ""
+    dateTo: new Date()
   });
 
   console.log("search:", search);
@@ -156,31 +156,29 @@ function ApprovalRepair() {
             <div className="text-lg ">รายการเสนออนุมัติประจำวัน</div>
             <div className="grid lg:grid-cols-7 md:grid-cols-4 pt-4 gap-5 md:gap-x-5">
               <div className=" md:col-span-2 flex flex-col gap-y-2">
-                <label className=" text-text-gray flex">วันที่เริ่มต้น</label>
                 <div className="flex h-[38px]">
-                  <OnlyDateInput
+                  <DateInput
                     id="dateFrom"
-                    state={search.dateFrom}
-                    // setState={setSearch}
+                    state={search}
+                    setState={setSearch}
+                    lable="date from"
                   />
                 </div>
               </div>
               <div className="md:col-span-2 flex flex-col gap-y-2">
-                <label className=" text-text-gray flex">วันที่สิ้นสุด</label>
                 <div className="flex h-[38px]">
-                  <OnlyDateInput
+                  <DateInput
                     id="dateTo"
-                    state={search.dateTo}
-                    // setState={setSearch}
+                    state={search}
+                    setState={setSearch}
+                    lable="date to"
                   />
                 </div>
               </div>
               <div className="md:col-span-2 flex flex-col gap-y-2">
-                <label className="text-text-gray">
-                  หน่วยงานที่เสนอ (รหัส P4P)
-                </label>
+                <label className="text-text-gray">รายการ</label>
                 <SearchSelector
-                  options={sectorList}
+                  // options={sectorList}
                   name={"sector"}
                   onChange={value =>
                     setSearch({ ...search, transferSector: value || "" })

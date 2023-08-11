@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import Selector from "../components/selector/Selector";
 import OnlyDateInput from "../components/date/onlyDateInput";
+import DateInput from "../components/date/DateInput";
 import SearchSelector from "../components/selector/SearchSelector";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -25,13 +26,11 @@ const RepairOutsourceIndex = () => {
     typeOfRepairTextSearch: "",
     dateFrom: "",
     dateTo: new Date(),
-    building: "",
     floor: "",
     building: "",
     page: "",
     limit: 10
   });
-
   console.log("search:", search);
 
   const [dataList, setDataList] = useState([]);
@@ -47,7 +46,7 @@ const RepairOutsourceIndex = () => {
 
   // handle
   const handleChange = e => {
-    console.log("handleChange", { ...search, [e.target.name]: e.target.value });
+    // console.log("handleChange", { ...search, [e.target.name]: e.target.value });
     setSearch({ ...search, [e.target.name]: e.target.value });
   };
 
@@ -92,6 +91,7 @@ const RepairOutsourceIndex = () => {
   const fetchDataList = async () => {
     try {
       const res = await getRepairOutsourceBySearch(search);
+      console.log("search:", search);
       // console.log("res:", res.data.repair);
       setDataList(res.data.repair);
       setSearch({
@@ -129,7 +129,6 @@ const RepairOutsourceIndex = () => {
   const getDropdownFloor = async () => {
     try {
       const res = await getFloorForSearchOutsource();
-      console.log("res:", res.data);
       setFloorList(res.data.floor);
     } catch (err) {
       console.log(err);
@@ -186,6 +185,7 @@ const RepairOutsourceIndex = () => {
             name="outSourceRepairNumberTextSearch"
             onChange={handleChange}
             value={search.outSourceRepairNumberTextSearch}
+            id="outSourceRepairNumber"
             placeholder="เลขที่ใบแจ้งซ่อมภายนอก"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
@@ -194,7 +194,7 @@ const RepairOutsourceIndex = () => {
           <select
             className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
             name="statusOutsourceRepairTextSearch"
-            value={search.statusOutsourceRepairTextSearch}
+            value={search.statusOutsourceRepairTextSearch || ""}
             onChange={handleChange}
           >
             <option defaultValue value="">
@@ -228,24 +228,26 @@ const RepairOutsourceIndex = () => {
           </select>
         </div>
 
-        <div className="md:col-span-2 h-full ">
-          <label className=" text-text-gray flex">วันที่เริ่มต้น</label>
-          <div className="flex h-full">
-            <OnlyDateInput
+        {/* วันที่เริ่มต้น */}
+        <div className=" md:col-span-2 flex flex-col gap-y-2">
+          <div className="flex h-[38px]">
+            <DateInput
               id="dateFrom"
-              state={search.dateFrom}
-              // setState={setSearch}
+              state={search}
+              setState={setSearch}
+              lable="date from"
             />
           </div>
         </div>
 
-        <div className="md:col-span-2 h-full ">
-          <label className=" text-text-gray flex">วันที่สิ้นสุด</label>
-          <div className="flex h-full">
-            <OnlyDateInput
+        {/* วันที่สิ้นสุด */}
+        <div className="md:col-span-2 flex flex-col gap-y-2">
+          <div className="flex h-[38px]">
+            <DateInput
               id="dateTo"
-              state={search.dateTo}
-              // setState={setSearch}
+              state={search}
+              setState={setSearch}
+              lable="date to"
             />
           </div>
         </div>

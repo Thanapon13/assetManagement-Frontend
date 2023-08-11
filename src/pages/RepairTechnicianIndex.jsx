@@ -15,7 +15,7 @@ import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 
 const RepairTechnicianIndex = () => {
   const [search, setSearch] = useState({
-    typeTextSearch: "",
+    typeTextSearch: "informRepairIdDoc",
     textSearch: "",
     status: "",
     dateFrom: "",
@@ -24,13 +24,14 @@ const RepairTechnicianIndex = () => {
     page: "",
     limit: ""
   });
+  console.log("search:", search);
 
   const [data, setData] = useState([]);
   console.log("data:", data);
   const [sectorArray, setSectorArray] = useState([]);
 
   const [sectorList, setSectorList] = useState([]);
-  console.log("sectorList:", sectorList);
+  // console.log("sectorList:", sectorList);
 
   useEffect(() => {
     fetchList();
@@ -104,19 +105,26 @@ const RepairTechnicianIndex = () => {
       {/* search bar */}
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 md:pl-5">
         <div className="text-xs font-semibold">ค้นหาโดย</div>
-        <div className="md:col-span-2">
-          <Selector placeholder={"เลขที่ใบแจ้งซ่อม"} />
+        <div className="md:col-span-2 ">
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+            name="typeTextSearch"
+            value={search.typeTextSearch}
+            onChange={handleChange}
+          >
+            <option value="informRepairIdDoc">เลขที่ใบแจ้งซ่อม</option>
+          </select>
         </div>
 
         <div className="md:col-span-4  h-[38px] relative">
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
-            name="typeTextSearch"
+            name="textSearch"
             id="billNumber"
             onChange={handleChange}
             value={search.textSearch}
-            placeholder="ค้นหาโดยเลขที่ใบเบิก"
+            placeholder="เลขที่ใบแจ้งซ่อม"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
         </div>
@@ -124,19 +132,20 @@ const RepairTechnicianIndex = () => {
         <div className="md:col-span-3">
           <select
             className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
-            name="statusOfDetailRecord"
-            value={search.statusOfDetailRecord}
+            name="status"
+            value={search.status}
             onChange={handleChange}
           >
             <option defaultValue value="">
-              สถานะทั้งหมด
+              สถานะ
             </option>
-            <option value="waitTechnicianConfirm">รอช่างรับงาน</option>
-            <option value="inProgress">ดำเนินการ</option>
-            <option value="waiting">รอตรวจรับ</option>
-            <option value="complete">เสร็จสิ้น</option>
-            <option value="cancel">ยกเลิก</option>
-            <option value="saveDraft">แบบร่าง</option>
+            <option value="waiting">รอการอนุมัติ</option>
+            <option value="waitingRecord">รอลงบันทึก</option>
+            <option value="waitingApproval">รออนุมัติ</option>
+            <option value="inProgressOfDetailRecord">ดำเนินการ</option>
+            <option value="completeOfDetailRecord">เสร็จสิ้น</option>
+            <option value="cancelOfDetailRecord">ไม่รับงาน</option>
+            <option value="reject">ไม่อนุมัติ</option>
           </select>
         </div>
 

@@ -12,13 +12,23 @@ import {
   getBySearchBorrowHistory
 } from "../api/borrowApi";
 import BorrowHistorySectorSelector from "../components/selector/BorrowHistorySectorSelector";
-import { getRepairById } from "../api/repairApi";
+import { getRepairById, updateOutsourceRecord } from "../api/repairApi";
 import { BsArrowLeft, BsFillEyeFill } from "react-icons/bs";
+import ModalConfirmSave from "../components/modal/ModalConfirmSave";
+import ModalSuccess from "../components/modal/ModalSuccess";
 
 const RepairOutsource = () => {
   const { id } = useParams();
+
   const [data, setData] = useState([]);
   console.log("data:", data);
+
+  const [showModalSuccess, setShowModalSuccess] = useState();
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const handleChange = e => {
+    const updatedData = { ...data, statusOutsourceRepair: e.target.value };
+    setData(updatedData);
+  };
 
   const fetchDataList = async () => {
     try {
@@ -33,6 +43,24 @@ const RepairOutsource = () => {
   useEffect(() => {
     fetchDataList();
   }, []);
+
+  const submit = async valStatus => {
+    try {
+      const formData = new FormData();
+      formData.append("input", JSON.stringify(data));
+      formData.append("status", valStatus || data.statusOfDetailRecord);
+      formData.append("costOfRepairArray", JSON.stringify(""));
+      formData.append("existArrayDocument", JSON.stringify([]));
+
+      await updateOutsourceRecord(id, formData);
+
+      await setShowModalConfirm(true);
+      window.location.reload();
+      await setShowModalSuccess(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="bg-background-page py-5 p-3 min-h-full">
@@ -323,36 +351,21 @@ const RepairOutsource = () => {
             <div className="flex items-center col-span-2 ">
               <h1>{data.repairResult}</h1>
             </div>
+
             <div className="text-text-gray flex items-center ">
               สถานะใบซ่อมแซม
             </div>
-            <div className="flex items-center col-span-2 ">
-              <div
-                className={`flex items-center justify-center ${
-                  data.statusOutsourceRepair === "gotRepair"
-                    ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
-                    : data.statusOutsourceRepair === "waitingForMaterial"
-                    ? "bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-sm p-2 rounded-2xl"
-                    : data.statusOutsourceRepair === "inProgress"
-                    ? "bg-yellow-300 text-yellow-700 text-sm p-2 rounded-2xl"
-                    : data.statusOutsourceRepair === "complete"
-                    ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
-                    : data.statusOutsourceRepair === "waitingApproval"
-                    ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
-                    : ""
-                }`}
-              >
-                {data.statusOutsourceRepair === "gotRepair"
-                  ? "รับใบซ่อม"
-                  : data.statusOutsourceRepair === "waitingForMaterial"
-                  ? " รอเบิกวัสดุ"
-                  : data.statusOutsourceRepair === "inProgress"
-                  ? " กำลังดำเนินการซ่อม"
-                  : data.statusOutsourceRepair === "complete"
-                  ? " เสร็จสิ้น"
-                  : ""}
-              </div>
-            </div>
+            <select
+              className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+              name="statusOutsourceRepairTextSearch"
+              value={data.statusOutsourceRepair}
+              onChange={handleChange}
+            >
+              <option value="gotRepair">รับใบซ่อม</option>
+              <option value="waitingForMaterial">รอเบิกวัสดุ</option>
+              <option value="inProgress">กำลังดำเนินการซ่อม</option>
+              <option value="complete">เสร็จสิ้น</option>
+            </select>
           </div>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-6 p-2">
             <div className="text-text-gray flex items-center ">
@@ -673,73 +686,34 @@ const RepairOutsource = () => {
           <div className="sm:col-span-4 col-span-2">{data?.purchaseAmount}</div>
         </div>
       </div>
-    </div>
-  );
-};
 
-const TableBorrowHistory = props => {
-  let options = { day: "2-digit", month: "2-digit", year: "numeric" };
-  return (
-    <>
-      {props.data.map((item, idx) => {
-        return (
-          <div
-            key={idx}
-            className={`grid grid-cols-9 gap-2 h-12 pt-2 p-2 text-xs text-center items-center border-b-[1px] border-border-gray-table bg-white`}
+      <div className="flex justify-between items-center gap-10 p-5 text-sm mr-">
+        <Link to="/repairOutsourceIndex">
+          <button
+            type="button"
+            className=" hover:bg-gray-100 text-text-gray text-sm rounded-md py-2 px-4"
           >
-            <div className="col-span-1">
-              {props.search.page > 1 ? props.search.limit + idx + 1 : idx + 1}
-            </div>
-            <div className="col-span-2">{item.assetNumber}</div>
-            <div className="col-span-2 ">{item.productName}</div>
-            <div className="col-span-1">{item.hostSector}</div>
-            <div className="col-span-1">
-              {new Date(item.repairedDate).toLocaleDateString("th-TH", options)}
-            </div>
-            <div
-              onClick={() => handleClick(item.status)}
-              className={`rounded-full text-white  ${
-                item.urgentStatus === "rush"
-                  ? "bg-red-600 "
-                  : item.urgentStatus === "rush"
-                  ? "bg-yellow-300"
-                  : item.urgentStatus === "normal"
-                  ? " bg-blue-600"
-                  : "bg-red-200 text-red-600  border-red-200"
-              } border border-spacing-5 p-2 w-full`}
-            >
-              {item.urgentStatus === "rush"
-                ? "ฉุกเฉิน"
-                : item.urgentStatus === "rush"
-                ? "เร่งด่วน"
-                : item.urgentStatus === "normal"
-                ? "ปกติ"
-                : ""}
-            </div>
-            <div className="col-span-1 flex justify-center">
-              <Link
-                to={`/borrowHistoryDetail/${item._id}`}
-                className="border flex gap-1 items-center p-1 rounded-md border-text-green text-text-green hover:bg-sidebar-green "
-              >
-                <svg
-                  width="17"
-                  height="11"
-                  viewBox="0 0 17 11"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M8.49967 8.65592C9.33787 8.65592 10.0492 8.36374 10.6335 7.77936C11.2179 7.19499 11.5101 6.4837 11.5101 5.64551C11.5101 4.80731 11.2179 4.09603 10.6335 3.51165C10.0492 2.92728 9.33787 2.63509 8.49967 2.63509C7.66148 2.63509 6.9502 2.92728 6.36582 3.51165C5.78145 4.09603 5.48926 4.80731 5.48926 5.64551C5.48926 6.4837 5.78145 7.19499 6.36582 7.77936C6.9502 8.36374 7.66148 8.65592 8.49967 8.65592ZM8.49967 7.62884C7.94481 7.62884 7.47554 7.437 7.09186 7.05332C6.70818 6.66964 6.51634 6.20037 6.51634 5.64551C6.51634 5.09065 6.70818 4.62138 7.09186 4.23769C7.47554 3.85401 7.94481 3.66217 8.49967 3.66217C9.05453 3.66217 9.52381 3.85401 9.90749 4.23769C10.2912 4.62138 10.483 5.09065 10.483 5.64551C10.483 6.20037 10.2912 6.66964 9.90749 7.05332C9.52381 7.437 9.05453 7.62884 8.49967 7.62884ZM8.49967 10.958C6.77606 10.958 5.21773 10.4681 3.82467 9.48822C2.43162 8.50835 1.39273 7.22745 0.708008 5.64551C1.39273 4.06356 2.43162 2.78266 3.82467 1.8028C5.21773 0.822938 6.77606 0.333008 8.49967 0.333008C10.2233 0.333008 11.7816 0.822938 13.1747 1.8028C14.5677 2.78266 15.6066 4.06356 16.2913 5.64551C15.6066 7.22745 14.5677 8.50835 13.1747 9.48822C11.7816 10.4681 10.2233 10.958 8.49967 10.958Z"
-                    fill="#38821D"
-                  />
-                </svg>
-                ดูรายละเอียด
-              </Link>
-            </div>
-          </div>
-        );
-      })}
-    </>
+            ยกเลิก
+          </button>
+        </Link>
+        <div className="flex justify-end gap-4">
+          <button
+            className="border-text-green text-text-green hover:bg-green-100 border-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 text-sm rounded-md py-2 px-4"
+            onClick={() => submit()}
+          >
+            บันทึก
+          </button>
+
+          <ModalConfirmSave
+            isVisible={showModalConfirm}
+            onClose={() => setShowModalConfirm(false)}
+            onSave={() => submit("waitingApproval")}
+          />
+
+          {showModalSuccess && <ModalSuccess urlPath="/repairOutsourceIndex" />}
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -29,6 +29,7 @@ const RepairIndex = () => {
   const [data, setData] = useState([]);
   console.log("data:", data);
   const [sectorArray, setSectorArray] = useState([]);
+  console.log("sectorArray:", sectorArray);
 
   useEffect(() => {
     fetchList();
@@ -111,18 +112,28 @@ const RepairIndex = () => {
       <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-center mt-8 mb-3 md:pl-5">
         <div className="text-xs font-semibold">ค้นหาโดย</div>
         <div className="md:col-span-2">
-          <Selector placeholder={"เลขที่ใบแจ้งซ่อม"} />
+          {/* <Selector placeholder={"เลขที่ใบแจ้งซ่อม"} /> */}
+          <div className="md:col-span-2 ">
+            <select
+              className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+              name="typeTextSearch"
+              value={search.typeTextSearch}
+              onChange={handleChange}
+            >
+              <option value="informRepairIdDoc">เลขที่ใบแจ้งซ่อม</option>
+            </select>
+          </div>
         </div>
 
         <div className="md:col-span-4  h-[38px] relative">
           <AiOutlineSearch className="text-xl text-gray-500 absolute top-1/2 left-5 transform -translate-x-1/2 -translate-y-1/2 " />
           <input
             type="text"
-            // name="requestedId"
-            // id="requestedId"
-            // onChange={(e) => setRequestedId(e.target.value)}
-            // value={requestedId}
-            placeholder="ค้นหาโดยเลขที่ใบแจ้งซ่อม"
+            name="textSearch"
+            id="billNumber"
+            onChange={handleChange}
+            value={search.textSearch}
+            placeholder="เลขที่ใบแจ้งซ่อม"
             className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
           />
         </div>
@@ -135,7 +146,7 @@ const RepairIndex = () => {
             onChange={handleChange}
           >
             <option defaultValue value="">
-              สถานะทั้งหมด
+              สถานะ
             </option>
             <option value="waiting">รอช่างรับงาน</option>
             <option value="inProgress">ดำเนินการ</option>
@@ -168,7 +179,7 @@ const RepairIndex = () => {
           </div>
         </div>
 
-        <div className="md:col-span-3">
+        {/* <div className="md:col-span-3">
           <SearchSelector
             options={sectorArray}
             placeholder={"หน่วยงาน"}
@@ -178,6 +189,23 @@ const RepairIndex = () => {
             }
             floatLabel
           />
+        </div> */}
+
+        <div className="md:col-span-2 ">
+          <select
+            className="border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md w-full"
+            name="sector"
+            value={search.sector}
+            onChange={handleChange}
+          >
+            <option value="">หน่วยงาน</option>
+
+            {sectorArray.map((el, idx) => (
+              <option key={idx} value={el.label}>
+                {el.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="flex justify-end">

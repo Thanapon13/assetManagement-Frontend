@@ -161,18 +161,6 @@ const HistoryRepairIndex = () => {
           />
         </div>
 
-        {/* ID */}
-        <div className="md:col-span-2  h-[38px] relative">
-          <input
-            type="text"
-            name="id"
-            onChange={handleChange}
-            value={search.id}
-            placeholder="ID"
-            className="pl-8 w-full h-[38px] border-[1px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
-          />
-        </div>
-
         <div className="md:col-span-2 h-[38px] relative">
           <input
             type="text"

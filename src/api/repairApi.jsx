@@ -64,7 +64,7 @@ export const getRepairTypeOutsourceForSearchOutsource = async () =>
   axios.get("/repair/getRepairTypeOutsourceForSearchOutsource");
 
 export const getFloorForSearchOutsource = async options =>
-  axios.get(`/repair/getFloorForSearchOutsource${getQueryString(options)}`);
+  axios.get("/repair/getFloorForSearchOutsource");
 
 export function getRepairTechnicianBySearch(options) {
   return axios.get(`/repair/searchDetailRecord${getQueryString(options)}`);

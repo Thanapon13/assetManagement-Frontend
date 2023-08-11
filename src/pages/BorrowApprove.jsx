@@ -9,7 +9,7 @@ import {
   getAllFirstFetchBorrowApprove,
   getAllSectorFromBorrow,
   getBySearchTopBorrowApprove,
-  rejectIndividualWaitingBorrow,
+  rejectIndividualWaitingBorrow
 } from "../api/borrowApi";
 import ApproveSectorSelector from "../components/selector/ApproveSectorSelector";
 import { id } from "date-fns/locale";
@@ -24,20 +24,23 @@ const BorrowApprove = () => {
     dateFrom: "",
     dateTo: new Date(),
     sector: "",
-    listStatus: ['approve', 'reject', 'partiallyApprove'],
+    listStatus: ["approve", "reject", "partiallyApprove"]
   });
+
+  console.log("search:", search);
+
   const [amountOfStatusList, setAmountOfStatusList] = useState({
     totalAll: 0,
     totalApprove: 0,
     totalReject: 0,
-    totalWaiting: 0,
+    totalWaiting: 0
   });
   const [sectorList, setSectorList] = useState([]);
 
   const boxStyle = {
-    boxStatus: `p-2 rounded-md flex flex-col items-center border-[2px] shadow-md`,
+    boxStatus: `p-2 rounded-md flex flex-col items-center border-[2px] shadow-md`
   };
-  const [isFetch, setIsFetch] = useState(true)
+  const [isFetch, setIsFetch] = useState(true);
   const [topApproveList, setTopApproveList] = useState([]);
   const [bottomApprovedList, setBottomApprovedList] = useState([]);
 
@@ -53,18 +56,18 @@ const BorrowApprove = () => {
       // console.log("bottom",res.data.bottomApproveList);
       setTopApproveList(res.data.topApproveList);
       setBottomApprovedList(res.data.bottomApproveList);
-      setIsFetch(false)
+      setIsFetch(false);
     } catch (err) {
       console.log(err);
-      setIsFetch(false)
+      setIsFetch(false);
     }
   };
 
   // handle checkbox
-  const handleAllCheckboxChange = (list) => {
+  const handleAllCheckboxChange = list => {
     setIsChecked(!isChecked);
     const newCheck = !isChecked;
-    const newList = list.map((item) => {
+    const newList = list.map(item => {
       return { ...item, checked: newCheck };
     });
     console.log(newList);
@@ -72,7 +75,7 @@ const BorrowApprove = () => {
   };
 
   const handleCheckboxChange = (list, id) => {
-    const newList = list.map((item) => {
+    const newList = list.map(item => {
       if (item._id === id) {
         return { ...item, checked: !item.checked };
       }
@@ -87,7 +90,7 @@ const BorrowApprove = () => {
   };
 
   // handle add ListStatus in search
-  const handleListStatusChange = (value) => {
+  const handleListStatusChange = value => {
     const listStatus = search.listStatus;
     const index = listStatus.indexOf(value);
     console.log(index);
@@ -107,7 +110,7 @@ const BorrowApprove = () => {
     const topApproveListJSON = JSON.stringify(state);
     console.log(topApproveListJSON);
     await approveAllWaitingBorrow({
-      topApproveList: topApproveListJSON,
+      topApproveList: topApproveListJSON
     });
     await fetchFirstBorrowApproveData();
   };
@@ -118,11 +121,11 @@ const BorrowApprove = () => {
       const res = await getAllSectorFromBorrow();
       // console.log(res.data.sectors);
       // setSectorList(res.data.sectors);
-      const arrSector = []
+      const arrSector = [];
       res.data.sectors.map(ele => {
-        arrSector.push({ label: ele, value: ele })
-      })
-      setSectorList(arrSector)
+        arrSector.push({ label: ele, value: ele });
+      });
+      setSectorList(arrSector);
     } catch (err) {
       console.log(err);
     }
@@ -142,12 +145,12 @@ const BorrowApprove = () => {
         totalAll: res.data.totalAll,
         totalApprove: res.data.totalApprove,
         totalReject: res.data.totalReject,
-        totalWaiting: res.data.totalWaiting,
+        totalWaiting: res.data.totalWaiting
       });
-      setIsFetch(false)
+      setIsFetch(false);
     } catch (err) {
       console.log(err);
-      setIsFetch(false)
+      setIsFetch(false);
     }
   };
 
@@ -206,7 +209,9 @@ const BorrowApprove = () => {
               <SearchSelector
                 options={sectorList}
                 name={"sector"}
-                onChange={(value) => setSearch({ ...search, transferSector: value || "" })}
+                onChange={value =>
+                  setSearch({ ...search, transferSector: value || "" })
+                }
               />
               {/* <ApproveSectorSelector
                 placeholder={"Select"}
@@ -228,17 +233,17 @@ const BorrowApprove = () => {
               </select>
             </div> */}
 
-<div className="flex justify-start items-end">
-                <button
-                  type="button"
-                  className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
-                  onClick={handleSearch}
-                >
-                  <div className="text-xl text-white">
-                    <AiOutlineSearch />
-                  </div>
-                </button>
-              </div>
+            <div className="flex justify-start items-end">
+              <button
+                type="button"
+                className="flex justify-center w-[38px] h-[38px] items-center py-1 px-6  border border-transparent shadow-sm text-sm font-medium rounded-md bg-text-green hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800"
+                onClick={handleSearch}
+              >
+                <div className="text-xl text-white">
+                  <AiOutlineSearch />
+                </div>
+              </button>
+            </div>
           </div>
           {/* status */}
           <div className="grid md:grid-cols-4 pt-5 gap-5 md:gap-10 p-2">
@@ -268,37 +273,45 @@ const BorrowApprove = () => {
             </div>
           </div>
           {/* header approve list */}
-          {isFetch
-            ? <div className="mt-5 py-10 w-full text-center"> <Spinner size="xl" /> </div>
-            : !topApproveList.length ? <div className="mt-5 py-10 w-full text-center">ยังไม่มีรายการรออนุมัติ</div>
-              : <div className="flex justify-between mt-5 pt-5 border-t-2">
-                <div className="flex items-center space-x-5">
-                  <div className="flex">
-                    <input
-                      type="checkbox"
-                      onChange={() => handleAllCheckboxChange(topApproveList)}
-                      className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
-                    />
-                    <h1 className="ml-2">เลือกทั้งหมด</h1>
-                  </div>
-                  <h1 className="">
-                    เลือกแล้ว {topApproveList.filter(ele => ele.checked).length}/{amountOfStatusList.totalWaiting} รายการ
-                  </h1>
-                </div>
-                <div className="flex space-x-3">
-                  <ModalBorrowRejectAllApprove
-                    state={topApproveList}
-                    setState={setTopApproveList}
-                    fetchFirstBorrowApproveData={fetchFirstBorrowApproveData}
+          {isFetch ? (
+            <div className="mt-5 py-10 w-full text-center">
+              {" "}
+              <Spinner size="xl" />{" "}
+            </div>
+          ) : !topApproveList.length ? (
+            <div className="mt-5 py-10 w-full text-center">
+              ยังไม่มีรายการรออนุมัติ
+            </div>
+          ) : (
+            <div className="flex justify-between mt-5 pt-5 border-t-2">
+              <div className="flex items-center space-x-5">
+                <div className="flex">
+                  <input
+                    type="checkbox"
+                    onChange={() => handleAllCheckboxChange(topApproveList)}
+                    className=" text-text-green rounded-md placeholder-text-green focus:ring-0"
                   />
-                  <ModalApproveAll
-                    state={topApproveList}
-                    setState={setTopApproveList}
-                    handleApproveAllWaitingList={handleApproveAllWaitingList}
-                  />
+                  <h1 className="ml-2">เลือกทั้งหมด</h1>
                 </div>
+                <h1 className="">
+                  เลือกแล้ว {topApproveList.filter(ele => ele.checked).length}/
+                  {amountOfStatusList.totalWaiting} รายการ
+                </h1>
               </div>
-          }
+              <div className="flex space-x-3">
+                <ModalBorrowRejectAllApprove
+                  state={topApproveList}
+                  setState={setTopApproveList}
+                  fetchFirstBorrowApproveData={fetchFirstBorrowApproveData}
+                />
+                <ModalApproveAll
+                  state={topApproveList}
+                  setState={setTopApproveList}
+                  handleApproveAllWaitingList={handleApproveAllWaitingList}
+                />
+              </div>
+            </div>
+          )}
           {/* approve list item */}
           <div className="mt-3">
             <BorrowApproveListItem
@@ -314,13 +327,14 @@ const BorrowApprove = () => {
           {/* header */}
           <div className="flex items-center space-x-10">
             <div className="text-lg">รายการคำขอที่จัดการแล้ว</div>
-            {!!bottomApprovedList.length &&
+            {!!bottomApprovedList.length && (
               <div className="md:flex space-x-5">
                 <button
-                  className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${search.listStatus.includes("approve")
-                    ? "border-2 border-green-800 "
-                    : ""
-                    }`}
+                  className={`flex text-text-green bg-sidebar-green p-2 border rounded-2xl ${
+                    search.listStatus.includes("approve")
+                      ? "border-2 border-green-800 "
+                      : ""
+                  }`}
                   onClick={() => handleListStatusChange("approve")}
                 >
                   อนุมัติแล้ว
@@ -340,10 +354,11 @@ const BorrowApprove = () => {
                   </div>
                 </button>
                 <button
-                  className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${search.listStatus.includes("reject")
-                    ? "border-2 border-red-800 "
-                    : ""
-                    }`}
+                  className={`flex text-red-500 bg-red-100 p-2 border rounded-2xl  ${
+                    search.listStatus.includes("reject")
+                      ? "border-2 border-red-800 "
+                      : ""
+                  }`}
                   onClick={() => handleListStatusChange("reject")}
                 >
                   ไม่อนุมัติ
@@ -363,10 +378,11 @@ const BorrowApprove = () => {
                   </div>
                 </button>
                 <button
-                  className={`flex text-orange-400 bg-orange-100 p-2 border rounded-2xl  ${search.listStatus.includes("partiallyApprove")
-                    ? "border-2 border-orange-800 "
-                    : ""
-                    }`}
+                  className={`flex text-orange-400 bg-orange-100 p-2 border rounded-2xl  ${
+                    search.listStatus.includes("partiallyApprove")
+                      ? "border-2 border-orange-800 "
+                      : ""
+                  }`}
                   onClick={() => handleListStatusChange("partiallyApprove")}
                 >
                   อนุมัติบางส่วน
@@ -386,14 +402,15 @@ const BorrowApprove = () => {
                   </div>
                 </button>
               </div>
-            }
+            )}
           </div>
           {/* approved list item */}
           <div className="mt-3">
-            {!bottomApprovedList.length
-              ? <center className='p-5'>-</center>
-              : <BorrowApprovedListItem data={bottomApprovedList} />
-            }
+            {!bottomApprovedList.length ? (
+              <center className="p-5">-</center>
+            ) : (
+              <BorrowApprovedListItem data={bottomApprovedList} />
+            )}
           </div>
         </div>
       </div>
@@ -417,12 +434,12 @@ const BorrowApprove = () => {
   );
 };
 
-const BorrowApproveListItem = (props) => {
+const BorrowApproveListItem = props => {
   let options = { day: "2-digit", month: "2-digit", year: "numeric" };
   const hoursOptions = {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,
+    hour12: false
   };
   return (
     <div className="overflow-x-auto overflow-y-auto scrollbar ">
@@ -494,7 +511,7 @@ const BorrowApprovedListItem = ({ data }) => {
   const hoursOptions = {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,
+    hour12: false
   };
   return (
     <div className="overflow-x-auto overflow-y-auto scrollbar ">
@@ -547,35 +564,36 @@ const BorrowApprovedListItem = ({ data }) => {
                     </div>
                     <div className="">
                       <div
-                        className={`${item.status === "waiting"
-                          ? " bg-background-light-blue text-text-blue  rounded-xl "
-                          : item.status === "approve"
+                        className={`${
+                          item.status === "waiting"
+                            ? " bg-background-light-blue text-text-blue  rounded-xl "
+                            : item.status === "approve"
                             ? " bg-sidebar-green text-text-green  rounded-xl  "
                             : item.status === "partiallyApprove"
-                              ? " text-orange-400 bg-orange-100 p-2 border rounded-xl  "
-                              : item.status === "watingReturnApprove"
-                                ? "bg-orange-100 text-orange-400 rounded-xl"
-                                : item.status === "cancel" ||
-                                  item.status === "reject"
-                                  ? "bg-red-200 text-red-600  rounded-xl"
-                                  : "bg-text-green text-white rounded-md hover:bg-green-800"
-                          } border border-spacing-5 p-2 w-full`}
+                            ? " text-orange-400 bg-orange-100 p-2 border rounded-xl  "
+                            : item.status === "watingReturnApprove"
+                            ? "bg-orange-100 text-orange-400 rounded-xl"
+                            : item.status === "cancel" ||
+                              item.status === "reject"
+                            ? "bg-red-200 text-red-600  rounded-xl"
+                            : "bg-text-green text-white rounded-md hover:bg-green-800"
+                        } border border-spacing-5 p-2 w-full`}
                       >
                         {item.status === "waiting"
                           ? "รออนุมัติ"
                           : item.status === "approve"
-                            ? "อนุมัติแล้ว"
-                            : item.status === "partiallyApprove"
-                              ? "อนุมัติบางส่วน"
-                              : item.status === "done"
-                                ? "คืนสำเร็จ"
-                                : item.status === "waitCheckReturn"
-                                  ? "รอตรวจรับ"
-                                  : item.status === "cancel"
-                                    ? "ยกเลิก"
-                                    : item.status === "reject"
-                                      ? "ไม่อนุมัติ"
-                                      : "บันทึกคืน"}
+                          ? "อนุมัติแล้ว"
+                          : item.status === "partiallyApprove"
+                          ? "อนุมัติบางส่วน"
+                          : item.status === "done"
+                          ? "คืนสำเร็จ"
+                          : item.status === "waitCheckReturn"
+                          ? "รอตรวจรับ"
+                          : item.status === "cancel"
+                          ? "ยกเลิก"
+                          : item.status === "reject"
+                          ? "ไม่อนุมัติ"
+                          : "บันทึกคืน"}
                       </div>
                     </div>
                   </div>
@@ -615,10 +633,10 @@ const ModalApproveAll = ({ state, setState, handleApproveAllWaitingList }) => {
                       รายการครุภัณฑ์ที่อนุมัติ
                     </h3>
                     <button
-                     className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
+                      className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
                       onClick={() => setShowModal(false)}
                     >
-                       <IoIosClose className="text-2xl" />
+                      <IoIosClose className="text-2xl" />
                     </button>
                   </div>
                   {/* table */}
@@ -646,7 +664,7 @@ const ModalApproveAll = ({ state, setState, handleApproveAllWaitingList }) => {
                   <button
                     className="text-white bg-text-green px-10 py-2 border rounded-md "
                     type="button"
-                    onClick={(e) => {
+                    onClick={e => {
                       setShowModal(false);
                       handleApproveAllWaitingList(e, state);
                     }}
@@ -667,7 +685,7 @@ const ModalIndividualReject = ({
   state,
   setState,
   idx,
-  fetchFirstBorrowApproveData,
+  fetchFirstBorrowApproveData
 }) => {
   const [showModal, setShowModal] = useState(false);
   // const state = props.state;
@@ -676,39 +694,39 @@ const ModalIndividualReject = ({
   const hoursOptions = {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,
+    hour12: false
   };
 
-  const handleChangeIndividualReject = (e) => {
+  const handleChangeIndividualReject = e => {
     const clone = [...state];
     clone[idx][e.target.name] = e.target.value;
     setState(clone);
   };
 
-  const handleSubmitIndividualReject = async (e) => {
+  const handleSubmitIndividualReject = async e => {
     e.preventDefault();
     const cloneObject = state[idx];
 
-    const filteredAndModifiedObject = (input) => {
+    const filteredAndModifiedObject = input => {
       // add the reason property to each item in the filtered packageAssetIdArray
       const modifiedPackageAssetIdArray = input.packageAssetIdArray.map(
-        (asset) => ({
+        asset => ({
           ...asset,
-          reason: input.reason,
+          reason: input.reason
         })
       );
 
       // add the reason property to each item in the assetIdArray
-      const modifiedAssetIdArray = input.assetIdArray.map((asset) => ({
+      const modifiedAssetIdArray = input.assetIdArray.map(asset => ({
         ...asset,
-        reason: input.reason,
+        reason: input.reason
       }));
 
       // create a new object with the modified packageAssetIdArray and assetIdArray
       return {
         ...input,
         packageAssetIdArray: modifiedPackageAssetIdArray,
-        assetIdArray: modifiedAssetIdArray,
+        assetIdArray: modifiedAssetIdArray
       };
     };
 
@@ -717,7 +735,7 @@ const ModalIndividualReject = ({
     // only one that you select
     const topApproveListJSON = JSON.stringify(result);
     await rejectIndividualWaitingBorrow({
-      topApproveList: topApproveListJSON,
+      topApproveList: topApproveListJSON
     });
     await fetchFirstBorrowApproveData();
   };
@@ -737,7 +755,6 @@ const ModalIndividualReject = ({
           <div className="flex justify-center items-center overflow-y-auto fixed top-0 pt-[15vh] md:pt-0 bottom-0 left-0 z-40 md:inset-0 md:w-screen">
             <div className="w-10/12 md:w-7/12 max-w-[1040px] border border-white shadow-md rounded-xl ">
               <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
-               
                 <div>
                   <div className="flex items-center justify-between p-5 ">
                     <h3 className="text-xl">สาเหตุที่ไม่อนุมัติ</h3>
@@ -785,7 +802,7 @@ const ModalIndividualReject = ({
                             type="text"
                             name="reason"
                             value={state[idx].reason}
-                            onChange={(e) => handleChangeIndividualReject(e)}
+                            onChange={e => handleChangeIndividualReject(e)}
                             placeholder="Example"
                             required
                             className="border-[1px] p-2 h-[38px] w-7/12 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
@@ -808,7 +825,7 @@ const ModalIndividualReject = ({
                     to="/borrowApprove"
                     className="text-white bg-red-600 px-10 py-2 border rounded-md "
                     // type="button"
-                    onClick={(e) => {
+                    onClick={e => {
                       setShowModal(false);
                       handleSubmitIndividualReject(e);
                     }}
@@ -830,12 +847,12 @@ const TableSummaryApprove = ({ state, setState }) => {
   const hoursOptions = {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,
+    hour12: false
   };
 
   console.log("TableSummaryApprove", state);
 
-  const anyChecked = state.some((item) => item.checked);
+  const anyChecked = state.some(item => item.checked);
 
   const [isClick, setIsClick] = useState(false);
 

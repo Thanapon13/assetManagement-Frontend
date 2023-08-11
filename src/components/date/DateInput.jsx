@@ -118,7 +118,6 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
                 </option>
               ))}
             </select>
-
             <select
               value={months[date.getMonth()]}
               onChange={({ target: { value } }) =>
@@ -135,7 +134,6 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
                 </option>
               ))}
             </select>
-
             <button
               onClick={increaseMonth}
               disabled={nextMonthButtonDisabled}
@@ -181,7 +179,11 @@ function DateInput({ state, setState, lable, id, minDate, onlyYear, error }) {
             location.pathname === "/borrowList" ||
             location.pathname === "/borrowHistory" ||
             location.pathname === "/borrowCheckIndex" ||
-            location.pathname === "/addUserInformation"
+            location.pathname === "/addUserInformation" ||
+            location.pathname === "/repairOutsourceIndex" ||
+            location.pathname === "/approvalRepair" ||
+            location.pathname === "/repairTechnicianIndex" ||
+            location.pathname === "/repairIndex"
           ) {
             setState(prevState => ({ ...prevState, [id]: date }));
           } else {

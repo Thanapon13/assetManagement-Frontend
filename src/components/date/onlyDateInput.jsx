@@ -6,7 +6,7 @@ import { AiTwotoneCalendar } from "react-icons/ai";
 const onlyDateInput = ({ state, setState, disabled, id, isValid, minDate }) => {
   // const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const handleWatDatePickerChange = (christDate) => {
+  const handleWatDatePickerChange = christDate => {
     // setSelectedDate(christDate);
     if (
       location.pathname === "/borrowRecord" ||
@@ -18,7 +18,7 @@ const onlyDateInput = ({ state, setState, disabled, id, isValid, minDate }) => {
       `/${location.pathname.split("/")[1]}` === "/borrowCheckApprove" ||
       location.pathname === "/addUserInformation"
     ) {
-      setState((prevState) => ({ ...prevState, [id]: christDate }));
+      setState(prevState => ({ ...prevState, [id]: christDate }));
     } else {
       setState(christDate);
     }
@@ -38,7 +38,7 @@ const onlyDateInput = ({ state, setState, disabled, id, isValid, minDate }) => {
             "/viewBorrowApproveDetail" ||
           `/${location.pathname.split("/")[1]}` === "/borrowCheckSaving" ||
           `/${location.pathname.split("/")[1]}` === "/borrowCheckApprove" ||
-          location.pathname === "/addUserInformation" || 
+          location.pathname === "/addUserInformation" ||
           `/${location.pathname.split("/")[1]}` === "/editUserInformation"
             ? state[id]
             : state[id] || state
@@ -51,7 +51,7 @@ const onlyDateInput = ({ state, setState, disabled, id, isValid, minDate }) => {
           width: "100%",
           height: "38px",
           borderColor: isValid ? "#ef4444" : "rgb(209 213 219)",
-          backgroundColor: disabled ? "rgb(229 231 235)" : "",
+          backgroundColor: disabled ? "rgb(229 231 235)" : ""
         }} // styles for input
         // clearable={true} // true | false
         // minDate={'2020-12-26'} // supported date as string
