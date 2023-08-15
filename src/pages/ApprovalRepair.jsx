@@ -176,7 +176,6 @@ function ApprovalRepair() {
                 </div>
               </div>
               <div className="md:col-span-2 flex flex-col gap-y-2">
-                <label className="text-text-gray">รายการ</label>
                 <SearchSelector
                   // options={sectorList}
                   name={"sector"}

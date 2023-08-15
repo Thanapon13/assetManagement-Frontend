@@ -98,17 +98,27 @@ const RepairOutsource = () => {
         <div className="flex items-center gap-4">
           <h1 className="text-xs">สถานะใบแจ้งซ่อมแซม</h1>
           <div
-            className={`rounded-full text-white text-xs ${
-              data.urgentStatus === "ฉุกเฉิน"
-                ? "bg-red-600 "
-                : data.urgentStatus === "เร่งด่วน"
-                ? "bg-yellow-300"
-                : data.urgentStatus === "ปกติ"
-                ? " bg-blue-600"
-                : "bg-red-200 text-red-600  border-red-200"
-            } border border-spacing-5 p-2 w-fit`}
+            className={`flex items-center justify-center ${
+              data.statusOutsourceRepair === "gotRepair"
+                ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
+                : data.statusOutsourceRepair === "waitingForMaterial"
+                ? "bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-sm p-2 rounded-2xl"
+                : data.statusOutsourceRepair === "inProgress"
+                ? "bg-yellow-300 text-yellow-700 text-sm p-2 rounded-2xl"
+                : data.statusOutsourceRepair === "complete"
+                ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
+                : ""
+            }`}
           >
-            {data.urgentStatus}
+            {data.statusOutsourceRepair === "gotRepair"
+              ? "รับใบซ่อม"
+              : data.statusOutsourceRepair === "waitingForMaterial"
+              ? " รอเบิกวัสดุ"
+              : data.statusOutsourceRepair === "inProgress"
+              ? " กำลังดำเนินการซ่อม"
+              : data.statusOutsourceRepair === "complete"
+              ? " เสร็จสิ้น"
+              : ""}
           </div>
         </div>
       </div>

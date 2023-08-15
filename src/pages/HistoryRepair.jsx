@@ -65,25 +65,33 @@ const HistoryRepair = () => {
           <div className="flex items-center justify-center">
             <div
               className={`flex items-center justify-center ${
-                data.statusOutsourceRepair === "gotRepair"
-                  ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
-                  : data.statusOutsourceRepair === "waitingForMaterial"
-                  ? "bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-sm p-2 rounded-2xl"
-                  : data.statusOutsourceRepair === "inProgress"
+                data.statusOfDetailRecord === "waiting"
+                  ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-xs p-2 rounded-2xl"
+                  : data.statusOfDetailRecord === "waitingRecord"
+                  ? "bg-[#F2994A] bg-opacity-[15%] text-[#F2994A] text-xs p-2 rounded-2xl"
+                  : data.statusOfDetailRecord === "waitingApproval"
                   ? "bg-yellow-300 text-yellow-700 text-sm p-2 rounded-2xl"
-                  : data.statusOutsourceRepair === "complete"
-                  ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-sm p-2 rounded-2xl"
+                  : data.statusOfDetailRecord === "completeOfDetailRecord"
+                  ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-xs p-2 rounded-2xl"
+                  : data.statusOfDetailRecord === "cancelOfDetailRecord"
+                  ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-xs p-2 rounded-2xl"
+                  : data.statusOfDetailRecord === "reject"
+                  ? "bg-[#38821D] bg-opacity-[15%] text-[#38821D] text-xs p-2 rounded-2xl"
                   : ""
               }`}
             >
-              {data.statusOutsourceRepair === "gotRepair"
-                ? "รับใบซ่อม"
-                : data.statusOutsourceRepair === "waitingForMaterial"
-                ? " รอเบิกวัสดุ"
-                : data.statusOutsourceRepair === "inProgress"
-                ? " กำลังดำเนินการซ่อม"
-                : data.statusOutsourceRepair === "complete"
-                ? " เสร็จสิ้น"
+              {data.statusOfDetailRecord === "waiting"
+                ? "รอช่างรับงาน"
+                : data.statusOfDetailRecord === "waitingRecord"
+                ? "รอลงบันทึก"
+                : data.statusOfDetailRecord === "waitingApproval"
+                ? "รออนุมัติ"
+                : data.statusOfDetailRecord === "completeOfDetailRecord"
+                ? "เสร็จสิ้น"
+                : data.statusOfDetailRecord === "cancelOfDetailRecord"
+                ? "ไม่รับงาน"
+                : data.statusOfDetailRecord === "reject"
+                ? "ไม่อนุมัติ"
                 : ""}
             </div>
           </div>
@@ -160,7 +168,7 @@ const HistoryRepair = () => {
               ลำดับครุภัณฑ์ (ID)
             </div>
             <div className="flex items-center col-span-2">
-              {data.realAssetId || "-"}
+              {data.assets[0]._id || "-"}
             </div>
           </div>
           {/* row 3 */}
@@ -278,7 +286,7 @@ const HistoryRepair = () => {
             </div>
             <div className="text-text-gray flex items-center">หน่วยงาน</div>
             <div className="flex items-center col-span-2">
-              {data.courierSector}
+              {data.sector || "-"}
             </div>
           </div>
         </div>
