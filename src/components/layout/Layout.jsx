@@ -1,8 +1,8 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import { Navbar, LeftBar } from '../../components'
+import React from "react";
+import { Outlet } from "react-router-dom";
+import { Navbar, LeftBar } from "../../components";
 
-const Layout = ({menu}) => {
+const Layout = ({ menu }) => {
   return (
     <div className="">
       <Navbar />
@@ -15,7 +15,7 @@ const Layout = ({menu}) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

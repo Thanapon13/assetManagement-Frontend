@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
+import React, { useState } from "react";
+import { useEffect } from "react";
+import { NavLink } from "react-router-dom";
 
 const SubMenu = ({ item, showSubMenu, setShowSubMenu, setSidebar }) => {
-  const [subnav, setSubnav] = useState(showSubMenu)
+  const [subnav, setSubnav] = useState(showSubMenu);
 
   // const showSubnav = () => {
   //   setSubnav(!subnav)
@@ -18,18 +18,18 @@ const SubMenu = ({ item, showSubMenu, setShowSubMenu, setSidebar }) => {
   const handleClick = () => {
     if (item.subNav) {
       if (!showSubMenu || showSubMenu != item.title) {
-        setShowSubMenu(item.title)
+        setShowSubMenu(item.title);
       } else {
-        setShowSubMenu(false)
+        setShowSubMenu(false);
       }
     } else if (item.path) {
-      setSidebar(false)
+      setSidebar(false);
     }
-  }
+  };
 
   useEffect(() => {
-    setSubnav(showSubMenu == item.title)
-  }, [showSubMenu])
+    setSubnav(showSubMenu == item.title);
+  }, [showSubMenu]);
 
   return (
     <>
@@ -40,14 +40,16 @@ const SubMenu = ({ item, showSubMenu, setShowSubMenu, setSidebar }) => {
         onClick={handleClick}
         className={({ isActive }) =>
           [
-            'flex items-center p-4 h-[60px] rounded-3xl hover:bg-sidebar-green group',
+            "flex items-center p-4 h-[60px] rounded-3xl hover:bg-sidebar-green group",
             // isActive ? 'bg-sidebar-green text-text-green' : 'text-text-gray',
-            subnav ? ' text-text-green'
-              : item.path == window.location.pathname ? ' text-text-green bg-sidebar-green' : 'text-text-gray',
-
+            subnav
+              ? " text-text-green"
+              : item.path == window.location.pathname
+              ? " text-text-green bg-sidebar-green"
+              : "text-text-gray"
           ]
             .filter(Boolean)
-            .join(' ')
+            .join(" ")
         }
       >
         <div className="flex w-full group-hover:text-text-green gap-5">
@@ -58,8 +60,8 @@ const SubMenu = ({ item, showSubMenu, setShowSubMenu, setSidebar }) => {
           {item.subNav && subnav
             ? item.iconOpened
             : item.subNav
-              ? item.iconClosed
-              : null}
+            ? item.iconClosed
+            : null}
         </div>
       </NavLink>
       {/* sub menu */}
@@ -72,15 +74,17 @@ const SubMenu = ({ item, showSubMenu, setShowSubMenu, setSidebar }) => {
               key={index}
               className={({ isActive }) =>
                 [
-                  'flex items-center gap-2 px-6 rounded-3xl hover:bg-sidebar-green group',
+                  "flex items-center gap-2 px-6 rounded-3xl hover:bg-sidebar-green group",
                   isActive
-                    ? 'bg-sidebar-green text-text-green'
-                    : 'text-text-gray',
-                  'overflow-hidden',
-                  !subnav ? 'max-h-0 p-0 ease-out duration-400' : 'max-h-fit p-3 ease-in duration-300 '
+                    ? "bg-sidebar-green text-text-green"
+                    : "text-text-gray",
+                  "overflow-hidden",
+                  !subnav
+                    ? "max-h-0 p-0 ease-out duration-400"
+                    : "max-h-fit p-3 ease-in duration-300 "
                 ]
                   .filter(Boolean)
-                  .join(' ')
+                  .join(" ")
               }
               onClick={() => setSidebar(false)}
             >
@@ -89,10 +93,11 @@ const SubMenu = ({ item, showSubMenu, setShowSubMenu, setSidebar }) => {
                 <div className="">{item.title}</div>
               </div>
             </NavLink>
-          )
-        })}
+          );
+        })
+      }
     </>
-  )
-}
+  );
+};
 
-export default SubMenu
+export default SubMenu;

@@ -1,47 +1,49 @@
-import backgroundPageLogin from '../public/pics/backgroundPageLogin.png'
-import logo from '../public/pics/logo.png'
+import backgroundPageLogin from "../public/pics/backgroundPageLogin.png";
+import logo from "../public/pics/logo.png";
 
-import { AiOutlineEyeInvisible } from 'react-icons/ai'
-import { BsFillEyeFill } from 'react-icons/bs'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useEffect, useState, useRef } from 'react'
+import { AiOutlineEyeInvisible } from "react-icons/ai";
+import { BsFillEyeFill } from "react-icons/bs";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
 
-import useAuth from '../hooks/useAuth'
-import axios from '../api/axios'
-import { adminLogin } from '../api/authApi'
+import useAuth from "../hooks/useAuth";
+import axios from "../api/axios";
+import { adminLogin } from "../api/authApi";
 
 function LoginPage() {
-  const { login,setAuth, persist, setPersist } = useAuth()
+  const { login, setAuth, persist, setPersist } = useAuth();
 
-  const navigate = useNavigate()
-  const location = useLocation()
-  const from = location.state?.from?.pathname || '/dashboard'
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
 
-  const userRef = useRef()
-  const errRef = useRef()
+  const userRef = useRef();
+  const errRef = useRef();
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [errMsg, setErrMsg] = useState('')
-
-  useEffect(() => {
-    userRef.current.focus()
-  }, [])
+  const [username, setUsername] = useState("");
+  // console.log("username:", username);
+  const [password, setPassword] = useState("");
+  // console.log("password:", password);
+  const [errMsg, setErrMsg] = useState("");
 
   useEffect(() => {
-    setErrMsg('')
-  }, [username, password])
+    userRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [username, password]);
 
   // main state
-  const [toggle, setToggle] = useState(false)
+  const [toggle, setToggle] = useState(false);
 
   const togglePersist = () => {
-    setPersist((prev) => !prev)
-  }
+    setPersist(prev => !prev);
+  };
 
   useEffect(() => {
-    localStorage.setItem('persist', persist)
-  }, [persist])
+    localStorage.setItem("persist", persist);
+  }, [persist]);
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault()
@@ -77,12 +79,13 @@ function LoginPage() {
   //   }
   // }
 
-  const handleSubmitLogin = async (e) => {
+  const handleSubmitLogin = async e => {
     try {
       e.preventDefault();
-      await login(username, password);
+      const res = await login(username, password);
+      console.log("res:", res);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       // setError(err.response.data.message);
     }
   };
@@ -127,7 +130,7 @@ function LoginPage() {
             {/* input */}
             <form className="text-left" onSubmit={handleSubmitLogin}>
               <div className="text-xs text-text-gray mt-12">Username</div>
-              <p ref={errRef} className={errMsg ? 'bg-red-500 ' : ' block '}>
+              <p ref={errRef} className={errMsg ? "bg-red-500 " : " block "}>
                 {errMsg}
               </p>
               <input
@@ -135,17 +138,17 @@ function LoginPage() {
                 ref={userRef}
                 name="username"
                 id="username"
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={e => setUsername(e.target.value)}
                 value={username}
                 className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
               />
               <div className="text-xs text-text-gray mt-6">Password</div>
               <div className="flex relative">
                 <input
-                  type={toggle ? 'text' : 'password'}
+                  type={toggle ? "text" : "password"}
                   name="password"
                   id="password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   value={password}
                   className="w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue"
                 />
@@ -189,7 +192,7 @@ function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default LoginPage
+export default LoginPage;

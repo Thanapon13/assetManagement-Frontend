@@ -81,6 +81,7 @@ import HistoryRepairBurableArticles from "../pages/HistoryRepairBurableArticles"
 const Router = () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const { user } = useContext(AuthContext);
+  console.log("user:", user);
   const menu = user?.roleId?.accessScreen || [];
   return (
     <Routes>

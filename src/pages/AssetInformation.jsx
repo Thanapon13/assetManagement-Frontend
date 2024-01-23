@@ -11,7 +11,13 @@ import docIcon from "../public/pics/docIcon.png";
 import Modal from "../components/modal/Modal";
 import DeprecationDropdown from "../components/dropdown/DeprecationDropdown";
 import { ToastContainer, toast } from "react-toastify";
-import { createAsset, getAssetById, getByAssetNumberSelector, getByProductSelector, updateAsset } from "../api/assetApi";
+import {
+  createAsset,
+  getAssetById,
+  getByAssetNumberSelector,
+  getByProductSelector,
+  updateAsset
+} from "../api/assetApi";
 import BarcodeScanner from "../components/scanner/BarcodeScanner";
 import QRscanner from "../components/scanner/QRscanner";
 import { useEffect } from "react";
@@ -19,7 +25,21 @@ import OnlyDateInput from "../components/date/onlyDateInput";
 import ModalConfirmSave from "../components/modal/ModalConfirmSave";
 import ModalSuccess from "../components/modal/ModalSuccess";
 import { IoIosClose } from "react-icons/io";
-import { getAcquiredType, getAcquisitionMethod, getBrandData, getCategory, getCountingUnit, getGroupData, getKindAll, getMoneyType, getPurposeOfUse, getSector, getSourceData, getSubsector, getTypeData } from "../api/masterApi";
+import {
+  getAcquiredType,
+  getAcquisitionMethod,
+  getBrandData,
+  getCategory,
+  getCountingUnit,
+  getGroupData,
+  getKindAll,
+  getMoneyType,
+  getPurposeOfUse,
+  getSector,
+  getSourceData,
+  getSubsector,
+  getTypeData
+} from "../api/masterApi";
 import SearchSelector from "../components/selector/SearchSelector";
 import YearInput from "../components/date/YearInput";
 import { getDropdownMerchant } from "../api/merchant";
@@ -33,47 +53,47 @@ const AssetInformation = () => {
   const fileTypes = [
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "application/pdf",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   ];
 
-  const [typeList, setTypeList] = useState([])
-  const [kindList, setKindList] = useState([])
-  const [countingUnitList, setCountingUnitList] = useState([])
-  const [brandList, setBrandList] = useState([])
-  const [categoryList, setCategoryList] = useState([])
-  const [groupList, setGroupList] = useState([])
-  const [acquiredTypeList, setAcquiredTypeList] = useState([])
-  const [sourceList, setSourceList] = useState([])
-  const [purposeOfUseList, setPurposeOfUseList] = useState([])
-  const [acquisitionMethodList, setAcquisitionMethodList] = useState([])
-  const [moneyTypeList, setMoneyTypeList] = useState([])
-  const [sectorList, setSectorList] = useState([])
-  const [merchantList, setMerchantList] = useState([])
+  const [typeList, setTypeList] = useState([]);
+  const [kindList, setKindList] = useState([]);
+  const [countingUnitList, setCountingUnitList] = useState([]);
+  const [brandList, setBrandList] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
+  const [groupList, setGroupList] = useState([]);
+  const [acquiredTypeList, setAcquiredTypeList] = useState([]);
+  const [sourceList, setSourceList] = useState([]);
+  const [purposeOfUseList, setPurposeOfUseList] = useState([]);
+  const [acquisitionMethodList, setAcquisitionMethodList] = useState([]);
+  const [moneyTypeList, setMoneyTypeList] = useState([]);
+  const [sectorList, setSectorList] = useState([]);
+  const [merchantList, setMerchantList] = useState([]);
   // สถานะ?
 
-  const [List, setList] = useState([])
-  const param = useParams()
+  const [List, setList] = useState([]);
+  const param = useParams();
   useEffect(() => {
-    getMasterData()
-    if (param.id) initData()
+    getMasterData();
+    if (param.id) initData();
   }, []);
 
   async function initData() {
-    const types = await getTypeData()
-    const arrType = formArrayOption(types.data.type)
-    setTypeList(arrType)
-    const kinds = await getKindAll()
-    const arrKind = formArrayOption(kinds.data.kind)
-    setKindList(arrKind)
-    const categorys = await getCategory()
-    const arrCategory = formArrayOption(categorys.data.category)
-    setCategoryList(arrCategory)
+    const types = await getTypeData();
+    const arrType = formArrayOption(types.data.type);
+    setTypeList(arrType);
+    const kinds = await getKindAll();
+    const arrKind = formArrayOption(kinds.data.kind);
+    setKindList(arrKind);
+    const categorys = await getCategory();
+    const arrCategory = formArrayOption(categorys.data.category);
+    setCategoryList(arrCategory);
     const res = await getAssetById(param.id);
-    const asset = res.data.asset[0]
+    const asset = res.data.asset[0];
 
-    const type = arrType.find(ele => ele.value == asset.type)
-    const kind =arrKind.find(ele => ele.value == asset.kind)
-    const category =arrCategory.find(ele => ele.value == asset.category)
+    const type = arrType.find(ele => ele.value == asset.type);
+    const kind = arrKind.find(ele => ele.value == asset.kind);
+    const category = arrCategory.find(ele => ele.value == asset.category);
     setInput({
       engProductName: asset.engProductName,
       productName: asset.productName,
@@ -93,93 +113,109 @@ const AssetInformation = () => {
       assetGroupNumber: asset.assetGroupNumber,
       distributeToSector: asset.distributeToSector,
       // ...asset,
-      type: { label: type.label,value: type.ele.value, name: asset.type } || { label: asset.type, name: asset.type },
-      kind: { label: kind.label,value: kind.ele.value, name: asset.kind } || { label: asset.kind, name: asset.kind },
-      category: { label: category.label,value: category.ele.value, name: asset.category } || { label: asset.category, name: asset.category },
-    })
+      type: { label: type.label, value: type.ele.value, name: asset.type } || {
+        label: asset.type,
+        name: asset.type
+      },
+      kind: { label: kind.label, value: kind.ele.value, name: asset.kind } || {
+        label: asset.kind,
+        name: asset.kind
+      },
+      category: {
+        label: category.label,
+        value: category.ele.value,
+        name: asset.category
+      } || { label: asset.category, name: asset.category }
+    });
 
     setInputContract({
       ...asset?.purchaseContract,
       receivedDate: new Date(asset?.purchaseContract.receivedDate),
       purchaseYear: new Date(asset?.purchaseContract.purchaseYear),
       purchaseDate: new Date(asset?.purchaseContract.purchaseDate),
-      documentDate: new Date(asset?.purchaseContract.documentDate),
-    })
+      documentDate: new Date(asset?.purchaseContract.documentDate)
+    });
     setInputSale({
       ...asset?.distribution,
-      distributeDocumentDate: new Date(asset?.distribution.distributeDocumentDate),
-      distributeApprovalReleaseDate: new Date(asset?.distribution.distributeApprovalReleaseDate),
-    })
-    setGenData(asset?.genDataArray || [])
-    const docs = asset?.documentArray
+      distributeDocumentDate: new Date(
+        asset?.distribution.distributeDocumentDate
+      ),
+      distributeApprovalReleaseDate: new Date(
+        asset?.distribution.distributeApprovalReleaseDate
+      )
+    });
+    setGenData(asset?.genDataArray || []);
+    const docs = asset?.documentArray;
     docs.map(ele => {
-      const name = ele.document
-      ele.document = { name: name }
-    })
-    setArrayDocument(docs)
-    setArrayImage(asset?.imageArray)
+      const name = ele.document;
+      ele.document = { name: name };
+    });
+    setArrayDocument(docs);
+    setArrayImage(asset?.imageArray);
   }
 
   const getMasterData = async () => {
     if (!param.id) {
-      const type = await getTypeData()
-      const arrType = formArrayOption(type.data.type)
-      setTypeList(arrType)
-      const kind = await getKindAll()
-      const arrKind = formArrayOption(kind.data.kind)
-      setKindList(arrKind)
-      const category = await getCategory()
-      const arrCategory = formArrayOption(category.data.category)
-      setCategoryList(arrCategory)
+      const type = await getTypeData();
+      const arrType = formArrayOption(type.data.type);
+      setTypeList(arrType);
+      const kind = await getKindAll();
+      const arrKind = formArrayOption(kind.data.kind);
+      setKindList(arrKind);
+      const category = await getCategory();
+      const arrCategory = formArrayOption(category.data.category);
+      setCategoryList(arrCategory);
     }
-    const brand = await getBrandData()
-    const arrBrand = formArrayOption(brand.data.brand)
-    setBrandList(arrBrand)
-    const group = await getGroupData()
-    const arrGroup = formArrayOption(group.data.group)
-    setGroupList(arrGroup)
-    const acquiredType = await getAcquiredType()
-    const arrAcquiredType = formArrayOption(acquiredType.data.acquiredType)
-    setAcquiredTypeList(arrAcquiredType)
-    const source = await getSourceData()
-    const arrSource = formArrayOption(source.data.source)
-    setSourceList(arrSource)
-    const purposeOfUse = await getPurposeOfUse()
-    const arrPurposeOfUse = formArrayOption(purposeOfUse.data.purposeOfUse)
-    setPurposeOfUseList(arrPurposeOfUse)
-    const acquisitionMethod = await getAcquisitionMethod()
-    const arrAcquisitionMethod = formArrayOption(acquisitionMethod.data.acquisitionMethod)
-    setAcquisitionMethodList(arrAcquisitionMethod)
-    const moneyType = await getMoneyType()
-    const arrMoneyType = formArrayOption(moneyType.data.moneyType)
-    setMoneyTypeList(arrMoneyType)
-    const sector = await getSector()
-    const arrSector = formArrayOption(sector.data.sector)
-    setSectorList(arrSector)
-    const countingUnit = await getCountingUnit()
-    const arrCountingUnit = formArrayOption(countingUnit.data.countingUnit)
-    setCountingUnitList(arrCountingUnit)
-    const merchantList = await getDropdownMerchant()
-    const arrMerchantList = formArrayOption(merchantList.data.merchant)
-    setMerchantList(arrMerchantList)
-  }
+    const brand = await getBrandData();
+    const arrBrand = formArrayOption(brand.data.brand);
+    setBrandList(arrBrand);
+    const group = await getGroupData();
+    const arrGroup = formArrayOption(group.data.group);
+    setGroupList(arrGroup);
+    const acquiredType = await getAcquiredType();
+    const arrAcquiredType = formArrayOption(acquiredType.data.acquiredType);
+    setAcquiredTypeList(arrAcquiredType);
+    const source = await getSourceData();
+    const arrSource = formArrayOption(source.data.source);
+    setSourceList(arrSource);
+    const purposeOfUse = await getPurposeOfUse();
+    const arrPurposeOfUse = formArrayOption(purposeOfUse.data.purposeOfUse);
+    setPurposeOfUseList(arrPurposeOfUse);
+    const acquisitionMethod = await getAcquisitionMethod();
+    const arrAcquisitionMethod = formArrayOption(
+      acquisitionMethod.data.acquisitionMethod
+    );
+    setAcquisitionMethodList(arrAcquisitionMethod);
+    const moneyType = await getMoneyType();
+    const arrMoneyType = formArrayOption(moneyType.data.moneyType);
+    setMoneyTypeList(arrMoneyType);
+    const sector = await getSector();
+    const arrSector = formArrayOption(sector.data.sector);
+    setSectorList(arrSector);
+    const countingUnit = await getCountingUnit();
+    const arrCountingUnit = formArrayOption(countingUnit.data.countingUnit);
+    setCountingUnitList(arrCountingUnit);
+    const merchantList = await getDropdownMerchant();
+    const arrMerchantList = formArrayOption(merchantList.data.merchant);
+    setMerchantList(arrMerchantList);
+  };
 
   function formArrayOption(data) {
-    const array = []
+    const array = [];
     data.map(ele => {
-      array.push({ label: ele.name, value: ele.name, ele: ele })
-    })
-    return array
+      array.push({ label: ele.name, value: ele.name, ele: ele });
+    });
+    return array;
   }
 
   const handleSelect = (value, label, ele) => {
-    console.log(ele, value)
+    console.log(ele, value);
     if (label == "kind" || label == "type" || label == "category") {
-      setInput({ ...input, [label]: ele })
+      setInput({ ...input, [label]: ele });
     } else {
-      setInput({ ...input, [label]: value })
+      setInput({ ...input, [label]: value });
     }
-  }
+  };
 
   const [input, setInput] = useState({
     // ID: "",
@@ -203,12 +239,12 @@ const AssetInformation = () => {
     guaranteedMonth: "",
     purposeOfUse: "",
     assetGroupNumber: "",
-    distributeToSector: "",
+    distributeToSector: ""
   });
 
-  const [errorInput, setErrorInput] = useState(false)
-  const [errorGen, setErrorGen] = useState(false)
-  const [errorAssestTable, setErrorAssestTable] = useState(false)
+  const [errorInput, setErrorInput] = useState(false);
+  const [errorGen, setErrorGen] = useState(false);
+  const [errorAssestTable, setErrorAssestTable] = useState(false);
   // upload image
   const [arrayImage, setArrayImage] = useState([]);
   const [arrayImageURL, setArrayImageURL] = useState([]);
@@ -218,7 +254,7 @@ const AssetInformation = () => {
   const [arrayDocument, setArrayDocument] = useState([]);
 
   // gen เลขครุภัณฑ์
-  const [genData, setGenData] = useState([])
+  const [genData, setGenData] = useState([]);
 
   const [indexGenData, setIndexGenData] = useState(0);
   const [barcode, setBarcode] = useState(genData[indexGenData]?.serialNumber);
@@ -236,9 +272,9 @@ const AssetInformation = () => {
     billNumber: "",
     purchaseYear: new Date(),
     purchaseDate: new Date(),
-    documentDate: new Date(),
-  })
-  const [errorContract, setErrorContract] = useState(false)
+    documentDate: new Date()
+  });
+  const [errorContract, setErrorContract] = useState(false);
 
   // การจำหน่าย
   const [inputSale, setInputSale] = useState({
@@ -247,8 +283,8 @@ const AssetInformation = () => {
     distributeApprovalReleaseDate: new Date(),
     distributeStatus: "",
     distributionNote: ""
-  })
-  const [errorSale, setErrorSale] = useState(false)
+  });
+  const [errorSale, setErrorSale] = useState(false);
 
   //Show Modal
   const [showViewImageModal, setShowViewImageModal] = useState(false);
@@ -286,11 +322,11 @@ const AssetInformation = () => {
     useState(new Date());
   const [
     accumulateDepreciationRegisterDate,
-    setAccumulateDepreciationRegisterDate,
+    setAccumulateDepreciationRegisterDate
   ] = useState(new Date());
   const [
     accumulateDepreciationReceivedDate,
-    setAccumulateDepreciationReceivedDate,
+    setAccumulateDepreciationReceivedDate
   ] = useState(new Date());
   const [accumulateDepreciationPrice, setAccumulateDepreciationPrice] =
     useState(0);
@@ -298,122 +334,121 @@ const AssetInformation = () => {
     useState(0);
   const [
     accumulateDepreciationCarcassPrice,
-    setAccumulateDepreciationCarcassPrice,
+    setAccumulateDepreciationCarcassPrice
   ] = useState(0);
   const [accumulateDepreciationProcess, setAccumulateDepreciationProcess] =
     useState(0);
   const [
     accumulateDepreciationPresentMonth,
-    setAccumulateDepreciationPresentMonth,
+    setAccumulateDepreciationPresentMonth
   ] = useState(0);
   const [
     accumulateDepreciationCumulativePrice,
-    setAccumulateDepreciationCumulativePrice,
+    setAccumulateDepreciationCumulativePrice
   ] = useState(0);
   const [accumulateDepreciationYearPrice, setAccumulateDepreciationYearPrice] =
     useState(0);
   const [
     accumulateDepreciationRemainPrice,
-    setAccumulateDepreciationRemainPrice,
+    setAccumulateDepreciationRemainPrice
   ] = useState(0);
   const [accumulateDepreciationBookValue, setAccumulateDepreciationBookValue] =
     useState(0);
 
   //Main Date
   const [insuranceStartDate, setInsuranceStartDate] = useState(new Date());
-  const [insuranceExpiredDate, setInsuranceExpiredDate] =
-    useState(new Date());
+  const [insuranceExpiredDate, setInsuranceExpiredDate] = useState(new Date());
 
   // handle
-  const handleChange = (e) => {
+  const handleChange = e => {
     const clone = { ...input };
     clone[e.target.name] = e.target.value;
     setInput(clone);
   };
-  const handleChangeSales = (e) => {
-    const { name, value } = e.target
+  const handleChangeSales = e => {
+    const { name, value } = e.target;
     setInputSale({
       ...inputSale,
       [name]: value
-    })
+    });
   };
   const handleChangeSelectSale = (name, value) => {
     setInputSale({
       ...inputSale,
       [name]: value
-    })
+    });
   };
-  const handleChangeContract = (e) => {
-    const { name, value } = e.target
+  const handleChangeContract = e => {
+    const { name, value } = e.target;
     setInputContract({
       ...inputContract,
       [name]: value
-    })
+    });
   };
   const handleChangeSelectContract = (name, value) => {
     setInputContract({
       ...inputContract,
       [name]: value
-    })
+    });
   };
-  const handleChangeRealAssetId = (e) => {
+  const handleChangeRealAssetId = e => {
     const clone = { ...input };
     clone.realAssetId = e.target.value;
     setInput(clone);
   };
-  const handleChangeAssetGroupNumber = (e) => {
+  const handleChangeAssetGroupNumber = e => {
     const clone = { ...input };
     clone.assetGroupNumber = e.target.value;
     setInput(clone);
   };
-  const handleChangeEngProductName = (e) => {
+  const handleChangeEngProductName = e => {
     const clone = { ...input };
     clone.engProductName = e.target.value;
     setInput(clone);
   };
   function checkInvalidEngName() {
-    return (/[ก-ฮ]/.test(input.engProductName))
+    return /[ก-ฮ]/.test(input.engProductName);
   }
   function checkInvalidName() {
-    return (/[A-Za-z]/.test(input.productName))
+    return /[A-Za-z]/.test(input.productName);
   }
-  const handleChangeProductName = (e) => {
+  const handleChangeProductName = e => {
     const clone = { ...input };
     clone.productName = e.target.value;
     setInput(clone);
   };
-  const handleChangeModel = (e) => {
+  const handleChangeModel = e => {
     const clone = { ...input };
     clone.model = e.target.value;
     setInput(clone);
   };
-  const handleChangeSize = (e) => {
+  const handleChangeSize = e => {
     const clone = { ...input };
     clone.size = e.target.value;
     setInput(clone);
   };
-  const handleChangeQuantity = (e) => {
+  const handleChangeQuantity = e => {
     const clone = { ...input };
     // if (e.target.value) setErrorGen(false)
     clone.quantity = e.target.value;
     setInput(clone);
   };
-  const handleChangePricePerUnit = (e) => {
+  const handleChangePricePerUnit = e => {
     const clone = { ...input };
     clone.pricePerUnit = e.target.value;
     setInput(clone);
   };
-  const handleChangeSource = (e) => {
+  const handleChangeSource = e => {
     const clone = { ...input };
     clone.source = e.target.value;
     setInput(clone);
   };
-  const handleChangeAllSector = (e) => {
+  const handleChangeAllSector = e => {
     const clone = { ...input };
     clone.allSector = e.target.value;
     setInput(clone);
   };
-  const handleChangeGuaranteedMonth = (e) => {
+  const handleChangeGuaranteedMonth = e => {
     const clone = { ...input };
     clone.guaranteedMonth = e.target.value;
     setInput(clone);
@@ -421,7 +456,7 @@ const AssetInformation = () => {
 
   //upload image
   // validate size 2mb = 2,000,000 byte
-  const handleImageChange = (e) => {
+  const handleImageChange = e => {
     const fileList = e.target.files;
     console.log(fileList);
     const cloneFile = [...arrayImage];
@@ -435,7 +470,7 @@ const AssetInformation = () => {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "light",
+          theme: "light"
         });
       } else if (fileList[i].size > 2000000) {
         toast.warn(`${fileList[i].name} has more than 2mb!`, {
@@ -446,7 +481,7 @@ const AssetInformation = () => {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "light",
+          theme: "light"
         });
       } else if (cloneFile.length >= 8) {
         toast.warn(`Your images are more than 8!`, {
@@ -457,7 +492,7 @@ const AssetInformation = () => {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "light",
+          theme: "light"
         });
       } else {
         cloneFile.push({ image: fileList[i] });
@@ -467,14 +502,14 @@ const AssetInformation = () => {
     setArrayImage(cloneFile);
   };
 
-  const deleteImg = (idx) => {
+  const deleteImg = idx => {
     let clone = [...arrayImage];
     clone.splice(idx, 1);
     setArrayImage(clone);
   };
 
   //คู่มือและเอกสารแนบ
-  const handleFileChange = (e) => {
+  const handleFileChange = e => {
     const fileList = e.target.files;
     console.log(fileList);
     const cloneFile = [...arrayDocument];
@@ -492,7 +527,7 @@ const AssetInformation = () => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "light",
+            theme: "light"
           }
         );
       }
@@ -500,7 +535,7 @@ const AssetInformation = () => {
     setArrayDocument(cloneFile);
   };
 
-  const deleteDoc = (idx) => {
+  const deleteDoc = idx => {
     let clone = [...arrayDocument];
     clone.splice(idx, 1);
     setArrayDocument(clone);
@@ -508,114 +543,138 @@ const AssetInformation = () => {
 
   const handleGenData = () => {
     if (!input.quantity || !input.type || !input.category || !input.kind) {
-      setErrorGen(true)
+      setErrorGen(true);
     } else {
-      const arr = []
-      fetchAssetList()
-      const assetGroupNumber = (+input.category?.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 2 })
-        + (+input.type?.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 2 })
-        + '-' + (+input.kind?.value).toLocaleString(undefined, { useGrouping: false, minimumIntegerDigits: 3 })
+      const arr = [];
+      fetchAssetList();
+      const assetGroupNumber =
+        (+input.category?.value).toLocaleString(undefined, {
+          useGrouping: false,
+          minimumIntegerDigits: 2
+        }) +
+        (+input.type?.value).toLocaleString(undefined, {
+          useGrouping: false,
+          minimumIntegerDigits: 2
+        }) +
+        "-" +
+        (+input.kind?.value).toLocaleString(undefined, {
+          useGrouping: false,
+          minimumIntegerDigits: 3
+        });
       setInput({
         ...input,
         assetGroupNumber: assetGroupNumber
-      })
+      });
 
       for (let i = 0; i < input.quantity; i++) {
         arr.push({
-          assetNumber: assetGroupNumber + '/'
-            + (i + 1).toLocaleString(undefined, { minimumIntegerDigits: 4, useGrouping: false }),
+          assetNumber:
+            assetGroupNumber +
+            "/" +
+            (i + 1).toLocaleString(undefined, {
+              minimumIntegerDigits: 4,
+              useGrouping: false
+            }),
           serialNumber: "",
           sector: input.distributeToSector,
           asset01: "",
-          replacedAssetNumber: "",
-        })
+          replacedAssetNumber: ""
+        });
       }
-      setGenData(arr)
+      setGenData(arr);
     }
   };
 
-  const [assetList, setAssetList] = useState([])
+  const [assetList, setAssetList] = useState([]);
   const fetchAssetList = async () => {
     try {
-      const res = await getByProductSelector({ assetNumber: "", productName: "" })
-      console.log(res.data.asset)
-      setAssetList(res.data.asset)
-      const resAssetNumber = await getByAssetNumberSelector({ assetNumber: "", productName: "" })
-      console.log(resAssetNumber.data.asset)
+      const res = await getByProductSelector({
+        assetNumber: "",
+        productName: ""
+      });
+      console.log(res.data.asset);
+      setAssetList(res.data.asset);
+      const resAssetNumber = await getByAssetNumberSelector({
+        assetNumber: "",
+        productName: ""
+      });
+      console.log(resAssetNumber.data.asset);
       // setDataAssetNumber(resAssetNumber.data.asset)
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 
-  const handleSubmit = async (e) => {
-    let errInput, errContact, errSale, errTable
+  const handleSubmit = async e => {
+    let errInput, errContact, errSale, errTable;
     // checkError
     console.log({ input, ...inputSale, ...inputContract });
     Object.values(input).map((value, index) => {
-      if (errInput) return
-      if (!value) errInput = true
+      if (errInput) return;
+      if (!value) errInput = true;
       // if (Object.keys(input).length > index + 2) errInput = false
-    })
+    });
     genData.map(ele => {
-      if (!ele.sector || !ele.serialNumber) errTable = true
+      if (!ele.sector || !ele.serialNumber) errTable = true;
       // Object.values(ele).map((value, index) => {
       //   if (errTable || Object.keys(ele).length == index + 1) return
       //   if (!value) errTable = true
       // })
-      console.log(ele.serialNumber)
-    })
-    console.log(genData, input)
+      console.log(ele.serialNumber);
+    });
+    console.log(genData, input);
 
     Object.values(inputContract).map((value, index) => {
-      if (errContact) return
-      if (!value) errContact = true
-      if (Object.keys(inputContract).length == index + 1) errContact = false
-    })
+      if (errContact) return;
+      if (!value) errContact = true;
+      if (Object.keys(inputContract).length == index + 1) errContact = false;
+    });
     Object.entries(inputSale).forEach(([key, value], index) => {
-      if (errSale || key == "distributionNote") return
-      if (!value) errSale = true
-      if (Object.keys(inputSale).length == index + 1) errSale = false
-    })
+      if (errSale || key == "distributionNote") return;
+      if (!value) errSale = true;
+      if (Object.keys(inputSale).length == index + 1) errSale = false;
+    });
     if (errInput) {
-      setErrorGen(false)
-      setErrorInput(true)
-      window.scrollTo({ top: 180, behavior: "smooth", });
+      setErrorGen(false);
+      setErrorInput(true);
+      window.scrollTo({ top: 180, behavior: "smooth" });
     }
-    setErrorAssestTable(errTable)
-    console.log(errInput, errContact, errSale, genData)
-    if (errContact) setErrorContract(true)
-    if (errSale) setErrorSale(true)
-    if (!(errInput || errContact || errSale)) setShowModalConfirm(true)
-  }
+    setErrorAssestTable(errTable);
+    console.log(errInput, errContact, errSale, genData);
+    if (errContact) setErrorContract(true);
+    if (errSale) setErrorSale(true);
+    if (!(errInput || errContact || errSale)) setShowModalConfirm(true);
+  };
 
-  const submit = async (valStatus) => {
-    const existArrayDocument = arrayDocument.filter(ele => ele._id).map(ele => {
-      return { ...ele, document: ele.document.name }
-    })
-    const existArrayImage = arrayImage.filter(ele => ele._id)
+  const submit = async valStatus => {
+    const existArrayDocument = arrayDocument
+      .filter(ele => ele._id)
+      .map(ele => {
+        return { ...ele, document: ele.document.name };
+      });
+    const existArrayImage = arrayImage.filter(ele => ele._id);
 
     const inputJSON = JSON.stringify({
       ...input,
       category: input.category?.name,
       kind: input.kind?.name,
       type: input.type?.name,
-      status: valStatus || "inStock",
+      status: valStatus || "inStock"
       // existArrayDocument: [],
     });
-    
+
     const genDataJSON = JSON.stringify(genData);
     const formData = new FormData();
     formData.append("input", inputJSON);
     formData.append("insuranceStartDate", insuranceStartDate);
     formData.append("insuranceExpiredDate", insuranceExpiredDate);
 
-    formData.append("existArrayImage", JSON.stringify(existArrayImage))
-    formData.append("existArrayDocument", JSON.stringify(existArrayDocument))
+    formData.append("existArrayImage", JSON.stringify(existArrayImage));
+    formData.append("existArrayDocument", JSON.stringify(existArrayDocument));
 
     const baseArrayImage = [];
     if (arrayImage?.length > 0) {
-      arrayImage.forEach((file) => {
+      arrayImage.forEach(file => {
         // console.log(file.image.name);
         baseArrayImage.push({
           image: file.image.name
@@ -625,20 +684,19 @@ const AssetInformation = () => {
 
     const baseArrayImageJSON = JSON.stringify(baseArrayImage);
     formData.append("baseArrayImage", baseArrayImageJSON);
-    console.log(baseArrayImageJSON)
+    console.log(baseArrayImageJSON);
 
     // const duplicatedArrayImage = [];
     if (arrayImage?.length > 0) {
       // for duplicate image file if create asset as too many
-      arrayImage.forEach((file) => {
+      arrayImage.forEach(file => {
         formData.append("arrayImage", file.image);
-        if (valStatus) return
-        const name = file.image.name || file.image
+        if (valStatus) return;
+        const name = file.image.name || file.image;
         for (let i = 2; i <= input.quantity; i++) {
           const duplicatedFile = new File(
             [file.image],
-            `${name.split(".")[0]}_(${i - 1}).${name.split(".")[1]
-            }`,
+            `${name.split(".")[0]}_(${i - 1}).${name.split(".")[1]}`,
             { type: file.type }
           );
           formData.append("arrayImage", duplicatedFile);
@@ -662,7 +720,7 @@ const AssetInformation = () => {
     // document
     const baseArrayDocument = [];
     if (arrayDocument?.length > 0) {
-      arrayDocument.forEach((file) => {
+      arrayDocument.forEach(file => {
         // console.log(file.image.name);
         baseArrayDocument.push({
           document: file.document.name
@@ -676,29 +734,37 @@ const AssetInformation = () => {
     // for duplicate document file if create asset as too many
     // const duplicatedArrayDocument = [];
     if (arrayDocument?.length > 0) {
-      arrayDocument.filter(ele => !ele._id).forEach((file) => {
-        formData.append("arrayDocument", file.document);
-        const name = file.document.name || file.document
-        if (valStatus) return
-        for (let i = 2; i <= input.quantity; i++) {
-          const duplicatedFile = new File(
-            [file.document],
-            `${name.split(".")[0]}_(${i - 1}).${name.split(".")[1]
-            }`,
-            { type: file.type }
-          );
-          formData.append("arrayDocument", duplicatedFile);
-          // duplicatedArrayDocument.push({
-          //   ...file,
-          //   document: duplicatedFile.name,
-          // });
-        }
-      });
+      arrayDocument
+        .filter(ele => !ele._id)
+        .forEach(file => {
+          formData.append("arrayDocument", file.document);
+          const name = file.document.name || file.document;
+          if (valStatus) return;
+          for (let i = 2; i <= input.quantity; i++) {
+            const duplicatedFile = new File(
+              [file.document],
+              `${name.split(".")[0]}_(${i - 1}).${name.split(".")[1]}`,
+              { type: file.type }
+            );
+            formData.append("arrayDocument", duplicatedFile);
+            // duplicatedArrayDocument.push({
+            //   ...file,
+            //   document: duplicatedFile.name,
+            // });
+          }
+        });
       // console.log("duplicatedArrayDocument", duplicatedArrayDocument);
 
       // console.log("allArrayDocument",[...arrayDocument,...duplicatedArrayDocument])
     }
-    console.log('exist', existArrayDocument, 'arr', arrayDocument, 'base', baseArrayDocument)
+    console.log(
+      "exist",
+      existArrayDocument,
+      "arr",
+      arrayDocument,
+      "base",
+      baseArrayDocument
+    );
     // return
 
     // if (duplicatedArrayDocument.length > 0) {
@@ -790,15 +856,15 @@ const AssetInformation = () => {
     formData.append("distributeStatus", inputSale.distributeStatus);
     formData.append("distributionNote", inputSale.distributionNote);
 
-    let response
+    let response;
     if (!param.id) {
-      response = await createAsset(formData)
+      response = await createAsset(formData);
     } else {
-      response = await updateAsset(formData, param.id)
+      response = await updateAsset(formData, param.id);
     }
     // if (response.data.message.includes("created success")) {
-    setShowModalConfirm(false)
-    setShowModalSuccess(true)
+    setShowModalConfirm(false);
+    setShowModalSuccess(true);
     // }
   };
 
@@ -806,16 +872,14 @@ const AssetInformation = () => {
     if (arrayImage.length < 1) return;
     const newImageUrls = [];
     // console.log(arrayImage);
-    arrayImage.forEach(
-      (img) => {
-        if (img._id) {
-          newImageUrls.push(`http://localhost:4000/images/${img.image}`);
-        } else {
-          newImageUrls.push(URL.createObjectURL(img.image));
-        }
+    arrayImage.forEach(img => {
+      if (img._id) {
+        newImageUrls.push(`http://localhost:4000/images/${img.image}`);
+      } else {
+        newImageUrls.push(URL.createObjectURL(img.image));
       }
-    );
-    console.log(newImageUrls)
+    });
+    console.log(newImageUrls);
     setArrayImageURL(newImageUrls);
   }, [arrayImage]);
 
@@ -874,9 +938,13 @@ const AssetInformation = () => {
                 id="engProductName"
                 onChange={handleChangeEngProductName}
                 value={input.engProductName}
-                className={`${errorInput && !input.engProductName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  errorInput && !input.engProductName && "border-red-500"
+                } w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
-              <div className="text-red-500 pt-1">{checkInvalidEngName() && `*โปรดระบุให้ถูกต้อง`}</div>
+              <div className="text-red-500 pt-1">
+                {checkInvalidEngName() && `*โปรดระบุให้ถูกต้อง`}
+              </div>
             </div>
             {/* ชื่อครุภัณฑ์ภาษาไทย */}
             <div>
@@ -887,9 +955,13 @@ const AssetInformation = () => {
                 id="productName"
                 onChange={handleChangeProductName}
                 value={input.productName}
-                className={`${errorInput && !input.productName && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  errorInput && !input.productName && "border-red-500"
+                } w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
-              <div className="text-red-500 pt-1">{checkInvalidName() && `*โปรดระบุให้ถูกต้อง`}</div>
+              <div className="text-red-500 pt-1">
+                {checkInvalidName() && `*โปรดระบุให้ถูกต้อง`}
+              </div>
             </div>
 
             <div>
@@ -908,10 +980,17 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.type}
-                value={(input.type) && { label: input.type.name, value: input.type.name }}
+                value={
+                  input.type && {
+                    label: input.type.name,
+                    value: input.type.name
+                  }
+                }
               />
               {/* </div> */}
-              <div className="text-red-500 pt-1">{errorGen && !input.type && `*โปรดระบุ`}</div>
+              <div className="text-red-500 pt-1">
+                {errorGen && !input.type && `*โปรดระบุ`}
+              </div>
             </div>
 
             <div>
@@ -922,11 +1001,17 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.kind}
-                value={(input.kind) && { label: input.kind.name, value: input.kind.name }}
+                value={
+                  input.kind && {
+                    label: input.kind.name,
+                    value: input.kind.name
+                  }
+                }
               />
-              <div className="text-red-500 pt-1">{errorGen && !input.kind && `*โปรดระบุ`}</div>
+              <div className="text-red-500 pt-1">
+                {errorGen && !input.kind && `*โปรดระบุ`}
+              </div>
             </div>
-
 
             <div>
               <div className="mb-1">ลำดับครุภัณฑ์ (ID)</div>
@@ -936,7 +1021,9 @@ const AssetInformation = () => {
                 id="realAssetId"
                 onChange={handleChangeRealAssetId}
                 value={input.realAssetId}
-                className={`${errorInput && !input.realAssetId && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  errorInput && !input.realAssetId && "border-red-500"
+                } w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             <div className="grid grid-cols-2 gap-x-5 gap-y-3  text-xs">
@@ -949,9 +1036,13 @@ const AssetInformation = () => {
                   id="quantity"
                   onChange={handleChangeQuantity}
                   value={input.quantity}
-                  className={`${errorInput && !input.quantity && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                  className={`${
+                    errorInput && !input.quantity && "border-red-500"
+                  } w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
                 />
-                <div className="text-red-500 pt-1">{errorGen && !input.quantity && `*โปรดระบุ`}</div>
+                <div className="text-red-500 pt-1">
+                  {errorGen && !input.quantity && `*โปรดระบุ`}
+                </div>
               </div>
 
               <div>
@@ -962,7 +1053,12 @@ const AssetInformation = () => {
                   onChange={handleSelect}
                   noClearButton
                   error={errorInput && !input.unit}
-                  value={(input.unit) && { label: input.unit.name || input.unit, value: input.unit.name || input.unit }}
+                  value={
+                    input.unit && {
+                      label: input.unit.name || input.unit,
+                      value: input.unit.name || input.unit
+                    }
+                  }
                 />
               </div>
             </div>
@@ -975,7 +1071,9 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.brand}
-                value={(input.brand) && { label: input.brand, value: input.brand }}
+                value={
+                  input.brand && { label: input.brand, value: input.brand }
+                }
               />
             </div>
             <div>
@@ -986,7 +1084,9 @@ const AssetInformation = () => {
                 id="model"
                 onChange={handleChangeModel}
                 value={input.model}
-                className={`${errorInput && !input.model && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  errorInput && !input.model && "border-red-500"
+                } w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -998,7 +1098,9 @@ const AssetInformation = () => {
                 id="size"
                 onChange={handleChangeSize}
                 value={input.size}
-                className={`${errorInput && !input.size && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  errorInput && !input.size && "border-red-500"
+                } w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             <div>
@@ -1009,9 +1111,16 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.category}
-                value={(input.category) && { label: input.category.name, value: input.category.name }}
+                value={
+                  input.category && {
+                    label: input.category.name,
+                    value: input.category.name
+                  }
+                }
               />
-              <div className="text-red-500 pt-1">{errorGen && !input.category && `*โปรดระบุ`}</div>
+              <div className="text-red-500 pt-1">
+                {errorGen && !input.category && `*โปรดระบุ`}
+              </div>
             </div>
 
             <div>
@@ -1022,7 +1131,9 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.group}
-                value={(input.group) && { label: input.group, value: input.group }}
+                value={
+                  input.group && { label: input.group, value: input.group }
+                }
               />
             </div>
 
@@ -1034,7 +1145,12 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.acquiredType}
-                value={(input.acquiredType) && { label: input.acquiredType, value: input.acquiredType }}
+                value={
+                  input.acquiredType && {
+                    label: input.acquiredType,
+                    value: input.acquiredType
+                  }
+                }
               />
             </div>
             <div>
@@ -1045,7 +1161,9 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.source}
-                value={(input.source) && { label: input.source, value: input.source }}
+                value={
+                  input.source && { label: input.source, value: input.source }
+                }
               />
             </div>
 
@@ -1057,7 +1175,12 @@ const AssetInformation = () => {
                 onChange={handleSelect}
                 noClearButton
                 error={errorInput && !input.purposeOfUse}
-                value={(input.purposeOfUse) && { label: input.purposeOfUse, value: input.purposeOfUse }}
+                value={
+                  input.purposeOfUse && {
+                    label: input.purposeOfUse,
+                    value: input.purposeOfUse
+                  }
+                }
               />
             </div>
             <div>
@@ -1070,8 +1193,10 @@ const AssetInformation = () => {
                 id="pricePerUnit"
                 onChange={handleChangePricePerUnit}
                 // value={(+input.pricePerUnit).toLocaleString()}
-                value={(input.pricePerUnit)}
-                className={`${errorInput && !input.pricePerUnit && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                value={input.pricePerUnit}
+                className={`${
+                  errorInput && !input.pricePerUnit && "border-red-500"
+                } w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -1084,7 +1209,9 @@ const AssetInformation = () => {
                 id="guaranteedMonth"
                 onChange={handleChangeGuaranteedMonth}
                 value={input.guaranteedMonth}
-                className={`${errorInput && !input.guaranteedMonth && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  errorInput && !input.guaranteedMonth && "border-red-500"
+                } w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -1115,7 +1242,12 @@ const AssetInformation = () => {
                 name="distributeToSector"
                 onChange={handleSelect}
                 // error={errorInput && !input.distributeToSector}
-                value={(input.distributeToSector) && { label: input.distributeToSector, value: input.distributeToSector }}
+                value={
+                  input.distributeToSector && {
+                    label: input.distributeToSector,
+                    value: input.distributeToSector
+                  }
+                }
               />
             </div>
 
@@ -1234,7 +1366,9 @@ const AssetInformation = () => {
                   >
                     <div className="flex items-center text-text-green">
                       <img src={docIcon} className="w-4 h-4 " />
-                      <div className="ml-2 text-sm">{el.image.name || el.image}</div>
+                      <div className="ml-2 text-sm">
+                        {el.image.name || el.image}
+                      </div>
                     </div>
                     <button
                       className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
@@ -1245,7 +1379,7 @@ const AssetInformation = () => {
                   </div>
                 ))}
               </div>
-              {!!arrayImage.length &&
+              {!!arrayImage.length && (
                 <button
                   className="mt-2 flex mx-auto items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
                   onClick={() => setShowViewImageModal(true)}
@@ -1253,7 +1387,7 @@ const AssetInformation = () => {
                   <BsFillEyeFill className="w-[16px] h-[16px] text-text-green mr-2" />
                   ดูรูปภาพ
                 </button>
-              }
+              )}
             </div>
           </div>
 
@@ -1287,7 +1421,9 @@ const AssetInformation = () => {
                   >
                     <div className="flex items-center text-text-green">
                       <img src={docIcon} className="w-4 h-4 " />
-                      <div className="ml-2 text-sm">{el.document.name || el.document}</div>
+                      <div className="ml-2 text-sm">
+                        {el.document.name || el.document}
+                      </div>
                     </div>
                     <button
                       className="text-gray-500  font-semibold w-6 h-6 rounded-full hover:bg-gray-300 hover:text-black flex justify-center items-center text-sm"
@@ -1320,10 +1456,17 @@ const AssetInformation = () => {
               <SearchSelector
                 options={acquisitionMethodList}
                 name="acquisitionMethod"
-                onChange={value => handleChangeSelectContract("acquisitionMethod", value)}
+                onChange={value =>
+                  handleChangeSelectContract("acquisitionMethod", value)
+                }
                 noClearButton
                 error={errorContract && !inputContract.acquisitionMethod}
-                value={(inputContract.acquisitionMethod) && { label: inputContract.acquisitionMethod, value: inputContract.acquisitionMethod }}
+                value={
+                  inputContract.acquisitionMethod && {
+                    label: inputContract.acquisitionMethod,
+                    value: inputContract.acquisitionMethod
+                  }
+                }
               />
               {/* <div className="flex h-[38px] ">
                 <Selector
@@ -1342,10 +1485,17 @@ const AssetInformation = () => {
               <SearchSelector
                 options={moneyTypeList}
                 name="moneyType"
-                onChange={value => handleChangeSelectContract("moneyType", value)}
+                onChange={value =>
+                  handleChangeSelectContract("moneyType", value)
+                }
                 noClearButton
                 error={errorContract && !inputContract.moneyType}
-                value={(inputContract.moneyType) && { label: inputContract.moneyType, value: inputContract.moneyType }}
+                value={
+                  inputContract.moneyType && {
+                    label: inputContract.moneyType,
+                    value: inputContract.moneyType
+                  }
+                }
               />
             </div>
 
@@ -1357,7 +1507,11 @@ const AssetInformation = () => {
                 id="deliveryDocument"
                 onChange={handleChangeContract}
                 value={inputContract.deliveryDocument}
-                className={`${errorContract && !inputContract.deliveryDocument && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  errorContract &&
+                  !inputContract.deliveryDocument &&
+                  "border-red-500"
+                }  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
             <div>
@@ -1368,14 +1522,22 @@ const AssetInformation = () => {
                 id="contractNumber"
                 onChange={handleChangeContract}
                 value={inputContract.contractNumber}
-                className={`${errorContract && !inputContract.contractNumber && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  errorContract &&
+                  !inputContract.contractNumber &&
+                  "border-red-500"
+                }  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
             <div>
               <div className="mb-1">วันที่รับมอบ</div>
               <div className="flex h-[38px]">
-                <DateInput state={inputContract.receivedDate} setState={value => handleChangeSelectContract("receivedDate", value)}
+                <DateInput
+                  state={inputContract.receivedDate}
+                  setState={value =>
+                    handleChangeSelectContract("receivedDate", value)
+                  }
                 />
               </div>
             </div>
@@ -1388,7 +1550,12 @@ const AssetInformation = () => {
                 onChange={value => handleChangeSelectContract("seller", value)}
                 noClearButton
                 error={errorContract && !inputContract.seller}
-                value={(inputContract.seller) && { label: inputContract.seller, value: inputContract.seller }}
+                value={
+                  inputContract.seller && {
+                    label: inputContract.seller,
+                    value: inputContract.seller
+                  }
+                }
               />
             </div>
 
@@ -1402,8 +1569,10 @@ const AssetInformation = () => {
                 id="price"
                 onChange={handleChangeContract}
                 // value={(+inputContract.price).toLocaleString()}
-                value={(inputContract.price)}
-                className={`${errorContract && !inputContract.price && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                value={inputContract.price}
+                className={`${
+                  errorContract && !inputContract.price && "border-red-500"
+                }  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -1415,14 +1584,20 @@ const AssetInformation = () => {
                 id="billNumber"
                 onChange={handleChangeContract}
                 value={inputContract.billNumber}
-                className={`${errorContract && !inputContract.billNumber && 'border-red-500'}  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  errorContract && !inputContract.billNumber && "border-red-500"
+                }  w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
             <div>
               <div className="mb-1">ปีที่ซื้อ</div>
               <div className="flex h-[38px]">
-                <YearInput state={inputContract.purchaseYear} setState={value => handleChangeSelectContract("purchaseYear", value)}
+                <YearInput
+                  state={inputContract.purchaseYear}
+                  setState={value =>
+                    handleChangeSelectContract("purchaseYear", value)
+                  }
                 />
               </div>
             </div>
@@ -1430,7 +1605,11 @@ const AssetInformation = () => {
             <div>
               <div className="mb-1">วันที่ซื้อ</div>
               <div className="flex h-[38px]">
-                <DateInput state={inputContract.purchaseDate} setState={value => handleChangeSelectContract("purchaseDate", value)}
+                <DateInput
+                  state={inputContract.purchaseDate}
+                  setState={value =>
+                    handleChangeSelectContract("purchaseDate", value)
+                  }
                 />
               </div>
             </div>
@@ -1438,7 +1617,11 @@ const AssetInformation = () => {
             <div>
               <div className="mb-1">วันที่ลงเอกสาร</div>
               <div className="flex h-[38px]">
-                <DateInput state={inputContract.documentDate} setState={value => handleChangeSelectContract("documentDate", value)}
+                <DateInput
+                  state={inputContract.documentDate}
+                  setState={value =>
+                    handleChangeSelectContract("documentDate", value)
+                  }
                 />
               </div>
             </div>
@@ -1457,7 +1640,9 @@ const AssetInformation = () => {
                 // onChange={(e) => setSalesDocument(e.target.value)}
                 onChange={handleChangeSales}
                 value={inputSale.salesDocument}
-                className={`${errorSale && !inputSale.salesDocument && 'border-red-500'} w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
+                className={`${
+                  errorSale && !inputSale.salesDocument && "border-red-500"
+                } w-full h-[38px] border-[1px] pl-2 text-xs sm:text-sm  border-gray-300 rounded-md focus:border-2 focus:outline-none  focus:border-focus-blue`}
               />
             </div>
 
@@ -1467,7 +1652,9 @@ const AssetInformation = () => {
                 <DateInput
                   // state={distributeDocumentDate}
                   // setState={setDistributeDocumentDate}
-                  setState={(value) => handleChangeSelectSale("distributeDocumentDate", value)}
+                  setState={value =>
+                    handleChangeSelectSale("distributeDocumentDate", value)
+                  }
                   state={inputSale.distributeDocumentDate}
                 />
               </div>
@@ -1477,7 +1664,12 @@ const AssetInformation = () => {
               <div className="mb-1">วันอนุมัติจำหน่าย</div>
               <div className="flex h-[38px]">
                 <DateInput
-                  setState={(value) => handleChangeSelectSale("distributeApprovalReleaseDate", value)}
+                  setState={value =>
+                    handleChangeSelectSale(
+                      "distributeApprovalReleaseDate",
+                      value
+                    )
+                  }
                   state={inputSale.distributeApprovalReleaseDate}
                 />
               </div>
@@ -1501,10 +1693,17 @@ const AssetInformation = () => {
                 options={[{ label: "(ทดสอบ)", value: "(ทดสอบ)" }]}
                 name="distributeStatus"
                 // onChange={handleSelect}
-                onChange={value => handleChangeSelectSale("distributeStatus", value)}
+                onChange={value =>
+                  handleChangeSelectSale("distributeStatus", value)
+                }
                 noClearButton
                 error={errorSale && !inputSale.distributeStatus}
-                value={(inputSale.distributeStatus) && { label: inputSale.distributeStatus, value: inputSale.distributeStatus }}
+                value={
+                  inputSale.distributeStatus && {
+                    label: inputSale.distributeStatus,
+                    value: inputSale.distributeStatus
+                  }
+                }
               />
             </div>
             <div>
@@ -1620,8 +1819,8 @@ const AssetInformation = () => {
                           inputmode="numeric"
                           name="ราคาซื้อ"
                           id="ราคาซื้อ"
-                          value={(depreciationPrice)}
-                          onChange={(e) => setDepreciationPrice(e.target.value)}
+                          value={depreciationPrice}
+                          onChange={e => setDepreciationPrice(e.target.value)}
                           className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
                         />
                         <p className="text-xs absolute top-2 right-4">บาท</p>
@@ -1638,9 +1837,7 @@ const AssetInformation = () => {
                         name="จำนวนปีที่ใช้งาน"
                         id="จำนวนปีที่ใช้งาน"
                         value={depreciationYearUsed}
-                        onChange={(e) =>
-                          setDepreciationYearUsed(e.target.value)
-                        }
+                        onChange={e => setDepreciationYearUsed(e.target.value)}
                         // autoComplete="given-name"
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
                       />
@@ -1657,7 +1854,7 @@ const AssetInformation = () => {
                         name="ราคาซาก"
                         id="ราคาซาก"
                         value={depreciationCarcassPrice}
-                        onChange={(e) =>
+                        onChange={e =>
                           setDepreciationCarcassPrice(e.target.value)
                         }
                         // autoComplete="given-name"
@@ -1688,10 +1885,13 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationPresentMonth == Infinity ||
-                            depreciationPresentMonth == -Infinity ||
-                            isNaN(depreciationPresentMonth)
+                          depreciationPresentMonth == -Infinity ||
+                          isNaN(depreciationPresentMonth)
                             ? 0
-                            : depreciationPresentMonth.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : depreciationPresentMonth.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                              })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1709,10 +1909,16 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationCumulativePrice == Infinity ||
-                            depreciationCumulativePrice == -Infinity ||
-                            isNaN(depreciationCumulativePrice)
+                          depreciationCumulativePrice == -Infinity ||
+                          isNaN(depreciationCumulativePrice)
                             ? 0
-                            : depreciationCumulativePrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : depreciationCumulativePrice.toLocaleString(
+                                "en-US",
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2
+                                }
+                              )
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1730,10 +1936,13 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationYearPrice == Infinity ||
-                            depreciationYearPrice == -Infinity ||
-                            isNaN(depreciationYearPrice)
+                          depreciationYearPrice == -Infinity ||
+                          isNaN(depreciationYearPrice)
                             ? 0
-                            : depreciationYearPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : depreciationYearPrice.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                              })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1751,12 +1960,15 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationRemainPrice == Infinity ||
-                            depreciationRemainPrice == -Infinity ||
-                            isNaN(depreciationRemainPrice)
+                          depreciationRemainPrice == -Infinity ||
+                          isNaN(depreciationRemainPrice)
                             ? 0
-                            : depreciationRemainPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : depreciationRemainPrice.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                              })
                         }
-                        onChange={(e) =>
+                        onChange={e =>
                           setDepreciationRemainPrice(e.target.value)
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
@@ -1777,10 +1989,13 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           depreciationBookValue == Infinity ||
-                            depreciationBookValue == -Infinity ||
-                            isNaN(depreciationBookValue)
+                          depreciationBookValue == -Infinity ||
+                          isNaN(depreciationBookValue)
                             ? 0
-                            : depreciationBookValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : depreciationBookValue.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                              })
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -1917,7 +2132,7 @@ const AssetInformation = () => {
                           name="accumulateDepreciationPrice"
                           id="accumulateDepreciationPrice"
                           value={accumulateDepreciationPrice}
-                          onChange={(e) =>
+                          onChange={e =>
                             setAccumulateDepreciationPrice(e.target.value)
                           }
                           className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 rounded-md"
@@ -1934,7 +2149,7 @@ const AssetInformation = () => {
                         name="accumulateDepreciationYearUsed"
                         id="accumulateDepreciationYearUsed"
                         value={accumulateDepreciationYearUsed}
-                        onChange={(e) =>
+                        onChange={e =>
                           setAccumulateDepreciationYearUsed(e.target.value)
                         }
                         // autoComplete="given-name"
@@ -1951,7 +2166,7 @@ const AssetInformation = () => {
                         name="accumulateDepreciationCarcassPrice"
                         id="accumulateDepreciationCarcassPrice"
                         value={accumulateDepreciationCarcassPrice}
-                        onChange={(e) =>
+                        onChange={e =>
                           setAccumulateDepreciationCarcassPrice(e.target.value)
                         }
                         // autoComplete="given-name"
@@ -1982,10 +2197,16 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationPresentMonth == Infinity ||
-                            accumulateDepreciationPresentMonth == -Infinity ||
-                            isNaN(accumulateDepreciationPresentMonth)
+                          accumulateDepreciationPresentMonth == -Infinity ||
+                          isNaN(accumulateDepreciationPresentMonth)
                             ? 0
-                            : accumulateDepreciationPresentMonth.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : accumulateDepreciationPresentMonth.toLocaleString(
+                                "en-US",
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2
+                                }
+                              )
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -2003,10 +2224,16 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationCumulativePrice == Infinity ||
-                            accumulateDepreciationCumulativePrice == -Infinity ||
-                            isNaN(accumulateDepreciationCumulativePrice)
+                          accumulateDepreciationCumulativePrice == -Infinity ||
+                          isNaN(accumulateDepreciationCumulativePrice)
                             ? 0
-                            : accumulateDepreciationCumulativePrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : accumulateDepreciationCumulativePrice.toLocaleString(
+                                "en-US",
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2
+                                }
+                              )
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -2024,10 +2251,16 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationYearPrice == Infinity ||
-                            accumulateDepreciationYearPrice == -Infinity ||
-                            isNaN(accumulateDepreciationYearPrice)
+                          accumulateDepreciationYearPrice == -Infinity ||
+                          isNaN(accumulateDepreciationYearPrice)
                             ? 0
-                            : accumulateDepreciationYearPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : accumulateDepreciationYearPrice.toLocaleString(
+                                "en-US",
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2
+                                }
+                              )
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -2045,10 +2278,16 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationRemainPrice == Infinity ||
-                            accumulateDepreciationRemainPrice == -Infinity ||
-                            isNaN(accumulateDepreciationRemainPrice)
+                          accumulateDepreciationRemainPrice == -Infinity ||
+                          isNaN(accumulateDepreciationRemainPrice)
                             ? 0
-                            : accumulateDepreciationRemainPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : accumulateDepreciationRemainPrice.toLocaleString(
+                                "en-US",
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2
+                                }
+                              )
                         }
                         // onChange={(e) =>
                         //   setDepreciationRemainPrice(e.target.value)
@@ -2071,10 +2310,16 @@ const AssetInformation = () => {
                         disabled="true"
                         value={
                           accumulateDepreciationBookValue == Infinity ||
-                            accumulateDepreciationBookValue == -Infinity ||
-                            isNaN(accumulateDepreciationBookValue)
+                          accumulateDepreciationBookValue == -Infinity ||
+                          isNaN(accumulateDepreciationBookValue)
                             ? 0
-                            : accumulateDepreciationBookValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : accumulateDepreciationBookValue.toLocaleString(
+                                "en-US",
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2
+                                }
+                              )
                         }
                         className="w-full shadow-sm focus:ring-blue focus:border-blue  sm:text-xs border-gray-300 bg-gray-200 rounded-md"
                       />
@@ -2155,7 +2400,12 @@ const AssetInformation = () => {
         >
           <div className=" px-10 pt-2 pb-10">
             {arrayImageURL.map((el, idx) => (
-              <img src={el} crossorigin="true" key={idx} className="w-[640px] mb-5" />
+              <img
+                src={el}
+                crossorigin="true"
+                key={idx}
+                className="w-[640px] mb-5"
+              />
             ))}
           </div>
         </Modal>
@@ -2173,7 +2423,7 @@ const AssetInformation = () => {
         <div className="flex justify-end gap-4">
           <button
             className="disabled:text-gray-400  disabled:border-gray-300 inline-flex  justify-center items-center py-1 px-4 border-2 border-text-green  shadow-sm font-medium rounded-md text-text-green  not-disabled:hover:bg-sidebar-green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 "
-            onClick={() => submit('saveDraft')}
+            onClick={() => submit("saveDraft")}
           >
             บันทึกแบบร่าง
           </button>
@@ -2192,7 +2442,9 @@ const AssetInformation = () => {
             onSave={submit}
           />
 
-          {showModalSuccess && <ModalSuccess urlPath='/assetInformationIndex' />}
+          {showModalSuccess && (
+            <ModalSuccess urlPath="/assetInformationIndex" />
+          )}
         </div>
       </div>
     </>

@@ -8,7 +8,12 @@ import { CgPushChevronLeft } from "react-icons/cg";
 import { CgPushChevronRight } from "react-icons/cg";
 import ChangeDateToBuddhist from "../components/date/ChangeDateToBuddhist";
 import DateInput from "../components/date/DateInput";
-import { deleteAsset, getAllAsset, getBySearch, getSectorOfAsset } from "../api/assetApi";
+import {
+  deleteAsset,
+  getAllAsset,
+  getBySearch,
+  getSectorOfAsset
+} from "../api/assetApi";
 import { IoIosClose } from "react-icons/io";
 import SearchSelector from "../components/selector/SearchSelector";
 
@@ -24,13 +29,13 @@ const AssetInformationIndex = () => {
     status: "",
     dateFrom: "",
     dateTo: new Date(),
-    sector: "",
+    sector: ""
   });
 
   const [assetList, setAssetList] = useState([]);
-  const [sectorArray, setSectorArray] = useState([])
+  const [sectorArray, setSectorArray] = useState([]);
   // handle
-  const handleChange = (e) => {
+  const handleChange = e => {
     setSearch({ ...search, [e.target.name]: e.target.value });
   };
 
@@ -72,10 +77,14 @@ const AssetInformationIndex = () => {
     }
   };
 
-  const fetchSearchAssetList = async (paginationSearchObj) => {
+  const fetchSearchAssetList = async paginationSearchObj => {
     try {
       // let options = {}
-      let options = paginationSearchObj || { ...search, page: 1, sector: search.sector || "" }
+      let options = paginationSearchObj || {
+        ...search,
+        page: 1,
+        sector: search.sector || ""
+      };
       // if (paginationSearchObj) {
       //   options = ({ ...paginationSearchObj, dateTo: paginationSearchObj.dateTo.toLocaleString(), dateFrom: paginationSearchObj.dateFrom.toLocaleString() });
       // } else {
@@ -85,8 +94,8 @@ const AssetInformationIndex = () => {
       //     // dateFrom: search.dateFrom
       //   });
       // }
-      console.log(paginationSearchObj, search)
-      const res = await getBySearch(options)
+      console.log(paginationSearchObj, search);
+      const res = await getBySearch(options);
       console.log(res.data, search);
 
       // handle the response data
@@ -95,7 +104,7 @@ const AssetInformationIndex = () => {
         ...search,
         page: res.data.page,
         limit: res.data.limit,
-        total: res.data.total,
+        total: res.data.total
       });
       setAmountPage(Math.ceil(res.data.total / res.data.limit));
     } catch (err) {
@@ -107,7 +116,7 @@ const AssetInformationIndex = () => {
     fetchSearchAssetList();
   };
 
-  const handlePaginationSearch = (e) => {
+  const handlePaginationSearch = e => {
     setSearch({ ...search, [e.target.name]: e.target.value });
     fetchSearchAssetList({ ...search, [e.target.name]: e.target.value });
   };
@@ -122,7 +131,7 @@ const AssetInformationIndex = () => {
         ...search,
         page: res.data.page,
         limit: res.data.limit,
-        total: res.data.total,
+        total: res.data.total
       });
       setAmountPage(Math.ceil(res.data.total / res.data.limit));
     } catch (err) {
@@ -132,26 +141,26 @@ const AssetInformationIndex = () => {
 
   const handleDelete = async (id, reason) => {
     try {
-      await deleteAsset(id, { reason: reason })
-      setShowModalDeleteAsset(false)
-      fetchSearchAssetList() // fetchAssetList()
+      await deleteAsset(id, { reason: reason });
+      setShowModalDeleteAsset(false);
+      fetchSearchAssetList(); // fetchAssetList()
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    fetchSearchAssetList() //fetchAssetList();
-    getMaster()
+    fetchSearchAssetList(); //fetchAssetList();
+    getMaster();
   }, []);
 
   async function getMaster() {
-    const sector = await getSectorOfAsset()
-    const arrSector = []
+    const sector = await getSectorOfAsset();
+    const arrSector = [];
     sector.data.sector.map(ele => {
-      arrSector.push({ label: ele.sector, value: ele.sector })
-    })
-    setSectorArray(arrSector)
+      arrSector.push({ label: ele.sector, value: ele.sector });
+    });
+    setSectorArray(arrSector);
   }
 
   return (
@@ -203,7 +212,6 @@ const AssetInformationIndex = () => {
             className="ml-2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 cursor-pointer w-full"
             name="typeTextSearch"
             onChange={handleChange}
-
           >
             <option value="assetNumber">เลขครุภัณฑ์</option>
           </select>
@@ -276,7 +284,9 @@ const AssetInformationIndex = () => {
             options={sectorArray}
             placeholder={"หน่วยงานที่โอน"}
             name={"sector"}
-            onChange={(value, label) => setSearch({ ...search, [label]: value })}
+            onChange={(value, label) =>
+              setSearch({ ...search, [label]: value })
+            }
             floatLabel
           />
         </div>
@@ -321,7 +331,7 @@ const AssetInformationIndex = () => {
               return (
                 <RowOfTableArray
                   key={idx}
-                  index={search.page * (search.limit) - (search.limit - idx) + 1}
+                  index={search.page * search.limit - (search.limit - idx) + 1}
                   _id={el._id}
                   realAssetId={el.realAssetId}
                   assetNumber={el.assetNumber}
@@ -340,16 +350,17 @@ const AssetInformationIndex = () => {
                 />
               );
             })}
-            {showModalDeleteAsset &&
+            {showModalDeleteAsset && (
               <ModalDeleteAsset
                 element={showModalDeleteAsset}
                 close={() => setShowModalDeleteAsset(false)}
                 confirmDelete={handleDelete}
               />
-            }
-            {!assetList.length
-              ? <center className='p-5'>-</center>
-              : <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
+            )}
+            {!assetList.length ? (
+              <center className="p-5">-</center>
+            ) : (
+              <div className="flex justify-end gap-2 h-12 pr-2 items-center text-text-black-table text-xs font-semibold bg-white rounded-b-lg border-b-[1px] border-border-gray-table">
                 <div className="flex items-center">
                   <div>Rows per page:</div>
                   <select
@@ -369,7 +380,9 @@ const AssetInformationIndex = () => {
                 </div>
 
                 <div className="mx-5">
-                  {search.limit * (search.page - 1) + 1}-{search.limit * (search.page - 1) + assetList.length} of {search.total}
+                  {search.limit * (search.page - 1) + 1}-
+                  {search.limit * (search.page - 1) + assetList.length} of{" "}
+                  {search.total}
                 </div>
 
                 <button
@@ -397,19 +410,18 @@ const AssetInformationIndex = () => {
                   <CgPushChevronRight className="text-lg font-bold" />
                 </button>
               </div>
-            }
+            )}
           </div>
         </div>
       </div>
-
     </div>
   );
 };
 
 function ModalDeleteAsset(props) {
-  const elem = props.element
-  const [remark, setRemark] = useState("")
-  const [error, setError] = useState(false)
+  const elem = props.element;
+  const [remark, setRemark] = useState("");
+  const [error, setError] = useState(false);
   return (
     <>
       {/* responsive not done */}
@@ -419,12 +431,19 @@ function ModalDeleteAsset(props) {
           <div className="rounded-lg shadow-lg flex flex-col w-full bg-white">
             <div>
               <div className="flex items-center justify-center p-5 relative">
-                <svg width="84" height="84" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M42 0.333344C39.9167 0.333344 37.8334 1.12501 36.125 2.79168L2.79169 36.125C-0.49998 39.375 -0.49998 44.625 2.79169 47.875L36.125 81.2083C39.375 84.5 44.625 84.5 47.875 81.2083L81.2084 47.875C84.5 44.625 84.5 39.375 81.2084 36.125L47.875 2.79168C46.1667 1.12501 44.0834 0.333344 42 0.333344ZM37.8334 21.1667H46.1667V46.1667H37.8334V21.1667ZM37.8334 54.5H46.1667V62.8333H37.8334V54.5Z" fill="#EB5757" />
+                <svg
+                  width="84"
+                  height="84"
+                  viewBox="0 0 84 84"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M42 0.333344C39.9167 0.333344 37.8334 1.12501 36.125 2.79168L2.79169 36.125C-0.49998 39.375 -0.49998 44.625 2.79169 47.875L36.125 81.2083C39.375 84.5 44.625 84.5 47.875 81.2083L81.2084 47.875C84.5 44.625 84.5 39.375 81.2084 36.125L47.875 2.79168C46.1667 1.12501 44.0834 0.333344 42 0.333344ZM37.8334 21.1667H46.1667V46.1667H37.8334V21.1667ZM37.8334 54.5H46.1667V62.8333H37.8334V54.5Z"
+                    fill="#EB5757"
+                  />
                 </svg>
-                <p className="text-2xl text-red-600 ml-4">
-                  ลบครุภัณฑ์
-                </p>
+                <p className="text-2xl text-red-600 ml-4">ลบครุภัณฑ์</p>
                 <div className="absolute w-full flex justify-end pr-5 mb-8">
                   <button
                     className="text-gray-500 font-semibold h-8 w-8 rounded-full hover:bg-gray-200 hover:text-black flex justify-center items-center"
@@ -458,23 +477,24 @@ function ModalDeleteAsset(props) {
                   <div className="flex items-center md:col-span-2">
                     {elem.sector}
                   </div>
-                  <div className="text-text-gray flex items-center">
-                    ราคา
-                  </div>
+                  <div className="text-text-gray flex items-center">ราคา</div>
                   <div className="flex items-center md:col-span-2">
                     {elem.pricePerUnit}
                   </div>
                 </div>
-                {elem.status != "saveDraft" &&
+                {elem.status != "saveDraft" && (
                   <div className="grid grid-cols-2 md:grid-cols-6 p-2">
                     <div className="text-text-gray flex items-center">
                       สาเหตุที่ยกเลิก
                     </div>
-                    <textarea className={`${error && !remark && "border-red-500"} col-span-5 border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
+                    <textarea
+                      className={`${
+                        error && !remark && "border-red-500"
+                      } col-span-5 border-[1px] p-2 h-[38px] text-xs sm:text-sm border-gray-300 rounded-md focus:border-1 focus:outline-none  focus:border-focus-blue`}
                       onChange={e => setRemark(e.target.value)}
                     />
                   </div>
-                }
+                )}
               </div>
             </div>
 
@@ -493,7 +513,9 @@ function ModalDeleteAsset(props) {
                 onClick={() => {
                   elem.status == "saveDraft"
                     ? props.confirmDelete(elem._id)
-                    : remark ? props.confirmDelete(elem._id, remark) : setError(true)
+                    : remark
+                    ? props.confirmDelete(elem._id, remark)
+                    : setError(true);
                 }}
               >
                 ยืนยันลบ
@@ -503,7 +525,7 @@ function ModalDeleteAsset(props) {
         </div>
       </div>
     </>
-  )
+  );
 }
 
 export default AssetInformationIndex;

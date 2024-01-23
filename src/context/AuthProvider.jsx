@@ -3,7 +3,7 @@ import { JWT_SECRET } from "../config/env";
 import {
   getAccessToken,
   removeAccessToken,
-  setAccessToken,
+  setAccessToken
 } from "../services/localStorage";
 import jwt_decode from "jwt-decode";
 import { adminLogin, userLogin } from "../api/authApi";
@@ -13,6 +13,7 @@ const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  console.log("user:", user);
   const [auth, setAuth] = useState({});
   // const [persist, setPersist] = useState(
   //   JSON.parse(localStorage.getItem("persist")) || false
@@ -22,11 +23,12 @@ export const AuthProvider = ({ children }) => {
     const fetchMe = () => {
       try {
         const token = getAccessToken();
+        console.log("token:", token);
         if (token) {
           const decoded = jwt_decode(token, JWT_SECRET);
-          // console.log("decoded", decoded);
-          // console.log(decoded.id.user);
-          setUser(decoded.id.user);
+          console.log("decoded", decoded);
+
+          setUser(decoded?.id?.user);
         }
       } catch (err) {
         removeAccessToken();
@@ -40,11 +42,19 @@ export const AuthProvider = ({ children }) => {
     // const res = await axios.post("/auth/users/login", { username, password });
     const res = await userLogin({ username, password });
     const token = res.data.token;
+    // console.log("token", token);
+    // console.log("1111");
     setAccessToken(token);
+    // console.log("2222");
     const decoded = jwt_decode(token, JWT_SECRET);
-    console.log("decoded", decoded);
-    console.log(decoded.id.user);
-    setUser(decoded.id.user);
+    // console.log("333");
+    // console.log("decoded", decoded);
+    // console.log("444");
+    // console.log("res--", res.data);
+    // console.log("555");
+    // console.log("res--", res.data);
+    setUser(decoded?.id?.user);
+    // console.log("666");
     JSON.parse(localStorage.setItem("isLoggedIn", true));
   };
 
@@ -58,7 +68,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     removeAccessToken();
-    localStorage.removeItem("isLoggedIn")
+    localStorage.removeItem("isLoggedIn");
     setUser(null);
   };
   return (
